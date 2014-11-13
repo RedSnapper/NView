@@ -15,7 +15,9 @@ GNU/GPLv2
 http://www.gnu.org/licenses/gpl-2.0.html
 
 ###Example
-The repository includes an example..
+The repository includes an example in the hw folder.
+You should be able to put that into any php-enabled web service.
+Then use the url ../hw/hw.php  
 
 ###Using Natural Views.
 Natural views are a means of being able to separate php from html completely.
@@ -96,4 +98,4 @@ There are three gap extensions: child-gap(), preceding-gap(), following-gap().
 
 The easiest way to see how they differ is to examine the following image
 
-![Gaps in XML](gaps.gif)
+![NView](gaps.gif)
