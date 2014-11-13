@@ -25,13 +25,19 @@ The mechanism used to do this is via xpaths.
 
 To try using the Natural Views, separate the view part of the code, and put it into it's own file, using the xml suffix. It must be valid XHTML 5.
 In the php, one will need to include the nview.iphp library
+
 ````require_once("nview.iphp");````
+
 Then one will need to instantiate the view object, by invoking it with:
+
 ````$nv=new NView(); //This will work if the xml file has the same basename as the php file.````
+
 One can also instantiate an NView with other files (by using the filename)
 ````$nv=new NView('specific.xml');````
+
 or an existing DOMDocument, DOMElement, or even a (valid) string of xhtml.
 ````$nv=new NView('<html>...</html>');````
+
 One can also use clone to copy NViews.
 ````$ni=clone $nv;```` or ````$ni=new NView($nv);````
 
