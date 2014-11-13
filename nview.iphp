@@ -461,7 +461,8 @@ class NView {
 			$bt = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,5);
 		}
 		if (empty($value)) {
-			$file=pathinfo($bt[2]['file'], PATHINFO_FILENAME);
+		    $file=pathinfo($bt[2]['file'], PATHINFO_DIRNAME));
+			$file.=pathinfo($bt[2]['file'], PATHINFO_BASENAME);
 		}
 		if (strpos($value,'.') === false) {
 			if (file_exists($value . '.xml')) {
