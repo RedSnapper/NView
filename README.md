@@ -26,20 +26,28 @@ The mechanism used to do this is via xpaths.
 To try using the Natural Views, separate the view part of the code, and put it into it's own file, using the xml suffix. It must be valid XHTML 5.
 In the php, one will need to include the nview.iphp library
 
-````require_once("nview.iphp");````
+````
+require_once("nview.iphp");
+````
 
 Then one will need to instantiate the view object, by invoking it with:
 
-````$nv=new NView(); //This will work if the xml file has the same basename as the php file.````
+````
+$nv=new NView(); //This will work if the xml file has the same basename as the php file.
+````
 
 One can also instantiate an NView with other files (by using the filename)
 ````$nv=new NView('specific.xml');````
 
 or an existing DOMDocument, DOMElement, or even a (valid) string of xhtml.
-````$nv=new NView('<html>...</html>');````
+````
+$nv=new NView('<html>...</html>');
+````
 
 One can also use clone to copy NViews.
-````$ni=clone $nv;```` or ````$ni=new NView($nv);````
+````
+$ni=clone $nv;```` or ````$ni=new NView($nv);
+````
 
 NView has three primary functions: get(),set() and show()
 
@@ -49,13 +57,17 @@ addNamespace($prefix,$namespace);
 
 ####set($xpath,$value = null,$ref = null)
 eg. the following sets the class of all odd li elements to 'odd'.
-````$nv->set('//h:li[position() mod 2 = 1]/@class','odd');````
+````
+$nv->set('//h:li[position() mod 2 = 1]/@class','odd');
+````
 
 ####get($xpath, $ref = null)
 This function will return either a DOMNodeList (if there is more than one result), or it will return the object itself (if there is just one result).
 
 eg. the following returns the class of the first li element in the document.
-````$class = $nv->get('(//h:li)[1]/@class');````
+````
+$class = $nv->get('(//h:li)[1]/@class');
+````
 
 One may use a returned element as a reference for a subsequent get or set.
 E.g:
