@@ -1,0 +1,17 @@
+<!DOCTYPE table>
+<table class="bar__times" xmlns="http://www.w3.org/1999/xhtml">
+  <thead>
+    <tr>
+      <th>Word A</th>
+      <th>Word B</th>
+      <th>Timestamp</th>
+    </tr>
+  </thead>
+  <tbody data-xp="rows">
+    <tr data-xp="row">
+     <td data-xp="a" />
+     <td data-xp="b" />
+     <td data-xp="c" />
+    </tr>
+  </tbody>
+</table>
