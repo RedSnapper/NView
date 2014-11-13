@@ -14,23 +14,30 @@
 GNU/GPLv2
 http://www.gnu.org/licenses/gpl-2.0.html
 
-###About Natural Views.
+###Example
+The repository includes an example..
+
+###Using Natural Views.
 Natural views are a means of being able to separate php from html completely.
 The mechanism used to do this is via xpaths. 
 
-To try using the Natural Views, separate the view part of the code, and put it into it's own file, using the suffix xhtml. It must be valid XHTML 5.
-Within the original (adjacent) php file, if this is an instance of JDocumentHTML (such as index.php in a template), then the xhtml view will be available as $this->nv; Otherwise one will need to instantiate the view object, by invoking it with:
-````$nv=new NView();````
+To try using the Natural Views, separate the view part of the code, and put it into it's own file, using the xml suffix. It must be valid XHTML 5.
+In the php, one will need to include the nview.iphp library
+````require_once("nview.iphp");````
+Then one will need to instantiate the view object, by invoking it with:
+````$nv=new NView(); //This will work if the xml file has the same basename as the php file.````
 One can also instantiate an NView with other files (by using the filename)
-````$nv=new NView('specific.xhtml');````
+````$nv=new NView('specific.xml');````
 or an existing DOMDocument, DOMElement, or even a (valid) string of xhtml.
 ````$nv=new NView('<html>...</html>');````
 One can also use clone to copy NViews.
-````$ni=clone $nv;````
+````$ni=clone $nv;```` or ````$ni=new NView($nv);````
 
 NView has three primary functions: get(),set() and show()
 
-In general, when using xpaths with NView, it is important to know that the prefix h: is tied to the namespace http://www.w3.org/1999/xhtml
+In general, when using xpaths with NView, it is important to know that the prefix h: is always tied to the namespace http://www.w3.org/1999/xhtml
+Other namespaces may be added to an NView, by using the function..
+addNamespace($prefix,$namespace);
 
 ####set($xpath,$value = null,$ref = null)
 eg. the following sets the class of all odd li elements to 'odd'.

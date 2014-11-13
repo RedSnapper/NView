@@ -72,7 +72,7 @@ class NView {
 /**
  * 'show'
  */
-	function show($asdocument = false) {
+	public function show($asdocument = false) {
 		if (is_null($this->doc) || is_null($this->xp)) {
 			return "";
 		} else {
@@ -89,6 +89,17 @@ class NView {
 			}
 		}
 	}
+	
+	
+/**
+ * 'addNamespace'
+ */
+	public function addNamespace($prefix,$namespace) {
+		if (!is_null($this->xp)) {
+			$this->xp->registerNamespace($prefix,$namespace);
+		}
+	}
+	
 
 /**
  * 'strToNode'
@@ -134,7 +145,7 @@ class NView {
 /**
  * 'consume'
  */
-	function consume($xpath, $ref=null) {
+	public function consume($xpath, $ref=null) {
 		$retval = null;
 		$retval = $this->get($xpath, $ref);
 		if (!is_null($retval)) {
@@ -185,7 +196,7 @@ class NView {
 /**
  * 'set'
  */
-	function set($xpath,$value=null,$ref=null) {
+	public function set($xpath,$value=null,$ref=null) {
 
 		//replace node at string xpath with node 'value'.
 		set_error_handler(array($this,'doMsg'), E_ALL | E_STRICT);
