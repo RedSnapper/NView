@@ -1,0 +1,25 @@
+<!DOCTYPE fieldset>
+<fieldset class="form--cols">
+	<input type="hidden" data-xp="_ident" />
+	<ul class="form__notice">
+		<li>
+			<label class="form__group text" data-semantic="field" data-xp="comment">
+				<span class="error" data-xp="_message"><!-- m --></span>
+				<span class="label" data-xp="label">Username</span>
+				<span class="flex"><input autocomplete="off" type="text" name="username" /></span>
+			</label>
+		</li>
+		<li>
+			<label class="form__group text" data-semantic="field" data-xp="comment">
+				<span class="error" data-xp="_message"><!-- m --></span>
+				<span class="label" data-xp="label">Password</span>
+				<span class="flex"><input type="password" name="password" /></span>
+			</label>
+		</li>
+		<li>
+			<label class="form__group submit" data-semantic="field" data-xp="comment">
+				<span class="flex"><button class="btn--tertiary" type="submit" name="_fn" value="save">Sign In</button></span>
+			</label>
+		</li>
+	</ul>
+</fieldset>

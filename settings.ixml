@@ -1,0 +1,86 @@
+<?php
+mb_internal_encoding('UTF-8');
+
+/**
+ * class 'Settings'
+ */
+class Settings extends Singleton {
+
+	public static $sphinx=null;
+	public static $sql=null;
+	public static $url=null; //current url
+	public static $usr=array();	//current user details
+	public static $req=array();	//querystring for unnamed parameters.
+	public static $qst=array();	//associational querystring - for named parameters.
+
+/**
+ * '__construct'
+ */
+	protected function __construct() {
+		if($_SERVER['QUERY_STRING']) {
+			parse_str($_SERVER['QUERY_STRING'],Settings::$qst);
+			Settings::$req=array_keys(Settings::$qst);
+		}
+
+		Settings::$url=strtok($_SERVER["REQUEST_URI"],'?');
+		if ( !empty($_SERVER['PHP_AUTH_USER']) ) { Settings::$usr['RU']= $_SERVER['PHP_AUTH_USER'];}
+		elseif ( isset($_SERVER['REDIRECT_REMOTE_USER']) ) { Settings::$usr['RU']= $_SERVER['REDIRECT_REMOTE_USER']; }
+		elseif ( isset($_SERVER['REMOTE_USER']) ) { Settings::$usr['RU']= $_SERVER['REMOTE_USER'];
+		} else { Settings::$usr['RU']= 'unknown'; }
+
+		Settings::$usr['ID']=0;
+		Settings::$sql = new mysqli(getenv('RS_SQLHOST'),getenv('RS_SQLUSER'),getenv('RS_SQLUSERPW'),getenv('RS_DATABASE'));
+		if (Settings::$sql->connect_error) {
+    			die('SQL Connection Error (' . $mysqli->connect_errno . ') ' . $mysqli->connect_error);
+		}
+		$srch=getenv('RS_SEARCH_HOST');
+		if (!empty($srch)) {
+	                Settings::$sphinx = new mysqli(getenv('RS_SEARCH_HOST'),getenv('RS_SEARCH_USER'),getenv('RS_SEARCH_USERPW'),getenv('RS_DATABASE'),9306);
+		} else {
+			Settings::$sphinx = null;
+		}
+		Settings::$sql->set_charset("utf8");
+		$s=1; $sd=1; $u=1;
+		if ($rx = Settings::$sql->query("show tables like 'session'")) { $s = $rx->num_rows; $rx->close(); }
+		if ($s !== 1) {
+			Settings::$sql->query("CREATE TABLE session(id varchar(255) NOT NULL,ts timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, PRIMARY KEY (id), KEY ts (ts)) ENGINE=InnoDB DEFAULT CHARSET=utf8");
+		}
+		if ($rx = Settings::$sql->query("show tables like 'sessiondata'")) { $sd = $rx->num_rows; $rx->close(); }
+		if ($sd !== 1) {
+			Settings::$sql->query("CREATE TABLE sessiondata (sid varchar(200) NOT NULL,name varchar(128) NOT NULL,value longtext NOT NULL,PRIMARY KEY (sid,name)) ENGINE=InnoDB DEFAULT CHARSET=utf8");
+		}
+		if ($rx = Settings::$sql->query("show tables like 'user'")) { $u = $rx->num_rows; $rx->close(); }
+		if ($sd !== 1) {
+			Settings::$sql->query("CREATE TABLE user (id int(11) NOT NULL AUTO_INCREMENT,username varchar(68) NOT NULL DEFAULT '',password varchar(250) DEFAULT NULL,active char(2) DEFAULT 'on',PRIMARY KEY (id),UNIQUE KEY username (username),UNIQUE KEY ausername (username,active)) ENGINE=InnoDB DEFAULT CHARSET=utf8");
+		}
+
+	}
+
+/**
+ * 'usr'  initialise session, and user id etc.
+ *        This requires a 'user' table.
+ */
+	public static function usr() {
+		if (Session::has('username')) {
+			Settings::$usr['RU']=Session::get('username');
+		}
+		if ($rx = Settings::$sql->query("select id from user where active='on' and username='". Settings::$usr['RU'] ."'")) {
+			while ($row = $rx->fetch_assoc()) {
+				Settings::$usr['ID']=$row['id'];
+		    }
+		    $rx->close();
+		}
+	}
+
+
+/**
+ * 'close'
+ */
+	public static function close() {
+		Settings::$sql->close();
+		if (!empty(Settings::$sphinx)) {
+			Settings::$sphinx->close();
+		}
+	}
+
+}

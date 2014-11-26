@@ -465,11 +465,14 @@ class NView {
 			$value .= '/' . pathinfo($bt[2]['file'], PATHINFO_FILENAME);
 		}
 		if (strpos($value,'.') === false) {
-			if (file_exists($value . '.xml')) {
+			if (file_exists($value . '_1.ixml')) {
+				$value .= '_1.ixml';
+			}
+			elseif (file_exists($value . '.xml')) {
 				$value .= '.xml';
 			}
-			elseif (file_exists($value . '_v.xml')) {
-				$value .= '_v.xml';
+			elseif (file_exists($value . '_v.ixml')) {
+				$value .= '_v.ixml';
 			}
 		}
 		if (!file_exists($value)) {

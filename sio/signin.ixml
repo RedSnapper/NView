@@ -1,0 +1,66 @@
+<?php
+mb_internal_encoding('UTF-8');
+
+/**
+ * class 'SioSignIn'
+ */
+class SioSignIn {
+	use Form;
+	protected static function sig() {
+		return "siosignin_";
+	}
+
+/**
+ * '__construct'
+ */
+	function __construct($key=NULL,$v=NULL) {
+		$this->iniForm($key,$v,false);
+		$this->key=$key;
+		$this->table="user";
+		$this->setfld('username');
+		$this->setfld('password');
+	}
+
+/**
+ * 'validate'
+ * fn fulfilling abstract requirement of trait 'Form'.
+ * validate all fields in this->fields.
+ * errors are placed into the this->view.
+ */
+	protected function validate() {
+		$retval = false;
+		if (isset($this->fields['username'][0]) && isset($this->fields['password'][0])) {
+			$un=$this->fields['username'][0];
+			$ph=hash('sha256',$un . hex2bin('5BE0BDA8E0BDBCE0BDBEE0BC8BE0BDA7E0BDB1E0BDB4E0BDBE5D') . hash('sha256',$this->fields['password'][0]));
+			$this->fields['password'][0]='';
+			$qry="select count(id) as ok from " . $this->table . " where active='on' and username='" .$un. "' and password='" . $ph . "'";
+			if ($rx = Settings::$sql->query($qry)) {
+				if (strcmp($rx->fetch_row()[0],"1") === 0) {
+					$retval=true;
+				} else {
+					$this->seterr("username","Either the username or password don't match our records");
+				}
+				$rx->close();
+			}
+			$this->valid = $retval;
+		}
+	}
+
+/**
+ * 'commit'
+ * fn OVERLOADING trait 'Form'.
+ */
+	protected function commit() {
+		Session::set('username',$this->fields['username'][0]);
+	}
+
+/**
+ * 'populate'
+ * fn fulfilling abstract requirement of trait 'Form'.
+ * place this->fields array into view.
+ */
+	protected function populate() {
+		$this->vset('username');
+	}
+
+}

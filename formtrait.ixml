@@ -1,0 +1,335 @@
+<?php
+mb_internal_encoding('UTF-8');
+
+/**
+ * trait 'Form'
+ */
+trait Form {
+	private $signature; 	//unique signature for identifying this post.
+	private $committed; 	//bool flag for identifying if we committed.
+	private $valid;			//bool flag for identifying if we validated.
+	private $id;			//unique prefix for identifying form fields in the post.
+	private $idprefix;		//other bit for this.
+	private $idprefixlen;	//length of value.
+	protected $fields;		//array of fields.
+	protected $messages;	//array of messages.. not sure this is being used.
+	protected $pkey;		//name of primary key in sql.
+	protected $key;			//value of primary key
+	protected $table;   	//name of table to be used in sql
+	protected $gflds;		//array of sql fields that will be used to get.
+	protected $cflds;		//array of sql values that will be used during a commit.
+	protected $names;		//array of input names
+	protected $view;		//the formlet view (instance of an NView)
+	protected $show;		//whether or not to show the form.
+	protected $redirect;		//where to go on insert.
+	abstract protected function validate();   // must return a bool.
+	abstract protected function populate();   // use $fields to load the inputs.
+
+	protected static function sig() {
+		print("This is an error.");
+		return "form_";
+	}
+
+/**
+ * 'iniForm'
+ * To be used in __construct methods.
+ */
+	protected function iniForm($idp='',$vp = NULL,$use_id=true,$pk='id') {
+		$this->id = '_' . static::sig() . $idp;
+		$this->pkey = $pk;
+		$this->idprefix = $this->id . ':';
+ 		if ($use_id) {
+ 			$this->signature = md5( Settings::$usr['ID'] . $this->id);
+		} else {
+			$this->signature = md5($this->id);
+		}
+		$this->idprefixlen = strlen($this->idprefix);
+		if ($vp instanceof NView) {
+		    $this->view = $vp;
+		} else {
+			//need this b/c form is a trait.
+			$bt = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,1);
+			$file_ar=pathinfo($bt[0]['file']); //want the file.
+			$file=$file_ar['dirname'].'/'.$file_ar['filename'];
+		    $this->view = new NView($file);
+		    $err = $this->view->messages(); //currently unused.
+		    if (!empty($err)) {
+		        print $err;
+		    }
+		}
+		//initialise other members.
+		$this->gflds = array(); //array of sql fields that will be used to get.
+		$this->cflds = array(); //array of sql fields that will be used in commit.
+		$this->names = array(); //array of input names.
+		$this->committed = false;
+		$this->valid = true;
+		$this->redirect = NULL;
+	}
+
+/**
+ * 'inscope' used to test if a particular form is being posted.
+ */
+ 	public static function inscope($use_id = true) {
+ 		$sign = '_' . static::sig();
+ 		if ($use_id) {
+			$signature = md5( Settings::$usr['ID'] . $sign);
+		} else {
+			$signature = md5( $sign);
+		}
+		return isset($_POST[$sign]) && ($_POST[$sign] === $signature);
+	}
+
+/**
+ * 'seterr'
+ */
+	function seterr($ident=NULL,$value=NULL) {
+		$this->view->set("//*[@data-msg='". $ident ."']/child-gap()",$value);
+	}
+
+/**
+ * 'setfld'
+ */
+	public function setfld($name=NULL,$gsql=NULL,$csql=NULL) {
+		if (! is_null($name) ) {
+				array_push($this->names,$name);
+			if (!is_null($gsql)) {
+				array_push($this->gflds,$gsql);
+			} else {
+				array_push($this->gflds,$name);
+			}
+			$this->cflds[$name] = $csql;
+		}
+	}
+
+/**
+ * 'vsetopts'
+ */
+	protected function vsetopts($input='_unused',$qvp='select 0 as prompt,0 as value',$v=NULL) {
+			if (is_null($v)) {
+				$v = new NView('option_v.ixml');
+				$err = $v->messages();
+			}
+			if (isset($err) && !empty($err)) {
+				echo $err;
+			} else {
+				if ($rx = Settings::$sql->query($qvp)) {
+					while ($f = $rx->fetch_assoc()) {
+						$o = new NView($v);
+						$o->set("/h:option/@value",$f['value']);
+						$o->set("/h:option/child-gap()",$f['prompt']);
+						$this->view->set("//h:select[@name='$input']/child-gap()",$o);
+					}
+					$rx->close();
+				}
+				if (isset($this->fields[$input])) {
+					foreach ($this->fields[$input] as $val) {
+						$this->view->set("//h:select[@name='$input']/h:option[@value='" . $val . "']/@selected","selected");
+					}
+				}
+				$err = $v->messages();
+				if (!empty($err)) {
+				 	$v->set("//*[@data-xp='debug']",$err);
+				}
+			}
+	}
+
+/**
+ * 'vset'
+ */
+	function vset($input='_unused',$kind=NULL,$special=NULL) {
+		$val=NULL;
+		if (is_null($special)) {
+			if (isset($this->fields[$input])) {
+				$val=$this->fields[$input][0];
+			}
+		} else {
+			$val=$special;
+		}
+		if (!is_null($val)) {
+			switch($kind) {
+				case "cb": {
+					if ($val == 'on' || $val == 'true' || $val == 'checked' ) {
+						$this->view->set("//*[@name='" . $input . "']/@value",$val);
+						$this->view->set("//*[@name='" . $input . "']/@checked",'checked');
+					}
+				} break;
+				case "ta": {
+						$this->view->set("//*[@name='" . $input . "']/child-gap()",$val);
+				} break;
+				case "xp": {
+						$this->view->set("//*[@data-xp='" .$input . "']/child-gap()",$val);
+				} break;
+				default: {
+						$this->view->set("//*[@name='" . $input . "']/@value",$val);
+				} break;
+			}
+		}
+	}
+
+/**
+ * 'form'
+ */
+	public function form($show=true) {
+		if(isset($_POST[$this->id]) && ($_POST[$this->id] === $this->signature)) {
+			$this->show=$show;
+			$this->fields = array();
+			foreach ($_POST as $k => $v) {
+				if (strpos($k,$this->idprefix) === 0) {
+					$key = substr($k,$this->idprefixlen);
+					if (isset($this->fields[$key])) {
+						$this->fields[$key][]= $v;
+					} else {
+						$this->fields[$key]= array($v);
+					}
+				}
+			}
+			if (isset($this->fields['_fn']) && strcmp($this->fields['_fn'][0],"save") !== 0 ) {
+				$this->setfields(false); //populate the fields from sql
+				switch ($this->fields['_fn'][0]) {
+//					case "deps" : {
+//						return $this->usedby(null,'layt.mxs');
+//					} break;
+					default: {
+						print_r($this->fields['_fn'][0] . " function not supported");
+					} break;
+				}
+			} else {
+				$this->validate();
+				if ($this->valid) {
+					$this->committed = $this->commit();
+					if ( $this->show || !($this->committed) ) { //do not repop if !show and com.
+						$this->setfields(true); //we can repopulate the fields if we want.
+					}
+				}
+			}
+		} else {
+			$this->setfields(false); //we can populate the fields if we want.
+		}
+		if ( $this->show || !($this->committed) ) { //don't repop if !show and com.
+			$this->populate();
+			$this->view->set("//*[@data-msg][not(node())]");
+			$this->view->set("//*[@data-xp='_ident']/@name",$this->id);
+			$this->view->set("//*[@data-xp='_ident']/@value",$this->signature);
+			$this->view->set("//*[@name][@name!='" . $this->id . "']/@name/preceding-gap()",$this->idprefix);
+			return $this->view;
+		} else {
+			return null;
+		}
+	}
+
+/**
+ * 'setfields'
+ */
+	protected function setfields($inpost=false) {
+		if (!$inpost) {
+			$getf = array_combine($this->gflds,$this->names);
+			$flds = "";
+			foreach ($getf as $i => $k) {
+				if (strcmp($i, $k) === 0) {
+					$flds .= $i . ',';
+				} else {
+					$flds .= $i . ' as ' . $k . ',';
+				}
+			}
+			$flds = rtrim($flds,",");
+			$getqry="select " . $flds . " from " . $this->table . " where " .$this->pkey ." ='". $this->key ."'";
+			if ($rx = Settings::$sql->query($getqry)) {
+				while ($f = $rx->fetch_assoc()) {
+					foreach ($this->names as $n) {
+						$this->fields[$n]=array($f[$n]);
+					}
+				}
+				$rx->close();
+			}
+		}
+	}
+
+/**
+ * 'commit'
+ */
+	protected function commit() {
+		$retval = false;
+		$pkval = $this->key;
+		$vlist = is_null($pkval)? "NULL," : $pkval . ","; $ulist = ""; $flist="";
+		foreach ($this->names as $n) {
+			if (is_null($this->cflds[$n]) || ($this->cflds[$n] != '!skip')) {
+				if (is_null($this->cflds[$n])) {
+					if(array_key_exists($n,$this->fields)) {
+						$val = "'" . Settings::$sql->escape_string($this->fields[$n][0]) . "'";
+					} else {
+						$val="''";
+					}
+				} else {
+					$val = $this->cflds[$n];
+				}
+				$flist .= $n . ",";
+				$ulist .= $n . "=values(" . $n . "),";
+				$vlist .= $val . ",";
+			}
+		}
+		$flist = rtrim($flist,",");
+		$ulist = rtrim($ulist,",");
+		$vlist = rtrim($vlist,",");
+		$query="insert into "  . $this->table . "(" . $this->pkey .",".   $flist . ") values(" . $vlist . ") on duplicate key update " . $ulist;
+		if (Settings::$sql->query($query)) {
+			if ($r=Settings::$sql->query("select last_insert_id()")) {
+				$val = $r->fetch_row()[0];
+				if ($val != 0) {
+					if ($this->show) {
+						$this->show = false;
+						header("Location: " . Settings::$url . "?" . $val );
+					} else {
+						if (!is_null($this->redirect)) {
+							header("Location: " . $this->redirect);
+						}
+					}
+				}
+				$r->close();
+			}
+			$retval = true;
+		} else {
+			$retval = false;
+		}
+		return $retval;
+	}
+
+/**
+ * validation functions
+ */
+	public function valEmail($name='',$msg="This must be a valid email address") {
+		if (isset($this->fields[$name][0])) {
+			if (!filter_var($this->fields[$name][0], FILTER_VALIDATE_EMAIL)) {
+				$this->valid = false;
+				$this->seterr($name,$msg);
+			}
+		}
+	}
+	public function valSignificant($name='',$msg="This must have a value") {
+		if (isset($this->fields[$name][0])) {
+			if (empty($this->fields[$name][0])) {
+				$this->valid = false;
+				$this->seterr($name,$msg);
+			}
+		} else {
+			$this->valid = false;
+			$this->seterr($name,$msg);
+		}
+	}
+	public function valNumeric($name='',$msg="This must be a number") {
+		if (isset($this->fields[$name][0])) {
+			if (empty($this->fields[$name][0]) || !is_numeric($this->fields[$name][0])) {
+				$this->valid = false;
+				$this->seterr($name,$msg);
+			}
+		}
+	}
+	public function valInt($name='',$msg="This must be a whole number") {
+		if (isset($this->fields[$name][0])) {
+			if (empty($this->fields[$name][0]) || !is_int($this->fields[$name][0])) {
+				$this->valid = false;
+				$this->seterr($name,$msg);
+			}
+		}
+	}
+
+}

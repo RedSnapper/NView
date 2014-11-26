@@ -1,0 +1,46 @@
+<?php
+mb_internal_encoding('UTF-8');
+
+/**
+ * class 'SioSignOut'
+ */
+class SioSignOut {
+	use Form;
+	protected static function sig() {
+		return "siosignout_";
+	}
+
+/**
+ * '__construct'
+ */
+	function __construct($key=NULL,$v=NULL) {
+	    $this->iniForm($key,$v,false);
+	    $this->key=$key;
+	    $this->table="user";
+	}
+
+/**
+ * 'validate'
+ * fn fulfilling abstract requirement of trait 'Form'.
+ */
+	protected function validate() {
+		$this->valid = true;
+	}
+
+/**
+ * 'commit'
+ * fn OVERLOADING trait 'Form'.
+ */
+	protected function commit() {
+		Session::del('username');
+		unset(Settings::$usr['RU']);
+		return true;
+	}
+
+/**
+ * 'populate'
+ * fn fulfilling abstract requirement of trait 'Form'.
+ */
+	protected function populate() {}
+
+}
