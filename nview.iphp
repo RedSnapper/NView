@@ -170,7 +170,7 @@ class NView {
 				switch ($entries->length) {
 					case 1: {
 						$entry = $entries->item(0);
-						if ($entry->nodeType == XML_TEXT_NODE) {
+						if ($entry->nodeType == XML_TEXT_NODE || $entry->nodeType == XML_CDATA_SECTION_NODE) {
 							$retval = $entry->nodeValue;
 						} elseif ($entry->nodeType == XML_ATTRIBUTE_NODE) {
 							$retval = $entry->value;
