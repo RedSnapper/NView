@@ -3,14 +3,14 @@ mb_internal_encoding('UTF-8');
 set_include_path( get_include_path() . PATH_SEPARATOR . '/websites/shared/lib/' . PATH_SEPARATOR . $_SERVER['DOCUMENT_ROOT']);
 
 //basic classes / traits used everywhere.
-require_once("patterns.ixml");
-require_once("nview.ixml");
-require_once("formtrait.ixml");
-require_once("settings.ixml");
-require_once("session.ixml");
-require_once("sio/sio.ixml");
-require_once("sio/signin.ixml");
-require_once("sio/signout.ixml");
+require_once("patterns.iphp");
+require_once("nview.iphp");
+require_once("formtrait.iphp");
+require_once("settings.iphp");
+require_once("session.iphp");
+require_once("sio/sio.iphp");
+require_once("sio/signin.iphp");
+require_once("sio/signout.iphp");
 
 Settings::getInstance(); //initialise settings..
 Session::getInstance();  //initialise session.
