@@ -315,36 +315,32 @@ class NView {
 												}
 											}
 										} else {
-											if (($entry->nodeType == XML_CDATA_SECTION_NODE) && (gettype($value) != "object")) {
-												$entry->textContent = '' . $value;
+											if (gettype($value) != "object") {
+												$nodf = $this->strToNode('' . $value);
+												$node = $this->doc->importNode($nodf, true);
 											} else {
-												if (gettype($value) != "object") {
-													$nodf = $this->strToNode('' . $value);
-													$node = $this->doc->importNode($nodf, true);
-												} else {
-													$nodc = $value->cloneNode(true);
-													$node = $this->doc->importNode($nodc, true);
-												}
-												if (!is_null($node->firstChild))
-												{
-													switch ($gap) {
-														case self::GAP_NONE: {
-															$entry->parentNode->replaceChild($node, $entry);
-														} break;
-														case self::GAP_PRECEDING: {
-															$entry->parentNode->insertBefore($node, $entry);
-														} break;
-														case self::GAP_FOLLOWING: {
-															if (is_null($entry->nextSibling)) {
-																$entry->parentNode->appendChild($node);
-															} else {
-																$entry->parentNode->insertBefore($node,$entry->nextSibling);
-															}
-														} break;
-														case self::GAP_CHILD: {
-															$entry->appendChild($node);
-														} break;
-													}
+												$nodc = $value->cloneNode(true);
+												$node = $this->doc->importNode($nodc, true);
+											}
+											if (!is_null($node->firstChild))
+											{
+												switch ($gap) {
+													case self::GAP_NONE: {
+														$entry->parentNode->replaceChild($node, $entry);
+													} break;
+													case self::GAP_PRECEDING: {
+														$entry->parentNode->insertBefore($node, $entry);
+													} break;
+													case self::GAP_FOLLOWING: {
+														if (is_null($entry->nextSibling)) {
+															$entry->parentNode->appendChild($node);
+														} else {
+															$entry->parentNode->insertBefore($node,$entry->nextSibling);
+														}
+													} break;
+													case self::GAP_CHILD: {
+														$entry->appendChild($node);
+													} break;
 												}
 											}
 										}
