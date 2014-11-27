@@ -277,7 +277,7 @@ class NView {
 								if ($gap == self::GAP_NATTR && $entry->nodeType==XML_ELEMENT_NODE && isset($aname)) {
 									$entry->setAttribute($aname,htmlspecialchars(utf8_encode($value),ENT_COMPAT,'',false));
 								} else {
-									if ($entry->nodeType == XML_ATTRIBUTE_NODE && gettype($value) != "object") {
+									if (($entry->nodeType == XML_ATTRIBUTE_NODE) && (gettype($value) != "object")) {
 										switch ($gap) {
 											case self::GAP_NONE: {
 												$entry->value = utf8_encode($value);
@@ -288,6 +288,19 @@ class NView {
 											case self::GAP_FOLLOWING:
 											case self::GAP_CHILD: {
 												$entry->value .= utf8_encode($value);
+											} break;
+										}
+									} elseif (($entry->nodeType == XML_CDATA_SECTION_NODE) && (gettype($value) != "object")) {
+										switch ($gap) {
+											case self::GAP_NONE: {
+												$entry->data = utf8_encode($value);
+											} break;
+											case self::GAP_PRECEDING: {
+												$entry->insertData(0,utf8_encode($value));
+											} break;
+											case self::GAP_FOLLOWING:
+											case self::GAP_CHILD: {
+												$entry->appendData(utf8_encode($value));
 											} break;
 										}
 									} else {
@@ -484,8 +497,9 @@ class NView {
 		if (file_exists($xview)) {
 			$this->initDoc();
 			$data = file_get_contents($xview);
-			$wss = array("\r\n", "\n", "\r", "\t"); //what we will remove
-			$data = str_replace($wss,"", $data);
+//uncomment these lines if you want newlines stripped from the sourcefile.
+//			$wss = array("\r\n", "\n", "\r", "\t"); //what we will remove
+//			$data = str_replace($wss,"", $data);
 			try {
 				$this->doc->loadXML($data);
 			} catch (Exception $e) {
