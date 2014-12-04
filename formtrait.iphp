@@ -169,7 +169,7 @@ trait Form {
 /**
  * 'form'
  */
-	public function form($show=true) {
+	public function form($show=true,$debug=NULL) {
 		if(isset($_POST[$this->id]) && ($_POST[$this->id] === $this->signature)) {
 			$this->show=$show;
 			$this->fields = array();
@@ -196,7 +196,7 @@ trait Form {
 			} else {
 				$this->validate();
 				if ($this->valid) {
-					$this->committed = $this->commit();
+					$this->committed = $this->commit($debug);
 					if ( $this->show || !($this->committed) ) { //do not repop if !show and com.
 						$this->setfields(true); //we can repopulate the fields if we want.
 					}
@@ -247,7 +247,7 @@ trait Form {
 /**
  * 'commit'
  */
-	protected function commit() {
+	protected function commit($debug=NULL) {
 		$retval = false;
 		$pkval = $this->key;
 		$vlist = is_null($pkval)? "NULL," : $pkval . ","; $ulist = ""; $flist="";
@@ -271,6 +271,9 @@ trait Form {
 		$ulist = rtrim($ulist,",");
 		$vlist = rtrim($vlist,",");
 		$query="insert into "  . $this->table . "(" . $this->pkey .",".   $flist . ") values(" . $vlist . ") on duplicate key update " . $ulist;
+		if(!is_null($debug)) {
+			print($query);
+		}
 		if (Settings::$sql->query($query)) {
 			if ($r=Settings::$sql->query("select last_insert_id()")) {
 				$val = $r->fetch_row()[0];
