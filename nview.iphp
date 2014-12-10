@@ -558,6 +558,7 @@ class NView {
  * 'tidyView'
  */
 	private function tidyView() {
+		$this->doc->normalizeDocument();
 		$xq = "//*[not(node())][not(contains('[area|base|br|col|hr|img|input|link|meta|param|command|keygen|source]',local-name()))]";
 		$entries = $this->xp->query($xq);
 		if ($entries) {
