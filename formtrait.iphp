@@ -195,6 +195,9 @@ trait Form {
 					}
 				}
 			}
+			if($this->debug) {
+				print("<br />DEBUG: Posted fields<pre>".print_r($this->fields)."</pre>");
+			}
 			if (isset($this->fields['_fn']) && strcmp($this->fields['_fn'][0],"save") !== 0 ) {
 				$this->setfields(false); //populate the fields from sql
 				switch ($this->fields['_fn'][0]) {
