@@ -180,11 +180,11 @@ trait Form {
  */
 	public function form($show=true) {
 		if($this->debug) {
-			print('<br />DEBUG: id['.$this->id.'] sig['.$this->signature.']<br />';
+			print('<br />DEBUG: id['.$this->id.'] sig['.$this->signature.']<br />');
 			if (isset($_POST[$this->id])) {
 				print("This form has been posted ");
 				if ($_POST[$this->id] === $this->signature) {
-					print("and the signature matches the id, so we will process.")
+					print("and the signature matches the id, so we will process.");
 				} else {
 					print("and the post failed to match because (post)".$_POST[$this->id]."!=(sig)".$this->signature);
 				}
