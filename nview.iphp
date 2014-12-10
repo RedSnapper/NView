@@ -174,7 +174,7 @@ class NView {
 							$retval = $entry->nodeValue;
 						} elseif ($entry->nodeType == XML_ATTRIBUTE_NODE) {
 							$retval = $entry->value;
-						} elseif (is_subclass_of($entry->nodeType,'DOMNode') {
+						} elseif (is_subclass_of($entry->nodeType,'DOMNode')) {
 							$retval = new DOMDocument("1.0","utf-8");
 							$retval->preserveWhiteSpace = true;
 							$retval->formatOutput = false;
