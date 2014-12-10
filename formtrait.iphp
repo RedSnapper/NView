@@ -5,6 +5,7 @@ mb_internal_encoding('UTF-8');
  * trait 'Form'
  */
 trait Form {
+	private $debug;
 	private $signature; 	//unique signature for identifying this post.
 	private $committed; 	//bool flag for identifying if we committed.
 	private $valid;			//bool flag for identifying if we validated.
@@ -34,7 +35,8 @@ trait Form {
  * 'iniForm'
  * To be used in __construct methods.
  */
-	protected function iniForm($idp='',$vp = NULL,$use_id=true,$pk='id') {
+	protected function iniForm($idp='',$vp = NULL,$use_id=true,$pk='id',$debug=false) {
+		$this->debug=$debug;
 		$this->id = '_' . static::sig() . $idp;
 		$this->pkey = $pk;
 		$this->idprefix = $this->id . ':';
@@ -169,7 +171,7 @@ trait Form {
 /**
  * 'form'
  */
-	public function form($show=true,$debug=NULL) {
+	public function form($show=true) {
 		if(isset($_POST[$this->id]) && ($_POST[$this->id] === $this->signature)) {
 			$this->show=$show;
 			$this->fields = array();
@@ -196,7 +198,7 @@ trait Form {
 			} else {
 				$this->validate();
 				if ($this->valid) {
-					$this->committed = $this->commit($debug);
+					$this->committed = $this->commit();
 					if ( $this->show || !($this->committed) ) { //do not repop if !show and com.
 						$this->setfields(true); //we can repopulate the fields if we want.
 					}
@@ -247,7 +249,7 @@ trait Form {
 /**
  * 'commit'
  */
-	protected function commit($debug=NULL) {
+	protected function commit() {
 		$retval = false;
 		$pkval = $this->key;
 		$vlist = is_null($pkval)? "NULL," : $pkval . ","; $ulist = ""; $flist="";
@@ -271,7 +273,7 @@ trait Form {
 		$ulist = rtrim($ulist,",");
 		$vlist = rtrim($vlist,",");
 		$query="insert into "  . $this->table . "(" . $this->pkey .",".   $flist . ") values(" . $vlist . ") on duplicate key update " . $ulist;
-		if(!is_null($debug)) {
+		if($this->debug)) {
 			print($query);
 		}
 		if (Settings::$sql->query($query)) {
