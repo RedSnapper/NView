@@ -175,6 +175,7 @@ class NView {
 						} elseif ($entry->nodeType == XML_ATTRIBUTE_NODE) {
 							$retval = $entry->value;
 						} elseif ($entry->nodeType == XML_ELEMENT_NODE) {
+							//convert this to a domdocument so that we can maintain the namespace.
 							$retval = new DOMDocument("1.0","utf-8");
 							$retval->preserveWhiteSpace = true;
 							$retval->formatOutput = false;
