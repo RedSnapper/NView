@@ -291,7 +291,7 @@ trait Form {
 		
 		//This sets the primary key values.
 		if ($this->pksimple) {
-			$vlist = is_null($this->key)? "NULL," : "'". $key . "',";
+			$vlist = is_null($this->key)? "NULL," : "'". $this->key . "',";
 			$klist = $this->pkey.",";
 		} else {
 			foreach ($this->pkey as $k => $v) {
