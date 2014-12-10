@@ -179,6 +179,9 @@ trait Form {
  * 'form'
  */
 	public function form($show=true) {
+		if($this->debug) {
+			print('DEBUG: id['.$this->id.'] sig['.$this->signature.'] post(id)q ['.isset($_POST[$this->id]).'] post(id)['.$_POST[$this->id].']');
+		}
 		if(isset($_POST[$this->id]) && ($_POST[$this->id] === $this->signature)) {
 			$this->show=$show;
 			$this->fields = array();
