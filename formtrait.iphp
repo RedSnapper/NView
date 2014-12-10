@@ -39,7 +39,7 @@ trait Form {
 	protected function iniForm($idp='',$vp = NULL,$use_id=true,$pk='id',$debug=false) {
 		$this->debug=$debug;
 		$this->id = '_' . static::sig() . $idp;
-		if (is_array()) {
+		if (is_array($pk)) {
 			$this->pksimple=false;
 			$this->pkey = $pk;
 		} else {
