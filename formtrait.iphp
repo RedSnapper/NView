@@ -241,6 +241,7 @@ trait Form {
 			if ($this->pksimple) {
 				$condition=$this->pkey ." ='". $this->key ."'";
 			} else {
+				$condition='';
 				foreach ($this->pkey as $k => $v) {
 					Settings::esc($k); Settings::esc($v);
 					$condition.= $k ."='". $v ."' and ";
