@@ -73,7 +73,7 @@ class Settings extends Singleton {
 	}
 
 	public static function esc($s) {
-		if(!is_null(Settings::$sql) {
+		if(!is_null(Settings::$sql)) {
 			Settings::$sql->real_escape_string($s);
 		}
 	}
