@@ -234,8 +234,11 @@ trait Form {
 				}
 			}
 			$flds = rtrim($flds,",");
-			$getqry="select " . $flds . " from " . $this->table . " where " .$this->pkey ." ='". $this->key ."'";
-			if ($rx = Settings::$sql->query($getqry)) {
+			$query="select " . $flds . " from " . $this->table . " where " .$this->pkey ." ='". $this->key ."'";
+			if($this->debug) {
+				print('DEBUG: Set fields SQL=' . $query);
+			}
+			if ($rx = Settings::$sql->query($query)) {
 				while ($f = $rx->fetch_assoc()) {
 					foreach ($this->names as $n) {
 						$this->fields[$n]=array($f[$n]);
@@ -274,7 +277,7 @@ trait Form {
 		$vlist = rtrim($vlist,",");
 		$query="insert into "  . $this->table . "(" . $this->pkey .",".   $flist . ") values(" . $vlist . ") on duplicate key update " . $ulist;
 		if($this->debug) {
-			print($query);
+			print('DEBUG: Commit SQL=' . $query);
 		}
 		if (Settings::$sql->query($query)) {
 			if ($r=Settings::$sql->query("select last_insert_id()")) {
