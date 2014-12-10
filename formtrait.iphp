@@ -12,10 +12,11 @@ trait Form {
 	private $id;			//unique prefix for identifying form fields in the post.
 	private $idprefix;		//other bit for this.
 	private $idprefixlen;	//length of value.
+	private $pksimple;		//bool for pk is array / single value.
 	protected $fields;		//array of fields.
 	protected $messages;	//array of messages.. not sure this is being used.
-	protected $pkey;		//name of primary key in sql.
-	protected $key;			//value of primary key
+	protected $pkey;		//[array/string] name(s) of primary key in sql.
+	protected $key;			//[array/string] value(s) of primary key
 	protected $table;   	//name of table to be used in sql
 	protected $gflds;		//array of sql fields that will be used to get.
 	protected $cflds;		//array of sql values that will be used during a commit.
@@ -38,7 +39,13 @@ trait Form {
 	protected function iniForm($idp='',$vp = NULL,$use_id=true,$pk='id',$debug=false) {
 		$this->debug=$debug;
 		$this->id = '_' . static::sig() . $idp;
-		$this->pkey = $pk;
+		if (is_array()) {
+			$this->pksimple=false;
+			$this->pkey = $pk;
+		} else {
+			$this->pksimple=true;
+			$this->pkey = $pk;
+		}
 		$this->idprefix = $this->id . ':';
  		if ($use_id) {
  			$this->signature = md5( Settings::$usr['ID'] . $this->id);
@@ -188,9 +195,6 @@ trait Form {
 			if (isset($this->fields['_fn']) && strcmp($this->fields['_fn'][0],"save") !== 0 ) {
 				$this->setfields(false); //populate the fields from sql
 				switch ($this->fields['_fn'][0]) {
-//					case "deps" : {
-//						return $this->usedby(null,'layt.mxs');
-//					} break;
 					default: {
 						print_r($this->fields['_fn'][0] . " function not supported");
 					} break;
@@ -234,7 +238,16 @@ trait Form {
 				}
 			}
 			$flds = rtrim($flds,",");
-			$query="select " . $flds . " from " . $this->table . " where " .$this->pkey ." ='". $this->key ."'";
+			if ($this->pksimple) {
+				$condition=$this->pkey ." ='". $this->key ."'";
+			} else {
+				foreach ($this->pkey as $k => $v) {
+					Settings::esc($k); Settings::esc($v);
+					$condition.= $k ."='". $v ."' and ";
+				}
+				$condition=substr($condition,0,-5);
+			}
+			$query="select " . $flds . " from " . $this->table . " where " . $condition;
 			if($this->debug) {
 				print('DEBUG: Set fields SQL=' . $query);
 			}
@@ -260,7 +273,7 @@ trait Form {
 			if (is_null($this->cflds[$n]) || ($this->cflds[$n] != '!skip')) {
 				if (is_null($this->cflds[$n])) {
 					if(array_key_exists($n,$this->fields)) {
-						$val = "'" . Settings::$sql->escape_string($this->fields[$n][0]) . "'";
+						$val = "'" . Settings::$esc($this->fields[$n][0]) . "'";
 					} else {
 						$val="''";
 					}
