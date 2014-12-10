@@ -314,8 +314,14 @@ trait Form {
 		foreach ($this->names as $n) {
 			if (is_null($this->cflds[$n]) || ($this->cflds[$n] != '!skip')) {
 				if (is_null($this->cflds[$n])) {
+					if($this->debug) {
+						print("<br />");
+					}
 					if(array_key_exists($n,$this->fields)) {
-						$val = "'" . Settings::esc($this->fields[$n][0]) . "'";
+						if($this->debug) {
+							print($this->fields[$n][0].";");
+						}
+					$val = "'" . Settings::esc($this->fields[$n][0]) . "'";
 					} else {
 						$val="''";
 					}
