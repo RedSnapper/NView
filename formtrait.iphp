@@ -273,7 +273,7 @@ trait Form {
 		$ulist = rtrim($ulist,",");
 		$vlist = rtrim($vlist,",");
 		$query="insert into "  . $this->table . "(" . $this->pkey .",".   $flist . ") values(" . $vlist . ") on duplicate key update " . $ulist;
-		if($this->debug)) {
+		if($this->debug) {
 			print($query);
 		}
 		if (Settings::$sql->query($query)) {
