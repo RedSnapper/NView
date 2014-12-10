@@ -191,6 +191,7 @@ class NView {
 									}
 								}
 							}
+							$retval->normalizeDocument();
 						} else {
 							$retval = $entry;
 						}
