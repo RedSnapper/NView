@@ -310,18 +310,13 @@ trait Form {
 			print("<br />cflds<pre>".print_r($this->cflds,true)."</pre>");
 			print("<br />fields<pre>".print_r($this->fields,true)."</pre>");
 		}
-		
 		foreach ($this->names as $n) {
 			if (is_null($this->cflds[$n]) || ($this->cflds[$n] != '!skip')) {
 				if (is_null($this->cflds[$n])) {
-					if($this->debug) {
-						print("<br />");
-					}
 					if(array_key_exists($n,$this->fields)) {
-						if($this->debug) {
-							print($this->fields[$n][0].";");
-						}
-					$val = "'" . Settings::esc($this->fields[$n][0]) . "'";
+						$vv=$this->fields[$n][0];
+						Settings::esc($vv);
+						$val = "'".$vv."'";
 					} else {
 						$val="''";
 					}
