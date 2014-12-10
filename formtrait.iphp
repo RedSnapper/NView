@@ -271,8 +271,25 @@ trait Form {
  */
 	protected function commit() {
 		$retval = false;
-		$pkval = $this->key;
-		$vlist = is_null($pkval)? "NULL," : $pkval . ","; $ulist = ""; $flist="";
+		$klist=""; $ulist = ""; $flist=""; $vlist = "";
+		
+		//This sets the primary key values.
+		if ($this->pksimple) {
+			$vlist = is_null($this->key)? "NULL," : "'".$pkval . "',";
+			$klist = $this->pkey.",";
+		} else {
+			foreach ($this->pkey as $k => $v) {
+				Settings::esc($k);
+				$klist.=$k.",";
+				if (is_null($v)) {
+					$vlist.="NULL,";
+				} else {
+					Settings::esc($v);
+					$vlist.="'".$v . "',";
+				}
+			}
+		}
+		
 		foreach ($this->names as $n) {
 			if (is_null($this->cflds[$n]) || ($this->cflds[$n] != '!skip')) {
 				if (is_null($this->cflds[$n])) {
@@ -292,7 +309,7 @@ trait Form {
 		$flist = rtrim($flist,",");
 		$ulist = rtrim($ulist,",");
 		$vlist = rtrim($vlist,",");
-		$query="insert into "  . $this->table . "(" . $this->pkey .",".   $flist . ") values(" . $vlist . ") on duplicate key update " . $ulist;
+		$query="insert into "  . $this->table . "(" . $klist . $flist . ") values(" . $vlist . ") on duplicate key update " . $ulist;
 		if($this->debug) {
 			print('<br />DEBUG: Commit SQL=' . $query);
 		}
