@@ -206,7 +206,7 @@ trait Form {
 				}
 			}
 			if($this->debug) {
-				print("<br />DEBUG: Posted fields<pre>".print_r($this->fields,true)."</pre>");
+				print("<br />Posted fields<pre>".print_r($this->fields,true)."</pre>");
 			}
 			if (isset($this->fields['_fn']) && strcmp($this->fields['_fn'][0],"save") !== 0 ) {
 				$this->setfields(false); //populate the fields from sql
@@ -283,6 +283,9 @@ trait Form {
  * 'commit'
  */
 	protected function commit() {
+		if($this->debug) {
+			print("<br />DEBUG:Processing commit.");
+		}
 		$retval = false;
 		$klist=""; $ulist = ""; $flist=""; $vlist = "";
 		
@@ -301,6 +304,11 @@ trait Form {
 					$vlist.="'".$v . "',";
 				}
 			}
+		}
+		if($this->debug) {
+			print("<br />Names<pre>".print_r($this->names,true)."</pre>");
+			print("<br />cflds<pre>".print_r($this->cflds,true)."</pre>");
+			print("<br />fields<pre>".print_r($this->fields,true)."</pre>");
 		}
 		
 		foreach ($this->names as $n) {
