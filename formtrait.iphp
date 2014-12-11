@@ -119,6 +119,29 @@ trait Form {
 	}
 
 /**
+ * 'pkeysql'
+ */
+	protected function pkeysql() {
+		$condition="";
+		if ($this->pksimple) {
+			$condition= $this->pkey ."=". is_null($this->key)? "NULL" : "'". $this->key . "'";
+		} else {
+			$condition='';
+			foreach ($this->pkey as $k => $v) {
+				Settings::esc($k); 
+				if(is_null($v)) {
+					$condition.= $k ."=NULL and ";
+				} else {
+					Settings::esc($v);
+					$condition.= $k ."='". $v ."' and ";
+				}
+			}
+			$condition=substr($condition,0,-5);
+		}
+		return $condition;
+	}
+
+/**
  * 'vsetopts'
  */
 	protected function vsetopts($input='_unused',$qvp='select 0 as prompt,0 as value',$v=NULL) {
@@ -258,16 +281,7 @@ trait Form {
 				}
 			}
 			$flds = rtrim($flds,",");
-			if ($this->pksimple) {
-				$condition=$this->pkey ." ='". $this->key ."'";
-			} else {
-				$condition='';
-				foreach ($this->pkey as $k => $v) {
-					Settings::esc($k); Settings::esc($v);
-					$condition.= $k ."='". $v ."' and ";
-				}
-				$condition=substr($condition,0,-5);
-			}
+			$condition=pkeysql();
 			$query="select " . $flds . " from " . $this->table . " where " . $condition;
 			if($this->debug) {
 				print('<br />DEBUG: Set fields SQL=' . $query);
