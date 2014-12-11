@@ -281,7 +281,7 @@ trait Form {
 				}
 			}
 			$flds = rtrim($flds,",");
-			$condition=pkeysql();
+			$condition=$this->pkeysql();
 			$query="select " . $flds . " from " . $this->table . " where " . $condition;
 			if($this->debug) {
 				print('<br />DEBUG: Set fields SQL=' . $query);
