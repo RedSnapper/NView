@@ -124,13 +124,18 @@ trait Form {
 	protected function pkeysql() {
 		$condition="";
 		if ($this->pksimple) {
-			$condition= $this->pkey ."=". is_null($this->key)? "NULL" : "'". $this->key . "'";
+			$condition = $this->pkey;
+			if(is_null($this->key)) {
+				$condition .=" is NULL";
+			} else {
+				$condition .="='". $this->key ."'";
+			}
 		} else {
 			$condition='';
 			foreach ($this->pkey as $k => $v) {
 				Settings::esc($k); 
 				if(is_null($v)) {
-					$condition.= $k ."=NULL and ";
+					$condition.= $k ." is NULL and ";
 				} else {
 					Settings::esc($v);
 					$condition.= $k ."='". $v ."' and ";
