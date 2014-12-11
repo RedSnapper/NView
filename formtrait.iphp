@@ -27,6 +27,14 @@ trait Form {
 	abstract protected function validate();   // must return a bool.
 	abstract protected function populate();   // use $fields to load the inputs.
 
+	protected function func() {
+		switch ($this->fields['_fn'][0]) {
+			default: {
+				print_r($this->fields['_fn'][0] . " function not supported");
+			} break;
+		}
+	}
+
 	protected static function sig() {
 		print("This is an error.");
 		return "form_";
@@ -210,11 +218,7 @@ trait Form {
 			}
 			if (isset($this->fields['_fn']) && strcmp($this->fields['_fn'][0],"save") !== 0 ) {
 				$this->setfields(false); //populate the fields from sql
-				switch ($this->fields['_fn'][0]) {
-					default: {
-						print_r($this->fields['_fn'][0] . " function not supported");
-					} break;
-				}
+				$this->func();
 			} else {
 				$this->validate();
 				if ($this->valid) {
