@@ -418,6 +418,14 @@ trait Form {
 			}
 		}
 	}
+	public function valNoWhitespace($name='',$msg="This must contain no whitespace") {
+		if (isset($this->fields[$name][0])) {
+			if (empty($this->fields[$name][0]) || !is_string($this->fields[$name][0]) || preg_match('/\s/',$this->fields[$name][0])) {
+				$this->valid = false;
+				$this->seterr($name,$msg);
+			}
+		}
+	}
 	public function valString($name='',$msg="This must be a string") {
 		if (isset($this->fields[$name][0])) {
 			if (empty($this->fields[$name][0]) || !is_string($this->fields[$name][0])) {
