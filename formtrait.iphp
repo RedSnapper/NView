@@ -418,5 +418,13 @@ trait Form {
 			}
 		}
 	}
+	public function valString($name='',$msg="This must be a string") {
+		if (isset($this->fields[$name][0])) {
+			if (empty($this->fields[$name][0]) || !is_string($this->fields[$name][0])) {
+				$this->valid = false;
+				$this->seterr($name,$msg);
+			}
+		}
+	}
 
 }
