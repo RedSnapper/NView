@@ -380,7 +380,7 @@ class NView {
 													} break;
 												}
 											} else {
-												// print('<br />$node->firstChild is null<br />');
+												print('<br />$node->firstChild is null with '.$node->nodeType.'<br />');
 											}
 										}
 									}
