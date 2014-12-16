@@ -105,14 +105,14 @@ class NView {
  * 'strToNode'
  */
 	public function strToNode($value=null) {
-		// One should always xml-encode ampersands in URLs in HTML.
-		$fragstr = preg_replace('/&(?![\w#]{1,7};)/i','&amp;',$value);
 		if (strpos($value,'<?php') !== false) {
-			$fnode = DOMDocument::createTextNode($value);
+			$fnode = $this->doc->createTextNode($value);
 		} else {
 			$fnode = $this->doc->createDocumentFragment();
 			set_error_handler(array($this, 'doMsg'), E_ALL | E_STRICT);
 			try {
+				// One should always xml-encode ampersands in URLs in XML.
+				$fragstr = preg_replace('/&(?![\w#]{1,7};)/i','&amp;',$value);
 				$fnode->appendXML($fragstr);
 			} catch (Exception $ex) {
 				$this->doMsg('Attempted fragment:',htmlspecialchars(print_r($fragstr,true)));
