@@ -120,11 +120,12 @@ class NView {
 			throw $ex;
 		}
 		restore_error_handler();
-		if (strpos($this->errs,'parser error' !== false) {
+		if (strpos($this->errs,'parser error') !== false) {
 			$fnode = $this->doc->createTextNode($value);
 		}
 		$node = $this->doc->importNode($fnode, true);
 		return $node;
+		
 	}
 
 /**
