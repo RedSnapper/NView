@@ -380,7 +380,10 @@ class NView {
 													} break;
 												}
 											} else {
-												print('<br />$node->firstChild is null with '.$node->nodeType.'<br />');
+											/*
+											print('<br />$node->firstChild is null with '.$node->nodeType.'<br />');
+											This happens when a DOMDocumentFragment is empty.
+											*/
 											}
 										}
 									}
