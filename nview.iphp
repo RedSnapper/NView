@@ -108,7 +108,7 @@ class NView {
 		$fnode = NULL;
 		if (strpos($value,'<?php') !== false) {
 			$fnode = $this->doc->createTextNode($value);
-			print("found php;<pre>".print_r($fnode,true)."</pre><hr /><pre>".$value."</pre>");
+//			print("found php;<pre>".print_r($fnode,true)."</pre><hr /><pre>".$value."</pre>");
 		} else {
 			$fnode = $this->doc->createDocumentFragment();
 			set_error_handler(array($this, 'doMsg'), E_ALL | E_STRICT);
@@ -379,6 +379,8 @@ class NView {
 														$entry->appendChild($node);
 													} break;
 												}
+											} else {
+												print('<br />$node->firstChild is null<br />');
 											}
 										}
 									}
