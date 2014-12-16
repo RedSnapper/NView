@@ -108,6 +108,7 @@ class NView {
 		$fnode = NULL;
 		if (strpos($value,'<?php') !== false) {
 			$fnode = $this->doc->createTextNode($value);
+			print("found php;<pre>".print_r($fnode,true)."</pre>");
 		} else {
 			$fnode = $this->doc->createDocumentFragment();
 			set_error_handler(array($this, 'doMsg'), E_ALL | E_STRICT);
