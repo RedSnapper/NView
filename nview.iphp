@@ -17,6 +17,7 @@ class NView {
 	const GAP_CHILD = 4;
 	const GAP_NATTR = 5;
 
+	private $errs = '';
 	private $fname = null;
 	private $xp = null;
 	private $doc = null;
@@ -106,22 +107,21 @@ class NView {
  */
 	public function strToNode($value=null) {
 		$fnode = NULL;
-		if (strpos($value,'<?php') !== false) {
-			$fnode = $this->doc->createTextNode($value);
-//			print("found php;<pre>".print_r($fnode,true)."</pre><hr /><pre>".$value."</pre>");
-		} else {
-			$fnode = $this->doc->createDocumentFragment();
-			set_error_handler(array($this, 'doMsg'), E_ALL | E_STRICT);
-			try {
-				// One should always xml-encode ampersands in URLs in XML.
-				$fragstr = preg_replace('/&(?![\w#]{1,7};)/i','&amp;',$value);
-				$fnode->appendXML($fragstr);
-			} catch (Exception $ex) {
-				$this->doMsg('Attempted fragment:',htmlspecialchars(print_r($fragstr,true)));
-				restore_error_handler();
-				throw $ex;
-			}
+		$fnode = $this->doc->createDocumentFragment();
+		$this->errs = '';
+		set_error_handler(array($this, 'noMsg'), E_ALL | E_STRICT);
+		try {
+			// One should always xml-encode ampersands in URLs in XML.
+			$fragstr = preg_replace('/&(?![\w#]{1,7};)/i','&amp;',$value);
+			$fnode->appendXML($fragstr);
+		} catch (Exception $ex) {
+			$this->doMsg('Attempted fragment:',htmlspecialchars(print_r($fragstr,true)));
 			restore_error_handler();
+			throw $ex;
+		}
+		restore_error_handler();
+		if (strpos($this->errs,'parser error' !== false) {
+			$fnode = $this->doc->createTextNode($value);
 		}
 		$node = $this->doc->importNode($fnode, true);
 		return $node;
@@ -603,6 +603,10 @@ class NView {
  */
 	function doMsg($errno, $errstr='', $errfile='', $errline=0) {
 		$this->msgs[] = array($errno, $errstr, $errfile, $errline); //this adds to the array
+	}
+	
+	function noMsg($errno, $errstr='', $errfile='', $errline=0) {
+		$this->errs .= $errstr; //error was made.
 	}
 
 }
