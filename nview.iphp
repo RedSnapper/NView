@@ -105,6 +105,7 @@ class NView {
  * 'strToNode'
  */
 	public function strToNode($value=null) {
+		$fnode = NULL;
 		if (strpos($value,'<?php') !== false) {
 			$fnode = $this->doc->createTextNode($value);
 		} else {
