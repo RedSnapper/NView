@@ -76,6 +76,7 @@ class Settings extends Singleton {
 		if(!is_null(Settings::$sql)) {
 			Settings::$sql->real_escape_string($s);
 		}
+		return $s;
 	}
 
 /**
