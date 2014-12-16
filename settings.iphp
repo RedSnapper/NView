@@ -72,6 +72,20 @@ class Settings extends Singleton {
 		}
 	}
 
+/**
+ * 'rows' number of rows in a result.
+ */
+	public static function rows($rs) {
+		$result = -1;
+		if($rs instanceof mysqli_result) {
+			$result = $rs->num_rows;
+		}
+		return $result;
+	}
+
+/**
+ * 'esc' mysql escape.
+ */
 	public static function esc($s) {
 		if(!is_null(Settings::$sql)) {
 			Settings::$sql->real_escape_string($s);
