@@ -122,7 +122,8 @@ class NView {
 			}
 			restore_error_handler();
 		}
-		return $fnode;
+		$node = $this->doc->importNode($fnode, true);
+		return $node;
 	}
 
 /**
@@ -352,8 +353,7 @@ class NView {
 											}
 										} else {
 											if (gettype($value) != "object") {
-												$nodf = $this->strToNode('' . $value);
-												$node = $this->doc->importNode($nodf, true);
+												$node = $this->strToNode(strval($value));
 											} else {
 												$nodc = $value->cloneNode(true);
 												$node = $this->doc->importNode($nodc, true);
