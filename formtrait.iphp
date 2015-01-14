@@ -383,6 +383,28 @@ trait Form {
 /**
  * validation functions
  */
+ 	public function valMacro($name='',$msg="Invalid Macrotext") {
+		$this->valid = true;
+		if (isset($this->fields[$name][0])) {
+			if (empty($this->fields[$name][0]) || !is_string($this->fields[$name][0])) {
+				$this->valid = true;
+			} else {
+				$adv = strpos($this->fields[$name][0],"⌽") === false ? 0:1;
+				$tf=getenv('RS_SCRATCH_DIR') . '/mtxt_'.$this->signature.'_mac';
+				$fp = fopen($tf,"wb");
+				fwrite($fp,$this->fields[$name][0]);
+				fclose($fp);
+				$command="/websites/editorial/scripts/macrotxt ";
+				$xrs = shell_exec($command . getenv('RS_PATH') . " " . $tf ." ". Settings::$usr['RU']);
+				if (strpos($xrs,"error") !== false) {
+					$msg = new NView($xrs);
+					$this->seterr($name,$msg);
+					$this->valid=false;
+				}
+			}
+		}
+	}
+
 	public function valEmail($name='',$msg="This must be a valid email address") {
 		if (isset($this->fields[$name][0])) {
 			if (!filter_var($this->fields[$name][0], FILTER_VALIDATE_EMAIL)) {
