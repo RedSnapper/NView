@@ -14,5 +14,6 @@ require_once("sio/signout.iphp");
 
 Settings::getInstance(); //initialise settings..
 Session::getInstance();  //initialise session.
+Settings::usr();
 Session::setto(144000); //100 days
 
