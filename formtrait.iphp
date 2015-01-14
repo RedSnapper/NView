@@ -249,7 +249,7 @@ trait Form {
 				$this->func();
 			} else {
 				$this->validate();
-				if ($this->valid) {
+				if ($this->valid && ! $this->committed) {
 					$this->committed = $this->commit();
 					if ( $this->show || !($this->committed) ) { //do not repop if !show and com.
 						$this->setfields(true); //we can repopulate the fields if we want.
