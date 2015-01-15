@@ -23,9 +23,21 @@ trait Form {
 	protected $names;		//array of input names
 	protected $view;		//the formlet view (instance of an NView)
 	protected $show;		//whether or not to show the form.
-	protected $redirect;		//where to go on insert.
+	protected $redirect;	//where to go on insert.
+	private $subsfield; 	//subscriber field-name  for indicating presence/absence.
+	private $subsvalue; 	//subscriber field-value based on sql.
+	private $subspostv; 	//subscriber field-value based on post.
 	abstract protected function validate();   // must return a bool.
 	abstract protected function populate();   // use $fields to load the inputs.
+
+	protected function delete() { //may be overridden if needed...
+		$q="delete from ".$this->table." where " . $this->pkeysql();
+		if($this->debug) {
+			print('<br />DEBUG: Delete SQL=' . $q);
+		} else {
+			Settings::$sql->query($q);
+		} 
+	}	
 
 	protected function func() {
 		switch ($this->fields['_fn'][0]) {
@@ -81,6 +93,8 @@ trait Form {
 		$this->committed = false;
 		$this->valid = true;
 		$this->redirect = NULL;
+		$this->subsfield =NULL;
+		$this->subsvalue =NULL;
 	}
 
 /**
@@ -115,6 +129,16 @@ trait Form {
 				array_push($this->gflds,$name);
 			}
 			$this->cflds[$name] = $csql;
+		}
+	}
+	
+/**
+ * 'setsub'
+ */
+	public function setsub($name=NULL) {
+		if (is_null($this->subsfield) && !is_null($name)) {
+			$this->subsfield = $name;
+			$this->subsvalue = NULL;
 		}
 	}
 
@@ -184,8 +208,16 @@ trait Form {
 	function vset($input='_unused',$kind=NULL,$special=NULL) {
 		$val=NULL;
 		if (is_null($special)) {
-			if (isset($this->fields[$input])) {
-				$val=$this->fields[$input][0];
+			if ($input === $this->subsfield) {
+				if (is_null($this->subsfield) || !$this->subsfield) {
+					$val='false';
+				} else {
+					$val='true';
+				}
+			} else {	
+				if (isset($this->fields[$input])) {
+					$val=$this->fields[$input][0];
+				}
 			}
 		} else {
 			$val=$special;
@@ -234,10 +266,14 @@ trait Form {
 			foreach ($_POST as $k => $v) {
 				if (strpos($k,$this->idprefix) === 0) {
 					$key = substr($k,$this->idprefixlen);
-					if (isset($this->fields[$key])) {
-						$this->fields[$key][]= $v;
+					if ($key === $this->subsfield) {
+						$this->subspostv = $v;
 					} else {
-						$this->fields[$key]= array($v);
+						if (isset($this->fields[$key])) {
+							$this->fields[$key][]= $v;
+						} else {
+							$this->fields[$key]= array($v);
+						}
 					}
 				}
 			}
@@ -248,11 +284,16 @@ trait Form {
 				$this->setfields(false); //populate the fields from sql
 				$this->func();
 			} else {
-				$this->validate();
-				if ($this->valid && ! $this->committed) {
-					$this->committed = $this->commit();
-					if ( $this->show || !($this->committed) ) { //do not repop if !show and com.
-						$this->setfields(true); //we can repopulate the fields if we want.
+				if (isset($this->subsfield) {
+					$this->doSubscriber();
+				}
+				if (! $this->committed) {
+					$this->validate();
+					if ($this->valid && ! $this->committed) {
+						$this->committed = $this->commit();
+						if ( $this->show || !($this->committed) ) { //do not repop if !show and com.
+							$this->setfields(true); //we can repopulate the fields if we want.
+						}
 					}
 				}
 			}
@@ -270,6 +311,29 @@ trait Form {
 			return null;
 		}
 	}
+
+/**
+ * 'doSubscriber'
+ */
+	protected function doSubscriber($name=NULL,$orig=NULL) {
+		if ( empty($this->subsvalue) || !$this->subsvalue || $this->subsvalue="false") ) {
+			if ( empty($this->subspostv) || !$this->subspostv || $this->subspostv="false") ) { //wasn't set, won't be set - ignore.
+				$this->show = false;
+				$this->committed = true; //was empty, is empty no need to validate or commit.
+			} else { //was empty - now inserted.
+				$this->committed = false; //need to commit update.
+			}
+		} else { //subsvalue is true.
+			if ( empty($this->fields[$name][0]) ) { //was set, has been unset - a delete.
+				$this->delete();
+				$this->show = false;
+				$this->committed = true;
+			} else {
+				$this->committed = false; //need to commit update.
+			}
+		}
+	}
+
 
 /**
  * 'setfields'
@@ -292,6 +356,13 @@ trait Form {
 				print('<br />DEBUG: Set fields SQL=' . $query);
 			}
 			if ($rx = Settings::$sql->query($query)) {
+				if (!is_null($this->subsfield)) {
+					if ($rx->num_rows > 0) {
+						$this->subsvalue=true;
+					} else {
+						$this->subsvalue=false;
+					}
+				}
 				while ($f = $rx->fetch_assoc()) {
 					foreach ($this->names as $n) {
 						$this->fields[$n]=array($f[$n]);
@@ -404,7 +475,6 @@ trait Form {
 			}
 		}
 	}
-
 	public function valEmail($name='',$msg="This must be a valid email address") {
 		if (isset($this->fields[$name][0])) {
 			if (!filter_var($this->fields[$name][0], FILTER_VALIDATE_EMAIL)) {
