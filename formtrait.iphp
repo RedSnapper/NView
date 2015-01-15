@@ -284,7 +284,7 @@ trait Form {
 				$this->setfields(false); //populate the fields from sql
 				$this->func();
 			} else {
-				if (isset($this->subsfield) {
+				if (isset($this->subsfield)) {
 					$this->doSubscriber();
 				}
 				if (! $this->committed) {
