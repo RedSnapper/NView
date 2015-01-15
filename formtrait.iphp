@@ -285,7 +285,7 @@ trait Form {
 				$this->func();
 			} else {
 				if (isset($this->subsfield)) {
-					$this->doSubscriber();
+					$this->subscriber();
 				}
 				if (! $this->committed) {
 					$this->validate();
@@ -313,23 +313,27 @@ trait Form {
 	}
 
 /**
- * 'doSubscriber'
+ * 'subscriber'
  */
-	protected function doSubscriber($name=NULL,$orig=NULL) {
+	protected function subscriber($name=NULL,$orig=NULL) {
 		if ( empty($this->subsvalue) || $this->subsvalue=="false") {
 			if ( empty($this->subspostv) || $this->subspostv=="false") { //wasn't set, won't be set - ignore.
+				print('[ignore]');
 				$this->committed = true; //was empty, is empty no need to validate or commit.
 			} else { //was empty - now inserted.
+				print('[insert]');
 				$this->subsvalue="true";
 				$this->committed = false; //need to commit update.
 			}
 		} else { //subsvalue is true.
 			if ( empty($this->subspostv) || $this->subspostv=="false") { //was set, has been unset - a delete.
+				print('[delete]');
 				$this->subsvalue="false";
 				$this->delete();
 				$this->setfields(false); //(re-)populate the fields from sql - should all be empty.
 				$this->committed = true;
 			} else {
+				print('[update]');
 				$this->subsvalue="true";
 				$this->committed = false; //need to commit update.
 			}
