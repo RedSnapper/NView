@@ -316,15 +316,15 @@ trait Form {
  * 'doSubscriber'
  */
 	protected function doSubscriber($name=NULL,$orig=NULL) {
-		if ( empty($this->subsvalue) || !$this->subsvalue || $this->subsvalue="false") ) {
-			if ( empty($this->subspostv) || !$this->subspostv || $this->subspostv="false") ) { //wasn't set, won't be set - ignore.
+		if ( empty($this->subsvalue) || !$this->subsvalue || $this->subsvalue="false") {
+			if ( empty($this->subspostv) || !$this->subspostv || $this->subspostv="false") { //wasn't set, won't be set - ignore.
 				$this->show = false;
 				$this->committed = true; //was empty, is empty no need to validate or commit.
 			} else { //was empty - now inserted.
 				$this->committed = false; //need to commit update.
 			}
 		} else { //subsvalue is true.
-			if ( empty($this->fields[$name][0]) ) { //was set, has been unset - a delete.
+			if ( empty($this->subspostv) || !$this->subspostv || $this->subspostv="false") { //was set, has been unset - a delete.
 				$this->delete();
 				$this->show = false;
 				$this->committed = true;
