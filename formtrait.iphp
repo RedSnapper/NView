@@ -330,7 +330,7 @@ trait Form {
 				$this->subsvalue="false";
 				$this->delete();
 				foreach ($this->names as $n) {
-					$this->fields[$n]=array();
+					$this->fields[$n]=array(NULL);
 				}
 				$this->committed = true;
 			} else {
