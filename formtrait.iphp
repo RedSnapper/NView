@@ -320,22 +320,20 @@ trait Form {
 		$this->setsubsvalue();
 		if ( empty($this->subsvalue) || $this->subsvalue=="false") {
 			if ( empty($this->subspostv) || $this->subspostv=="false") { //wasn't set, won't be set - ignore.
-				print('[ignore]');
 				$this->committed = true; //was empty, is empty no need to validate or commit.
 			} else { //was empty - now inserted.
-				print('[insert]');
 				$this->subsvalue="true";
 				$this->committed = false; //need to commit update.
 			}
 		} else { //subsvalue is true.
 			if ( empty($this->subspostv) || $this->subspostv=="false") { //was set, has been unset - a delete.
-				print('[delete]');
 				$this->subsvalue="false";
 				$this->delete();
-				$this->setfields(false); //(re-)populate the fields from sql - should all be empty.
+				foreach ($this->names as $n) {
+					$this->fields[$n]=array();
+				}
 				$this->committed = true;
 			} else {
-				print('[update]');
 				$this->subsvalue="true";
 				$this->committed = false; //need to commit update.
 			}
