@@ -381,15 +381,13 @@ trait Form {
 				print('<br />DEBUG: Set fields SQL=' . $query);
 			}
 			if ($rx = Settings::$sql->query($query)) {
-/*			
-				if (!is_null($this->subsfield)) {
+				if (!is_null($this->subsfield)) { //need this for gets.
 					if ($rx->num_rows > 0) {
 						$this->subsvalue="true";
 					} else {
 						$this->subsvalue="false";
 					}
 				}
-*/				
 				while ($f = $rx->fetch_assoc()) {
 					foreach ($this->names as $n) {
 						$this->fields[$n]=array($f[$n]);
