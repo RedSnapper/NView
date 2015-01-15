@@ -358,9 +358,9 @@ trait Form {
 			if ($rx = Settings::$sql->query($query)) {
 				if (!is_null($this->subsfield)) {
 					if ($rx->num_rows > 0) {
-						$this->subsvalue=true;
+						$this->subsvalue="true";
 					} else {
-						$this->subsvalue=false;
+						$this->subsvalue="false";
 					}
 				}
 				while ($f = $rx->fetch_assoc()) {
