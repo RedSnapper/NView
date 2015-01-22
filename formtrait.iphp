@@ -27,6 +27,7 @@ trait Form {
 	private $subsfield; 	//subscriber field-name  for indicating presence/absence.
 	private $subsvalue; 	//subscriber field-value based on sql.
 	private $subspostv; 	//subscriber field-value based on post.
+	private $subsdshow; 	//subscriber (defaults to true) show empty field if deleted..
 	private $subfn; 		//subscriber CNUD function that happened - one of create/null/update/delete
 	abstract protected function validate();   // must return a bool.
 	abstract protected function populate();   // use $fields to load the inputs.
@@ -136,10 +137,11 @@ trait Form {
 /**
  * 'setsub'
  */
-	public function setsub($name=NULL) {
+	public function setsub($name=NULL,$dshow=true) {
 		if (is_null($this->subsfield) && !is_null($name)) {
 			$this->subsfield = $name;
 			$this->subsvalue = NULL;
+			$this->subsdshow = $dshow; //flag indicating whether to show form on delete.
 		}
 	}
 
@@ -337,6 +339,7 @@ trait Form {
 					$this->fields[$n]=array(NULL);
 				}
 				$this->committed = true;
+				$this->show=$this->subsdshow;
 			} else {
 				$this->subfn='update';
 				$this->subsvalue="true";
