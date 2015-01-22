@@ -27,6 +27,7 @@ trait Form {
 	private $subsfield; 	//subscriber field-name  for indicating presence/absence.
 	private $subsvalue; 	//subscriber field-value based on sql.
 	private $subspostv; 	//subscriber field-value based on post.
+	private $subfn; 		//subscriber CNUD function that happened - one of create/null/update/delete
 	abstract protected function validate();   // must return a bool.
 	abstract protected function populate();   // use $fields to load the inputs.
 
@@ -320,20 +321,24 @@ trait Form {
 		$this->setsubsvalue();
 		if ( empty($this->subsvalue) || $this->subsvalue=="false") {
 			if ( empty($this->subspostv) || $this->subspostv=="false") { //wasn't set, won't be set - ignore.
+				$this->subfn='null';
 				$this->committed = true; //was empty, is empty no need to validate or commit.
 			} else { //was empty - now inserted.
+				$this->subfn='create';
 				$this->subsvalue="true";
 				$this->committed = false; //need to commit update.
 			}
 		} else { //subsvalue is true.
 			if ( empty($this->subspostv) || $this->subspostv=="false") { //was set, has been unset - a delete.
 				$this->subsvalue="false";
+				$this->subfn='delete';
 				$this->delete();
 				foreach ($this->names as $n) {
 					$this->fields[$n]=array(NULL);
 				}
 				$this->committed = true;
 			} else {
+				$this->subfn='update';
 				$this->subsvalue="true";
 				$this->committed = false; //need to commit update.
 			}
