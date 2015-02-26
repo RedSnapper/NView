@@ -31,8 +31,9 @@ class Settings extends Singleton {
 		Settings::$usr['ID']=0;
 		if(isset($_SERVER["mysql_config_file"])) { //the path to the my.cnf for this connection.
 			Settings::$sql = mysqli_init();
+			$s = parse_ini_file($_SERVER["mysql_config_file"]); 
 			mysqli_options(Settings::$sql,MYSQLI_READ_DEFAULT_FILE,$_SERVER["mysql_config_file"]);
-			mysqli_real_connect(Settings::$sql);
+			mysqli_real_connect(Settings::$sql,NULL,NULL,$s('password'));
 		} else {
 			Settings::$sql = new mysqli(getenv('RS_SQLHOST'),getenv('RS_SQLUSER'),getenv('RS_SQLUSERPW'),getenv('RS_DATABASE'));
 		}
