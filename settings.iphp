@@ -33,7 +33,7 @@ class Settings extends Singleton {
 			Settings::$sql = mysqli_init();
 			$s = parse_ini_file($_SERVER["RS_SQLCONFIG_FILE"]); 
 			mysqli_options(Settings::$sql,MYSQLI_READ_DEFAULT_FILE,$_SERVER["RS_SQLCONFIG_FILE"]);
-			mysqli_real_connect(Settings::$sql,$s['host'],$s['user'],$s['password']);
+			mysqli_real_connect(Settings::$sql,$s['host'],$s['user'],$s['password'],$['database']);
 		} else {
 			Settings::$sql = new mysqli(getenv('RS_SQLHOST'),getenv('RS_SQLUSER'),getenv('RS_SQLUSERPW'),getenv('RS_DATABASE'));
 		}
