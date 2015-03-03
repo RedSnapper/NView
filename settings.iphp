@@ -42,7 +42,7 @@ class Settings extends Singleton {
 		}
 		$srch=getenv('RS_SEARCH_HOST');
 		if (!empty($srch)) {
-	                Settings::$sphinx = new mysqli(getenv('RS_SEARCH_HOST'),getenv('RS_SEARCH_USER'),getenv('RS_SEARCH_USERPW'),getenv('RS_DATABASE'),9306);
+	                Settings::$sphinx = new mysqli(getenv('RS_SEARCH_HOST'),NULL,NULL,NULL,9306);
 		} else {
 			Settings::$sphinx = null;
 		}
