@@ -11,6 +11,7 @@ class SIO {
 			echo $err;
 		} else {
 			if (SioSignIn::inscope(false)) {
+				print('doing SioSignIn');
 				$si=new SioSignIn();
 				$tmp=$si->form();
 				if (Session::has('username')) {
