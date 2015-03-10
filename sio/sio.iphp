@@ -11,7 +11,7 @@ class SIO {
 			echo $err;
 		} else {
 			if (SioRegister::inscope()) {
-				$sir=new SioRegister();
+				$sir=new SioReg();
 				$v->set("//*[@data-xp='sio']",$sir->form());
 			} elseif (SioSetPW::inscope(true)) {
 				$sip=new SioSetPW();
