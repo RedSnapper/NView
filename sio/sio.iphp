@@ -10,13 +10,13 @@ class SIO {
 		if (isset($err) && !empty($err)) {
 			echo $err;
 		} else {
-			if (SioReg::inscope()) {
+			if (SioReg::inscope(false)) {
 				$sir=new SioReg();
 				$v->set("//*[@data-xp='sio']",$sir->form());
 			} elseif (SioSetPW::inscope(true)) {
 				$sip=new SioSetPW();
 				$v->set("//*[@data-xp='sio']",$sip->form());
-			} elseif (SioForgot::inscope()) {
+			} elseif (SioForgot::inscope(false)) {
 				$sif=new SioForgot();
 				$v->set("//*[@data-xp='sio']",$sif->form());
 			} elseif (SioSignIn::inscope(false)) {
