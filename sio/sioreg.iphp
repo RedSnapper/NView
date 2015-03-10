@@ -2,53 +2,12 @@
 mb_internal_encoding('UTF-8');
 
 class SIOReg {
-	public static function run($v=NULL) {
-		if (is_null($v)) {
-			$v = new NView('sioreg_v.ixml');
-			$err = $v->messages();
-		}
-		if (isset($err) && !empty($err)) {
-			echo $err;
-		} else {
-/*
-			if (SioResetPW::inscope()) {
-				$sio=new SioResetPW();
-			} elseif (SioForgotPW::inscope()) {
-				$sio=new SioForgotPW();
-			} elseif (User::SignedIn()) {
-*/
-			if (SioSignIn::inscope(false)) {
-				$si=new SioSignIn();
-				$tmp=$si->form();
-				if (Session::has('username')) {
-					Settings::usr();	//set up user vars.
-					$so=new SioSignOut();
-					$v->set("//*[@data-xp='sio']",$so->form());
-				} else {
-					$v->set("//*[@data-xp='sio']",$tmp);
-				}
-			} elseif (SioSignOut::inscope(false)) {
-				$so=new SioSignOut();
-				$tmp=$so->form();
-				$si=new SioSignIn();
-				$v->set("//*[@data-xp='sio']",$si->form());
-			} else {
-				if (Session::has('username')) {
-					Settings::usr();	//set up user vars.
-					$so=new SioSignOut();
-					$v->set("//*[@data-xp='sio']",$so->form());
-				} else {
-					$si=new SioSignIn();
-					$v->set("//*[@data-xp='sio']",$si->form());
-				}
-			}
-			$err = $v->messages();
-			if (!empty($err)) {
-				$v->set("//*[@data-xp='debug']/child-gap()",$err);
-			} else {
-				$v->set("//*[@data-xp='debug']");
-			}
-			return $v;
-		}
+
+	use Form;
+	protected static function sig() {
+		return "sioreg_";
 	}
+	protected function populate() {
+	}
+
 }
