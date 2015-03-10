@@ -51,7 +51,6 @@ class SioSignIn {
 		if (isset($this->fields['username'][0]) && isset($this->fields['password'][0])) {
 			$un=$this->fields['username'][0];
 			$ph=hash('sha256',$un . hex2bin('5BE0BDA8E0BDBCE0BDBEE0BC8BE0BDA7E0BDB1E0BDB4E0BDBE5D') . hash('sha256',$this->fields['password'][0]));
-			print($ph);
 			$this->fields['password'][0]='';
 			$qry="select count(id) as ok from " . $this->table . " where active='on' and username='" .$un. "' and password='" . $ph . "'";
 			if ($rx = Settings::$sql->query($qry)) {
