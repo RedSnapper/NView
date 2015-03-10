@@ -1,0 +1,65 @@
+<?php
+mb_internal_encoding('UTF-8');
+
+/**
+This requires 
+**/
+class SIOForgot {
+
+	use Form;
+	protected static function sig() {
+		return "sioforgot_";
+	}
+
+/**
+ * '__construct'
+ */
+	function __construct($key=NULL,$v=NULL) {
+		$this->iniForm($key,$v,false);
+		$this->key=$key;
+		$this->table="user";
+		$this->setfld('username');
+		$this->setfld('email');
+	}
+
+/**
+ * 'validate'
+ * fn fulfilling abstract requirement of trait 'Form'.
+ * validate all fields in this->fields.
+ * errors are placed into the this->view.
+ */
+	protected function validate() {
+		$retval = false;
+		if (isset($this->fields['username'][0]) && isset($this->fields['email'][0])) {
+			$un=$this->fields['username'][0];
+			$em=$this->fields['email'][0];
+			$qry="select count(id) as ok from " . $this->table . " where active='on' and username='" .$un. "' and email='" . $em . "'";
+			if ($rx = Settings::$sql->query($qry)) {
+				if (strcmp($rx->fetch_row()[0],"1") === 0) {
+					$retval=true;
+				} else {
+					$this->seterr("username","Either the username or email don't match our records");
+				}
+				$rx->close();
+			}
+			$this->valid = $retval;
+		}
+	}
+
+/**
+ * 'commit'
+ * fn OVERLOADING trait 'Form'.
+ */
+	protected function commit() {
+	}
+
+/**
+ * 'populate'
+ * fn fulfilling abstract requirement of trait 'Form'.
+ * place this->fields array into view.
+ */
+	protected function populate() {
+		$this->vset('username');
+		$this->vset('email');
+	}
+}
