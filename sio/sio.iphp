@@ -16,8 +16,8 @@ class SIO {
 			} elseif (SioSetPW::inscope(true)) {
 				$sip=new SioSetPW();
 				$v->set("//*[@data-xp='sio']",$sip->form());
-			} elseif (SioForgotPW::inscope()) {
-				$sif=new SioForgotPW();
+			} elseif (SioForgot::inscope()) {
+				$sif=new SioForgot();
 				$v->set("//*[@data-xp='sio']",$sif->form());
 			} elseif (SioSignIn::inscope(false)) {
 				$si=new SioSignIn();

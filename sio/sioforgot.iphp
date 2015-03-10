@@ -4,7 +4,7 @@ mb_internal_encoding('UTF-8');
 /**
 This requires 
 **/
-class SIOForgot {
+class SioForgot {
 
 	use Form;
 	protected static function sig() {
