@@ -11,6 +11,9 @@ require_once("session.iphp");
 require_once("sio/sio.iphp");
 require_once("sio/signin.iphp");
 require_once("sio/signout.iphp");
+require_once("sio/sioreg.iphp");
+require_once("sio/sioforgot.iphp");
+require_once("sio/siosetow.iphp");
 
 Settings::getInstance(); //initialise settings..
 Session::getInstance();  //initialise session.

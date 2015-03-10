@@ -23,6 +23,25 @@ class SioSignIn {
 
 /**
  * 'validate'
+ * fn fulfilling form trait func, which deals with different button presses.
+ * These are set by values in the buttons on the view.
+ * fn 'save' - the default action - is handled higher up.
+ */
+	protected function func() {
+		switch ($this->fields['_fn'][0]) {
+			'forgot': {
+				$sf=new SIOForgot();
+				return $sf->form();
+			} break;
+			'register': {
+				$sf=new SIOReg();
+				return $sf->form();
+			} break;
+		}
+	}
+
+/**
+ * 'validate'
  * fn fulfilling abstract requirement of trait 'Form'.
  * validate all fields in this->fields.
  * errors are placed into the this->view.

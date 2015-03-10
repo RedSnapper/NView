@@ -20,6 +20,17 @@ class SioSignOut {
 	}
 
 /**
+ * 'func'
+ * fn overloading of trait 'Form'.
+ */
+	protected function func() {
+		switch ($this->fields['_fn'][0]) {
+			'reset': {
+			} break;
+		}
+	}
+
+/**
  * 'validate'
  * fn fulfilling abstract requirement of trait 'Form'.
  */

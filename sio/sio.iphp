@@ -10,14 +10,16 @@ class SIO {
 		if (isset($err) && !empty($err)) {
 			echo $err;
 		} else {
-/*
-			if (SioResetPW::inscope()) {
-				$sio=new SioResetPW();
+			if (SioRegister::inscope()) {
+				$sir=new SioRegister();
+				$v->set("//*[@data-xp='sio']",$sir->form());
+			} elseif (SioSetPW::inscope(true)) {
+				$sip=new SioSetPW();
+				$v->set("//*[@data-xp='sio']",$sip->form());
 			} elseif (SioForgotPW::inscope()) {
-				$sio=new SioForgotPW();
-			} elseif (User::SignedIn()) {
-*/
-			if (SioSignIn::inscope(false)) {
+				$sif=new SioForgotPW();
+				$v->set("//*[@data-xp='sio']",$sif->form());
+			} elseif (SioSignIn::inscope(false)) {
 				$si=new SioSignIn();
 				$tmp=$si->form();
 				if (Session::has('username')) {

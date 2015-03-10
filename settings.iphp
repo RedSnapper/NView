@@ -12,6 +12,7 @@ class Settings extends Singleton {
 	public static $usr=array();	//current user details
 	public static $req=array();	//querystring for unnamed parameters.
 	public static $qst=array();	//associational querystring - for named parameters.
+	private static $sqls=array();
 
 /**
  * '__construct'
@@ -31,11 +32,15 @@ class Settings extends Singleton {
 		Settings::$usr['ID']=0;
 		if(isset($_SERVER["RS_SQLCONFIG_FILE"])) { //the path to the my.cnf for this connection.
 			Settings::$sql = mysqli_init();
-			$s = parse_ini_file($_SERVER["RS_SQLCONFIG_FILE"]); 
+			$sqls = parse_ini_file($_SERVER["RS_SQLCONFIG_FILE"]); 
 			mysqli_options(Settings::$sql,MYSQLI_READ_DEFAULT_FILE,$_SERVER["RS_SQLCONFIG_FILE"]);
-			mysqli_real_connect(Settings::$sql,$s['host'],$s['user'],$s['password'],$s['database']);
+			mysqli_real_connect(Settings::$sql,$sqls['host'],$sqls['user'],$sqls['password'],$sqls['database']);
 		} else {
-			Settings::$sql = new mysqli(getenv('RS_SQLHOST'),getenv('RS_SQLUSER'),getenv('RS_SQLUSERPW'),getenv('RS_DATABASE'));
+			$sqls['host']=getenv('RS_SQLHOST');
+			$sqls['user']=getenv('RS_SQLUSER');
+			$sqls['password']=getenv('RS_SQLUSERPW');
+			$sqls['database']=getenv('RS_DATABASE');
+			Settings::$sql = new mysqli($sqls['host'],$sqls['user'],$sqls['password'],$sqls['database']);
 		}
 		if (Settings::$sql->connect_error) {
     			die('SQL Connection Error (' . $mysqli->connect_errno . ') ' . $mysqli->connect_error);
@@ -58,7 +63,7 @@ class Settings extends Singleton {
 		}
 		if ($rx = Settings::$sql->query("show tables like 'user'")) { $u = $rx->num_rows; $rx->close(); }
 		if ($sd !== 1) {
-			Settings::$sql->query("CREATE TABLE user (id int(11) NOT NULL AUTO_INCREMENT,username varchar(68) NOT NULL DEFAULT '',password varchar(250) DEFAULT NULL,active char(2) DEFAULT 'on',PRIMARY KEY (id),UNIQUE KEY username (username),UNIQUE KEY ausername (username,active)) ENGINE=InnoDB DEFAULT CHARSET=utf8");
+			Settings::$sql->query("CREATE TABLE user (id int(11) NOT NULL AUTO_INCREMENT,username varchar(68) NOT NULL DEFAULT '',password varchar(250) DEFAULT NULL,email text default NULL,active char(2) DEFAULT 'on',PRIMARY KEY (id),UNIQUE KEY username (username),UNIQUE KEY ausername (username,active)) ENGINE=InnoDB DEFAULT CHARSET=utf8");
 		}
 
 	}
@@ -98,6 +103,36 @@ class Settings extends Singleton {
 			Settings::$sql->real_escape_string($s);
 		}
 		return $s;
+	}
+	
+	public static function table_exists($table) {
+		$retval=false;
+		if(!is_null(Settings::$sql)) {
+			if ($rx = Settings::$sql->query("select count(*) as present from information_schema.columns where table_schema = '".$sqls['database']."' and table_name = '".$table."'")) {
+				while ($row = $rx->fetch_assoc()) {
+					if ($row['present'] > 0) {
+						$retval = true;
+					}
+				}
+				$rx->close();
+			}
+		}
+		return $retval;
+	}
+	
+	public static function field_exists($table,$fieldname) {
+		$retval=false;
+		if(!is_null(Settings::$sql)) {
+			if ($rx = Settings::$sql->query("select count(*) as present from information_schema.columns where table_schema = '".$sqls['database']."' and table_name = '".$table."' and column_name = '".$fieldname."'")) {
+				while ($row = $rx->fetch_assoc()) {
+					if ($row['present'] == 1) {
+						$retval = true;
+					}
+				}
+				$rx->close();
+			}
+		}
+		return $retval;
 	}
 	
 	public static function sphinx_esc ( $s ) {
