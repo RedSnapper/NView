@@ -71,6 +71,7 @@ class SioSignIn {
  */
 	protected function commit() {
 		Session::set('username',$this->fields['username'][0]);
+		return true;
 	}
 
 /**

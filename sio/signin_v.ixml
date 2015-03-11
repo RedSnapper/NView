@@ -1,6 +1,7 @@
 <!DOCTYPE fieldset>
 <fieldset class="form--cols">
 	<input type="hidden" data-xp="_ident" />
+	<input type="hidden" data-xp="_status" />
 	<ul class="form__notice">
 		<li>
 			<label class="form__group text" data-semantic="field" data-xp="comment">
