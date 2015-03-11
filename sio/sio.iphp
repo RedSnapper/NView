@@ -16,23 +16,19 @@ sign-in and sign-out.
 */	
 			$formlet=null;
 			if (Session::has('username')) { //signed in.
-			
 				if (SioSignOut::inscope(true)) { //doing a sign-out post.
-					$so=new SioSignOut();
-					$tmp=$so->form();
-					$si=new SioSignIn();
-					$v->set("//*[@data-xp='sio']",$si->form());
+					$sso=new SioSignOut(); $formlet=$sso->form();
+					if ($sso->success()) {
+						$sio=new SioSignIn(); $formlet=$sio->form(false);
+					} 
 				} else {
-					Settings::usr();	//set up user vars.
 					if (SioSetPW::inscope(true)) {  //doing a set-pw post.
-						$sip=new SioSetPW();
-						$v->set("//*[@data-xp='sio']",$sip->form());
+						$sio=new SioSetPW(); $formlet=$sio->form();
 					} else {
-						$so=new SioSignOut();
-						$v->set("//*[@data-xp='sio']",$so->form());
+						$sio=new SioSignOut(); $formlet=$sio->form();
 					}
 				}
-			} else {	//not-signed in
+			} else { //not-signed in
 				if (SioSignIn::inscope(false)) {	//currently processing a signin..
 					$ssi=new SioSignIn(); $formlet=$ssi->form(false);
 					if ($ssi->success()) {
