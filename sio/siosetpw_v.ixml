@@ -12,7 +12,7 @@
 		<li>
 			<label class="form__group text" data-semantic="field" data-xp="comment">
 				<span class="label" data-xp="label">Retype Password</span>
-				<span class="flex"><input type="password" name="password" /></span>
+				<span class="flex"><input type="password" name="passwordb" /></span>
 			</label>
 		</li>
 		<li>

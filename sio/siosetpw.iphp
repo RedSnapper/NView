@@ -11,6 +11,7 @@ class SIOSetPW {
 		$this->key=$key;
 		$this->table="user";
 		$this->setfld('password');
+		$this->setfld('passwordb','','!skip');
 	}
 	
 /**
@@ -21,10 +22,9 @@ class SIOSetPW {
  */
 	protected function validate() {
 		$retval = true;
-		if (isset($this->fields['password'][0]) && isset($this->fields['password'][1])) {
+		if (isset($this->fields['password'][0]) && isset($this->fields['passwordb'][0])) {
 			$pwa=$this->fields['password'][0];
-			$pwb=$this->fields['password'][1];
-			print_r('<pre>'.$this.'</pre>');
+			$pwb=$this->fields['passwordb'][0];
 			if ($pwa !== $pwb ) {
 				print('[setting not-same-pw err]');
 				$this->seterr("password","Both passwords must be the same.");
