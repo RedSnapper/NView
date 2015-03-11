@@ -70,6 +70,13 @@ trait Form {
 		}
 		return $ident;
 	}
+	
+	private function setId($id) {
+		$this->id = $id;
+		$this->idprefix = $this->id . ':';
+ 		$this->signature = md5($this->id);
+		$this->idprefixlen = strlen($this->idprefix);
+	}
 
 /**
  * 'iniForm'
@@ -79,10 +86,7 @@ trait Form {
 		$this->debug=$debug;
 		$this->pkey = $pk; //pk has array of primary key fields (?with values?)
 		$this->pksimple = !is_array($pk);
-		$this->id = '_' . static::sig() . $idp;
-		$this->idprefix = $this->id . ':';
- 		$this->signature = md5($this->id);
-		$this->idprefixlen = strlen($this->idprefix);
+		$this->setId('_' . static::sig() . $idp);
 		if ($vp instanceof NView) {
 		    $this->view = $vp;
 		} else {
