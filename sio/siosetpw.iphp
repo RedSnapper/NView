@@ -42,13 +42,14 @@ class SIOSetPW {
 	}
 
 	protected function commit() {
-		$ph=hash('sha256',Settings::$usr['RU'] . hex2bin('5BE0BDA8E0BDBCE0BDBEE0BC8BE0BDA7E0BDB1E0BDB4E0BDBE5D') . hash('sha256',$this->fields['password'][0]));
+		$ph=Settings::esc(hash('sha256',Settings::$usr['RU'] . hex2bin('5BE0BDA8E0BDBCE0BDBEE0BC8BE0BDA7E0BDB1E0BDB4E0BDBE5D') . hash('sha256',$this->fields['password'][0])));
 		$qry="update " . $this->table . " set password='".$ph."' where active='on' and id='" .Settings::$usr['ID']. "'";
 		if (Settings::$sql->query($qry)) {
-			$this->view = new NView('siosetpws_v.ixml');
+			$this->view = new NView('sXiosetpws_v.ixml');
 			$this->show = true;
 			$retval=true;
 		} else {
+		print($qry)
 			$retval=false;
 		}
 		return $retval;
