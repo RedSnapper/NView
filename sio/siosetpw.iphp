@@ -20,19 +20,26 @@ class SIOSetPW {
  * errors are placed into the this->view.
  */
 	protected function validate() {
-		$retval = false;
+		$retval = true;
 		if (isset($this->fields['password'][0]) && isset($this->fields['password'][1])) {
 			$pwa=$this->fields['password'][0];
 			$pwb=$this->fields['password'][1];
+			print('a:'.$pwa.' b:'.$pwb);
 			if ($pwa !== $pwb ) {
+				print('[setting not-same-pw err]');
 				$this->seterr("password","Both passwords must be the same.");
-			} elseif (strlen($pwa) < 8) {
+				$retval = false;
+			} 
+			if (strlen($pwa) < 8) {
+				print('[setting short-pw err]');
 				$this->seterr("password","Passwords must be more than 7 characters.");
-			} elseif ($pwa === Settings::$usr['RU']) {
+				$retval = false;
+			} 
+			if ($pwa === Settings::$usr['RU']) {
+				print('[setting pw-bad err]');
 				$this->seterr("password","Passwords must be different from your username!");
-			} else {
-				$retval = true;
-			}
+				$retval = false;
+			} 
 		}
 		$this->valid = $retval;
 	}
