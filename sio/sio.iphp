@@ -17,16 +17,16 @@ sign-in and sign-out.
 			$formlet=null;
 			if (Session::has('username')) { //signed in.
 				if (SioSignOut::inScope()) { //doing a sign-out post.
-					$sso=new SioSignOut(); $formlet=$sso->form();
+					$sso=new SioSignOut(); $formlet=$sso->form(false);
 					if ($sso->success()) {
 						print('perky');
 						$sio=new SioSignIn(); $formlet=$sio->form(false);
 					}
 				} else {
 					if (SioSetPW::inScope()) {  //doing a set-pw post.
-						$sio=new SioSetPW(); $formlet=$sio->form();
+						$sio=new SioSetPW(); $formlet=$sio->form(false);
 					} else {
-						$sio=new SioSignOut(); $formlet=$sio->form();
+						$sio=new SioSignOut(); $formlet=$sio->form(false);
 					}
 				}
 			} else { //not-signed in
