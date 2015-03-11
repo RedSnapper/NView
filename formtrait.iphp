@@ -63,7 +63,7 @@ trait Form {
 	
 	private function ident() {
  		$ident = '';
- 		if(!empty(Settings::$usr['ID']))
+ 		if(!empty(Settings::$usr['ID'])) {
 			$ident = md5( Settings::$usr['ID'] . '_' . $this->signature );
 		} else {
 			$ident = md5( $this->$signature );
