@@ -34,6 +34,7 @@ sign-in and sign-out.
 			switch ($stt) {
 				case 0: break;
 				case 1: {
+					print('[ssi]');
 					$ssi=new SioSignIn(); $formlet=$ssi->form(false);
 					if ($ssi->success()) {
 						$sio=new SioSignOut(); $formlet = $sio->form(false);
