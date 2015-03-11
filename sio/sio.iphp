@@ -19,7 +19,6 @@ sign-in and sign-out.
 				if (SioSignOut::inScope()) { //doing a sign-out post.
 					$sso=new SioSignOut(); $formlet=$sso->form(false);
 					if ($sso->success()) {
-						print('perky');
 						$sio=new SioSignIn(); $formlet=$sio->form(false);
 					}
 				} else {
@@ -51,7 +50,6 @@ sign-in and sign-out.
 					if (Session::has('username')) {
 						$sio=new SioSignOut(); $formlet=$sio->form(false);
 					} else {
-						print('pinky');
 						$sio=new SioSignIn(); $formlet=$sio->form(false);
 					}
 				}		

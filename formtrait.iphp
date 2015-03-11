@@ -72,10 +72,19 @@ trait Form {
 	}
 
 /**
- * 'iniForm'
+ * 'initForm'
+ * legacy verion of initForm found in __construct methods.
+ * use_id does nothing.
+ */
+ 	protected function iniForm($idp='',$vp = NULL,$use_id,$pk='id',$debug=false) {
+ 		$this->initForm($idp,$vp,$pk,$debug);
+ 	}
+
+/**
+ * 'initForm'
  * To be used in __construct methods.
  */
-	protected function iniForm($idp='',$vp = NULL,$use_id=true,$pk='id',$debug=false) {
+	protected function initForm($idp='',$vp = NULL,$pk='id',$debug=false) {
 		$this->debug=$debug;
 		//pk has array of primary key fields (?with values?)
 		$this->pkey = $pk;

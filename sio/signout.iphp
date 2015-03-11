@@ -14,7 +14,7 @@ class SioSignOut {
  * '__construct'
  */
 	function __construct($key=NULL,$v=NULL) {
-	    $this->iniForm($key,$v,false);
+	    $this->iniForm($key,$v);
 	    $this->key=$key;
 	    $this->table="user";
 	}
