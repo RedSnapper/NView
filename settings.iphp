@@ -85,7 +85,7 @@ class Settings extends Singleton {
 			}
 		} else {
 			Session::del('username');
-			Settings::$usr = array_splice(Settings::$usr,1);
+			Settings::$usr = array_splice(Settings::$usr,0);
 			print_r(Settings::$usr);
 		}
 	}
