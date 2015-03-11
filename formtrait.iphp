@@ -307,7 +307,10 @@ trait Form {
 			}
 			if (isset($this->fields['_fn']) && strcmp($this->fields['_fn'][0],"save") !== 0 ) {
 				$this->setfields(false); //populate the fields from sql
-				$this->func();
+				$fn = $this->func();
+				if (!is_null($fn)) {
+					return $fn;
+				}
 			} else {
 				if (isset($this->subsfield)) {
 					$this->subscriber();
