@@ -71,6 +71,8 @@ class SioSignIn {
  */
 	protected function commit() {
 		Session::set('username',$this->fields['username'][0]);
+		Settings::usr();
+		$_POST[static::sig()] = $this->ident();
 		return true;
 	}
 

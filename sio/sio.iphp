@@ -19,7 +19,6 @@ sign-in and sign-out.
 				if (SioSignOut::inScope()) { //doing a sign-out post.
 					$sso=new SioSignOut(); $formlet=$sso->form(false);
 					if ($sso->success()) {
-						print('-'.Settings::$usr['ID']);
 						$sio=new SioSignIn(); $formlet=$sio->form(false);
 					}
 				} else {
@@ -31,7 +30,6 @@ sign-in and sign-out.
 				}
 			} else { //not-signed in
 				if (SioSignIn::inScope()) {	//currently processing a signin..
-					print('+'.Settings::$usr['ID']);
 					$ssi=new SioSignIn(); $formlet=$ssi->form(false);
 					if ($ssi->success()) {
 						$sio=new SioSignOut(); $formlet = $sio->form(false);
