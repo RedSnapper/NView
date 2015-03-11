@@ -76,7 +76,7 @@ trait Form {
  * legacy verion of initForm found in __construct methods.
  * use_id does nothing.
  */
- 	protected function iniForm($idp='',$vp = NULL,$use_id,$pk='id',$debug=false) {
+ 	protected function iniForm($idp='',$vp = NULL,$use_id=false,$pk='id',$debug=false) {
  		$this->initForm($idp,$vp,$pk,$debug);
  	}
 
