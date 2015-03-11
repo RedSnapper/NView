@@ -36,7 +36,7 @@ sign-in and sign-out.
 				if (SioSignIn::inscope(false)) {	//currently processing a signin..
 					$ssi=new SioSignIn(); $formlet=$ssi->form(false);
 					if ($ssi->success()) {
-						$sio=new SioSignOut(); $formlet = $sio->form(false));
+						$sio=new SioSignOut(); $formlet = $sio->form(false);
 					} 
 				} elseif (SioReg::inscope(false)) {
 					$sio=new SioReg(); $formlet=$sio->form(false);
@@ -47,7 +47,7 @@ sign-in and sign-out.
 				} elseif (SioSignOut::inscope(false)) {
 					$sso=new SioSignOut(); $formlet=$sso->form(false);
 					if ($sso->success()) {
-						$sio=new SioSignIn(); $formlet = $sio->form(false));
+						$sio=new SioSignIn(); $formlet = $sio->form(false);
 					} 
 				} else {
 					if (Session::has('username')) {
