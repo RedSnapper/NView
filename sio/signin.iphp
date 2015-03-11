@@ -40,7 +40,7 @@ class SioSignIn {
 			case 'forgot': {
 				print('[got to forgot]');
 				$sf=new SIOForgot();
-				return $sf->form();
+				$this->view=$sf->form();
 			} break;
 			case 'register': {
 				print('[got to register]');
