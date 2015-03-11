@@ -48,7 +48,6 @@ class SioSignIn {
  */
 	protected function validate() {
 		$retval = false;
-		print('aaarp');
 		if (isset($this->fields['username'][0]) && isset($this->fields['password'][0])) {
 			$un=$this->fields['username'][0];
 			$ph=hash('sha256',$un . hex2bin('5BE0BDA8E0BDBCE0BDBEE0BC8BE0BDA7E0BDB1E0BDB4E0BDBE5D') . hash('sha256',$this->fields['password'][0]));
@@ -73,7 +72,9 @@ class SioSignIn {
 	protected function commit() {
 		Session::set('username',$this->fields['username'][0]);
 		Settings::usr();
+		print_r($_POST);
 		$_POST[static::sig()] = $this->ident();
+		print_r($_POST);
 		return true;
 	}
 
