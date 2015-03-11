@@ -16,7 +16,7 @@ sign-in and sign-out.
 */	
 			$formlet=null;
 			if (Session::has('username')) { //signed in.
-				if (SioSignOut::inscope(false)) { //doing a sign-out post.
+				if (SioSignOut::inscope()) { //doing a sign-out post.
 					$sso=new SioSignOut(); $formlet=$sso->form();
 					if ($sso->success()) {
 						print('ping');
@@ -25,7 +25,7 @@ sign-in and sign-out.
 						print('pong');
 					}
 				} else {
-					if (SioSetPW::inscope(false)) {  //doing a set-pw post.
+					if (SioSetPW::inscope()) {  //doing a set-pw post.
 						$sio=new SioSetPW(); $formlet=$sio->form();
 					} else {
 						print('pang');
@@ -33,19 +33,19 @@ sign-in and sign-out.
 					}
 				}
 			} else { //not-signed in
-				if (SioSignIn::inscope(false)) {	//currently processing a signin..
+				if (SioSignIn::inscope()) {	//currently processing a signin..
 					$ssi=new SioSignIn(); $formlet=$ssi->form(false);
 					if ($ssi->success()) {
 						print('pung');
 						$sio=new SioSignOut(); $formlet = $sio->form(false);
 					} 
-				} elseif (SioReg::inscope(false)) {
+				} elseif (SioReg::inscope()) {
 					$sio=new SioReg(); $formlet=$sio->form(false);
-				} elseif (SioSetPW::inscope(false)) {
+				} elseif (SioSetPW::inscope()) {
 					$sio=new SioSetPW(); $formlet=$sio->form(false);
-				} elseif (SioForgot::inscope(false)) {
+				} elseif (SioForgot::inscope()) {
 					$sio=new SioForgot(); $formlet=$sio->form(false);
-				} elseif (SioSignOut::inscope(false)) {
+				} elseif (SioSignOut::inscope()) {
 					$sso=new SioSignOut(); $formlet=$sso->form(false);
 					if ($sso->success()) {
 						print('Poong');

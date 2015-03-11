@@ -57,8 +57,18 @@ trait Form {
 	}
 
 	protected static function sig() {
-		print("This is an error.");
+		print("This is an error. sig() needs to be defined by the form class.");
 		return "form_";
+	}
+	
+	private function ident() {
+ 		$ident = '';
+ 		if(!empty(Settings::$usr['ID']))
+			$ident = md5( Settings::$usr['ID'] . '_' . this->$signature );
+		} else {
+			$ident = md5( this->$signature );
+		}
+		return $ident;
 	}
 
 /**
@@ -67,20 +77,12 @@ trait Form {
  */
 	protected function iniForm($idp='',$vp = NULL,$use_id=true,$pk='id',$debug=false) {
 		$this->debug=$debug;
+		//pk has array of primary key fields (?with values?)
+		$this->pkey = $pk;
+		$this->pksimple = !is_array($pk);
 		$this->id = '_' . static::sig() . $idp;
-		if (is_array($pk)) {
-			$this->pksimple=false;
-			$this->pkey = $pk;
-		} else {
-			$this->pksimple=true;
-			$this->pkey = $pk;
-		}
 		$this->idprefix = $this->id . ':';
- 		if ($use_id) {
- 			$this->signature = md5( Settings::$usr['ID'] . $this->id);
-		} else {
-			$this->signature = md5($this->id);
-		}
+ 		$this->signature = md5($this->id);
 		$this->idprefixlen = strlen($this->idprefix);
 		if ($vp instanceof NView) {
 		    $this->view = $vp;
@@ -109,14 +111,8 @@ trait Form {
 /**
  * 'inscope' used to test if a particular form is being posted.
  */
- 	public static function inscope($use_id = true) {
- 		$sign = '_' . static::sig();
- 		if ($use_id) {
-			$signature = md5( Settings::$usr['ID'] . $sign);
-		} else {
-			$signature = md5( $sign);
-		}
-		return isset($_POST[$sign]) && ($_POST[$sign] === $signature);
+ 	public static function inscope() {
+		return isset($_POST[$this->id]) && ($_POST[$this->id] === $this->ident());
 	}
 
 /**
@@ -258,19 +254,24 @@ trait Form {
  */
 	public function form($show=true) {
 		if($this->debug) {
-			print('<br />DEBUG: id['.$this->id.'] sig['.$this->signature.']<br />');
+			print('<br />DEBUG: id['.$this->id.'] sig['.$this->signature.'] ident['.$this->ident().']<br />');
 			if (isset($_POST[$this->id])) {
 				print("This form has been posted ");
-				if ($_POST[$this->id] === $this->signature) {
-					print("and the signature matches the id, so we will process.");
+				if ($_POST[$this->id] === $this->ident()) {
+					print("and the ident() matches the id, so this is in scope..");
+					if($this->inscope()) {
+						print(" ... and inscope() agrees!");
+					} else {
+						print(" ... and inscope() FAILS to agree!!");
+					}
 				} else {
-					print("and the post failed to match because (post)".$_POST[$this->id]."!=(sig)".$this->signature);
+					print("and the post failed to match because (post)".$_POST[$this->id]."!=(ident)".$this->ident());
 				}
 			} else {
 				print("This form has not been posted.");
 			}
 		}
-		if(isset($_POST[$this->id]) && ($_POST[$this->id] === $this->signature)) {
+		if($this->inscope()) {
 			$this->show=$show;
 			$this->fields = array();
 			foreach ($_POST as $k => $v) {
@@ -314,7 +315,7 @@ trait Form {
 			$this->populate();
 			$this->view->set("//*[@data-msg][not(node())]");
 			$this->view->set("//*[@data-xp='_ident']/@name",$this->id);
-			$this->view->set("//*[@data-xp='_ident']/@value",$this->signature);
+			$this->view->set("//*[@data-xp='_ident']/@value",$this->ident());
 			$this->view->set("//*[@name][@name!='" . $this->id . "']/@name/preceding-gap()",$this->idprefix);
 			return $this->view;
 		} else {
