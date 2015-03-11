@@ -109,10 +109,17 @@ trait Form {
 	}
 
 /**
- * 'inscope' used to test if a particular form is being posted.
+ * 'inscope' used to test if a particular class of form is being posted.
  */
- 	public function inscope() {
-		return (isset($_POST[$this->id]) && ($_POST[$this->id] === $this->ident()));
+ 	public static function inscope() {
+		return (isset($_POST[static::sig()]));
+	}
+
+/**
+ * 'isMe' used to test if a particular form instance is being posted.
+ */
+ 	public function isMe() {
+		return (isset($_POST[static::sig()]) && ($_POST[static::sig()] === $this->ident()));
 	}
 
 /**
@@ -254,24 +261,24 @@ trait Form {
  */
 	public function form($show=true) {
 		if($this->debug) {
-			print('<br />DEBUG: id['.$this->id.'] sig['.$this->signature.'] ident['.$this->ident().']<br />');
-			if (isset($_POST[$this->id])) {
+			print('<br />DEBUG: id['.$this->id.'] sig['.static::sig().'] ident['.$this->ident().']<br />');
+			if (isset($_POST[static::sig()])) {
 				print("This form has been posted ");
-				if ($_POST[$this->id] === $this->ident()) {
+				if ($_POST[static::sig()] === $this->ident()) {
 					print("and the ident() matches the id, so this is in scope..");
-					if($this->inscope()) {
-						print(" ... and inscope() agrees!");
+					if($this->isMe()) {
+						print(" ... and isMe() agrees!");
 					} else {
-						print(" ... and inscope() FAILS to agree!!");
+						print(" ... and isMe() FAILS to agree!!");
 					}
 				} else {
-					print("and the post failed to match because (post)".$_POST[$this->id]."!=(ident)".$this->ident());
+					print("and the post failed to match because (post)".$_POST[static::sig()]."!=(ident)".$this->ident());
 				}
 			} else {
 				print("This form has not been posted.");
 			}
 		}
-		if($this->inscope()) {
+		if($this->isMe()) {
 			$this->show=$show;
 			$this->fields = array();
 			foreach ($_POST as $k => $v) {
@@ -314,7 +321,7 @@ trait Form {
 		if ( $this->show || !($this->committed) ) { //don't repop if !show and com.
 			$this->populate();
 			$this->view->set("//*[@data-msg][not(node())]");
-			$this->view->set("//*[@data-xp='_ident']/@name",$this->id);
+			$this->view->set("//*[@data-xp='_ident']/@name",static::sig());
 			$this->view->set("//*[@data-xp='_ident']/@value",$this->ident());
 			$this->view->set("//*[@name][@name!='" . $this->id . "']/@name/preceding-gap()",$this->idprefix);
 			return $this->view;
