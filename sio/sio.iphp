@@ -20,6 +20,7 @@ sign-in and sign-out.
 					$sso=new SioSignOut(); $formlet=$sso->form(false);
 					if ($sso->success()) {
 						$sio=new SioSignIn(); $formlet=$sio->form(false);
+						$formlet->set("//*[@data-xp='foo']",print_r($sio,true));
 					}
 				} else {
 					if (SioSetPW::inScope()) {  //doing a set-pw post.
@@ -31,6 +32,7 @@ sign-in and sign-out.
 			} else { //not-signed in
 				if (SioSignIn::inScope()) {	//currently processing a signin..
 					$ssi=new SioSignIn(); $formlet=$ssi->form(false);
+					$formlet->set("//*[@data-xp='foo']",print_r($sio,true));
 					if ($ssi->success()) {
 						$sio=new SioSignOut(); $formlet = $sio->form(false);
 					} 
@@ -44,6 +46,7 @@ sign-in and sign-out.
 					$sso=new SioSignOut(); $formlet=$sso->form(false);
 					if ($sso->success()) {
 						$sio=new SioSignIn(); $formlet = $sio->form(false);
+						$formlet->set("//*[@data-xp='foo']",print_r($sio,true));
 					} else {
 					}
 				} else {
@@ -51,6 +54,7 @@ sign-in and sign-out.
 						$sio=new SioSignOut(); $formlet=$sio->form(false);
 					} else {
 						$sio=new SioSignIn(); $formlet=$sio->form(false);
+						$formlet->set("//*[@data-xp='foo']",print_r($sio,true));
 					}
 				}		
 			}
