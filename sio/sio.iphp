@@ -10,7 +10,6 @@ class SIO {
 		if (isset($err) && !empty($err)) {
 			echo $err;
 		} else {
-			print_r($_POST);
 /*
 This is the SIO widget, so it is going to handle everything to do with 
 sign-in and sign-out.
