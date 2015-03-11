@@ -1,7 +1,6 @@
 <!DOCTYPE fieldset>
 <fieldset class="form--cols">
 	<input type="hidden" data-xp="_ident" />
-	<input type="hidden" data-xp="_status" />
 	<ul class="form__notice">
 		<li>
 			<label class="form__group text" data-semantic="field" data-xp="comment">
@@ -31,7 +30,6 @@
 			<label class="form__group submit" data-semantic="field" data-xp="comment">
 				<span class="flex"><button class="btn--tertiary" type="submit" name="_fn" value="register">Register</button></span>
 			</label>
-			<code data-xp="foo" />
 		</li>
 	</ul>
 </fieldset>

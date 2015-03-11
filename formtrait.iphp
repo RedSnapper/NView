@@ -300,24 +300,18 @@ trait Form {
 			}
 			if (isset($this->fields['_fn']) && strcmp($this->fields['_fn'][0],"save") !== 0 ) {
 				$this->setfields(false); //populate the fields from sql
-				$this->view->set("//*[@data-xp='status']/@value",$this->fields['_fn'][0]);
 				$this->func();
 			} else {
 				if (isset($this->subsfield)) {
-					$this->view->set("//*[@data-xp='status']/@value",'subscriber');
 					$this->subscriber();
 				}
 				if (! $this->committed) {
 					$this->validate();
 					if ($this->valid && ! $this->committed) {
-						$this->committed = $this->commit();
-						$this->view->set("//*[@data-xp='status']/@value",'committed');
-						
+						$this->committed = $this->commit();						
 						if ( $this->show || !($this->committed) ) { //do not repop if !show and com.
 							$this->setfields(true); //we can repopulate the fields if we want.
 						}
-					} else {
-						$this->view->set("//*[@data-xp='status']/@value",'invalid');
 					}
 				}
 			}
