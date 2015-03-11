@@ -25,6 +25,7 @@ class SIOSetPW {
 			$pwa=$this->fields['password'][0];
 			$pwb=$this->fields['password'][1];
 			print('a:'.$pwa.' b:'.$pwb);
+			print_r($this->fields);
 			if ($pwa !== $pwb ) {
 				print('[setting not-same-pw err]');
 				$this->seterr("password","Both passwords must be the same.");
