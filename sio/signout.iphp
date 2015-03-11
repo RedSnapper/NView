@@ -44,6 +44,7 @@ class SioSignOut {
  */
 	protected function commit() {
 		Settings::usr(false);
+		Session:del();
 		return true;
 	}
 
