@@ -28,6 +28,7 @@ sign-in and sign-out.
 					if (SioSetPW::inscope(true)) {  //doing a set-pw post.
 						$sio=new SioSetPW(); $formlet=$sio->form();
 					} else {
+						print('pang');
 						$sio=new SioSignOut(); $formlet=$sio->form();
 					}
 				}
@@ -35,6 +36,7 @@ sign-in and sign-out.
 				if (SioSignIn::inscope(false)) {	//currently processing a signin..
 					$ssi=new SioSignIn(); $formlet=$ssi->form(false);
 					if ($ssi->success()) {
+						print('pung');
 						$sio=new SioSignOut(); $formlet = $sio->form(false);
 					} 
 				} elseif (SioReg::inscope(false)) {
@@ -46,8 +48,11 @@ sign-in and sign-out.
 				} elseif (SioSignOut::inscope(false)) {
 					$sso=new SioSignOut(); $formlet=$sso->form(false);
 					if ($sso->success()) {
+						print('Poong');
 						$sio=new SioSignIn(); $formlet = $sio->form(false);
-					} 
+					} else {
+						print('Paang');
+					}
 				} else {
 					if (Session::has('username')) {
 						$sio=new SioSignOut(); $formlet=$sio->form(false);
