@@ -21,7 +21,6 @@ class SIOSetPW {
  */
 	protected function validate() {
 		$retval = false;
-		print('[got here, somehow]');
 		if (isset($this->fields['password'][0]) && isset($this->fields['password'][1])) {
 			$pwa=$this->fields['password'][0];
 			$pwb=$this->fields['password'][1];

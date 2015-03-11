@@ -4,7 +4,7 @@
 	<ul class="form__notice">
 		<li>
 			<label class="form__group text" data-semantic="field" data-xp="comment">
-				<span class="error" data-msg="password"><!-- m --></span>
+				<span class="error" data-msg="password" />
 				<span class="label" data-xp="label">Password</span>
 				<span class="flex"><input type="password" name="password" /></span>
 			</label>
@@ -16,7 +16,7 @@
 			</label>
 		</li>
 		<li>
-			<label class="form__group submit" data-semantic="field" data-xp="comment">
+			<label class="form__group submit" data-semantic="field" data-xp="button">
 				<span class="flex"><button class="btn--tertiary" type="submit" name="_fn" value="save">Set New Password</button></span>
 			</label>
 		</li>

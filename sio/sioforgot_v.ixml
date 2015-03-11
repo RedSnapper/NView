@@ -4,20 +4,20 @@
 	<ul class="form__notice">
 		<li>
 			<label class="form__group text" data-semantic="field" data-xp="comment">
-				<span class="error" data-msg="username"><!-- m --></span>
+				<span class="error" data-msg="username" />
 				<span class="label" data-xp="label">Username</span>
 				<span class="flex"><input autocomplete="off" type="text" name="username" /></span>
 			</label>
 		</li>
 		<li>
 			<label class="form__group text" data-semantic="field" data-xp="comment">
-				<span class="error" data-msg="email"><!-- m --></span>
+				<span class="error" data-msg="email" />
 				<span class="label" data-xp="label">Email</span>
 				<span class="flex"><input autocomplete="on" type="text" name="email" /></span>
 			</label>
 		</li>
 		<li>
-			<label class="form__group submit" data-semantic="field" data-xp="comment">
+			<label class="form__group submit" data-semantic="field" data-xp="button">
 				<span class="flex"><button class="btn--tertiary" type="submit" name="_fn" value="save">Recover Password</button></span>
 			</label>
 		</li>
