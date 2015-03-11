@@ -8,7 +8,7 @@ class SIO {
 			$err = $v->messages();
 		}
 		if (isset($err) && !empty($err)) {
-			echo $err;
+			print $err;
 		} else {
 /*
 This is the SIO widget, so it is going to handle everything to do with 
@@ -22,6 +22,12 @@ sign-in and sign-out.
 					$stt=0; $sio=new SioSetPW(); $formlet=$sio->form(false);
 					if ($sio->success()) {
 						$formlet=new NView('siosetpws_v.ixml');
+						$err=$formlet->messages();
+						if (isset($err) && !empty($err)) {
+							print $err;
+						}
+
+
 						// '<h4>You successfully changed your password.</h4>'); 
 					}
 				}
