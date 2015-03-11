@@ -51,6 +51,7 @@ class SioForgot {
  * fn OVERLOADING trait 'Form'.
  */
 	protected function commit() {
+		return true;
 	}
 
 /**
