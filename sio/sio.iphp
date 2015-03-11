@@ -15,42 +15,36 @@ This is the SIO widget, so it is going to handle everything to do with
 sign-in and sign-out.
 */	
 			$formlet=null;
+			$stt=0;		//stt: 0=other, 1=sign-in, 2=sign-out.
 			if (Session::has('username')) { //signed in.
-				if (SioSignOut::inScope()) { //doing a sign-out post.
+				$stt=2; //default = sign-out.
+				if (SioSetPW::inScope()) {  //doing a set-pw post.
+					$stt=0; $sio=new SioSetPW(); $formlet=$sio->form(false);
+				}
+			} else { //not-signed in
+				$stt=1; //default = sign-in.
+				if (SioReg::inScope()) {
+					$stt=0; $sio=new SioReg(); $formlet=$sio->form(false);
+				} elseif (SioSetPW::inScope()) {
+					$stt=0; $sio=new SioSetPW(); $formlet=$sio->form(false);
+				} elseif (SioForgot::inScope()) {
+					$stt=0; $sio=new SioForgot(); $formlet=$sio->form(false);
+				}		
+			}
+			switch ($stt) {
+				case 0: break;
+				case 1: {
+					$ssi=new SioSignIn(); $formlet=$ssi->form(false);
+					if ($ssi->success()) {
+						$sio=new SioSignOut(); $formlet = $sio->form(false);
+					} 
+				} break;
+				case 2: {
 					$sso=new SioSignOut(); $formlet=$sso->form(false);
 					if ($sso->success()) {
 						$sio=new SioSignIn(); $formlet=$sio->form(false);
-					}
-				} else {
-					if (SioSetPW::inScope()) {  //doing a set-pw post.
-						$sio=new SioSetPW(); $formlet=$sio->form(false);
-					} else {
-						$sio=new SioSignOut(); $formlet=$sio->form(false);
-					}
-				}
-			} else { //not-signed in
-				if (SioSignIn::inScope()) {	//currently processing a signin..
-					$ssi=new SioSignIn(); $formlet=$ssi->form(false);
-					if ($ssi->success()) {
-						$sio=new SioSignOut(); $formlet = $sio->form(false);
-					} 
-				} elseif (SioReg::inScope()) {
-					$sio=new SioReg(); $formlet=$sio->form(false);
-				} elseif (SioSetPW::inScope()) {
-					$sio=new SioSetPW(); $formlet=$sio->form(false);
-				} elseif (SioForgot::inScope()) {
-					$sio=new SioForgot(); $formlet=$sio->form(false);
-				} elseif (SioSignOut::inScope()) {
-					$sso=new SioSignOut(); $formlet=$sso->form(false);
-					if ($sso->success()) {
-						$sio=new SioSignIn(); $formlet = $sio->form(false);
-					} 
-				} else {
-					$ssi=new SioSignIn(); $formlet=$ssi->form(false);
-					if ($ssi->success()) {
-						$sio=new SioSignOut(); $formlet = $sio->form(false);
-					} 
-				}		
+					}				
+				} break;
 			}
 			$v->set("//*[@data-xp='sio']",$formlet);
 			return $v;
