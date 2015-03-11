@@ -11,3 +11,7 @@ class SioReg {
 	}
 
 }
+	username
+	passworda
+	passwordb
+	email

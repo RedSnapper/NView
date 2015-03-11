@@ -6,14 +6,14 @@
 			<label class="form__group text" data-semantic="field" data-xp="comment">
 				<span class="error" data-xp="_message"><!-- m --></span>
 				<span class="label" data-xp="label">Password</span>
-				<span class="flex"><input type="passwordA" name="password" /></span>
+				<span class="flex"><input type="password" name="password" /></span>
 			</label>
 		</li>
 		<li>
 			<label class="form__group text" data-semantic="field" data-xp="comment">
 				<span class="error" data-xp="_message"><!-- m --></span>
 				<span class="label" data-xp="label">Retype Password</span>
-				<span class="flex"><input type="passwordB" name="password" /></span>
+				<span class="flex"><input type="password" name="password" /></span>
 			</label>
 		</li>
 		<li>

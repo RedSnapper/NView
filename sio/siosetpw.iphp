@@ -6,6 +6,60 @@ class SIOSetPW {
 	protected static function sig() {
 		return "siosetpw_";
 	}
+	function __construct($key=NULL,$v=NULL) {
+		$this->iniForm($key,$v);
+		$this->key=$key;
+		$this->table="user";
+		$this->setfld('password','');
+	}
+	
+/**
+ * 'validate'
+ * fn fulfilling abstract requirement of trait 'Form'.
+ * validate all fields in this->fields.
+ * errors are placed into the this->view.
+ */
+	protected function validate() {
+		$retval = false;
+		if (isset($this->fields['password'][0]) && isset($this->fields['password'][1])) {
+			$pwa=$this->fields['password'][0];
+			$pwb=$this->fields['password'][1];
+			if ($pwa !== $pwb ) {
+				$this->seterr("password","Both passwords must be the same.");
+			} elseif (strlen($pwa) < 8) {
+				$this->seterr("password","Passwords must be more than 7 characters.");
+			} elseif ($pwa === Settings::$usr['RU']) {
+				$this->seterr("password","Passwords must be different from your username!");
+			} else {
+				$retval = true;
+			}
+		}
+		$this->valid = $retval;
+	}
+	
+/*			
+			$retval=(($pwa===$pwb) && ( ));
+			$ph=hash('sha256',$un . hex2bin('5BE0BDA8E0BDBCE0BDBEE0BC8BE0BDA7E0BDB1E0BDB4E0BDBE5D') . hash('sha256',$this->fields['password'][0]));
+			$this->fields['password'][0]='';
+			$qry="select count(id) as ok from " . $this->table . " where active='on' and username='" .$un. "' and password='" . $ph . "'";
+			if ($rx = Settings::$sql->query($qry)) {
+				if (strcmp($rx->fetch_row()[0],"1") === 0) {
+					$retval=true;
+				} else {
+					$this->seterr("username","Either the username or password don't match our records");
+				}
+				$rx->close();
+			}
+			$this->valid = $retval;
+*/	
+
+	protected function commit() {
+		print($this->fields['password'][0]);
+		return true;
+	}
+	
 	protected function populate() {
 	}
+	
 }
+
