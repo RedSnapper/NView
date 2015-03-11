@@ -20,7 +20,6 @@ sign-in and sign-out.
 					$sso=new SioSignOut(); $formlet=$sso->form();
 					if ($sso->success()) {
 						$sio=new SioSignIn(); $formlet=$sio->form(false);
-					} else {
 					}
 				} else {
 					if (SioSetPW::inScope()) {  //doing a set-pw post.
