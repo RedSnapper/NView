@@ -44,14 +44,12 @@ sign-in and sign-out.
 					$sso=new SioSignOut(); $formlet=$sso->form(false);
 					if ($sso->success()) {
 						$sio=new SioSignIn(); $formlet = $sio->form(false);
-					} else {
-					}
+					} 
 				} else {
-					if (Session::has('username')) {
-						$sio=new SioSignOut(); $formlet=$sio->form(false);
-					} else {
-						$sio=new SioSignIn(); $formlet=$sio->form(false);
-					}
+					$ssi=new SioSignIn(); $formlet=$ssi->form(false);
+					if ($ssi->success()) {
+						$sio=new SioSignOut(); $formlet = $sio->form(false);
+					} 
 				}		
 			}
 			$v->set("//*[@data-xp='sio']",$formlet);
