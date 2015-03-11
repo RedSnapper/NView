@@ -1,5 +1,5 @@
 <!DOCTYPE fieldset>
-<fieldset class="form--cols">
+<fieldset  xmlns="http://www.w3.org/1999/xhtml" class="form--cols">
 	<input type="hidden" data-xp="_ident" />
 	<ul class="form__notice">
 		<li>
