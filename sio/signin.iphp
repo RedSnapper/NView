@@ -73,6 +73,7 @@ class SioSignIn {
 		Session::set('username',$this->fields['username'][0]);
 		Settings::usr();
 		$_POST[static::sig()] = $this->ident();
+		print('woot');
 		return true;
 	}
 
