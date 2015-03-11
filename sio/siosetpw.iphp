@@ -26,17 +26,14 @@ class SIOSetPW {
 			$pwa=$this->fields['password'][0];
 			$pwb=$this->fields['passwordb'][0];
 			if ($pwa !== $pwb ) {
-				print('[setting not-same-pw err]');
 				$this->seterr("password","Both passwords must be the same.");
 				$retval = false;
 			} 
 			if (strlen($pwa) < 8) {
-				print('[setting short-pw err]');
 				$this->seterr("password","Passwords must be more than 7 characters.");
 				$retval = false;
 			} 
 			if ($pwa === Settings::$usr['RU']) {
-				print('[setting pw-bad err]');
 				$this->seterr("password","Passwords must be different from your username!");
 				$retval = false;
 			} 
