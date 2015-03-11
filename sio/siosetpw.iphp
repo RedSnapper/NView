@@ -29,8 +29,8 @@ class SIOSetPW {
 				$this->seterr("password","Both passwords must be the same.");
 				$retval = false;
 			} 
-			if (strlen($pwa) < 8) {
-				$this->seterr("password","Passwords must be more than 7 characters.");
+			if (strlen($pwa) < 7) {
+				$this->seterr("password","Passwords must be more than 6 characters.");
 				$retval = false;
 			} 
 			if ($pwa === Settings::$usr['RU']) {
