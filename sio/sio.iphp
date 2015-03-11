@@ -19,8 +19,11 @@ sign-in and sign-out.
 				if (SioSignOut::inscope(true)) { //doing a sign-out post.
 					$sso=new SioSignOut(); $formlet=$sso->form();
 					if ($sso->success()) {
+						print('ping');
 						$sio=new SioSignIn(); $formlet=$sio->form(false);
-					} 
+					} else {
+						print('pong');
+					}
 				} else {
 					if (SioSetPW::inscope(true)) {  //doing a set-pw post.
 						$sio=new SioSetPW(); $formlet=$sio->form();
