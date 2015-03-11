@@ -43,6 +43,7 @@ sign-in and sign-out.
 				case 2: {
 					$sso=new SioSignOut(); $formlet=$sso->form(false);
 					if ($sso->success()) {
+						print('[SSI]');
 						$sio=new SioSignIn(); $formlet=$sio->form(false);
 					}				
 				} break;
