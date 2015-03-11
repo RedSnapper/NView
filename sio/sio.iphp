@@ -21,7 +21,8 @@ sign-in and sign-out.
 				if (SioSetPW::inScope()) {  //doing a set-pw post.
 					$stt=0; $sio=new SioSetPW(); $formlet=$sio->form(false);
 					if ($sio->success()) {
-						$formlet=new NView('<h3>Password Set</h3>'); 
+						$formlet=new NView('siosetpws_v.ixml');
+						// '<h4>You successfully changed your password.</h4>'); 
 					}
 				}
 			} else { //not-signed in
