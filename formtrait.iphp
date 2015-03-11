@@ -112,7 +112,7 @@ trait Form {
  * 'inscope' used to test if a particular form is being posted.
  */
  	public function inscope() {
-		return isset($_POST[$this->id]) && ($_POST[$this->id] === $this->ident());
+		return (isset($_POST[$this->id]) && ($_POST[$this->id] === $this->ident()));
 	}
 
 /**
