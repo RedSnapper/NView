@@ -34,6 +34,10 @@ trait Form {
 	public function success() {
 		return $this->committed;
 	}
+	
+	public function getId() {
+		return $this->id;
+	}
 
 	protected function delete() { //may be overridden if needed...
 		$q="delete from ".$this->table." where " . $this->pkeysql();
@@ -70,11 +74,7 @@ trait Form {
 		}
 		return $ident;
 	}
-	
-	private function getId() {
-		return $this->id;
-	}
-	
+		
 	private function setId($id) {
 		$this->id = $id;
 		$this->idprefix = $this->id . ':';
