@@ -31,6 +31,10 @@ trait Form {
 	private $subfn; 		//subscriber CNUD function that happened - one of create/null/update/delete
 	abstract protected function populate();   // use $fields to load the inputs.
 
+	protected function success() {
+		return $this->committed;
+	}
+
 	protected function delete() { //may be overridden if needed...
 		$q="delete from ".$this->table." where " . $this->pkeysql();
 		if($this->debug) {

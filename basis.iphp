@@ -17,6 +17,6 @@ require_once("sio/siosetpw.iphp");
 
 Settings::getInstance(); //initialise settings..
 Session::getInstance();  //initialise session.
-Settings::usr();
+Settings::usr();		 //maybe this should be set by sio.
 Session::setto(144000); //100 days
 

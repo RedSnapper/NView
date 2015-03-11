@@ -10,46 +10,54 @@ class SIO {
 		if (isset($err) && !empty($err)) {
 			echo $err;
 		} else {
-			if (SioSignIn::inscope(false)) {
-				$si=new SioSignIn();
-				$tmp=$si->form();
-				if (Session::has('username')) {
-					Settings::usr();	//set up user vars.
+/*
+This is the SIO widget, so it is going to handle everything to do with 
+sign-in and sign-out.
+*/	
+			$formlet=null;
+			if (Session::has('username')) { //signed in.
+			
+				if (SioSignOut::inscope(true)) { //doing a sign-out post.
 					$so=new SioSignOut();
-					$v->set("//*[@data-xp='sio']",$so->form());
-				} else {
-					$v->set("//*[@data-xp='sio']",$tmp);
-				}
-			} elseif (SioReg::inscope(false)) {
-				$sir=new SioReg();
-				$v->set("//*[@data-xp='sio']",$sir->form());
-			} elseif (SioSetPW::inscope(true)) {
-				$sip=new SioSetPW();
-				$v->set("//*[@data-xp='sio']",$sip->form());
-			} elseif (SioForgot::inscope(false)) {
-				$sif=new SioForgot();
-				$v->set("//*[@data-xp='sio']",$sif->form());
-			} elseif (SioSignOut::inscope(false)) {
-				$so=new SioSignOut();
-				$tmp=$so->form();
-				$si=new SioSignIn();
-				$v->set("//*[@data-xp='sio']",$si->form());
-			} else {
-				if (Session::has('username')) {
-					Settings::usr();	//set up user vars.
-					$so=new SioSignOut();
-					$v->set("//*[@data-xp='sio']",$so->form());
-				} else {
+					$tmp=$so->form();
 					$si=new SioSignIn();
 					$v->set("//*[@data-xp='sio']",$si->form());
+				} else {
+					Settings::usr();	//set up user vars.
+					if (SioSetPW::inscope(true)) {  //doing a set-pw post.
+						$sip=new SioSetPW();
+						$v->set("//*[@data-xp='sio']",$sip->form());
+					} else {
+						$so=new SioSignOut();
+						$v->set("//*[@data-xp='sio']",$so->form());
+					}
 				}
+			} else {	//not-signed in
+				if (SioSignIn::inscope(false)) {	//currently processing a signin..
+					$ssi=new SioSignIn(); $formlet=$ssi->form(false);
+					if ($ssi->success()) {
+						$sio=new SioSignOut(); $formlet = $sio->form(false));
+					} 
+				} elseif (SioReg::inscope(false)) {
+					$sio=new SioReg(); $formlet=$sio->form(false);
+				} elseif (SioSetPW::inscope(true)) {
+					$sio=new SioSetPW(); $formlet=$sio->form(false);
+				} elseif (SioForgot::inscope(false)) {
+					$sio=new SioForgot(); $formlet=$sio->form(false);
+				} elseif (SioSignOut::inscope(false)) {
+					$sso=new SioSignOut(); $formlet=$sso->form(false);
+					if ($sso->success()) {
+						$sio=new SioSignIn(); $formlet = $sio->form(false));
+					} 
+				} else {
+					if (Session::has('username')) {
+						$sio=new SioSignOut(); $formlet=$sio->form(false);
+					} else {
+						$sio=new SioSignIn(); $formlet=$sio->form(false);
+					}
+				}		
 			}
-			$err = $v->messages();
-			if (!empty($err)) {
-				$v->set("//*[@data-xp='debug']/child-gap()",$err);
-			} else {
-				$v->set("//*[@data-xp='debug']");
-			}
+			$v->set("//*[@data-xp='sio']",$formlet);
 			return $v;
 		}
 	}
