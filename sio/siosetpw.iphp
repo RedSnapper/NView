@@ -10,7 +10,7 @@ class SIOSetPW {
 		$this->iniForm($key,$v);
 		$this->key=$key;
 		$this->table="user";
-		$this->setfld('password','');
+		$this->setfld('password');
 	}
 	
 /**
