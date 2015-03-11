@@ -30,7 +30,7 @@
 			<label class="form__group submit" data-semantic="field" data-xp="comment">
 				<span class="flex"><button class="btn--tertiary" type="submit" name="_fn" value="register">Register</button></span>
 			</label>
-			<pre data-xp="foo" />
+			<code data-xp="foo" />
 		</li>
 	</ul>
 </fieldset>
