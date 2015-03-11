@@ -4,14 +4,14 @@
 	<ul class="form__notice">
 		<li>
 			<label class="form__group text" data-semantic="field" data-xp="comment">
-				<span class="error" data-xp="_message"><!-- m --></span>
+				<span class="error" data-msg="username"><!-- m --></span>
 				<span class="label" data-xp="label">Username</span>
 				<span class="flex"><input autocomplete="off" type="text" name="username" /></span>
 			</label>
 		</li>
 		<li>
 			<label class="form__group text" data-semantic="field" data-xp="comment">
-				<span class="error" data-xp="_message"><!-- m --></span>
+				<span class="error" data-msg="email"><!-- m --></span>
 				<span class="label" data-xp="label">Email</span>
 				<span class="flex"><input autocomplete="on" type="text" name="email" /></span>
 			</label>
