@@ -28,6 +28,7 @@ class SioSignOut {
 			case 'reset': {
 				$sf=new SIOSetPW();
 				$this->show=false;
+				$this->committed=true;
 				$this->setId($sf->getId());
 				$this->view=$sf->form();			
 			} break;

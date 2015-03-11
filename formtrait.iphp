@@ -60,7 +60,7 @@ trait Form {
 		}
 	}
 
-	protected static function sig() {
+	public static function sig() {
 		print("This is an error. sig() needs to be defined by the form class.");
 		return "form_";
 	}
