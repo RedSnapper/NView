@@ -49,7 +49,7 @@ class SIOSetPW {
 			$this->show = true;
 			$retval=true;
 		} else {
-		print($qry)
+			print($qry);
 			$retval=false;
 		}
 		return $retval;
