@@ -22,6 +22,14 @@ class SioSignIn {
 	}
 
 /**
+ * 'ident'
+ *  This overrides the standard ident - we don't want to check usr value for signin.
+ */
+	private function ident() {
+		return md5($this->signature);
+	}
+
+/**
  * 'validate'
  * fn fulfilling form trait func, which deals with different button presses.
  * These are set by values in the buttons on the view.
