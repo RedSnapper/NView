@@ -29,6 +29,7 @@ sign-in and sign-out.
 				if (SioReg::inScope()) {
 					$stt=0; $sio=new SioReg(); $formlet=$sio->form(false);
 				} elseif (SioForgot::inScope()) {
+				print('[xxxx]');
 					$stt=0; $sio=new SioForgot(); $formlet=$sio->form(false);
 					if ($sio->success()) {
 						$formlet=new NView('sioforgots_v.ixml');
