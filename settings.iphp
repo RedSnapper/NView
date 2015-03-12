@@ -114,7 +114,7 @@ class Settings extends Singleton {
 	public static function table_exists($table) {
 		$retval=false;
 		if(!is_null(Settings::$sql)) {
-			if ($rx = Settings::$sql->query("select count(*) as present from information_schema.columns where table_schema = '".$sqls['database']."' and table_name = '".$table."'")) {
+			if ($rx = Settings::$sql->query("select count(*) as present from information_schema.columns where table_schema = '".Settings::$sqls['database']."' and table_name = '".$table."'")) {
 				while ($row = $rx->fetch_assoc()) {
 					if ($row['present'] > 0) {
 						$retval = true;
@@ -129,7 +129,7 @@ class Settings extends Singleton {
 	public static function field_exists($table,$fieldname) {
 		$retval=false;
 		if(!is_null(Settings::$sql)) {
-			if ($rx = Settings::$sql->query("select count(*) as present from information_schema.columns where table_schema = '".$sqls['database']."' and table_name = '".$table."' and column_name = '".$fieldname."'")) {
+			if ($rx = Settings::$sql->query("select count(*) as present from information_schema.columns where table_schema = '".Settings::$sqls['database']."' and table_name = '".$table."' and column_name = '".$fieldname."'")) {
 				while ($row = $rx->fetch_assoc()) {
 					if ($row['present'] == 1) {
 						$retval = true;
