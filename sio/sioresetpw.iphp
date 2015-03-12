@@ -1,0 +1,57 @@
+<?php
+mb_internal_encoding('UTF-8');
+
+class SIOResetPW {
+	use Form;
+	protected static function sig() {
+		return "sioresetpw_";
+	}
+	function __construct($key=NULL,$v=NULL) {
+		$this->iniForm($key,$v);
+		$this->key=$key;
+		$this->table="user";
+		$this->setfld('username');
+		$this->setfld('password');
+		$this->setfld('passwordb','','!skip');
+	}
+	
+/**
+ * 'validate'
+ * fn fulfilling abstract requirement of trait 'Form'.
+ * validate all fields in this->fields.
+ * errors are placed into the this->view.
+ */
+	protected function validate() {
+		$retval = true;
+		if (isset($this->fields['password'][0]) && isset($this->fields['passwordb'][0])) {
+			$pwa=$this->fields['password'][0];
+			$pwb=$this->fields['passwordb'][0];
+			if ($pwa !== $pwb ) {
+				$this->seterr("password","Both passwords must be the same.");
+				$retval = false;
+			} 
+			if (strlen($pwa) < 7) {
+				$this->seterr("password","Passwords must be more than 6 characters.");
+				$retval = false;
+			} 
+			if ($pwa === Settings::$usr['RU']) {
+				$this->seterr("password","Passwords must be different from your username!");
+				$retval = false;
+			} 
+		}
+		$this->valid = $retval;
+	}
+
+	protected function commit() {
+		$ph=Settings::esc(hash('sha256',Settings::$usr['RU'] . hex2bin('5BE0BDA8E0BDBCE0BDBEE0BC8BE0BDA7E0BDB1E0BDB4E0BDBE5D') . hash('sha256',$this->fields['password'][0])));
+		$qry="update " . $this->table . " set password='".$ph."' where active='on' and id='" .Settings::$usr['ID']. "'";
+		Settings::$sql->query($qry);
+		$this->show = false;
+		return true;
+	}
+	
+	protected function populate() {
+	}
+	
+}
+
