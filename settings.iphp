@@ -24,10 +24,6 @@ class Settings extends Singleton {
 			Settings::$req=array_keys(Settings::$qst);
 		}
 
-		Settings::$website='http';
-		if($_SERVER["HTTPS"]=='on') { Settings::$website.='s'; }
-		Settings::$website.='://' . $_SERVER["HTTP_HOST"] . '/';
-
 		Settings::$url=strtok($_SERVER["REQUEST_URI"],'?');
 		if ( !empty($_SERVER['PHP_AUTH_USER']) ) { Settings::$usr['RU']= $_SERVER['PHP_AUTH_USER'];}
 		elseif ( isset($_SERVER['REDIRECT_REMOTE_USER']) ) { Settings::$usr['RU']= $_SERVER['REDIRECT_REMOTE_USER']; }
@@ -57,19 +53,19 @@ class Settings extends Singleton {
 			Settings::$sphinx = null;
 		}
 		Settings::$sql->set_charset("utf8");
-		$s=1; $sd=1; $u=1;
-		if ($rx = Settings::$sql->query("show tables like 'session'")) { $s = $rx->num_rows; $rx->close(); }
-		if ($s !== 1) {
+		if (!Settings::table_exists('session')) {
 			Settings::$sql->query("CREATE TABLE session(id varchar(255) NOT NULL,ts timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, PRIMARY KEY (id), KEY ts (ts)) ENGINE=InnoDB DEFAULT CHARSET=utf8");
 		}
-		if ($rx = Settings::$sql->query("show tables like 'sessiondata'")) { $sd = $rx->num_rows; $rx->close(); }
-		if ($sd !== 1) {
+		if (!Settings::table_exists('sessiondata')) {
 			Settings::$sql->query("CREATE TABLE sessiondata (sid varchar(200) NOT NULL,name varchar(128) NOT NULL,value longtext NOT NULL,PRIMARY KEY (sid,name)) ENGINE=InnoDB DEFAULT CHARSET=utf8");
 		}
-		if ($rx = Settings::$sql->query("show tables like 'user'")) { $u = $rx->num_rows; $rx->close(); }
-		if ($sd !== 1) {
+		if (!Settings::table_exists(user)) {
 			Settings::$sql->query("CREATE TABLE user (id int(11) NOT NULL AUTO_INCREMENT,username varchar(68) NOT NULL DEFAULT '',password varchar(250) DEFAULT NULL,email text default NULL,active char(2) DEFAULT 'on',PRIMARY KEY (id),UNIQUE KEY username (username),UNIQUE KEY ausername (username,active)) ENGINE=InnoDB DEFAULT CHARSET=utf8");
 		}
+		
+		Settings::$website='http';
+		if($_SERVER["HTTPS"]=='on') { Settings::$website.='s'; }
+		Settings::$website.='://' . $_SERVER["HTTP_HOST"] . '/';
 
 	}
 
