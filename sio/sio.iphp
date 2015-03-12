@@ -31,6 +31,9 @@ sign-in and sign-out.
 					if (SioResetPW::conforms($siof)) {
 						$stt=0;  $sio=new SioResetPW($siof);
 						$formlet=$sio->form(false);	
+						if ($sio->success()) {
+							$stt=1;
+						}
 					} else {
 						$stt=1;
 					}
