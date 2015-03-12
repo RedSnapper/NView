@@ -52,7 +52,12 @@ class SioForgot {
 				$mail->addAddress($em,$f['username']); 				
 				$mail->Subject = 'Password Reset';
 				$mail->isHTML(true);
-				$url=Settings::$website .'resetbymail.php?'. $f['munge']; 
+				$url=$_SERVER["SCRIPT_URI"];
+				if (strpos($url, '?') !== false) {
+					$url .= '&amp;siof=' . $f['munge'];
+				} else {
+					$url .= '?siof=' . $f['munge'];
+				}			
 				$mail_v->set("//*[@data-xp='un']/child-gap()",$f['username']);
 				$mail_v->set("//*[@data-xp='ha']/@href",$url);
 				$mail->Body = $mail_v->show(false);
