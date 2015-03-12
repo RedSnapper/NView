@@ -39,15 +39,14 @@ class SioSignIn {
 		switch ($this->fields['_fn'][0]) {
 			case 'forgot': {
 				$sf=new SIOForgot();
-				$this->view=$sf->form();
+				return $sf->form();
 			} break;
 			case 'register': {
 				$sf=new SIOReg();
-				$this->view=$sf->form();
+				return $sf->form();
 			} break;
 		}
 	}
-
 /**
  * 'validate'
  * fn fulfilling abstract requirement of trait 'Form'.
