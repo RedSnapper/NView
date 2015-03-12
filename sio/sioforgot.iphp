@@ -38,7 +38,7 @@ class SioForgot {
  */
 	protected function commit() {
 		$em=$this->fields['email'][0];
-		$qry="select username,sha2(concat(ifnull(username,id),'-',ifnull(password,id),'-',ifnull(email,id)),256) as munge from " . $this->table . " where active='on' and email='" . $em . "'";
+		$qry="select username,sha2(concat(ifnull(username,id),'-',ifnull(password,id),'-',ifnull(email,id),'-',ifnull(ts,id)),256) as munge from " . $this->table . " where active='on' and email='" . $em . "'";
 		if ($rx = Settings::$sql->query($qry)) {
 			require_once("/websites/shared/lib/PHPMailer/PHPMailerAutoload.php");
 			while ($f = $rx->fetch_assoc()) {

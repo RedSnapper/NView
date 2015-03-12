@@ -28,9 +28,12 @@ sign-in and sign-out.
 				$stt=1; //default = sign-in.
 				if(!empty(Settings::$qst['siof'])) {
 					$siof=Settings::$qst['siof'];
-					$stt=0;  $sio=new SioResetPW($siof); 
-					$formlet=$sio->form(false);					
-					if ($sio->success()) { $sio=1; }					
+					if ($sio->conforms($siof)) {
+						$stt=0;  $sio=new SioResetPW($siof);
+						$formlet=$sio->form(false);	
+					} else {
+						$stt=1;
+					}
 				} else {
 					if (SioReg::inScope()) {
 						$stt=0; $sio=new SioReg(); $formlet=$sio->form(false);

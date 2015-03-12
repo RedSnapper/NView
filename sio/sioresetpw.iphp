@@ -47,7 +47,7 @@ class SIOResetPW {
 		$un=Settings::esc($this->fields['username'][0]);
 		$ha=Settings::esc($this->key); //this comes via the url...
 		$ph=Settings::esc(hash('sha256',$un . hex2bin('5BE0BDA8E0BDBCE0BDBEE0BC8BE0BDA7E0BDB1E0BDB4E0BDBE5D') . hash('sha256',$this->fields['password'][0])));
-		$cond=" and sha2(concat(ifnull(username,id),'-',ifnull(password,id),'-',ifnull(email,id)),256)='".$ha."'";
+		$cond=" and sha2(concat(ifnull(username,id),'-',ifnull(password,id),'-',ifnull(email,id),'-',ifnull(ts,id)),256)='".$ha."'";
 		$qry="update " . $this->table . " set password='".$ph."' where active='on' and username='".$un."'";
 		Settings::$sql->query($qry);
 		$this->show = false;
@@ -57,5 +57,17 @@ class SIOResetPW {
 	protected function populate() {
 	}
 	
+	public static function conforms($hat=NULL) {
+		$retval=false;
+		$ha=Settings::esc($hat); 
+		$query= "select id from user where sha2(concat(ifnull(username,id),'-',ifnull(password,id),'-',ifnull(email,id),'-',ifnull(ts,id)),256)='".$ha."'";
+		if ($rs = Settings::$sql->query($query)) {
+			if (rows($rs) == 1) {
+				$retval=true;
+			}
+			$rs->close();
+		}
+		return $retval;
+	}
 }
 
