@@ -4,13 +4,6 @@
 	<ul class="form__notice">
 		<li>
 			<label class="form__group text" data-semantic="field" data-xp="comment">
-				<span class="error" data-msg="username" />
-				<span class="label" data-xp="label">Username</span>
-				<span class="flex"><input autocomplete="off" type="text" name="username" /></span>
-			</label>
-		</li>
-		<li>
-			<label class="form__group text" data-semantic="field" data-xp="comment">
 				<span class="error" data-msg="password" />
 				<span class="label" data-xp="label">Password</span>
 				<span class="flex"><input type="password" name="password" /></span>
