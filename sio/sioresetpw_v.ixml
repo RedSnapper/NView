@@ -1,0 +1,31 @@
+<!DOCTYPE fieldset>
+<fieldset  xmlns="http://www.w3.org/1999/xhtml" class="form--cols">
+	<input type="hidden" data-xp="_ident" />
+	<ul class="form__notice">
+		<li>
+			<label class="form__group text" data-semantic="field" data-xp="comment">
+				<span class="error" data-msg="username" />
+				<span class="label" data-xp="label">Username</span>
+				<span class="flex"><input autocomplete="off" type="text" name="username" /></span>
+			</label>
+		</li>
+		<li>
+			<label class="form__group text" data-semantic="field" data-xp="comment">
+				<span class="error" data-msg="password" />
+				<span class="label" data-xp="label">Password</span>
+				<span class="flex"><input type="password" name="password" /></span>
+			</label>
+		</li>
+		<li>
+			<label class="form__group text" data-semantic="field" data-xp="comment">
+				<span class="label" data-xp="label">Retype Password</span>
+				<span class="flex"><input type="password" name="passwordb" /></span>
+			</label>
+		</li>
+		<li>
+			<label class="form__group submit" data-semantic="field" data-xp="button">
+				<span class="flex"><button class="btn--tertiary" type="submit" name="_fn" value="save">Set New Password</button></span>
+			</label>
+		</li>
+	</ul>
+</fieldset>
