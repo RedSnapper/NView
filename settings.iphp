@@ -33,9 +33,6 @@ class Settings extends Singleton {
 		}  else { 
 			Settings::$usr['RU']= 'unknown'; 
 		}
-		
-		print(Settings::$usr['RU']);
-
 		Settings::$usr['uid']=0;
 		Settings::$usr['ID']=0;
 		if(isset($_SERVER["RS_SQLCONFIG_FILE"])) { //the path to the my.cnf for this connection.
@@ -82,6 +79,7 @@ class Settings extends Singleton {
 		if($construct) {
 			if (Session::has('username')) {
 				Settings::$usr['RU']=Session::get('username');
+				print('set from session:['.Settings::$usr['RU'].']');
 			}
 			if ($rx = Settings::$sql->query("select id from user where active='on' and username='". Settings::$usr['RU'] ."'")) {
 				while ($row = $rx->fetch_assoc()) {
