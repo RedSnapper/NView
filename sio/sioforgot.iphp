@@ -40,27 +40,25 @@ class SioForgot {
 		$em=$this->fields['email'][0];
 		$qry="select username,sha2(concat(ifnull(username,id),'-',ifnull(password,id),'-',ifnull(email,id)),256) as munge from " . $this->table . " where active='on' and email='" . $em . "'";
 		if ($rx = Settings::$sql->query($qry)) {
-			if (Settings::rows($rx) === 1) {
-				require_once("/websites/shared/lib/PHPMailer/PHPMailerAutoload.php");
-				while ($f = $rx->fetch_assoc()) {
-					$mail_v=new NView('siosetpwmail_v.ixml');
-					$mail = new PHPMailer();
-					$mail->isSendmail();
-					$mail->CharSet='utf-8';
-					$mail->Encoding='base64';
-					$mail->setFrom('auto@redsnapper.net', 'Password Reset');
-					$mail->addBCC('auto@redsnapper.net', 'Auto'); //bcc			
-					$mail->addAddress($em,$f['username']); 				
-					$mail->Subject = 'Password Reset';
-					$mail->isHTML(true);
-					$url=Settings::$website .'resetbymail.php?'. $f['munge']; 
-					$mail_v->set("//*[@data-xp='un']/child-gap()",$f['username']);
-					$mail_v->set("//*[@data-xp='ha']/@href",$url);
-					$mail->Body = $mail_v->show(false);
-					$mail->AltBody="Please see the html alternative of this email";
-					$mail->send();
-				}
-			} 
+			require_once("/websites/shared/lib/PHPMailer/PHPMailerAutoload.php");
+			while ($f = $rx->fetch_assoc()) {
+				$mail_v=new NView('siosetpwmail_v.ixml');
+				$mail = new PHPMailer();
+				$mail->isSendmail();
+				$mail->CharSet='utf-8';
+				$mail->Encoding='base64';
+				$mail->setFrom('auto@redsnapper.net', 'Password Reset');
+				$mail->addBCC('auto@redsnapper.net', 'Auto'); //bcc			
+				$mail->addAddress($em,$f['username']); 				
+				$mail->Subject = 'Password Reset';
+				$mail->isHTML(true);
+				$url=Settings::$website .'resetbymail.php?'. $f['munge']; 
+				$mail_v->set("//*[@data-xp='un']/child-gap()",$f['username']);
+				$mail_v->set("//*[@data-xp='ha']/@href",$url);
+				$mail->Body = $mail_v->show(false);
+				$mail->AltBody="Please see the html alternative of this email";
+				$mail->send();
+			}
 			$rx->close();
 		}
 		return true;
