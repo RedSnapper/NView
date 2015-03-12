@@ -28,8 +28,6 @@ sign-in and sign-out.
 				$stt=1; //default = sign-in.
 				if (SioReg::inScope()) {
 					$stt=0; $sio=new SioReg(); $formlet=$sio->form(false);
-				} elseif (SioSetPW::inScope()) {
-					$stt=0; $sio=new SioSetPW(); $formlet=$sio->form(false);
 				} elseif (SioForgot::inScope()) {
 					$stt=0; $sio=new SioForgot(); $formlet=$sio->form(false);
 					if ($sio->success()) {
