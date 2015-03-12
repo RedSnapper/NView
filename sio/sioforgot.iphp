@@ -37,11 +37,14 @@ class SioForgot {
  * fn OVERLOADING trait 'Form'.
  */
 	protected function commit() {
+		print('[commit A]');
 		$em=$this->fields['email'][0];
 		$qry="select username,sha2(concat(ifnull(username,id),'-',ifnull(password,id),'-',ifnull(email,id)),256) as munge from " . $this->table . " where active='on' and email='" . $em . "'";
 		if ($rx = Settings::$sql->query($qry)) {
+		print('[commit B]');
 			require_once("/websites/shared/lib/PHPMailer/PHPMailerAutoload.php");
 			while ($f = $rx->fetch_assoc()) {
+		print('[commit C]');
 				$mail_v=new NView('siosetpwmail_v.ixml');
 				$mail = new PHPMailer();
 				$mail->isSendmail();
@@ -58,6 +61,7 @@ class SioForgot {
 				$mail->Body = $mail_v->show(false);
 				$mail->AltBody="Please see the html alternative of this email";
 				$mail->send();
+		print('[commit D]');
 			}
 			$rx->close();
 		}
