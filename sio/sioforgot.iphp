@@ -2,8 +2,8 @@
 mb_internal_encoding('UTF-8');
 
 /**
-This requires 
-**/
+ * This requires 
+ */
 class SioForgot {
 
 	use Form;
@@ -29,21 +29,7 @@ class SioForgot {
  * errors are placed into the this->view.
  */
 	protected function validate() {
-		$retval = false;
-		if (isset($this->fields['username'][0]) && isset($this->fields['email'][0])) {
-			$un=$this->fields['username'][0];
-			$em=$this->fields['email'][0];
-			$qry="select count(id) as ok from " . $this->table . " where active='on' and username='" .$un. "' and email='" . $em . "'";
-			if ($rx = Settings::$sql->query($qry)) {
-				if (strcmp($rx->fetch_row()[0],"1") === 0) {
-					$retval=true;
-				} else {
-					$this->seterr("username","Either the username or email don't match our records");
-				}
-				$rx->close();
-			}
-			$this->valid = $retval;
-		}
+		$this->valEmail('email');
 	}
 
 /**
@@ -51,6 +37,29 @@ class SioForgot {
  * fn OVERLOADING trait 'Form'.
  */
 	protected function commit() {
+		$em=$this->fields['email'][0];
+		$qry="select username from " . $this->table . " where active='on' and email='" . $em . "'";
+		if ($rx = Settings::$sql->query($qry)) {
+			if (Settings::rows($rx) === 1) {
+				require_once("/websites/shared/lib/PHPMailer/PHPMailerAutoload.php");
+				while ($f = $rx->fetch_assoc()) {
+				
+					$mail = new PHPMailer();
+					$mail->isSendmail();
+					$mail->CharSet='utf-8';
+					$mail->Encoding='base64';
+					$mail->setFrom('auto@redsnapper.net', 'Password Reset');
+					$mail->addBCC('auto@redsnapper.net', 'Auto'); //bcc			
+					$mail->addAddress($em, $f['username']); 				
+					$mail->Subject = 'Password Reset';
+					$mail->isHTML(true);
+//					$mail->Body = $this->view->show(false);
+//					$mail->AltBody=$this->text;
+					$mail->send();
+				}
+			} 
+			$rx->close();
+		}
 		return true;
 	}
 
@@ -60,7 +69,6 @@ class SioForgot {
  * place this->fields array into view.
  */
 	protected function populate() {
-		$this->vset('username');
 		$this->vset('email');
 	}
 }

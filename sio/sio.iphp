@@ -22,13 +22,6 @@ sign-in and sign-out.
 					$stt=0; $sio=new SioSetPW(); $formlet=$sio->form(false);
 					if ($sio->success()) {
 						$formlet=new NView('siosetpws_v.ixml');
-						$err=$formlet->messages();
-						if (isset($err) && !empty($err)) {
-							print $err;
-						}
-
-
-						// '<h4>You successfully changed your password.</h4>'); 
 					}
 				}
 			} else { //not-signed in

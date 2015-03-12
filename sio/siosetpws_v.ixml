@@ -1,4 +1,5 @@
-<!DOCTYPE fieldset>
-<fieldset xmlns="http://www.w3.org/1999/xhtml" class="form--cols">
-	<h3>You successfully changed your password.</h3>
-</fieldset>
+<!DOCTYPE div>
+<div xmlns="http://www.w3.org/1999/xhtml">
+	<h3>Password Reset Request</h3>
+	<span>It appears that you have posted a password reset request.</span>
+</div>
