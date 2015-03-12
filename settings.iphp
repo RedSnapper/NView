@@ -53,13 +53,13 @@ class Settings extends Singleton {
 			Settings::$sphinx = null;
 		}
 		Settings::$sql->set_charset("utf8");
-		if (!Settings::table_exists('session')) {
+		if (!Settings::table_exists("session")) {
 			Settings::$sql->query("CREATE TABLE session(id varchar(255) NOT NULL,ts timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, PRIMARY KEY (id), KEY ts (ts)) ENGINE=InnoDB DEFAULT CHARSET=utf8");
 		}
-		if (!Settings::table_exists('sessiondata')) {
+		if (!Settings::table_exists("sessiondata")) {
 			Settings::$sql->query("CREATE TABLE sessiondata (sid varchar(200) NOT NULL,name varchar(128) NOT NULL,value longtext NOT NULL,PRIMARY KEY (sid,name)) ENGINE=InnoDB DEFAULT CHARSET=utf8");
 		}
-		if (!Settings::table_exists(user)) {
+		if (!Settings::table_exists("user")) {
 			Settings::$sql->query("CREATE TABLE user (id int(11) NOT NULL AUTO_INCREMENT,username varchar(68) NOT NULL DEFAULT '',password varchar(250) DEFAULT NULL,email text default NULL,active char(2) DEFAULT 'on',PRIMARY KEY (id),UNIQUE KEY username (username),UNIQUE KEY ausername (username,active)) ENGINE=InnoDB DEFAULT CHARSET=utf8");
 		}
 		Settings::$website='http';
