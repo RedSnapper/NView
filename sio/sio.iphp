@@ -28,14 +28,18 @@ sign-in and sign-out.
 				$stt=1; //default = sign-in.
 				if(!empty(Settings::$qst['siof'])) {
 					$siof=Settings::$qst['siof'];
-				}
-				if (SioReg::inScope()) {
-					$stt=0; $sio=new SioReg(); $formlet=$sio->form(false);
-				} elseif (SioForgot::inScope()) {
-					$stt=0; $sio=new SioForgot(); $formlet=$sio->form(false);
-					if ($sio->success()) {
-						$formlet=new NView('sioforgots_v.ixml');
-					}					
+					$stt=1; 
+					$sio=new SioResetPW($siof); 
+					$formlet=$sio->form(false);					
+				} else {
+					if (SioReg::inScope()) {
+						$stt=0; $sio=new SioReg(); $formlet=$sio->form(false);
+					} elseif (SioForgot::inScope()) {
+						$stt=0; $sio=new SioForgot(); $formlet=$sio->form(false);
+						if ($sio->success()) {
+							$formlet=new NView('sioforgots_v.ixml');
+						}					
+					}
 				}		
 			}
 			switch ($stt) {
