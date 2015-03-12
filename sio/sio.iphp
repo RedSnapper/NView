@@ -28,7 +28,7 @@ sign-in and sign-out.
 				$stt=1; //default = sign-in.
 				if(!empty(Settings::$qst['siof'])) {
 					$siof=Settings::$qst['siof'];
-					if ($sio->conforms($siof)) {
+					if (SioResetPW::conforms($siof)) {
 						$stt=0;  $sio=new SioResetPW($siof);
 						$formlet=$sio->form(false);	
 					} else {
