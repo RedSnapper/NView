@@ -13,6 +13,7 @@ class Settings extends Singleton {
 	public static $req=array();	//querystring for unnamed parameters.
 	public static $qst=array();	//associational querystring - for named parameters.
 	private static $sqls=array();
+	public static $website;
 
 /**
  * '__construct'
@@ -22,6 +23,10 @@ class Settings extends Singleton {
 			parse_str($_SERVER['QUERY_STRING'],Settings::$qst);
 			Settings::$req=array_keys(Settings::$qst);
 		}
+
+		Settings::$website='http';
+		if($_SERVER["HTTPS"]=='on') { Settings::$website.='s'; }
+		Settings::$website.='://' . $_SERVER["HTTP_HOST"] . '/';
 
 		Settings::$url=strtok($_SERVER["REQUEST_URI"],'?');
 		if ( !empty($_SERVER['PHP_AUTH_USER']) ) { Settings::$usr['RU']= $_SERVER['PHP_AUTH_USER'];}
