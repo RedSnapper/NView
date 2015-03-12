@@ -13,7 +13,7 @@ class Settings extends Singleton {
 	public static $req=array();	//querystring for unnamed parameters.
 	public static $qst=array();	//associational querystring - for named parameters.
 	private static $sqls=array();
-	public static $website='';
+	public static $website=null;
 
 /**
  * '__construct'
@@ -23,13 +23,20 @@ class Settings extends Singleton {
 			parse_str($_SERVER['QUERY_STRING'],Settings::$qst);
 			Settings::$req=array_keys(Settings::$qst);
 		}
-
 		Settings::$url=strtok($_SERVER["REQUEST_URI"],'?');
-		if ( !empty($_SERVER['PHP_AUTH_USER']) ) { Settings::$usr['RU']= $_SERVER['PHP_AUTH_USER'];}
-		elseif ( isset($_SERVER['REDIRECT_REMOTE_USER']) ) { Settings::$usr['RU']= $_SERVER['REDIRECT_REMOTE_USER']; }
-		elseif ( isset($_SERVER['REMOTE_USER']) ) { Settings::$usr['RU']= $_SERVER['REMOTE_USER'];
-		} else { Settings::$usr['RU']= 'unknown'; }
+		if ( !empty($_SERVER['PHP_AUTH_USER']) ) { 
+			Settings::$usr['RU']= $_SERVER['PHP_AUTH_USER'];
+		} elseif ( isset($_SERVER['REDIRECT_REMOTE_USER']) ) { 
+			Settings::$usr['RU']= $_SERVER['REDIRECT_REMOTE_USER']; 
+		} elseif ( isset($_SERVER['REMOTE_USER']) ) { 
+			Settings::$usr['RU']= $_SERVER['REMOTE_USER'];
+		}  else { 
+			Settings::$usr['RU']= 'unknown'; 
+		}
+		
+		print(Settings::$usr['RU']);
 
+		Settings::$usr['uid']=0;
 		Settings::$usr['ID']=0;
 		if(isset($_SERVER["RS_SQLCONFIG_FILE"])) { //the path to the my.cnf for this connection.
 			Settings::$sql = mysqli_init();
