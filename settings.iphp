@@ -33,15 +33,15 @@ class Settings extends Singleton {
 		Settings::$usr['ID']=0;
 		if(isset($_SERVER["RS_SQLCONFIG_FILE"])) { //the path to the my.cnf for this connection.
 			Settings::$sql = mysqli_init();
-			$sqls = parse_ini_file($_SERVER["RS_SQLCONFIG_FILE"]); 
+			Settings::$sqls = parse_ini_file($_SERVER["RS_SQLCONFIG_FILE"]); 
 			mysqli_options(Settings::$sql,MYSQLI_READ_DEFAULT_FILE,$_SERVER["RS_SQLCONFIG_FILE"]);
-			mysqli_real_connect(Settings::$sql,$sqls['host'],$sqls['user'],$sqls['password'],$sqls['database']);
+			mysqli_real_connect(Settings::$sql,Settings::$sqls['host'],Settings::$sqls['user'],Settings::$sqls['password'],Settings::$sqls['database']);
 		} else {
-			$sqls['host']=getenv('RS_SQLHOST');
-			$sqls['user']=getenv('RS_SQLUSER');
-			$sqls['password']=getenv('RS_SQLUSERPW');
-			$sqls['database']=getenv('RS_DATABASE');
-			Settings::$sql = new mysqli($sqls['host'],$sqls['user'],$sqls['password'],$sqls['database']);
+			Settings::$sqls['host']=getenv('RS_SQLHOST');
+			Settings::$sqls['user']=getenv('RS_SQLUSER');
+			Settings::$sqls['password']=getenv('RS_SQLUSERPW');
+			Settings::$sqls['database']=getenv('RS_DATABASE');
+			Settings::$sql = new mysqli(Settings::$sqls['host'],Settings::$sqls['user'],Settings::$sqls['password'],Settings::$sqls['database']);
 		}
 		if (Settings::$sql->connect_error) {
     			die('SQL Connection Error (' . $mysqli->connect_errno . ') ' . $mysqli->connect_error);
