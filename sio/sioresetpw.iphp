@@ -62,7 +62,7 @@ class SIOResetPW {
 		$ha=Settings::esc($hat); 
 		$query= "select id from user where sha2(concat(ifnull(username,id),'-',ifnull(password,id),'-',ifnull(email,id),'-',ifnull(ts,id)),256)='".$ha."'";
 		if ($rs = Settings::$sql->query($query)) {
-			if (rows($rs) == 1) {
+			if (Settings::rows($rs) == 1) {
 				$retval=true;
 			}
 			$rs->close();
