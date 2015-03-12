@@ -13,7 +13,7 @@ class Settings extends Singleton {
 	public static $req=array();	//querystring for unnamed parameters.
 	public static $qst=array();	//associational querystring - for named parameters.
 	private static $sqls=array();
-//	public static $website;
+	public static $website='';
 
 /**
  * '__construct'
@@ -62,11 +62,9 @@ class Settings extends Singleton {
 		if (!Settings::table_exists(user)) {
 			Settings::$sql->query("CREATE TABLE user (id int(11) NOT NULL AUTO_INCREMENT,username varchar(68) NOT NULL DEFAULT '',password varchar(250) DEFAULT NULL,email text default NULL,active char(2) DEFAULT 'on',PRIMARY KEY (id),UNIQUE KEY username (username),UNIQUE KEY ausername (username,active)) ENGINE=InnoDB DEFAULT CHARSET=utf8");
 		}
-/*		
 		Settings::$website='http';
 		if($_SERVER["HTTPS"]=='on') { Settings::$website.='s'; }
 		Settings::$website.='://' . $_SERVER["HTTP_HOST"] . '/';
-*/
 	}
 
 /**
