@@ -69,8 +69,8 @@ class SioSignIn {
 				}
 				$rx->close();
 			}
-			$this->valid = $retval;
 		}
+		$this->valid = $retval;
 	}
 
 /**
