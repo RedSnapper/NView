@@ -227,6 +227,7 @@ trait Form {
  */
 	function tset($k='') {
 		$this->view->set("//*[@data-tr='" .$k . "']/child-gap()",Dict::get($k));
+		print('['.$k.'=>'.Dict::get($k).']');
 	}
 /**
  * 'vset'
