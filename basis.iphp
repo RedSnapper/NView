@@ -10,6 +10,8 @@ require_once("dictionary.iphp");
 require_once("settings.iphp");
 require_once("session.iphp");
 
+Dict::setln(array('en'));
+
 //really should only call these if req.
 require_once("sio/sio.iphp");
 require_once("sio/signin.iphp");

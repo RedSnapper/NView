@@ -21,7 +21,8 @@ class Dict extends Singleton {
  	}
 
 	//array of keys with array of values..
-	public static set($kv,$ln = Dict::$lng[0]) {
+	public static set($kv,$ln = NULL) {
+		if (is_null($ln)) { $ln = Dict::$lng[0]; }
 		foreach($kv as $k => $v) {
 			Dict::$lib[$ln][$k]=$v;
 		}
