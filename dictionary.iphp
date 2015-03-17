@@ -29,7 +29,8 @@ class Dict extends Singleton {
 	
 	public static function get($key) {
 		$x = 0;
-		while (($x < count(Dict::$ln)) && (!isset(Dict::$lib[Dict::$ln[0]][$key])) { $x++; }
+		while (($x < count(Dict::$ln)) && (!isset(Dict::$lib[Dict::$ln[0]][$key])))
+			{ $x++; }
 		return Dict::$lib[Dict::$ln[$x]][$key];
 	}
 	
