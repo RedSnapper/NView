@@ -5,30 +5,30 @@
 		<li>
 			<label class="form__group text" data-semantic="field" data-xp="comment">
 				<span class="error" data-msg="username" />
-				<span class="label" data-xp="label">Username</span>
+				<span class="label" data-xp="label" data-tr="prompt_username" />
 				<span class="flex"><input autocomplete="off" type="text" name="username" /></span>
 			</label>
 		</li>
 		<li>
 			<label class="form__group text" data-semantic="field" data-xp="comment">
 				<span class="error" data-msg="password" />
-				<span class="label" data-xp="label">Password</span>
+				<span class="label" data-xp="label" data-tr="prompt_password" />
 				<span class="flex"><input type="password" name="password" /></span>
 			</label>
 		</li>
 		<li>
 			<label class="form__group submit" data-semantic="button" >
-				<span class="flex"><button class="btn--tertiary" type="submit" name="_fn" value="save">Sign In</button></span>
+				<span class="flex"><button class="btn--tertiary" type="submit" name="_fn" data-tr="button_signin" /></span>
 			</label>
 		</li>
 		<li>
 			<label class="form__group submit" data-semantic="button" >
-				<span class="flex"><button class="btn--tertiary" type="submit" name="_fn" value="forgot">Forgot Password</button></span>
+				<span class="flex"><button class="btn--tertiary" type="submit" name="_fn" value="forgot" data-tr="button_forgot" /></span>
 			</label>
 		</li>
 		<li>
 			<label class="form__group submit" data-semantic="button" >
-				<span class="flex"><button class="btn--tertiary" type="submit" name="_fn" value="register">Register</button></span>
+				<span class="flex"><button class="btn--tertiary" type="submit" name="_fn" data-tr="button_register" /></span>
 			</label>
 		</li>
 	</ul>

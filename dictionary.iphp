@@ -1,0 +1,46 @@
+<?php
+mb_internal_encoding('UTF-8');
+
+/**
+ * class 'Dict'
+ */
+class Dict extends Singleton {
+
+	public static $ln=array('en'); //this is an array of fall-back languages...
+	private static $lib=array();
+	
+	public static function setln($ln=array('en')) {
+		Dict::$lng=$ln;
+		if (!isset(Dict::$lib[$ln[0]])) {
+			Dict::$lib[$ln[0]] =  array();
+		}	
+	}
+	
+ 	public static function ln() {
+ 		return Dict::$ln[0];
+ 	}
+
+	//array of keys with array of values..
+	public static set($kv,$ln = Dict::$lng[0]) {
+		foreach($kv as $k => $v) {
+			Dict::$lib[$ln][$k]=$v;
+		}
+	}
+	
+	public static get($key) {
+		$x = 0;
+		while (($x < count(Dict::$ln)) && (!isset(Dict::$lib[Dict::$ln[0]][$key])) { $x++; }
+		return Dict::$lib[Dict::$ln[$x]][$key];
+	}
+	
+ 	public static function load($file) {
+ //load json or xml or whatever....
+ 	}
+}
+
+
+
+
+
+
+

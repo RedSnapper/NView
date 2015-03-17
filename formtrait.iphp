@@ -223,6 +223,12 @@ trait Form {
 	}
 
 /**
+ * 'tset' translations
+ */
+	function tset($k='') {
+		$this->view->set("//*[@data-tr='" .$k . "']/child-gap()",Dict::get($k));
+	}
+/**
  * 'vset'
  */
 	function vset($input='_unused',$kind=NULL,$special=NULL) {
@@ -332,6 +338,7 @@ trait Form {
 			$this->populate();
 			$this->view->set("//*[@data-msg][not(node())]");
 			$this->view->set("//*[@data-xp='_ident']/@name",static::sig());
+			$this->view->set("//*[@data-tr]/@data-tr/preceding-gap()",static::sig());
 			$this->view->set("//*[@data-xp='_ident']/@value",$this->ident());
 			$this->view->set("//*[@name][@name!='" . static::sig() . "']/@name/preceding-gap()",$this->idprefix);
 			return $this->view;

@@ -6,6 +6,8 @@ mb_internal_encoding('UTF-8');
  */
 class SioSignIn {
 	use Form;
+	private $en_trans;
+	
 	protected static function sig() {
 		return "siosignin_";
 	}
@@ -19,6 +21,16 @@ class SioSignIn {
 		$this->table="user";
 		$this->setfld('username');
 		$this->setfld('password');
+		$this->en_trans = array(
+			$this->sig() .'prompt_username' => "Username",
+			$this->sig() .'prompt_password'=>"Password",
+			$this->sig() .'button_signin'=>"Sign In",
+			$this->sig() .'button_forgot'=>"Forgot Password",
+			$this->sig() .'button_register'=>"Register",
+			$this->sig() .'errors_username_unmatched'=>"Either the username or password don't match our records"
+		);
+		Dict::set($en_trans,'en');
+
 	}
 
 /**
@@ -64,7 +76,7 @@ class SioSignIn {
 				if (strcmp($rx->fetch_row()[0],"1") === 0) {
 					$retval=true;
 				} else {
-					$this->seterr("username","Either the username or password don't match our records");
+					$this->seterr("username",Dict::get('siosignin_errors_username_unmatched'));
 				}
 				$rx->close();
 			}
@@ -89,6 +101,9 @@ class SioSignIn {
  */
 	protected function populate() {
 		$this->vset('username');
+		foreach($this->en_trans as $k => $v) {
+			$this->tset($k);
+		}
 	}
 
 }

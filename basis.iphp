@@ -6,8 +6,11 @@ set_include_path( get_include_path() . PATH_SEPARATOR . '/websites/shared/lib/' 
 require_once("patterns.iphp");
 require_once("nview.iphp");
 require_once("formtrait.iphp");
+require_once("dictionary.iphp");
 require_once("settings.iphp");
 require_once("session.iphp");
+
+//really should only call these if req.
 require_once("sio/sio.iphp");
 require_once("sio/signin.iphp");
 require_once("sio/signout.iphp");
