@@ -35,12 +35,21 @@ class SIOSetEmail {
 		}
 		$this->valEmail('emailp');
 		if ($this->valid) {
+			print('[succeeded valEmail]');
 			$this->valid = $retval;
+			if ($this->valid) {
+				print('[succeeded gen. validation]');
+			} else {
+				print('[failed gen. validation]');
+			}
+		} else {
+				print('[failed valEmail]');
 		}
 		
 	}
 
 	protected function commit() {
+		print('[got to commit]');
 		$ph=hash('sha256',Settings::$usr['RU'] . hex2bin('5BE0BDA8E0BDBCE0BDBEE0BC8BE0BDA7E0BDB1E0BDB4E0BDBE5D') . hash('sha256',$this->fields['password'][0]));
 		$this->fields['password'][0]='';
 		$qpy="select count(id) as ok from " . $this->table . " where active='on' and id='" .Settings::$usr['ID']. "' and password='" . $ph . "' and active='on'";
