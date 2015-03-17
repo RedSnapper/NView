@@ -341,6 +341,7 @@ trait Form {
 			$this->view->set("//*[@data-msg][not(node())]");
 			$this->view->set("//*[@data-xp='_ident']/@name",static::sig());
 			$this->view->set("//*[@data-xp='_ident']/@value",$this->ident());
+			$this->view->set("//*[@data-tr]/@data-tr");
 			$this->view->set("//*[@name][@name!='" . static::sig() . "']/@name/preceding-gap()",$this->idprefix);
 			return $this->view;
 		} else {
