@@ -1,0 +1,32 @@
+<!DOCTYPE fieldset>
+<fieldset  xmlns="http://www.w3.org/1999/xhtml" class="form--cols">
+	<input type="hidden" data-xp="_ident" />
+	<ul class="form__notice">
+		<li>
+			<label class="form__group text" data-semantic="field" data-xp="comment">
+				<span class="error" data-msg="email" />
+				<span class="label" data-xp="label">New Email</span>
+				<span class="flex"><input type="email" name="email" /></span>
+			</label>
+		</li>
+		<li>
+			<label class="form__group text" data-semantic="field" data-xp="comment">
+				<span class="error" data-msg="email" />
+				<span class="label" data-xp="label">Retype New Email</span>
+				<span class="flex"><input type="email" name="emailb" /></span>
+			</label>
+		</li>
+		<li>
+			<label class="form__group text" data-semantic="field" data-xp="comment">
+				<span class="error" data-msg="password" />
+				<span class="label" data-xp="label">Password</span>
+				<span class="flex"><input type="password" name="password" /></span>
+			</label>
+		</li>
+		<li>
+			<label class="form__group submit" data-semantic="field" data-xp="button">
+				<span class="flex"><button class="btn--tertiary" type="submit" name="_fn" value="save">Set New Email</button></span>
+			</label>
+		</li>
+	</ul>
+</fieldset>

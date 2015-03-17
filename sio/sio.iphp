@@ -34,6 +34,12 @@ sign-in and sign-out.
 						if ($sio->success()) {
 							$stt=1;
 						}
+					} elseif (SIOSetEmail::conforms($siof)) {
+						$stt=0;  $sio=new SIOSetEmail($siof);
+						$formlet=$sio->form(false);	
+						if ($sio->success()) {
+							$stt=1;
+						}
 					} else {
 						$stt=1;
 					}

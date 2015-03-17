@@ -2,7 +2,10 @@
 <fieldset xmlns="http://www.w3.org/1999/xhtml">
 	<input type="hidden" data-xp="_ident" />
 	<label class="form__group submit" data-semantic="button">
-		<button class="btn--reset" type="submit" name="_fn" value="reset">Set New Password</button>
+		<button data-xp="btnemail" class="btn--email" type="submit" name="_fn" value="email">Set New Email</button>
+	</label>
+	<label class="form__group submit" data-semantic="button">
+		<button data-xp="btnreset" class="btn--reset" type="submit" name="_fn" value="reset">Set New Password</button>
 	</label>
 	<label class="form__group submit" data-semantic="button">
 		<button class="btn--so" type="submit" name="_fn" value="save">Sign Out</button>

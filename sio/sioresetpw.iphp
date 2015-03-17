@@ -10,7 +10,6 @@ class SIOResetPW {
 		$this->iniForm($key,$v);
 		$this->key=$key; //This will be the siof value passed by url.
 		$this->table="user";
-//		$this->setfld('username');
 		$this->setfld('password');
 		$this->setfld('passwordb','','!skip');
 	}
@@ -22,7 +21,6 @@ class SIOResetPW {
  * errors are placed into the this->view.
  */
 	protected function validate() {
-//		$this->valString('username',"Enter your username as supplied in the email.");
 		$retval = $this->valid;
 		if (isset($this->fields['password'][0]) && isset($this->fields['passwordb'][0])) {
 			$pwa=$this->fields['password'][0];

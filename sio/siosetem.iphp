@@ -1,0 +1,97 @@
+<?php
+mb_internal_encoding('UTF-8');
+
+class SIOSetEmail {
+	use Form;
+	protected static function sig() {
+		return "siosetem_";
+	}
+	function __construct($key=NULL,$v=NULL) {
+		$this->iniForm($key,$v);
+		$this->key=$key;
+		$this->table="user";
+		$this->setfld('password','','!skip');
+		$this->setfld('emailp');
+		$this->setfld('emailb','','!skip');
+	}
+	
+/**
+ * 'validate'
+ * fn fulfilling abstract requirement of trait 'Form'.
+ * validate all fields in this->fields.
+ * errors are placed into the this->view.
+ */
+	protected function validate() {
+		$retval = false;
+		if (isset($this->fields['emailp'][0]) && isset($this->fields['emailb'][0])) {
+			$ema=$this->fields['emailp'][0];
+			$emb=$this->fields['emailb'][0];
+			if ($ema !== $emb ) {
+				$this->seterr("email","Both emails must be the same.");
+				$retval = false;
+			}  else {
+				$retval = true;
+			}
+		}
+		$this->valEmail('emailp');
+		if ($this->valid) {
+			$this->valid = $retval;
+		}
+		
+	}
+
+	protected function commit() {
+		$ph=hash('sha256',$un . hex2bin('5BE0BDA8E0BDBCE0BDBEE0BC8BE0BDA7E0BDB1E0BDB4E0BDBE5D') . hash('sha256',$this->fields['password'][0]));
+		$this->fields['password'][0]='';
+		$qpy="select count(id) as ok from " . $this->table . " where active='on' and id='" .Settings::$usr['ID']. "' and password='" . $ph . "' and active='on'";
+		if ($ry = Settings::$sql->query($qpy)) {
+			if (strcmp($ry->fetch_row()[0],"1") === 0) {
+				$em=$this->fields['emailp'][0];
+				$em=Settings::esc($em);
+				$qry="update user set emailp='".$em."' where id='".Settings::$usr['ID']."'";
+				$qry="select username,sha2(concat(ifnull(username,id),'+',ifnull(password,id),'+',ifnull(email,id),'+',ifnull(ts,id)),256) as munge from " . $this->table . " where active='on'";
+				if ($rx = Settings::$sql->query($qry)) {
+					require_once("/websites/shared/lib/PHPMailer/PHPMailerAutoload.php");
+					while ($f = $rx->fetch_assoc()) {
+						$mail_v=new NView('siosetemmail_v.ixml');
+						$mail = new PHPMailer();
+						$mail->isSendmail();
+						$mail->CharSet='utf-8';
+						$mail->Encoding='base64';
+						$mail->setFrom('auto@redsnapper.net', 'Change Email');
+						$mail->addBCC('auto@redsnapper.net', 'Auto'); //bcc			
+						$mail->addAddress($em,Settings::$usr['RU']); 				
+						$mail->Subject = 'Change Email';
+						$mail->isHTML(true);
+						$url=$_SERVER["SCRIPT_URI"];
+						if (strpos($url, '?') !== false) {
+							$url .= '&amp;siof=' . $f['munge'];
+						} else {
+							$url .= '?siof=' . $f['munge'];
+						}			
+						$mail_v->set("//*[@data-xp='ha']/@href",$url);
+						$mail->Body = $mail_v->show(false);
+						$mail->AltBody="Please see the html alternative of this email";
+						$mail->send();
+					}
+					$rx->close();
+				}
+				$ry->close();
+			}
+		}
+		$this->show = false;
+		return true;
+	}
+	
+	protected function populate() {
+	}
+	
+	public static function pushit($hat=NULL) {
+		$retval=false;
+		$ha=Settings::esc($hat); 
+		$query= "update " . $this->table . " set email=emailp where id='" .Settings::$usr['ID']. "' and sha2(concat(ifnull(username,id),'+',ifnull(password,id),'+',ifnull(email,id),'+',ifnull(ts,id)),256)='".$ha."'";
+		Settings::$sql->query($query);
+	}
+	
+}
+
