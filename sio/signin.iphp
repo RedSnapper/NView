@@ -26,11 +26,13 @@ class SioSignIn {
 			$this->sig() .'prompt_password'=>"Password",
 			$this->sig() .'button_signin'=>"Sign In",
 			$this->sig() .'button_forgot'=>"Forgot Password",
-			$this->sig() .'button_register'=>"Register",
-			$this->sig() .'errors_username_unmatched'=>"Either the username or password don't match our records"
+			$this->sig() .'button_register'=>"Register"
 		);
 		Dict::set($this->en_trans,'en');
-
+		$this->en_errs = array(
+			$this->sig() .'errors_username_unmatched'=>"Either the username or password don't match our records"
+		};
+		Dict::set($this->en_errs,'en');
 	}
 
 /**
