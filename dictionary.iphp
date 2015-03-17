@@ -10,7 +10,7 @@ class Dict extends Singleton {
 	private static $lib=array();
 	
 	public static function setln($ln=array('en')) {
-		Dict::$lng=$ln;
+		Dict::$ln=$ln;
 		if (!isset(Dict::$lib[$ln[0]])) {
 			Dict::$lib[$ln[0]] =  array();
 		}	
@@ -20,7 +20,7 @@ class Dict extends Singleton {
  		return Dict::$ln[0];
  	}
 
-	public static function set($kv,$ln = Dict::$lng[0]) {
+	public static function set($kv,$ln = Dict::$ln[0]) {
 		foreach($kv as $k => $v) {
 			Dict::$lib[$ln][$k]=$v;
 		}
