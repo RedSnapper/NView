@@ -35,11 +35,8 @@ sign-in and sign-out.
 							$stt=1;
 						}
 					} elseif (SIOSetEmail::conforms($siof)) {
-						$stt=0;  $sio=new SIOSetEmail($siof);
-						$formlet=$sio->form(false);	
-						if ($sio->success()) {
-							$stt=1;
-						}
+						$formlet=SIOSetEmail::pushit($siof);
+						$stt=0;  
 					} else {
 						$stt=1;
 					}
