@@ -104,6 +104,8 @@ trait Form {
 		        print $err;
 		    }
 		}
+		$this->view->set("//*[@data-tr]/@data-tr/preceding-gap()",static::sig());
+		
 		//initialise other members.
 		$this->gflds = array(); //array of sql fields that will be used to get.
 		$this->cflds = array(); //array of sql fields that will be used in commit.
@@ -226,9 +228,7 @@ trait Form {
  * 'tset' translations
  */
 	function tset($k='') {
-		$k=substr($k,0,strlen(static::sig()));
 		$this->view->set("//*[@data-tr='" .$k . "']/child-gap()",Dict::get($k));
-//		print('['.$k.'=>'.Dict::get($k).']');
 	}
 /**
  * 'vset'
@@ -340,7 +340,6 @@ trait Form {
 			$this->populate();
 			$this->view->set("//*[@data-msg][not(node())]");
 			$this->view->set("//*[@data-xp='_ident']/@name",static::sig());
-//			$this->view->set("//*[@data-tr]/@data-tr/preceding-gap()",static::sig());
 			$this->view->set("//*[@data-xp='_ident']/@value",$this->ident());
 			$this->view->set("//*[@name][@name!='" . static::sig() . "']/@name/preceding-gap()",$this->idprefix);
 			return $this->view;
