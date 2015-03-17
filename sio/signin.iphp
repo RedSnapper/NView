@@ -104,7 +104,6 @@ class SioSignIn {
 		foreach($this->en_trans as $k => $v) {
 			$this->tset($k);
 		}
-		print_r($this->en_trans);
 	}
 
 }
