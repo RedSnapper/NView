@@ -29,7 +29,7 @@ class SioSignIn {
 			$this->sig() .'button_register'=>"Register",
 			$this->sig() .'errors_username_unmatched'=>"Either the username or password don't match our records"
 		);
-		Dict::set($en_trans,'en');
+		Dict::set($this->en_trans,'en');
 
 	}
 
