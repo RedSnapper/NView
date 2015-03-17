@@ -20,7 +20,8 @@ class Dict extends Singleton {
  		return Dict::$ln[0];
  	}
 
-	public static function set($kv,$ln = Dict::$ln[0]) {
+	public static function set($kv,$ln = NULL) {
+		if (is_null($ln)) { $ln = Dict::$ln[0]; }
 		foreach($kv as $k => $v) {
 			Dict::$lib[$ln][$k]=$v;
 		}
