@@ -18,12 +18,25 @@ sign-in and sign-out.
 			$stt=0;		//stt: 0=other, 1=sign-in, 2=sign-out.
 			if (Session::has('username')) { //signed in.
 				$stt=2; //default = sign-out.
-				if (SioSetPW::inScope()) {  //doing a set-pw post.
-					$stt=0; $sio=new SioSetPW(); $formlet=$sio->form(false);
-					if ($sio->success()) {
-						$formlet=new NView('siosetpws_v.ixml');
+				if(!empty(Settings::$qst['siof'])) {
+					$siof=Settings::$qst['siof'];
+					if (SIOSetEmail::conforms($siof)) {
+						$formlet=SIOSetEmail::pushit($siof);
+						$stt=0;  
 					}
-				}
+				} else {
+					if (SioSetPW::inScope()) {  //doing a set-pw post.
+						$stt=0; $sio=new SioSetPW(); $formlet=$sio->form(false);
+						if ($sio->success()) {
+							$formlet=new NView('siosetpws_v.ixml');
+						}
+					} elseif (SIOSetEmail::inScope()) {  //doing a set-pw post.
+						$stt=0; $sio=new SIOSetEmail(); $formlet=$sio->form(false);
+						if ($sio->success()) {
+							$formlet=new NView('siosetems_v.ixml');
+						}
+					}
+				}		
 			} else { //not-signed in
 				$stt=1; //default = sign-in.
 				if(!empty(Settings::$qst['siof'])) {
@@ -34,9 +47,6 @@ sign-in and sign-out.
 						if ($sio->success()) {
 							$stt=1;
 						}
-					} elseif (SIOSetEmail::conforms($siof)) {
-						$formlet=SIOSetEmail::pushit($siof);
-						$stt=0;  
 					} else {
 						$stt=1;
 					}
