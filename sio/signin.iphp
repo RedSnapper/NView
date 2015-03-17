@@ -7,7 +7,7 @@ mb_internal_encoding('UTF-8');
 class SioSignIn {
 	use Form;
 	private $en_trans;
-	
+	private $en_errs;	
 	protected static function sig() {
 		return "siosignin_";
 	}
@@ -31,7 +31,7 @@ class SioSignIn {
 		Dict::set($this->en_trans,'en');
 		$this->en_errs = array(
 			$this->sig() .'errors_username_unmatched'=>"Either the username or password don't match our records"
-		};
+		);
 		Dict::set($this->en_errs,'en');
 	}
 
