@@ -95,5 +95,6 @@ class SioForgot {
  */
 	protected function populate() {
 		$this->vset('email');
+		$this->tset($this->en_fields);
 	}
 }
