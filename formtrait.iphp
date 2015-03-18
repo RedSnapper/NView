@@ -230,9 +230,10 @@ trait Form {
  *  This uses any key-value array, ignoring the language.
  */
 	function tset($kv= array('0' => '0')) {
-		foreach($kv as $k => $v) {
-			$this->view->set("//*[@data-tr='" .$k . "']/child-gap()",Dict::get($k));
-		}
+		$this->view->tset($kv);
+//		foreach($kv as $k => $v) {
+//			$this->view->set("//*[@data-tr='" .$k . "']/child-gap()",Dict::get($k));
+//		}
 	}
 /**
  * 'vset'
@@ -357,7 +358,6 @@ trait Form {
 			$this->view->set("//*[@data-msg][not(node())]");
 			$this->view->set("//*[@data-xp='_ident']/@name",static::sig());
 			$this->view->set("//*[@data-xp='_ident']/@value",$this->ident());
-			$this->view->set("//*[@data-tr]/@data-tr");
 			$this->view->set("//*[@name][@name!='" . static::sig() . "']/@name/preceding-gap()",$this->idprefix);
 			return $this->view;
 		} else {

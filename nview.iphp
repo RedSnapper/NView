@@ -79,6 +79,14 @@ class NView {
 		} else {
 			$this->tidyView();
 			if ($asdocument) {
+				//remove final data-tr attributes.
+				$xq = "//*[@data-tr]/@data-tr";
+				$entries = $this->xp->query($xq);
+				if ($entries) {
+					foreach($entries as $entry) {
+						$entry->parentNode->removeAttributeNode($entry);
+					}
+				}
 				return $this->doc->saveXML();
 			} else {
 				$hs=$this->doc->saveXML();
@@ -91,6 +99,14 @@ class NView {
 		}
 	}
 	
+/**
+ * 'tset - translation hooks'
+ */
+	public function tset($kv= array('0' => '0')) {
+		foreach($kv as $k => $v) {
+			$this->set("//*[@data-tr='" .$k . "']/child-gap()",Dict::get($k));
+		}
+	}
 	
 /**
  * 'addNamespace'
@@ -218,6 +234,7 @@ class NView {
 		}
 		return $retval;
 	}
+
 
 /**
  * 'set'
