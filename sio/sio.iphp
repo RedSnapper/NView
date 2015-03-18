@@ -57,8 +57,7 @@ sign-in and sign-out.
 					} elseif (SioForgot::inScope()) {
 						$stt=0; $sio=new SioForgot(); $formlet=$sio->form(false);
 						if ($sio->success()) {
-							$formlet=new NView('sioforgots_v.ixml');
-							$formlet->set("//*[@data-tr='commit_msg']/child-gap()",Dict::get($sio->sig() .'commit_msg'));
+							$formlet=$sio->commitv();
 						}					
 					}
 				}		

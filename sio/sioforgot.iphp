@@ -41,6 +41,18 @@ class SioForgot {
 	}
 
 /**
+ * 'commit'
+ * fn OVERLOADING trait 'Form'.
+ */
+	public function commitv() {
+		$cv=new NView('sioforgots_v.ixml');
+		$cv->set("//*[@data-tr]/@data-tr/preceding-gap()",static::sig());
+		$cv->tset($this->en_extras);
+		return $cv;
+	}
+
+
+/**
  * 'validate'
  * fn fulfilling abstract requirement of trait 'Form'.
  * validate all fields in this->fields.
