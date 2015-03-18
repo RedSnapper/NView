@@ -76,6 +76,7 @@ sign-in and sign-out.
 					}				
 				} break;
 			}
+			$formlet->debug=true;
 			$v->set("//*[@data-xp='sio']",$formlet);
 			return $v;
 		}
