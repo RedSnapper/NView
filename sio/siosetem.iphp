@@ -13,7 +13,7 @@ class SIOSetEmail {
 		$this->setfld('password','','!skip');
 		$this->setfld('emailp');
 		$this->setfld('emailb','','!skip');
-		$this->debug=true;
+//		$this->debug=true;
 	}
 	
 /**
@@ -50,7 +50,7 @@ class SIOSetEmail {
 				$em=$this->fields['emailp'][0];
 				$em=Settings::esc($em);
 				Settings::$sql->query("update user set emailp='".$em."' where id='".Settings::$usr['ID']."'");
-				$qry="select username,sha2(concat(ifnull(username,id),'+',ifnull(password,id),'+',ifnull(email,id),'+',ifnull(ts,id)),256) as munge from " . $this->table . " where active='on'";
+				$qry="select username,sha2(concat(ifnull(username,id),'+',ifnull(password,id),'+',ifnull(email,id),'+',ifnull(ts,id)),256) as munge from " . $this->table . " where id='".Settings::$usr['ID']. " and active='on'";
 				if ($rx = Settings::$sql->query($qry)) {
 					require_once("/websites/shared/lib/PHPMailer/PHPMailerAutoload.php");
 					while ($f = $rx->fetch_assoc()) {
