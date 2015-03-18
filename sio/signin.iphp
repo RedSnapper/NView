@@ -21,7 +21,6 @@ class SioSignIn {
 		$this->table="user";
 		$this->setfld('username');
 		$this->setfld('password');
-		print_r($this);
 		$this->en_trans = array(
 			$this->sig() .'prompt_username' => "Username",
 			$this->sig() .'prompt_password'=>"Password",
@@ -34,6 +33,7 @@ class SioSignIn {
 			$this->sig() .'errors_username_unmatched'=>"Either the username or password don't match our records"
 		);
 		Dict::set($this->en_errs,'en');
+		$this->debug=true;
 	}
 
 /**
