@@ -34,7 +34,7 @@ sign-in and sign-out.
 					} elseif (SIOSetEmail::inScope()) {  //doing a set-pw post.
 						$stt=0; $sio=new SIOSetEmail(); $formlet=$sio->form(false);
 						if ($sio->success()) {
-							$formlet=new NView('siosetems_v.ixml');
+							$formlet=new NView('siosetemp_v.ixml');
 						}
 					}
 				}		
