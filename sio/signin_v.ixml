@@ -18,7 +18,7 @@
 		</li>
 		<li>
 			<label class="form__group submit" data-semantic="button" >
-				<span class="flex"><button class="btn--tertiary" type="submit" name="_fn" data-tr="button_signin" /></span>
+				<span class="flex"><button class="btn--tertiary" type="submit" name="_fn" value="save" data-tr="button_signin" /></span>
 			</label>
 		</li>
 		<li>
@@ -28,7 +28,7 @@
 		</li>
 		<li>
 			<label class="form__group submit" data-semantic="button" >
-				<span class="flex"><button class="btn--tertiary" type="submit" name="_fn" data-tr="button_register" /></span>
+				<span class="flex"><button class="btn--tertiary" type="submit" name="_fn" value="register" data-tr="button_register" /></span>
 			</label>
 		</li>
 	</ul>
