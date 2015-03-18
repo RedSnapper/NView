@@ -64,7 +64,7 @@ sign-in and sign-out.
 			switch ($stt) {
 				case 0: break;
 				case 1: {
-					$ssi=new SioSignIn(); $formlet->debug=true; $formlet=$ssi->form(false);
+					$ssi=new SioSignIn(); $ssi->debug=true; $formlet=$ssi->form(false);
 					if ($ssi->success()) {
 						$sio=new SioSignOut(); $formlet = $sio->form(false);
 					} 
