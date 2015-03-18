@@ -3,7 +3,7 @@ mb_internal_encoding('UTF-8');
 
 class SIOResetPW {
 	use Form;
-	protected static function sig() {
+	public static function sig() {
 		return "sioresetpw_";
 	}
 	function __construct($key=NULL,$v=NULL) {

@@ -8,7 +8,7 @@ class SioSignIn {
 	use Form;
 	private $en_fields,$en_errors;	
 	private $gr_fields,$gr_errors;	
-	protected static function sig() {
+	public static function sig() {
 		return "siosignin_";
 	}
 

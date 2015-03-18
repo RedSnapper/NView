@@ -7,7 +7,7 @@ mb_internal_encoding('UTF-8');
 class SioForgot {
 
 	use Form;
-	protected static function sig() {
+	public static function sig() {
 		return "sioforgot_";
 	}
 
