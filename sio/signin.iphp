@@ -16,12 +16,12 @@ class SioSignIn {
  * '__construct'
  */
 	function __construct($key=NULL,$v=NULL) {
-		$this->debug=true; 
 		$this->iniForm($key,$v);
 		$this->key=$key;
 		$this->table="user";
 		$this->setfld('username');
 		$this->setfld('password');
+		print_r($this);
 		$this->en_trans = array(
 			$this->sig() .'prompt_username' => "Username",
 			$this->sig() .'prompt_password'=>"Password",
