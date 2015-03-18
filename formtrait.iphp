@@ -314,6 +314,9 @@ trait Form {
 				print("<br />Posted fields<pre>".print_r($this->fields,true)."</pre>");
 			}
 			if (isset($this->fields['_fn']) && strcmp($this->fields['_fn'][0],"save") !== 0 ) {
+				if($this->debug) {
+					print("<p>Non-save function:".$this->fields['_fn'][0]."</p>");
+				}
 				$this->setfields(false); //populate the fields from sql
 				$fn = $this->func();
 				if (!is_null($fn)) {
@@ -321,10 +324,19 @@ trait Form {
 				}
 			} else {
 				if (isset($this->subsfield)) {
+					if($this->debug) {
+						print("<p>This has a subscriber:".$this->subsfield."</p>");
+					}
 					$this->subscriber();
 				}
-				if (! $this->committed) {
+				if (! $this->committed) {		
+					if($this->debug) {
+						print("<p>fn Save, about to validate</p>");
+					}
 					$this->validate();
+					if($this->debug) {
+						print("<p>Validate returned".$this->valid."</p>");
+					}
 					if ($this->valid && ! $this->committed) {
 						$this->committed = $this->commit();						
 						if ( $this->show || !($this->committed) ) { //do not repop if !show and com.
