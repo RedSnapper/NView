@@ -79,7 +79,6 @@ class SioSignIn {
 				if (strcmp($rx->fetch_row()[0],"1") === 0) {
 					$retval=true;
 				} else {
-					print('<br />ERR:'.Dict::get('siosignin_errors_username_unmatched'));
 					$this->seterr("username",Dict::get('siosignin_errors_username_unmatched'));
 				}
 				$rx->close();
