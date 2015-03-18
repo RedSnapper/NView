@@ -13,6 +13,7 @@ class SIOSetEmail {
 		$this->setfld('password','','!skip');
 		$this->setfld('emailp');
 		$this->setfld('emailb','','!skip');
+		$this->debug=true;
 	}
 	
 /**
