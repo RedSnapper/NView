@@ -17,6 +17,7 @@ sign-in and sign-out.
 			$formlet=null;
 			$stt=0;		//stt: 0=other, 1=sign-in, 2=sign-out.
 			if (Session::has('username')) { //signed in.
+				print("<p>[signed in]</p>");
 				$stt=2; //default = sign-out.
 				if(!empty(Settings::$qst['siof'])) {
 					$siof=Settings::$qst['siof'];
