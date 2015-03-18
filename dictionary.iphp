@@ -10,7 +10,7 @@ class Dict extends Singleton {
 	private static $lib=array();
 	
 	public static function library() {
-		print('<code>'.print_r(Dict::$lib,true).'</code>');
+		return '<code>'.print_r(Dict::$lib,true).'</code>';
 	}
 	
 	public static function setln($ln=array('en')) {
