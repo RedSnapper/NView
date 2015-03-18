@@ -83,6 +83,11 @@ class SioSignIn {
 				$rx->close();
 			}
 		}
+		if ($retval) {
+			print("[signin validation failed]");
+		} else {
+			print("[signin validation good]");
+		}
 		$this->valid = $retval;
 	}
 
