@@ -44,12 +44,12 @@ class SioForgot {
  * 'commit'
  * fn OVERLOADING trait 'Form'.
  */
-	public function commitv() {
+	public function commitv() { 
 		$cv=new NView('sioforgots_v.ixml');
 		$cv->set("//*[@data-tr]/@data-tr/preceding-gap()",static::sig());
 		$cv->tset($this->en_extras);
+		print('arrgh');
 	}
-
 
 /**
  * 'validate'
@@ -66,6 +66,7 @@ class SioForgot {
  * fn OVERLOADING trait 'Form'.
  */
 	protected function commit() {
+		$this->show=false;
 		$em=$this->fields['email'][0];
 		$qry="select username,sha2(concat(ifnull(username,id),'-',ifnull(password,id),'-',ifnull(email,id),'-',ifnull(ts,id)),256) as munge from " . $this->table . " where active='on' and email='" . $em . "'";
 		if ($rx = Settings::$sql->query($qry)) {
