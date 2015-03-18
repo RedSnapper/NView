@@ -30,7 +30,7 @@ class SIOSetPW {
 			if ($rx = Settings::$sql->query($qry)) {
 				if (strcmp($rx->fetch_row()[0],"1") !== 0) {
 					$retval = false;
-					$this->seterr("username",Dict::get('siosignin_errors_username_unmatched'));
+//					$this->seterr("username",Dict::get('siosignin_errors_username_unmatched'));
 				}
 				$rx->close();
 			}

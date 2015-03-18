@@ -227,9 +227,12 @@ trait Form {
 
 /**
  * 'tset' translations
+ *  This uses any key-value array, ignoring the language.
  */
-	function tset($k='') {
-		$this->view->set("//*[@data-tr='" .$k . "']/child-gap()",Dict::get($k));
+	function tset($kv= array('0' => '0')) {
+		foreach($kv as $k => $v) {
+			$this->view->set("//*[@data-tr='" .$k . "']/child-gap()",Dict::get($k));
+		}
 	}
 /**
  * 'vset'

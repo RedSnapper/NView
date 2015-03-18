@@ -17,6 +17,12 @@ class SioSignOut {
 	    $this->iniForm($key,$v);
 	    $this->key=$key;
 	    $this->table="user";
+		$this->en_fields = array(
+			$this->sig() .'button_signout'=>"Sign Out",
+			$this->sig() .'button_newemailaddr'=>"Change Registered Email Address",
+			$this->sig() .'button_newpassword'=>"Change Password"
+		);
+		Dict::set($this->en_fields,'en');
 	}
 
 /**
@@ -59,6 +65,8 @@ class SioSignOut {
  * 'populate'
  * fn fulfilling abstract requirement of trait 'Form'.
  */
-	protected function populate() {}
+	protected function populate() {
+		$this->tset($this->en_fields);
+	}
 
 }
