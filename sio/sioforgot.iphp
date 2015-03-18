@@ -48,7 +48,7 @@ class SioForgot {
 		$cv=new NView('sioforgots_v.ixml');
 		$cv->set("//*[@data-tr]/@data-tr/preceding-gap()",static::sig());
 		$cv->tset($this->en_extras);
-		print_r($this->en_extras);
+		print(static::sig());
 	}
 
 
