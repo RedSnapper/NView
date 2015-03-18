@@ -26,6 +26,7 @@ class SIOSetEmail {
 		if (isset($this->fields['emailp'][0]) && isset($this->fields['emailb'][0])) {
 			$ema=$this->fields['emailp'][0];
 			$emb=$this->fields['emailb'][0];
+			print('<p>Validate Ema:['.$ema .']['.$emb.']</p>');
 			if ($ema !== $emb ) {
 				$this->seterr("emailp","Both emails must be the same.");
 				$retval = false;
@@ -35,17 +36,8 @@ class SIOSetEmail {
 		}
 		$this->valEmail('emailp');
 		if ($this->valid) {
-			print('[succeeded valEmail]');
 			$this->valid = $retval;
-			if ($this->valid) {
-				print('[succeeded gen. validation]');
-			} else {
-				print('[failed gen. validation]');
-			}
-		} else {
-				print('[failed valEmail]');
 		}
-		
 	}
 
 	protected function commit() {
