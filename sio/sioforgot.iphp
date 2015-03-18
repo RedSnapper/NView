@@ -37,6 +37,7 @@ class SioForgot {
 		);
 		Dict::set($this->en_fields,'en');
 		Dict::set($this->en_extras,'en');
+		
 	}
 
 /**
