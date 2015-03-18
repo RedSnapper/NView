@@ -23,6 +23,7 @@ class SIOSetEmail {
  */
 	protected function validate() {
 		$retval = false;
+		print('<pre>'.print_r($this->fields).'</pre>');
 		if (isset($this->fields['emailp'][0]) && isset($this->fields['emailb'][0])) {
 			$ema=$this->fields['emailp'][0];
 			$emb=$this->fields['emailb'][0];
