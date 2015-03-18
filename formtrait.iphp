@@ -313,7 +313,7 @@ trait Form {
 			if($this->debug) {
 				print("<br />Posted fields<pre>".print_r($this->fields,true)."</pre>");
 			}
-			if (!empty($this->fields['_fn']) && strcmp($this->fields['_fn'][0],"save") !== 0 ) {
+			if (!empty($this->fields['_fn'][0]) && strcmp($this->fields['_fn'][0],"save") !== 0 ) {
 				if($this->debug) {
 					print("<p>Non-save function:".$this->fields['_fn'][0]."</p>");
 				}
