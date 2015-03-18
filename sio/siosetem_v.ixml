@@ -4,14 +4,14 @@
 	<ul class="form__notice">
 		<li>
 			<label class="form__group text" data-semantic="field" data-xp="comment">
-				<span class="error" data-msg="email" />
+				<span class="error" data-msg="emailp" />
 				<span class="label" data-xp="label">New Email</span>
-				<span class="flex"><input type="email" name="email" /></span>
+				<span class="flex"><input type="email" name="emailp" /></span>
 			</label>
 		</li>
 		<li>
 			<label class="form__group text" data-semantic="field" data-xp="comment">
-				<span class="error" data-msg="email" />
+				<span class="error" data-msg="emailb" />
 				<span class="label" data-xp="label">Retype New Email</span>
 				<span class="flex"><input type="email" name="emailb" /></span>
 			</label>
