@@ -19,13 +19,14 @@ sign-in and sign-out.
 			if (Session::has('username')) { //signed in.
 				$stt=2; //default = sign-out.
 				if(!empty(Settings::$qst['siof'])) {
+					print("<p>Signed in; siof.</p>");
 					$siof=Settings::$qst['siof'];
 					if (SIOSetEmail::conforms($siof)) {
 						$formlet=SIOSetEmail::pushit($siof);
 						$stt=0;  
 					}
 				} else {
-					print("<p>Signed in; no siof.".static::sig().":".$_POST[static::sig()]."</p>");
+					print("<p>Signed in; no siof</p>");
 					if (SioSetPW::inScope()) {  //doing a set-pw post.
 						$stt=0; $sio=new SioSetPW(); $formlet=$sio->form(false);
 						if ($sio->success()) {
