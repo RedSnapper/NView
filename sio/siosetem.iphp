@@ -23,11 +23,9 @@ class SIOSetEmail {
  */
 	protected function validate() {
 		$retval = false;
-		print('<pre>'.print_r($this->fields).'</pre>');
 		if (isset($this->fields['emailp'][0]) && isset($this->fields['emailb'][0])) {
 			$ema=$this->fields['emailp'][0];
 			$emb=$this->fields['emailb'][0];
-			print('<p>Validate Ema:['.$ema .']['.$emb.']</p>');
 			if ($ema !== $emb ) {
 				$this->seterr("emailp","Both emails must be the same.");
 				$retval = false;
@@ -42,7 +40,6 @@ class SIOSetEmail {
 	}
 
 	protected function commit() {
-		print('[got to commit]');
 		$ph=hash('sha256',Settings::$usr['RU'] . hex2bin('5BE0BDA8E0BDBCE0BDBEE0BC8BE0BDA7E0BDB1E0BDB4E0BDBE5D') . hash('sha256',$this->fields['password'][0]));
 		$this->fields['password'][0]='';
 		$qpy="select count(id) as ok from " . $this->table . " where active='on' and id='" .Settings::$usr['ID']. "' and password='" . $ph . "' and active='on'";
@@ -91,7 +88,7 @@ class SIOSetEmail {
 	public static function conforms($hat=NULL) {
 		$retval=false;
 		$ha=Settings::esc($hat); 
-		$query= "select id from " . $this->table . " where id='" .Settings::$usr['ID']. "' and sha2(concat(ifnull(username,id),'+',ifnull(password,id),'+',ifnull(email,id),'+',ifnull(ts,id)),256)='".$ha."'";
+		$query= "select id from user where id='" .Settings::$usr['ID']. "' and sha2(concat(ifnull(username,id),'+',ifnull(password,id),'+',ifnull(email,id),'+',ifnull(ts,id)),256)='".$ha."'";
 		if ($rs = Settings::$sql->query($query)) {
 			if (Settings::rows($rs) == 1) {
 				$retval=true;
@@ -103,7 +100,7 @@ class SIOSetEmail {
 	
 	public static function pushit($hat=NULL) {
 		$ha=Settings::esc($hat); 
-		$query= "update " . $this->table . " set email=emailp where id='" .Settings::$usr['ID']. "' and sha2(concat(ifnull(username,id),'+',ifnull(password,id),'+',ifnull(email,id),'+',ifnull(ts,id)),256)='".$ha."'";
+		$query= "update user set email=emailp where id='" .Settings::$usr['ID']. "' and sha2(concat(ifnull(username,id),'+',ifnull(password,id),'+',ifnull(email,id),'+',ifnull(ts,id)),256)='".$ha."'";
 		Settings::$sql->query($query);
 		return new NView("siosetems_v.ixml");
 	}
