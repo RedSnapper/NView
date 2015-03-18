@@ -73,6 +73,7 @@ class SioForgot {
 			while ($f = $rx->fetch_assoc()) {
 				$mail_v=new NView('sioforgotmail_v.ixml');
 				$mail_v->set("//*[@data-tr]/@data-tr/preceding-gap()",static::sig());
+				$mail_v->tset($this->en_extras);
 				$mail = new PHPMailer();
 				$mail->isSendmail();
 				$mail->CharSet='utf-8';
@@ -90,7 +91,6 @@ class SioForgot {
 				}			
 				$mail_v->set("//*[@data-xp='un']/child-gap()",$f['username']);
 				$mail_v->set("//*[@data-xp='ha']/@href",$url);
-				$mail_v->tset($this->en_extras);
 				$mail->Body = $mail_v->show(false);
 				$mail->AltBody= Dict::get($this->sig() .'mail_see_alt');
 				$mail->send();
