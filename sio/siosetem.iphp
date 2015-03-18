@@ -13,7 +13,6 @@ class SIOSetEmail {
 		$this->setfld('password','','!skip');
 		$this->setfld('emailp');
 		$this->setfld('emailb','','!skip');
-//		$this->debug=true;
 	}
 	
 /**
@@ -24,7 +23,6 @@ class SIOSetEmail {
  */
 	protected function validate() {
 		$retval = false;
-		print_r($this->fields);
 		if (isset($this->fields['emailp'][0]) && isset($this->fields['emailb'][0])) {
 			$ema=$this->fields['emailp'][0];
 			$emb=$this->fields['emailb'][0];
@@ -49,8 +47,8 @@ class SIOSetEmail {
 			if (strcmp($ry->fetch_row()[0],"1") === 0) {
 				$em=$this->fields['emailp'][0];
 				$em=Settings::esc($em);
-				Settings::$sql->query("update user set emailp='".$em."' where id='".Settings::$usr['ID']."'");
-				$qry="select username,sha2(concat(ifnull(username,id),'+',ifnull(password,id),'+',ifnull(email,id),'+',ifnull(ts,id)),256) as munge from " . $this->table . " where id='".Settings::$usr['ID']. " and active='on'";
+				Settings::$sql->query("update user set ts=null,emailp='".$em."' where id='".Settings::$usr['ID']."'");
+				$qry="select username,sha2(concat(ifnull(username,id),'+',ifnull(password,id),'+',ifnull(email,id),'+',ifnull(ts,id)),256) as munge from " . $this->table . " where id='" .Settings::$usr['ID']. "' and active='on'";
 				if ($rx = Settings::$sql->query($qry)) {
 					require_once("/websites/shared/lib/PHPMailer/PHPMailerAutoload.php");
 					while ($f = $rx->fetch_assoc()) {
@@ -60,7 +58,6 @@ class SIOSetEmail {
 						$mail->CharSet='utf-8';
 						$mail->Encoding='base64';
 						$mail->setFrom('auto@redsnapper.net', 'Change Email');
-//						$mail->addBCC('auto@redsnapper.net', 'Auto'); //bcc			
 						$mail->addAddress($em,Settings::$usr['RU']); 				
 						$mail->Subject = 'Change Email';
 						$mail->isHTML(true);
