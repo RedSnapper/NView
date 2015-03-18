@@ -21,6 +21,7 @@ class SioSignIn {
 		$this->table="user";
 		$this->setfld('username');
 		$this->setfld('password');
+		
 		$this->en_fields = array(
 			$this->sig() .'prompt_username' => "Username",
 			$this->sig() .'prompt_password'=>"Password",

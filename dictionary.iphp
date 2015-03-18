@@ -31,7 +31,7 @@ class Dict extends Singleton {
 		$x = 0;
 		while (($x < count(Dict::$ln)) && (!isset(Dict::$lib[Dict::$ln[0]][$key])))
 			{ $x++; }
-		if (!isset(Dict::$lib[Dict::$ln[$x]][$key])) {
+		if ((!isset(Dict::$ln[$x])) || (!isset(Dict::$lib[Dict::$ln[$x]][$key]))) {
 			return '['.$key.']';
 		} else {
 			return Dict::$lib[Dict::$ln[$x]][$key];
