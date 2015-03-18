@@ -17,7 +17,6 @@ sign-in and sign-out.
 			$formlet=null;
 			$stt=0;		//stt: 0=other, 1=sign-in, 2=sign-out.
 			if (Session::has('username')) { //signed in.
-				print("<p>[signed in]</p>");
 				$stt=2; //default = sign-out.
 				if(!empty(Settings::$qst['siof'])) {
 					$siof=Settings::$qst['siof'];
@@ -26,6 +25,7 @@ sign-in and sign-out.
 						$stt=0;  
 					}
 				} else {
+					print("<p>Signed in; no siof.".static::sig().":".$_POST[static::sig()]."</p>");
 					if (SioSetPW::inScope()) {  //doing a set-pw post.
 						$stt=0; $sio=new SioSetPW(); $formlet=$sio->form(false);
 						if ($sio->success()) {
