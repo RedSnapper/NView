@@ -16,6 +16,7 @@ class SioSignIn {
  * '__construct'
  */
 	function __construct($key=NULL,$v=NULL) {
+		$this->debug=true; 
 		$this->iniForm($key,$v);
 		$this->key=$key;
 		$this->table="user";
