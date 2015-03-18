@@ -33,7 +33,7 @@ class SioSignIn {
 			$this->sig() .'errors_username_unmatched'=>"Either the username or password don't match our records"
 		);
 		Dict::set($this->en_errs,'en');
-		$this->debug=true;
+//		$this->debug=true;
 	}
 
 /**
