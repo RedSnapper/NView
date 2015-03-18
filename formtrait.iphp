@@ -121,7 +121,7 @@ trait Form {
  * 'inScope' used to test if a particular class of form is being posted.
  */
  	public static function inScope() {
- 		print("<p>".static::sig().":".$_POST[static::sig()]."</p>")
+ 		print("<p>".static::sig().":".$_POST[static::sig()]."</p>");
 		return (isset($_POST[static::sig()]));
 	}
 
