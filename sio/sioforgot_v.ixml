@@ -5,13 +5,13 @@
 		<li>
 			<label class="form__group text" data-semantic="field" data-xp="comment">
 				<span class="error" data-msg="email" />
-				<span class="label" data-xp="label">Email</span>
+				<span class="label" data-xp="label" data-tr="prompt_emailaddress" />
 				<span class="flex"><input autocomplete="on" type="text" name="email" /></span>
 			</label>
 		</li>
 		<li>
 			<label class="form__group submit" data-semantic="field" data-xp="button">
-				<span class="flex"><button class="btn--tertiary" type="submit" name="_fn" value="save">Reset Password</button></span>
+				<span class="flex"><button class="btn--tertiary" type="submit" name="_fn" value="save" data-tr="button_resetpassword" /></span>
 			</label>
 		</li>
 	</ul>

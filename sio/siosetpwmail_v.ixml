@@ -1,7 +1,0 @@
-<!DOCTYPE div>
-<div xmlns="http://www.w3.org/1999/xhtml">
-	<h3>Password Reset Request</h3>
-	<p>It appears that you have posted a password reset request.</p>
-	<p data-xp="un">Your username is:</p>
-	<p><a data-xp="ha" >PLEASE CONTINUE HERE</a></p>
-</div>

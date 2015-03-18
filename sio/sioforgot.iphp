@@ -20,6 +20,23 @@ class SioForgot {
 		$this->table="user";
 		$this->setfld('username');
 		$this->setfld('email');
+		
+		$this->en_fields = array(
+			$this->sig() .'prompt_emailaddress' => "Email",
+			$this->sig() .'button_resetpassword'=>"Reset Password"
+		);
+		$this->en_extras = array(
+			$this->sig() .'errors_bad_email'=>"The email address appears to be wrong",
+			$this->sig() .'mail_see_alt'=>"Please see the html alternative of this email",
+			$this->sig() .'commit_msg'=>"You should shortly receive an email with instructions for resetting your password.",
+			$this->sig() .'mail_head'=>"Password Reset Request",
+			$this->sig() .'mail_body'=>"It appears that you have posted a password reset request.",
+			$this->sig() .'mail_userhint'=>"Your username is:",
+			$this->sig() .'mail_url_text'=>"PLEASE CONTINUE HERE",
+			$this->sig() .'mail_subject'=>'Password Reset'
+		);
+		Dict::set($this->en_fields,'en');
+		Dict::set($this->en_extras,'en');
 	}
 
 /**
@@ -29,7 +46,7 @@ class SioForgot {
  * errors are placed into the this->view.
  */
 	protected function validate() {
-		$this->valEmail('email');
+		$this->valEmail('email',Dict::get($this->sig() .'errors_bad_email'));
 	}
 
 /**
@@ -42,15 +59,16 @@ class SioForgot {
 		if ($rx = Settings::$sql->query($qry)) {
 			require_once("/websites/shared/lib/PHPMailer/PHPMailerAutoload.php");
 			while ($f = $rx->fetch_assoc()) {
-				$mail_v=new NView('siosetpwmail_v.ixml');
+				$mail_v=new NView('sioforgotmail_v.ixml');
+				$mail_v->set("//*[@data-tr]/@data-tr/preceding-gap()",static::sig());
 				$mail = new PHPMailer();
 				$mail->isSendmail();
 				$mail->CharSet='utf-8';
 				$mail->Encoding='base64';
-				$mail->setFrom('auto@redsnapper.net', 'Password Reset');
+				$mail->setFrom('auto@redsnapper.net', Dict::get($this->sig() .'mail_subject') );
 				$mail->addBCC('auto@redsnapper.net', 'Auto'); //bcc			
 				$mail->addAddress($em,$f['username']); 				
-				$mail->Subject = 'Password Reset';
+				$mail->Subject = Dict::get($this->sig() .'mail_subject');
 				$mail->isHTML(true);
 				$url=$_SERVER["SCRIPT_URI"];
 				if (strpos($url, '?') !== false) {
@@ -61,7 +79,7 @@ class SioForgot {
 				$mail_v->set("//*[@data-xp='un']/child-gap()",$f['username']);
 				$mail_v->set("//*[@data-xp='ha']/@href",$url);
 				$mail->Body = $mail_v->show(false);
-				$mail->AltBody="Please see the html alternative of this email";
+				$mail->AltBody= Dict::get($this->sig() .'mail_see_alt');
 				$mail->send();
 			}
 			$rx->close();

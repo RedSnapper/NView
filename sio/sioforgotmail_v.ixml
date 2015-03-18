@@ -1,0 +1,7 @@
+<!DOCTYPE div>
+<div xmlns="http://www.w3.org/1999/xhtml">
+	<h3 data-tr="mail_head" />
+	<p data-tr="mail_body" />
+	<p data-xp="un"><span data-tr="mail_userhint" /></p>
+	<p><a data-xp="ha" data-tr="mail_url_text" /></p>
+</div>
