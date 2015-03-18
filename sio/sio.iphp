@@ -64,7 +64,7 @@ sign-in and sign-out.
 			switch ($stt) {
 				case 0: break;
 				case 1: {
-					$ssi=new SioSignIn(); $formlet=$ssi->form(false);
+					$ssi=new SioSignIn(); $formlet->debug=true; $formlet=$ssi->form(false);
 					if ($ssi->success()) {
 						$sio=new SioSignOut(); $formlet = $sio->form(false);
 					} 
@@ -72,11 +72,10 @@ sign-in and sign-out.
 				case 2: {
 					$sso=new SioSignOut(); $formlet=$sso->form(false);
 					if ($sso->success()) {
-						$sio=new SioSignIn(); $formlet=$sio->form(false);
+						$sio=new SioSignIn(); $formlet->debug=true; $formlet=$sio->form(false);
 					}				
 				} break;
 			}
-			$formlet->debug=true;
 			$v->set("//*[@data-xp='sio']",$formlet);
 			return $v;
 		}
