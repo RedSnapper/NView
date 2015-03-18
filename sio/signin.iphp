@@ -6,8 +6,8 @@ mb_internal_encoding('UTF-8');
  */
 class SioSignIn {
 	use Form;
-	private $en_fields;
-	private $en_errors;	
+	private $en_fields,$en_errors;	
+	private $gr_fields,$gr_errors;	
 	protected static function sig() {
 		return "siosignin_";
 	}
@@ -32,8 +32,24 @@ class SioSignIn {
 		$this->en_errors = array(
 			$this->sig() .'errors_username_unmatched'=>"Either the username or password don't match our records"
 		);
+		
+		$this->gr_fields = array(
+			$this->sig() .'prompt_username' => "Όνομα Χρήστη",
+			$this->sig() .'prompt_password'=>"Κωδικός",
+			$this->sig() .'button_signin'=>"Είσοδος",
+			$this->sig() .'button_forgot'=>"Ξέχασα τον κωδικό μου",
+			$this->sig() .'button_register'=>"Εγγραφή"
+		);
+		$this->gr_errors = array(
+			$this->sig() .'errors_username_unmatched'=>"Το όνομα χρήστη ή ο κωδικός δεν ειναι σωστά"
+		);
+		
 		Dict::set($this->en_fields,'en');
 		Dict::set($this->en_errors,'en');
+		
+		Dict::set($this->gr_fields,'gr');
+		Dict::set($this->gr_errors,'gr');
+		
 	}
 
 /**
