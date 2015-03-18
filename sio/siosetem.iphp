@@ -58,7 +58,7 @@ class SIOSetEmail {
 						$mail->CharSet='utf-8';
 						$mail->Encoding='base64';
 						$mail->setFrom('auto@redsnapper.net', 'Change Email');
-						$mail->addBCC('auto@redsnapper.net', 'Auto'); //bcc			
+//						$mail->addBCC('auto@redsnapper.net', 'Auto'); //bcc			
 						$mail->addAddress($em,Settings::$usr['RU']); 				
 						$mail->Subject = 'Change Email';
 						$mail->isHTML(true);

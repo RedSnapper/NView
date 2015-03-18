@@ -13,7 +13,7 @@
 			<label class="form__group text" data-semantic="field" data-xp="comment">
 				<span class="error" data-msg="password" />
 				<span class="label" data-xp="label" data-tr="prompt_password" />
-				<span class="flex"><input type="password" name="password" /></span>
+				<span class="flex"><input autocomplete="off" type="password" name="password" /></span>
 			</label>
 		</li>
 		<li>
