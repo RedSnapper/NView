@@ -10,7 +10,8 @@ class SIOSetPW {
 		$this->iniForm($key,$v);
 		$this->key=$key;
 		$this->table="user";
-		$this->setfld('password');
+		$this->setfld('password','','!skip');
+		$this->setfld('passwordn','','!skip');
 		$this->setfld('passwordb','','!skip');
 	}
 	
@@ -22,21 +23,37 @@ class SIOSetPW {
  */
 	protected function validate() {
 		$retval = true;
-		if (isset($this->fields['password'][0]) && isset($this->fields['passwordb'][0])) {
-			$pwa=$this->fields['password'][0];
+		if (isset($this->fields['password'][0])) {
+			$ph=hash('sha256',Settings::$usr['RU'] . hex2bin('5BE0BDA8E0BDBCE0BDBEE0BC8BE0BDA7E0BDB1E0BDB4E0BDBE5D') . hash('sha256',$this->fields['password'][0]));
+			$this->fields['password'][0]='';
+			$qry="select count(id) as ok from " . $this->table . " where active='on' and id='" .Settings::$usr['ID']. "' and password='" . $ph . "'";
+			if ($rx = Settings::$sql->query($qry)) {
+				if (strcmp($rx->fetch_row()[0],"1") !== 0) {
+					$retval = false;
+					$this->seterr("username",Dict::get('siosignin_errors_username_unmatched'));
+				}
+				$rx->close();
+			}
+		} else {
+			$retval = false;
+		}
+		if (isset($this->fields['passwordn'][0]) && isset($this->fields['passwordb'][0])) {
+			$pwa=$this->fields['passwordn'][0];
 			$pwb=$this->fields['passwordb'][0];
 			if ($pwa !== $pwb ) {
-				$this->seterr("password","Both passwords must be the same.");
+				$this->seterr("passwordn","Both passwords must be the same.");
 				$retval = false;
 			} 
 			if (strlen($pwa) < 7) {
-				$this->seterr("password","Passwords must be more than 6 characters.");
+				$this->seterr("passwordn","Passwords must be more than 6 characters.");
 				$retval = false;
 			} 
 			if ($pwa === Settings::$usr['RU']) {
-				$this->seterr("password","Passwords must be different from your username!");
+				$this->seterr("passwordn","Passwords must be different from your username!");
 				$retval = false;
 			} 
+		} else {
+			$retval = false;
 		}
 		$this->valid = $retval;
 	}

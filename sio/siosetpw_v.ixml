@@ -5,13 +5,20 @@
 		<li>
 			<label class="form__group text" data-semantic="field" data-xp="comment">
 				<span class="error" data-msg="password" />
-				<span class="label" data-xp="label">Password</span>
+				<span class="label" data-xp="label">Old Password</span>
 				<span class="flex"><input autocomplete="off" type="password" name="password" /></span>
 			</label>
 		</li>
 		<li>
 			<label class="form__group text" data-semantic="field" data-xp="comment">
-				<span class="label" data-xp="label">Retype Password</span>
+				<span class="error" data-msg="password" />
+				<span class="label" data-xp="label">New Password</span>
+				<span class="flex"><input autocomplete="off" type="password" name="passwordn" /></span>
+			</label>
+		</li>
+		<li>
+			<label class="form__group text" data-semantic="field" data-xp="comment">
+				<span class="label" data-xp="label">Retype New Password</span>
 				<span class="flex"><input type="password" name="passwordb" /></span>
 			</label>
 		</li>
