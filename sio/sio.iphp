@@ -72,7 +72,7 @@ sign-in and sign-out.
 				case 2: {
 					$sso=new SioSignOut(); $formlet=$sso->form(false);
 					if ($sso->success()) {
-						$sio=new SioSignIn(); $formlet->debug=true; $formlet=$sio->form(false);
+						$sio=new SioSignIn();$formlet=$sio->form(false);
 					}				
 				} break;
 			}
