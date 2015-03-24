@@ -15,7 +15,7 @@ class SIOSetEmail {
 		$this->setfld('emailb','','!skip');
 		
 		$this->en_fields = array(
-			$this->sig() .'prompt_newemail'=>"New Email",
+			$this->sig() .'prompt_new_email'=>"New Email",
 			$this->sig() .'prompt_retype_new_email'=>"Retype New Email",
 			$this->sig() .'prompt_your_password'=>"Password",
 			$this->sig() .'button_set_email'=>"Set New Email"
@@ -73,6 +73,7 @@ class SIOSetEmail {
 					require_once("/websites/shared/lib/PHPMailer/PHPMailerAutoload.php");
 					while ($f = $rx->fetch_assoc()) {
 						$mail_v=new NView('siosetemmail_v.ixml');
+						$mail_v->tset($this->en_extras);
 						$mail = new PHPMailer();
 						$mail->isSendmail();
 						$mail->CharSet='utf-8';
@@ -122,7 +123,9 @@ class SIOSetEmail {
 		$ha=Settings::esc($hat); 
 		$query= "update user set email=emailp where id='" .Settings::$usr['ID']. "' and sha2(concat(ifnull(username,id),'+',ifnull(password,id),'+',ifnull(email,id),'+',ifnull(ts,id)),256)='".$ha."'";
 		Settings::$sql->query($query);
-		return new NView("siosetems_v.ixml");
+		$nv = new NView("siosetems_v.ixml");
+		$nv->tset($this->en_extras);
+		return $nv;
 	}
 	
 }
