@@ -12,6 +12,20 @@ class SIOResetPW {
 		$this->table="user";
 		$this->setfld('password');
 		$this->setfld('passwordb','','!skip');
+		
+		$this->en_fields = array(
+			$this->sig() .'prompt_password' => "Password",
+			$this->sig() .'prompt_retype_password' => "Retype Password",
+			$this->sig() .'button_new_password'=>"Set New Password"
+		);
+		$this->en_extras = array(
+			$this->sig() .'errors_password_different'=>"Both passwords must be the same.",
+			$this->sig() .'errors_password_short'=>"Passwords must be more than six characters.",
+			$this->sig() .'errors_password_not_username'=>"Passwords must be different from your username!"
+		);
+		Dict::set($this->en_fields,'en');
+		Dict::set($this->en_extras,'en');
+		
 	}
 	
 /**
@@ -26,15 +40,15 @@ class SIOResetPW {
 			$pwa=$this->fields['password'][0];
 			$pwb=$this->fields['passwordb'][0];
 			if ($pwa !== $pwb ) {
-				$this->seterr("password","Both passwords must be the same.");
+				$this->seterr("password",Dict::get($this->sig() .'errors_password_different'));
 				$retval = false;
 			} 
 			if (strlen($pwa) < 7) {
-				$this->seterr("password","Passwords must be more than 6 characters.");
+				$this->seterr("password",Dict::get($this->sig() .'errors_password_short'));
 				$retval = false;
 			} 
 			if ($pwa === Settings::$usr['RU']) {
-				$this->seterr("password","Passwords must be different from your username!");
+				$this->seterr("password",Dict::get($this->sig() .'errors_password_not_username'));
 				$retval = false;
 			} 
 		}
@@ -60,6 +74,7 @@ class SIOResetPW {
 	}
 	
 	protected function populate() {
+		$this->tset($this->en_fields);
 	}
 	
 	public static function conforms($hat=NULL) {

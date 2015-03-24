@@ -19,7 +19,7 @@ class Settings extends Singleton {
  * '__construct'
  */
  
-	protected function __construct() {
+ 	protected function __construct() {
 		if($_SERVER['QUERY_STRING']) {
 			parse_str($_SERVER['QUERY_STRING'],Settings::$qst);
 			Settings::$req=array_keys(Settings::$qst);

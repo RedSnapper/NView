@@ -5,27 +5,27 @@
 		<li>
 			<label class="form__group text" data-semantic="field" data-xp="comment">
 				<span class="error" data-msg="emailp" />
-				<span class="label" data-xp="label">New Email</span>
+				<span class="label" data-xp="label" data-tr="prompt_new_email" />
 				<span class="flex"><input type="email" name="emailp" /></span>
 			</label>
 		</li>
 		<li>
 			<label class="form__group text" data-semantic="field" data-xp="comment">
 				<span class="error" data-msg="emailb" />
-				<span class="label" data-xp="label">Retype New Email</span>
+				<span class="label" data-xp="label" data-tr="prompt_retype_new_email" />
 				<span class="flex"><input type="email" name="emailb" /></span>
 			</label>
 		</li>
 		<li>
 			<label class="form__group text" data-semantic="field" data-xp="comment">
 				<span class="error" data-msg="password" />
-				<span class="label" data-xp="label">Password</span>
+				<span class="label" data-xp="label" data-tr="prompt_your_password" />
 				<span class="flex"><input autocomplete="off" type="password" name="password" /></span>
 			</label>
 		</li>
 		<li>
 			<label class="form__group submit" data-semantic="field" data-xp="button">
-				<span class="flex"><button class="btn--tertiary" type="submit" name="_fn" value="save">Set New Email</button></span>
+				<span class="flex"><button class="btn--tertiary" type="submit" name="_fn" value="save" data-tr="button_set_email" /></span>
 			</label>
 		</li>
 	</ul>

@@ -13,6 +13,26 @@ class SIOSetEmail {
 		$this->setfld('password','','!skip');
 		$this->setfld('emailp');
 		$this->setfld('emailb','','!skip');
+		
+		$this->en_fields = array(
+			$this->sig() .'prompt_newemail'=>"New Email",
+			$this->sig() .'prompt_retype_new_email'=>"Retype New Email",
+			$this->sig() .'prompt_your_password'=>"Password",
+			$this->sig() .'button_set_email'=>"Set New Email"
+		);
+		$this->en_extras = array(
+			$this->sig() .'errors_emails_unmatched'=>"Both emails must be the same.",
+			$this->sig() .'errors_email_badformat'=>"The email format is not recognised",
+			$this->sig() .'note_email_change_title'=>"Email Change Request",
+			$this->sig() .'note_email_change_message'=>"It appears that you have chosen to change your e-mail to the one that you received this message on.",
+			$this->sig() .'note_email_change_action_link'=>"PLEASE CONTINUE HERE",
+			$this->sig() .'mesg_email_check_email'=>"To set your email address, confirm the change via the email just sent to you.",
+			$this->sig() .'mesg_email_change_success'=>"You have successfully changed your email.",
+			$this->sig() .'mesg_see_html_alt'=>"Please see the html alternative of this email."
+		);
+		Dict::set($this->en_fields,'en');
+		Dict::set($this->en_extras,'en');
+		
 	}
 	
 /**
@@ -27,13 +47,13 @@ class SIOSetEmail {
 			$ema=$this->fields['emailp'][0];
 			$emb=$this->fields['emailb'][0];
 			if ($ema !== $emb ) {
-				$this->seterr("emailp","Both emails must be the same.");
+				$this->seterr("emailp",Dict::get($this->sig() .'errors_emails_unmatched'));
 				$retval = false;
 			}  else {
 				$retval = true;
 			}
 		}
-		$this->valEmail('emailp');
+		$this->valEmail('emailp',Dict::get($this->sig() .'errors_email_badformat'));
 		if ($this->valid) {
 			$this->valid = $retval;
 		}
@@ -57,9 +77,9 @@ class SIOSetEmail {
 						$mail->isSendmail();
 						$mail->CharSet='utf-8';
 						$mail->Encoding='base64';
-						$mail->setFrom('auto@redsnapper.net', 'Change Email');
+						$mail->setFrom('no_reply@redsnapper.net', Dict::get($this->sig() .'note_email_change_title'));
 						$mail->addAddress($em,Settings::$usr['RU']); 				
-						$mail->Subject = 'Change Email';
+						$mail->Subject = Dict::get($this->sig() .'note_email_change_title');
 						$mail->isHTML(true);
 						$url=$_SERVER["SCRIPT_URI"];
 						if (strpos($url, '?') !== false) {
@@ -69,7 +89,7 @@ class SIOSetEmail {
 						}			
 						$mail_v->set("//*[@data-xp='ha']/@href",$url);
 						$mail->Body = $mail_v->show(false);
-						$mail->AltBody="Please see the html alternative of this email";
+						$mail->AltBody=Dict::get($this->sig() .'mesg_see_html_alt');
 						$mail->send();
 					}
 					$rx->close();
@@ -82,6 +102,7 @@ class SIOSetEmail {
 	}
 	
 	protected function populate() {
+		$this->tset($this->en_fields);
 	}
 	
 	public static function conforms($hat=NULL) {
