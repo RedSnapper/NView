@@ -13,6 +13,26 @@ class SIOSetPW {
 		$this->setfld('password','','!skip');
 		$this->setfld('passwordn','','!skip');
 		$this->setfld('passwordb','','!skip');
+		
+		$this->en_fields = array(
+			$this->sig() ."prompt_original_password"=>"Current Password",
+			$this->sig() ."prompt_new_password"=>"New Password",
+			$this->sig() ."prompt_retype_new_password"=>"Retype New Password",
+			$this->sig() ."button_set_new_password"=>"Set New Password"
+		);
+		$this->en_extras = array(
+			//mesg_success is used by sio.php..
+			$this->sig() ."mesg_success"=>"You successfully changed your password.",
+			$this->sig() ."errors_orig_pw_wrong"=>" The current password doesn't match our records.",
+			$this->sig() ."errors_password_empty"=>" You must enter your current password.",
+			$this->sig() ."errors_new_pw_empty"=>" You must enter a new password.",
+			$this->sig() ."errors_new_pw_different"=>" Both passwords must be the same.",
+			$this->sig() ."errors_new_pw_too_short"=>" Passwords must be more than 6 characters.",
+			$this->sig() ."errors_new_pw_too_simple"=>" Passwords must be different from your username!"
+		);
+		Dict::set($this->en_fields,'en');
+		Dict::set($this->en_extras,'en');		
+		
 	}
 	
 /**
@@ -30,29 +50,31 @@ class SIOSetPW {
 			if ($rx = Settings::$sql->query($qry)) {
 				if (strcmp($rx->fetch_row()[0],"1") !== 0) {
 					$retval = false;
-//					$this->seterr("username",Dict::get('siosignin_errors_username_unmatched'));
+					$this->seterr("password",Dict::get($this->sig().'errors_orig_pw_wrong'));
 				}
 				$rx->close();
 			}
 		} else {
+			$this->seterr("password",Dict::get($this->sig().'errors_password_empty'));
 			$retval = false;
 		}
 		if (isset($this->fields['passwordn'][0]) && isset($this->fields['passwordb'][0])) {
 			$pwa=$this->fields['passwordn'][0];
 			$pwb=$this->fields['passwordb'][0];
 			if ($pwa !== $pwb ) {
-				$this->seterr("passwordn","Both passwords must be the same.");
+				$this->seterr("passwordn",Dict::get($this->sig().'errors_new_pw_different'));
 				$retval = false;
 			} 
 			if (strlen($pwa) < 7) {
-				$this->seterr("passwordn","Passwords must be more than 6 characters.");
+				$this->seterr("passwordn",Dict::get($this->sig().'errors_new_pw_too_short'));
 				$retval = false;
 			} 
 			if ($pwa === Settings::$usr['RU']) {
-				$this->seterr("passwordn","Passwords must be different from your username!");
+				$this->seterr("passwordn",Dict::get($this->sig().'errors_new_pw_too_simple'));
 				$retval = false;
 			} 
 		} else {
+			$this->seterr("passwordn",Dict::get($this->sig().'errors_new_pw_empty'));
 			$retval = false;
 		}
 		$this->valid = $retval;
@@ -67,6 +89,7 @@ class SIOSetPW {
 	}
 	
 	protected function populate() {
+		$this->tset($this->en_fields);	
 	}
 	
 }

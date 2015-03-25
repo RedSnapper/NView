@@ -3,6 +3,7 @@ mb_internal_encoding('UTF-8');
 
 class SIOResetPW {
 	use Form;
+	private static $munge="sha2(concat(ifnull(username,id),'-',ifnull(password,id),'-',ifnull(email,id),'-',ifnull(ts,id)),256)";
 	public static function sig() {
 		return "sioresetpw_";
 	}
@@ -19,9 +20,11 @@ class SIOResetPW {
 			$this->sig() .'button_new_password'=>"Set New Password"
 		);
 		$this->en_extras = array(
-			$this->sig() .'errors_password_different'=>"Both passwords must be the same.",
-			$this->sig() .'errors_password_short'=>"Passwords must be more than six characters.",
-			$this->sig() .'errors_password_not_username'=>"Passwords must be different from your username!"
+			$this->sig() .'errors_password_different'=>" Both passwords must be the same.",
+			$this->sig() .'errors_password_empty'=>" Enter a password.",
+			
+			$this->sig() .'errors_password_short'=>" Passwords must be more than six characters.",
+			$this->sig() .'errors_password_not_username'=>" Passwords must be different from your username!"
 		);
 		Dict::set($this->en_fields,'en');
 		Dict::set($this->en_extras,'en');
@@ -51,6 +54,9 @@ class SIOResetPW {
 				$this->seterr("password",Dict::get($this->sig() .'errors_password_not_username'));
 				$retval = false;
 			} 
+		} else {
+			$retval = false;
+			$this->seterr("password",Dict::get($this->sig() .'errors_password_empty'));
 		}
 		$this->valid = $retval;
 	}
@@ -58,11 +64,11 @@ class SIOResetPW {
 	protected function commit() {
 		$ha=Settings::esc($this->key); //this comes via the url...
 		
-		$query= "select username from user where sha2(concat(ifnull(username,id),'-',ifnull(password,id),'-',ifnull(email,id),'-',ifnull(ts,id)),256)='".$ha."'";
+		$query= "select username from user where ".$this->munge."='".$ha."'";
 		if ($rs = Settings::$sql->query($query)) {
 			while ($f = $rs->fetch_assoc()) {
 				$ph=Settings::esc(hash('sha256',$f['username'].hex2bin('5BE0BDA8E0BDBCE0BDBEE0BC8BE0BDA7E0BDB1E0BDB4E0BDBE5D') . hash('sha256',$this->fields['password'][0])));
-				$cond=" and sha2(concat(ifnull(username,id),'-',ifnull(password,id),'-',ifnull(email,id),'-',ifnull(ts,id)),256)='".$ha."'";
+				$cond=" and ".$this->munge."='".$ha."'";
 				$qry="update " . $this->table . " set password='".$ph."' where active='on' ".$cond ;
 				Settings::$sql->query($qry);
 			
@@ -80,7 +86,7 @@ class SIOResetPW {
 	public static function conforms($hat=NULL) {
 		$retval=false;
 		$ha=Settings::esc($hat); 
-		$query= "select id from user where sha2(concat(ifnull(username,id),'-',ifnull(password,id),'-',ifnull(email,id),'-',ifnull(ts,id)),256)='".$ha."'";
+		$query= "select id from user where ".$this->munge."='".$ha."'";
 		if ($rs = Settings::$sql->query($query)) {
 			if (Settings::rows($rs) == 1) {
 				$retval=true;

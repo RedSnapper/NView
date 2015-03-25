@@ -5,26 +5,26 @@
 		<li>
 			<label class="form__group text" data-semantic="field" data-xp="comment">
 				<span class="error" data-msg="password" />
-				<span class="label" data-xp="label">Old Password</span>
+				<span class="label" data-xp="label" data-tr="prompt_original_password" />
 				<span class="flex"><input autocomplete="off" type="password" name="password" /></span>
 			</label>
 		</li>
 		<li>
 			<label class="form__group text" data-semantic="field" data-xp="comment">
 				<span class="error" data-msg="password" />
-				<span class="label" data-xp="label">New Password</span>
+				<span class="label" data-xp="label" data-tr="prompt_new_password" />
 				<span class="flex"><input autocomplete="off" type="password" name="passwordn" /></span>
 			</label>
 		</li>
 		<li>
 			<label class="form__group text" data-semantic="field" data-xp="comment">
-				<span class="label" data-xp="label">Retype New Password</span>
+				<span class="label" data-xp="label" data-tr="prompt_retype_new_password" />
 				<span class="flex"><input type="password" name="passwordb" /></span>
 			</label>
 		</li>
 		<li>
 			<label class="form__group submit" data-semantic="field" data-xp="button">
-				<span class="flex"><button class="btn--tertiary" type="submit" name="_fn" value="save">Set New Password</button></span>
+				<span class="flex"><button class="btn--tertiary" type="submit" name="_fn" value="save" data-tr="button_set_new_password" /></span>
 			</label>
 		</li>
 	</ul>

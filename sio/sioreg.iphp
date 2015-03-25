@@ -2,18 +2,153 @@
 mb_internal_encoding('UTF-8');
 
 class SioReg {
-
 	use Form;
+
+	private static $munge="sha2(concat(ifnull(username,id),'_',ifnull(password,id),'_',ifnull(email,id),'_',ifnull(ts,id)),256)";
+
 	public static function sig() {
 		return "sioreg_";
+	}	
+	function __construct($key=NULL,$v=NULL) {
+		$this->iniForm($key,$v);
+		$this->key=$key;
+		$this->table="user";
+		$this->setfld('username');
+		$this->setfld('emailp');
+		$this->setfld('passwordn','','!skip');
+		$this->setfld('passwordb','','!skip');
+		
+		$this->en_fields = array(
+			$this->sig() ."prompt_username"=>"Username",
+			$this->sig() ."prompt_email"=>"Email",
+			$this->sig() ."prompt_password"=>"Password",
+			$this->sig() ."prompt_retype_password"=>"Retype Password",
+			$this->sig() ."button_register"=>"Register"
+		);
+		$this->en_extras = array(
+			//mesg_success is used by sio.php..
+			$this->sig() ."mesg_register_success"=>"You have successfully registered.",
+			
+			$this->sig() ."note_register_title"=>"Registration Request",
+			$this->sig() ."note_register_message"=>"It appears that you have chosen to register on the website.",
+			$this->sig() ."note_register_action_link"=>"Please click here to confirm your registration",
+			$this->sig() ."mesg_register_check_email"=>"To confirm your registration, please check the email just sent to you.",
+			$this->sig() ."mesg_see_html_alt"=>"Please see the html alternative of this email."
+			
+			$this->sig() ."errors_email_badformat"=>"The email format is not recognised",
+			$this->sig() ."errors_no_password"=>" You must enter a password.",
+			$this->sig() ."errors_new_pw_different"=>" Both passwords must be the same.",
+			$this->sig() ."errors_new_pw_too_short"=>" Passwords must be more than 6 characters.",
+			$this->sig() ."errors_new_pw_too_simple"=>" Passwords must be different from your username!"
+			$this->sig() ."errors_username_exists"=>"This username already exists on the system. Please choose another.",
+			$this->sig() ."errors_no_username"=>"You need to enter a username."
+		);
+		Dict::set($this->en_fields,'en');
+		Dict::set($this->en_extras,'en');		
 	}
+	
+	protected function validate() {
+		$retval = true;
+		if (isset($this->fields['username'][0])) {
+			$un=Settings::esc($this->fields['username'][0]);
+			$qry="select count(id) as ok from " . $this->table . " where username='" . $un . "'";
+			if ($rx = Settings::$sql->query($qry)) {
+				if (strcmp($rx->fetch_row()[0],"0") !== 0) {
+					$retval = false;
+					$this->seterr("username",Dict::get($this->sig().'errors_username_exists'));
+				} 
+				$rx->close();
+			}
+		} else {
+			$this->seterr("username",Dict::get($this->sig().'errors_no_username'));
+			$retval = false;
+		}
+		if (isset($this->fields['passwordn'][0]) && isset($this->fields['passwordb'][0])) {
+			$pwa=$this->fields['passwordn'][0];
+			$pwb=$this->fields['passwordb'][0];
+			if ($pwa !== $pwb ) {
+				$this->seterr("passwordn",Dict::get($this->sig().'errors_new_pw_different'));
+				$retval = false;
+			} 
+			if (strlen($pwa) < 7) {
+				$this->seterr("passwordn",Dict::get($this->sig().'errors_new_pw_too_short'));
+				$retval = false;
+			} 
+			if ($pwa === Settings::$usr['RU']) {
+				$this->seterr("passwordn",Dict::get($this->sig().'errors_new_pw_too_simple'));
+				$retval = false;
+			} 
+		} else {
+			$this->seterr("passwordn",Dict::get($this->sig().'errors_no_password'));
+			$retval = false;
+		}
+		$this->valEmail('emailp',Dict::get($this->sig() .'errors_email_badformat'));
+		if ($this->valid) {
+			$this->valid = $retval;
+		}
+	}
+	
 	protected function populate() {
+		$this->tset($this->en_fields);
+	}
+	
+	protected function commit() {
+		$ph=hash('sha256',$un . hex2bin('5BE0BDA8E0BDBCE0BDBEE0BC8BE0BDA7E0BDB1E0BDB4E0BDBE5D') . hash('sha256',$this->fields['password'][0]));
+		$this->fields['password'][0]='';
+		$un=$this->fields['username'][0]; $un=Settings::esc($un);
+		$em=$this->fields['emailp'][0]; $em=Settings::esc($em);
+		Settings::$sql->query("insert into user set ts=null,username='".$un."',emailp='".$em."',password='".$ph."',active='xx'");
+		$qry="select ".$this->munge." as munge,email from " . $this->table . " where username='" .$un. "' and active='xx'";
+		if ($rx = Settings::$sql->query($qry)) {
+			require_once("/websites/shared/lib/PHPMailer/PHPMailerAutoload.php");
+			while ($f = $rx->fetch_assoc()) {
+				$mail_v=new NView('sioregmail_v.ixml');
+				$mail_v->tset($this->en_extras);
+				$mail = new PHPMailer();
+				$mail->isSendmail();
+				$mail->CharSet='utf-8';
+				$mail->Encoding='base64';
+				$mail->setFrom('no_reply@redsnapper.net', Dict::get($this->sig() .'note_register_title'));
+				$mail->addAddress($em,$f['emailp']); 				
+				$mail->Subject = Dict::get($this->sig() .'note_register_title');
+				$mail->isHTML(true);
+				$url=$_SERVER["SCRIPT_URI"];
+				if (strpos($url, '?') !== false) {
+					$url .= '&amp;siof=' . $f['munge'];
+				} else {
+					$url .= '?siof=' . $f['munge'];
+				}			
+				$mail_v->set("//*[@data-xp='ha']/@href",$url);
+				$mail->Body = $mail_v->show(false);
+				$mail->AltBody=Dict::get($this->sig() .'mesg_see_html_alt');
+				$mail->send();
+			}
+			$rx->close();
+		}
+		$this->show = false;
+		return true;
+	}
+	
+	public static function conforms($hat=NULL) {
+		$retval=false;
+		$ha=Settings::esc($hat); 
+		$query= "select id from user where ".$this->munge."='".$ha."'";
+		if ($rs = Settings::$sql->query($query)) {
+			if (Settings::rows($rs) == 1) {
+				$retval=true;
+			}
+			$rs->close();
+		}
+		return $retval;
+	}
+	
+	public static function pushit($hat=NULL) {
+		$ha=Settings::esc($hat); 
+		$query= "update user set email=emailp,active='on' where active='xx' and ".$this->munge."='".$ha."'";
+		Settings::$sql->query($query);
+		$nv = new NView("sioregs_v.ixml");
+		$nv->tset(array(static::sig() ."mesg_register_success" => NULL));
+		return $nv;
 	}
 
 }
-/*
-	username
-	passworda
-	passwordb
-	email
-*/

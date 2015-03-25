@@ -30,7 +30,8 @@ class SioSignIn {
 			$this->sig() .'button_register'=>"Register"
 		);
 		$this->en_errors = array(
-			$this->sig() .'errors_username_unmatched'=>"Either the username or password don't match our records"
+			$this->sig() .'errors_username_unmatched'=>"Either the username or password don't match our records",
+			$this->sig() .'errors_username_empty'=>"You need to enter your username"
 		);
 		
 		$this->gr_fields = array(
@@ -99,6 +100,8 @@ class SioSignIn {
 				}
 				$rx->close();
 			}
+		} else {
+			$this->seterr("username",Dict::get($this->sig().'errors_username_empty'));
 		}
 		$this->valid = $retval;
 	}

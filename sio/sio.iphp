@@ -1,6 +1,5 @@
 <?php
 mb_internal_encoding('UTF-8');
-
 class SIO {
 	public static function run($v=NULL) {
 		if (is_null($v)) {
@@ -30,11 +29,13 @@ sign-in and sign-out.
 						$stt=0; $sio=new SioSetPW(); $formlet=$sio->form(false);
 						if ($sio->success()) {
 							$formlet=new NView('siosetpws_v.ixml');
+							$formlet->tset(array($sio->sig().'mesg_success' => NULL));
 						}
 					} elseif (SIOSetEmail::inScope()) {  //doing a set-pw post.
 						$stt=0; $sio=new SIOSetEmail(); $formlet=$sio->form(false);
 						if ($sio->success()) {
 							$formlet=new NView('siosetemp_v.ixml');
+							$formlet->tset(array($sio->sig().'mesg_success' => NULL));
 						}
 					}
 				}		
@@ -42,7 +43,10 @@ sign-in and sign-out.
 				$stt=1; //default = sign-in.
 				if(!empty(Settings::$qst['siof'])) {
 					$siof=Settings::$qst['siof'];
-					if (SioResetPW::conforms($siof)) {
+					if (SioReg::conforms($siof)) {
+						$stt=0;  
+						$formlet=SioReg::pushit($siof);
+					} elseif (SioResetPW::conforms($siof)) {
 						$stt=0;  $sio=new SioResetPW($siof);
 						$formlet=$sio->form(false);	
 						if ($sio->success()) {
