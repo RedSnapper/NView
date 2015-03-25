@@ -39,7 +39,7 @@ class SioReg {
 			$this->sig() ."errors_no_password"=>" You must enter a password.",
 			$this->sig() ."errors_new_pw_different"=>" Both passwords must be the same.",
 			$this->sig() ."errors_new_pw_too_short"=>" Passwords must be more than 6 characters.",
-			$this->sig() ."errors_new_pw_too_simple"=>" Passwords must be different from your username!"
+			$this->sig() ."errors_new_pw_too_simple"=>" Passwords must be different from your username!",
 			$this->sig() ."errors_username_exists"=>"This username already exists on the system. Please choose another.",
 			$this->sig() ."errors_no_username"=>"You need to enter a username."
 		);
