@@ -33,7 +33,7 @@ class SioReg {
 			$this->sig() ."note_register_message"=>"It appears that you have chosen to register on the website.",
 			$this->sig() ."note_register_action_link"=>"Please click here to confirm your registration",
 			$this->sig() ."mesg_register_check_email"=>"To confirm your registration, please check the email just sent to you.",
-			$this->sig() ."mesg_see_html_alt"=>"Please see the html alternative of this email."
+			$this->sig() ."mesg_see_html_alt"=>"Please see the html alternative of this email.",
 			
 			$this->sig() ."errors_email_badformat"=>"The email format is not recognised",
 			$this->sig() ."errors_no_password"=>" You must enter a password.",
