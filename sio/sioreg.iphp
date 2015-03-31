@@ -109,7 +109,7 @@ class SioReg {
 				$mail->CharSet='utf-8';
 				$mail->Encoding='base64';
 				$mail->setFrom('no_reply@redsnapper.net', Dict::get($this->sig() .'note_register_title'));
-				$mail->addAddress($em,$f['emailp']); 				
+				$mail->addAddress($em,$f['email']); 				
 				$mail->Subject = Dict::get($this->sig() .'note_register_title');
 				$mail->isHTML(true);
 				$url=$_SERVER["SCRIPT_URI"];
