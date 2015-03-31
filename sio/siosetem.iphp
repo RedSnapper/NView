@@ -10,8 +10,8 @@ class SIOSetEmail {
 	
 	private static $munge="sha2(concat(ifnull(username,id),'+',ifnull(password,id),'+',ifnull(email,id),'+',ifnull(ts,id)),256)";
 	private static $en_static=array(
-			$this->sig() ."mesg_success"=>"You have successfully changed your email.",
-			$this->sig() ."mesg_checkem"=>"To set your email address, confirm the change via the email just sent to you."
+		"siosetem_mesg_success"=>"You have successfully changed your email.",
+		"siosetem_mesg_checkem"=>"To set your email address, confirm the change via the email just sent to you."
 	);
 	
 	function __construct($key=NULL,$v=NULL) {
