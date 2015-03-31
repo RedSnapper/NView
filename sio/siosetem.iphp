@@ -76,7 +76,7 @@ class SIOSetEmail {
 				$em=$this->fields['emailp'][0];
 				$em=Settings::esc($em);
 				Settings::$sql->query("update user set ts=null,emailp='".$em."' where id='".Settings::$usr['ID']."'");
-				$qry="select username,".$this->munge." as munge from " . $this->table . " where id='" .Settings::$usr['ID']. "' and active='on'";
+				$qry="select username,".self::$munge." as munge from " . $this->table . " where id='" .Settings::$usr['ID']. "' and active='on'";
 				if ($rx = Settings::$sql->query($qry)) {
 					require_once("/websites/shared/lib/PHPMailer/PHPMailerAutoload.php");
 					while ($f = $rx->fetch_assoc()) {
@@ -117,7 +117,7 @@ class SIOSetEmail {
 	public static function conforms($hat=NULL) {
 		$retval=false;
 		$ha=Settings::esc($hat); 
-		$query= "select id from user where id='" .Settings::$usr['ID']. "' and ".$this->munge."='".$ha."'";
+		$query= "select id from user where id='" .Settings::$usr['ID']. "' and ".self::$munge."='".$ha."'";
 		if ($rs = Settings::$sql->query($query)) {
 			if (Settings::rows($rs) == 1) {
 				$retval=true;
@@ -129,7 +129,7 @@ class SIOSetEmail {
 	
 	public static function pushit($hat=NULL) {
 		$ha=Settings::esc($hat); 
-		$query= "update user set email=emailp where id='" .Settings::$usr['ID']. "' and ".$this->munge."='".$ha."'";
+		$query= "update user set email=emailp where id='" .Settings::$usr['ID']. "' and ".self::$munge."='".$ha."'";
 		Settings::$sql->query($query);
 		$nv = new NView("siosetems_v.ixml");
 		$nv->tset($this->en_extras);

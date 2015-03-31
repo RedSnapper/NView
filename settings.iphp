@@ -21,55 +21,55 @@ class Settings extends Singleton {
  
  	protected function __construct() {
 		if($_SERVER['QUERY_STRING']) {
-			parse_str($_SERVER['QUERY_STRING'],Settings::$qst);
-			Settings::$req=array_keys(Settings::$qst);
+			parse_str($_SERVER['QUERY_STRING'],self::$qst);
+			self::$req=array_keys(self::$qst);
 		}
-		Settings::$url=strtok($_SERVER["REQUEST_URI"],'?');
+		self::$url=strtok($_SERVER["REQUEST_URI"],'?');
 		if ( !empty($_SERVER['PHP_AUTH_USER']) ) { 
-			Settings::$usr['RU']= $_SERVER['PHP_AUTH_USER'];
+			self::$usr['RU']= $_SERVER['PHP_AUTH_USER'];
 		} elseif ( isset($_SERVER['REDIRECT_REMOTE_USER']) ) { 
-			Settings::$usr['RU']= $_SERVER['REDIRECT_REMOTE_USER']; 
+			self::$usr['RU']= $_SERVER['REDIRECT_REMOTE_USER']; 
 		} elseif ( isset($_SERVER['REMOTE_USER']) ) { 
-			Settings::$usr['RU']= $_SERVER['REMOTE_USER'];
+			self::$usr['RU']= $_SERVER['REMOTE_USER'];
 		}  else { 
-			Settings::$usr['RU']= 'unknown'; 
+			self::$usr['RU']= 'unknown'; 
 		}
-		Settings::$usr['uid']=0;
-		Settings::$usr['ID']=0;
+		self::$usr['uid']=0;
+		self::$usr['ID']=0;
 		if(isset($_SERVER["RS_SQLCONFIG_FILE"])) { //the path to the my.cnf for this connection.
-			Settings::$sql = mysqli_init();
-			Settings::$sqls = parse_ini_file($_SERVER["RS_SQLCONFIG_FILE"]); 
-			mysqli_options(Settings::$sql,MYSQLI_READ_DEFAULT_FILE,$_SERVER["RS_SQLCONFIG_FILE"]);
-			mysqli_real_connect(Settings::$sql,Settings::$sqls['host'],Settings::$sqls['user'],Settings::$sqls['password'],Settings::$sqls['database']);
+			self::$sql = mysqli_init();
+			self::$sqls = parse_ini_file($_SERVER["RS_SQLCONFIG_FILE"]); 
+			mysqli_options(self::$sql,MYSQLI_READ_DEFAULT_FILE,$_SERVER["RS_SQLCONFIG_FILE"]);
+			mysqli_real_connect(self::$sql,self::$sqls['host'],self::$sqls['user'],self::$sqls['password'],self::$sqls['database']);
 		} else {
-			Settings::$sqls['host']=getenv('RS_SQLHOST');
-			Settings::$sqls['user']=getenv('RS_SQLUSER');
-			Settings::$sqls['password']=getenv('RS_SQLUSERPW');
-			Settings::$sqls['database']=getenv('RS_DATABASE');
-			Settings::$sql = new mysqli(Settings::$sqls['host'],Settings::$sqls['user'],Settings::$sqls['password'],Settings::$sqls['database']);
+			self::$sqls['host']=getenv('RS_SQLHOST');
+			self::$sqls['user']=getenv('RS_SQLUSER');
+			self::$sqls['password']=getenv('RS_SQLUSERPW');
+			self::$sqls['database']=getenv('RS_DATABASE');
+			self::$sql = new mysqli(self::$sqls['host'],self::$sqls['user'],self::$sqls['password'],self::$sqls['database']);
 		}
-		if (Settings::$sql->connect_error) {
+		if (self::$sql->connect_error) {
     			die('SQL Connection Error (' . $mysqli->connect_errno . ') ' . $mysqli->connect_error);
 		}
 		$srch=getenv('RS_SEARCH_HOST');
 		if (!empty($srch)) {
-	                Settings::$sphinx = new mysqli(getenv('RS_SEARCH_HOST'),NULL,NULL,NULL,9306);
+	                self::$sphinx = new mysqli(getenv('RS_SEARCH_HOST'),NULL,NULL,NULL,9306);
 		} else {
-			Settings::$sphinx = null;
+			self::$sphinx = null;
 		}
-		Settings::$sql->set_charset("utf8");
-		if (!Settings::table_exists("session")) {
-			Settings::$sql->query("CREATE TABLE session(id varchar(255) NOT NULL,ts timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, PRIMARY KEY (id), KEY ts (ts)) ENGINE=InnoDB DEFAULT CHARSET=utf8");
+		self::$sql->set_charset("utf8");
+		if (!self::table_exists("session")) {
+			self::$sql->query("CREATE TABLE session(id varchar(255) NOT NULL,ts timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, PRIMARY KEY (id), KEY ts (ts)) ENGINE=InnoDB DEFAULT CHARSET=utf8");
 		}
-		if (!Settings::table_exists("sessiondata")) {
-			Settings::$sql->query("CREATE TABLE sessiondata (sid varchar(200) NOT NULL,name varchar(128) NOT NULL,value longtext NOT NULL,PRIMARY KEY (sid,name)) ENGINE=InnoDB DEFAULT CHARSET=utf8");
+		if (!self::table_exists("sessiondata")) {
+			self::$sql->query("CREATE TABLE sessiondata (sid varchar(200) NOT NULL,name varchar(128) NOT NULL,value longtext NOT NULL,PRIMARY KEY (sid,name)) ENGINE=InnoDB DEFAULT CHARSET=utf8");
 		}
-		if (!Settings::table_exists("user")) {
-			Settings::$sql->query("CREATE TABLE user (id int(11) NOT NULL AUTO_INCREMENT,username varchar(68) NOT NULL DEFAULT '',password varchar(250) DEFAULT NULL,email text default NULL,emailp text default NULL,active char(2) DEFAULT 'on',ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,PRIMARY KEY (id),UNIQUE KEY username (username),UNIQUE KEY ausername (username,active)) ENGINE=InnoDB DEFAULT CHARSET=utf8");
+		if (!self::table_exists("user")) {
+			self::$sql->query("CREATE TABLE user (id int(11) NOT NULL AUTO_INCREMENT,username varchar(68) NOT NULL DEFAULT '',password varchar(250) DEFAULT NULL,email text default NULL,emailp text default NULL,active char(2) DEFAULT 'on',ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,PRIMARY KEY (id),UNIQUE KEY username (username),UNIQUE KEY ausername (username,active)) ENGINE=InnoDB DEFAULT CHARSET=utf8");
 		}
-		Settings::$website='http';
-		if($_SERVER["HTTPS"]=='on') { Settings::$website.='s'; }
-		Settings::$website.='://' . $_SERVER["HTTP_HOST"] . '/';
+		self::$website='http';
+		if($_SERVER["HTTPS"]=='on') { self::$website.='s'; }
+		self::$website.='://' . $_SERVER["HTTP_HOST"] . '/';
 	}
 
 /**
@@ -82,22 +82,22 @@ class Settings extends Singleton {
 				$name=Session::get('username'); 
 				if (empty($name)) {
 					Session::del();
-					Settings::$usr['RU']='';
+					self::$usr['RU']='';
 				} else {
-					Settings::$usr['RU']=Session::get('username');
+					self::$usr['RU']=Session::get('username');
 				}
 			}
-			if ($rx = Settings::$sql->query("select id from user where active='on' and username='". Settings::$usr['RU'] ."'")) {
+			if ($rx = self::$sql->query("select id from user where active='on' and username='". self::$usr['RU'] ."'")) {
 				while ($row = $rx->fetch_assoc()) {
-					Settings::$usr['ID']=$row['id'];
+					self::$usr['ID']=$row['id'];
 				}
 				$rx->close();
 			}
 		} else {
 			Session::del('username');
-			Settings::$usr['ID']=NULL;
-			Settings::$usr = array_splice(Settings::$usr,1);
-			array_shift(Settings::$usr);
+			self::$usr['ID']=NULL;
+			self::$usr = array_splice(self::$usr,1);
+			array_shift(self::$usr);
 		}
 	}
 
@@ -116,16 +116,16 @@ class Settings extends Singleton {
  * 'esc' mysql escape.
  */
 	public static function esc($s) {
-		if(!is_null(Settings::$sql)) {
-			Settings::$sql->real_escape_string($s);
+		if(!is_null(self::$sql)) {
+			self::$sql->real_escape_string($s);
 		}
 		return $s;
 	}
 	
 	public static function table_exists($table) {
 		$retval=false;
-		if(!is_null(Settings::$sql)) {
-			if ($rx = Settings::$sql->query("select count(*) as present from information_schema.columns where table_schema = '".Settings::$sqls['database']."' and table_name = '".$table."'")) {
+		if(!is_null(self::$sql)) {
+			if ($rx = self::$sql->query("select count(*) as present from information_schema.columns where table_schema = '".self::$sqls['database']."' and table_name = '".$table."'")) {
 				while ($row = $rx->fetch_assoc()) {
 					if ($row['present'] > 0) {
 						$retval = true;
@@ -139,8 +139,8 @@ class Settings extends Singleton {
 	
 	public static function field_exists($table,$fieldname) {
 		$retval=false;
-		if(!is_null(Settings::$sql)) {
-			if ($rx = Settings::$sql->query("select count(*) as present from information_schema.columns where table_schema = '".Settings::$sqls['database']."' and table_name = '".$table."' and column_name = '".$fieldname."'")) {
+		if(!is_null(self::$sql)) {
+			if ($rx = self::$sql->query("select count(*) as present from information_schema.columns where table_schema = '".self::$sqls['database']."' and table_name = '".$table."' and column_name = '".$fieldname."'")) {
 				while ($row = $rx->fetch_assoc()) {
 					if ($row['present'] == 1) {
 						$retval = true;
@@ -162,9 +162,9 @@ class Settings extends Singleton {
  * 'close'
  */
 	public static function close() {
-		Settings::$sql->close();
-		if (!empty(Settings::$sphinx)) {
-			Settings::$sphinx->close();
+		self::$sql->close();
+		if (!empty(self::$sphinx)) {
+			self::$sphinx->close();
 		}
 	}
 

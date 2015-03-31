@@ -10,36 +10,36 @@ class Dict extends Singleton {
 	private static $lib=array();
 	
 	public static function library() {
-		return '<code>'.print_r(Dict::$lib,true).'</code>';
+		return '<code>'.print_r(self::$lib,true).'</code>';
 	}
 	
 	public static function setln($ln=array('en')) {
-		Dict::$ln=$ln;
-		if (!isset(Dict::$lib[$ln[0]])) {
-			Dict::$lib[$ln[0]] =  array();
+		self::$ln=$ln;
+		if (!isset(self::$lib[$ln[0]])) {
+			self::$lib[$ln[0]] =  array();
 		}	
 	}
 	
  	public static function ln() {
- 		return Dict::$ln[0];
+ 		return self::$ln[0];
  	}
 
 	public static function set($kv,$ln = NULL) {
-		if (is_null($ln)) { $ln = Dict::$ln[0]; }
+		if (is_null($ln)) { $ln = self::$ln[0]; }
 		foreach($kv as $k => $v) {
-			Dict::$lib[$ln][$k]=$v;
+			self::$lib[$ln][$k]=$v;
 		}
 	}
 	
 	public static function get($key) {
 		$x = 0;
-		while (($x < count(Dict::$ln)) && (!isset(Dict::$lib[Dict::$ln[$x]][$key]))) {
+		while (($x < count(self::$ln)) && (!isset(self::$lib[self::$ln[$x]][$key]))) {
 		 $x++; 
 		}
-		if ((!isset(Dict::$ln[$x])) || (!isset(Dict::$lib[Dict::$ln[$x]][$key]))) {
+		if ((!isset(self::$ln[$x])) || (!isset(self::$lib[self::$ln[$x]][$key]))) {
 			return '['.$key.']';
 		} else {
-			return Dict::$lib[Dict::$ln[$x]][$key];
+			return self::$lib[self::$ln[$x]][$key];
 		}
 	}
 	
