@@ -2,14 +2,24 @@
 mb_internal_encoding('UTF-8');
 class SIO {
 
-//  options. use_username.
+//  views. use_username.
 //  v = array of view filenames, 'SIOSetEmail'=>'my_siosetem_v.ixml'
+	private static $views=NULL;
+	private static $use_username=true;
 	
-	public static function run($v=NULL) {
-		if (is_null($v)) {
-			$v = new NView('sio_v.ixml');
-			$err = $v->messages();
+	public static function run($v=NULL,$use_un=true) {
+		self::$use_username=$use_un;
+		if (!is_array($v)) {
+			self::$views=array();
+		} else {
+			self::$views=$v;
 		}
+		if (is_null(self::$views['sio_'])) {
+			$v = new NView('sio_v.ixml');
+		} else {
+			$v = self::$views['sio_'];
+		}
+		$err = $v->messages();
 		if (isset($err) && !empty($err)) {
 			print $err;
 		} else {
@@ -24,7 +34,7 @@ sign-in and sign-out.
 				if(!empty(Settings::$qst['siof'])) {
 					$siof=Settings::$qst['siof'];
 					if (SIOSetEmail::conforms($siof)) {
-						$formlet=SIOSetEmail::pushit($siof);
+						$formlet=SIOSetEmail::pushit($siof,self::@$views[SIOSetEmail::sig()]);
 						$stt=0;  
 					}
 				} 
@@ -32,14 +42,12 @@ sign-in and sign-out.
 					if (SioSetPW::inScope()) {  //doing a set-pw post.
 						$stt=0; $sio=new SioSetPW(); $formlet=$sio->form(false);
 						if ($sio->success()) {
-							$formlet=new NView('siosetpws_v.ixml');
-							$formlet->tset(array($sio->sig().'mesg_success' => NULL));
+							SioSetPW::pushit();
 						}
 					} elseif (SIOSetEmail::inScope()) {  //doing a set-pw post.
 						$stt=0; $sio=new SIOSetEmail(); $formlet=$sio->form(false);
 						if ($sio->success()) {
-							$formlet=new NView('siosetemp_v.ixml');
-							$formlet->tset(array($sio->sig().'mesg_success' => NULL));
+							SIOSetEmail::pushit();
 						}
 					}
 				}		

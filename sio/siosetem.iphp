@@ -4,11 +4,16 @@ mb_internal_encoding('UTF-8');
 class SIOSetEmail {
 	use Form;
 	
-	private static $munge="sha2(concat(ifnull(username,id),'+',ifnull(password,id),'+',ifnull(email,id),'+',ifnull(ts,id)),256)";
-	
 	public static function sig() {
 		return "siosetem_";
 	}
+	
+	private static $munge="sha2(concat(ifnull(username,id),'+',ifnull(password,id),'+',ifnull(email,id),'+',ifnull(ts,id)),256)";
+	private static $en_static=array(
+			$this->sig() ."mesg_success"=>"You have successfully changed your email.",
+			$this->sig() ."mesg_checkem"=>"To set your email address, confirm the change via the email just sent to you."
+	);
+	
 	function __construct($key=NULL,$v=NULL) {
 		$this->iniForm($key,$v);
 		$this->key=$key;
@@ -25,15 +30,13 @@ class SIOSetEmail {
 		);
 		$this->en_extras = array(
 			//mesg_success is used by sio.php..
-			$this->sig() ."mesg_success"=>"You have successfully changed your email.",
 			$this->sig() .'errors_emails_unmatched'=>" Both emails must be the same.",
 			$this->sig() .'errors_email_badformat'=>" The email format is not recognised.",
 			$this->sig() .'errors_emails_empty'=>" The email must have a value.",
 			$this->sig() .'note_email_change_title'=>"Email Change Request",
 			$this->sig() .'note_email_change_message'=>"It appears that you have chosen to change your e-mail to the one that you received this message on.",
 			$this->sig() .'note_email_change_action_link'=>"PLEASE CONTINUE HERE",
-			$this->sig() .'mesg_email_check_email'=>"To set your email address, confirm the change via the email just sent to you.",
-			$this->sig() .'mesg_see_html_alt'=>"Please see the html alternative of this email."
+			$this->sig() .'note_email_see_html_alt'=>"Please see the html alternative of this email."
 		);
 		Dict::set($this->en_fields,'en');
 		Dict::set($this->en_extras,'en');
@@ -98,7 +101,7 @@ class SIOSetEmail {
 						}			
 						$mail_v->set("//*[@data-xp='ha']/@href",$url);
 						$mail->Body = $mail_v->show(false);
-						$mail->AltBody=Dict::get($this->sig() .'mesg_see_html_alt');
+						$mail->AltBody=Dict::get($this->sig() .'note_email_see_html_alt');
 						$mail->send();
 					}
 					$rx->close();
@@ -126,15 +129,20 @@ class SIOSetEmail {
 		}
 		return $retval;
 	}
-	
+
 	public static function pushit($hat=NULL) {
-		$ha=Settings::esc($hat); 
-		$query= "update user set email=emailp where id='" .Settings::$usr['ID']. "' and ".self::$munge."='".$ha."'";
-		Settings::$sql->query($query);
-		$nv = new NView("siosetems_v.ixml");
-//		$nv->tset($this->en_extras);
+		Dict::set(self::$en_static,'en');
+		if (is_null($hat)) { //check email
+			$nv = new NView("siosetemp_v.ixml");
+		} else { 			 //set success..
+			$ha=Settings::esc($hat); 
+			$query= "update user set email=emailp where id='" .Settings::$usr['ID']. "' and ".self::$munge."='".$ha."'";
+			Settings::$sql->query($query);
+			$nv = new NView("siosetems_v.ixml");
+		}
+		$nv->tset(self::$en_static);
 		return $nv;
 	}
-	
+
 }
 

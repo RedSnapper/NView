@@ -6,6 +6,11 @@ class SIOSetPW {
 	public static function sig() {
 		return "siosetpw_";
 	}
+	
+	private static $en_static=array(
+			$this->sig() ."mesg_success"=>"You successfully changed your password."
+	);
+
 	function __construct($key=NULL,$v=NULL) {
 		$this->iniForm($key,$v);
 		$this->key=$key;
@@ -21,8 +26,6 @@ class SIOSetPW {
 			$this->sig() ."button_set_new_password"=>"Set New Password"
 		);
 		$this->en_extras = array(
-			//mesg_success is used by sio.php..
-			$this->sig() ."mesg_success"=>"You successfully changed your password.",
 			$this->sig() ."errors_orig_pw_wrong"=>" The current password doesn't match our records.",
 			$this->sig() ."errors_password_empty"=>" You must enter your current password.",
 			$this->sig() ."errors_new_pw_empty"=>" You must enter a new password.",
@@ -91,6 +94,14 @@ class SIOSetPW {
 	protected function populate() {
 		$this->tset($this->en_fields);	
 	}
+	
+	public static function pushit() {
+		Dict::set(self::$en_static,'en');
+		$nv = new NView("siosetpws_v.ixml");
+		$nv->tset(self::$en_static);
+		return $nv;
+	}
+	
 	
 }
 

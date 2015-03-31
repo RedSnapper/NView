@@ -10,7 +10,7 @@ class SioReg {
 		
 	private static $munge="sha2(concat(ifnull(username,id),'_',ifnull(password,id),'_',ifnull(email,id),'_',ifnull(ts,id)),256)";
 	private static $en_static=array(
-			$this->sig() ."mesg_register_success"=>"You have successfully registered.",
+			$this->sig() ."mesg_success"=>"You have successfully registered.",
 	);
 
 	function __construct($key=NULL,$v=NULL) {
