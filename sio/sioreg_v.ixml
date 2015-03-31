@@ -11,9 +11,9 @@
 		</li>
 		<li>
 			<label class="form__group text" data-semantic="field" data-xp="comment">
-				<span class="error" data-msg="email" />
+				<span class="error" data-msg="emailp" />
 				<span class="label" data-xp="label" data-tr="prompt_email" />
-				<span class="flex"><input autocomplete="on" type="text" name="email" /></span>
+				<span class="flex"><input autocomplete="on" type="text" name="emailp" /></span>
 			</label>
 		</li>
 		<li>
