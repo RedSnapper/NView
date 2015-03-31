@@ -7,13 +7,9 @@ class SIO {
 	private static $views=NULL;
 	private static $use_username=true;
 	
-	public static function run($v=NULL,$use_un=true) {
+	public static function run($v=array(),$use_un=true) {
 		self::$use_username=$use_un;
-		if (!is_array($v)) {
-			self::$views=array();
-		} else {
-			self::$views=$v;
-		}
+		self::$views=$v;
 		$v = new NView(@self::$views['sio_']);
 		$err = $v->messages();
 		if (isset($err) && !empty($err)) {
@@ -30,7 +26,7 @@ sign-in and sign-out.
 				if(!empty(Settings::$qst['siof'])) {
 					$siof=Settings::$qst['siof'];
 					if (SIOSetEmail::conforms($siof)) {
-						$formlet=SIOSetEmail::pushit($siof,@self::$views[SIOSetEmail::sig()]);
+						$formlet=SIOSetEmail::pushit($siof,@self::$views);
 						$stt=0;  
 					}
 				} 
@@ -38,7 +34,7 @@ sign-in and sign-out.
 					if (SioSetPW::inScope()) {  //doing a set-pw post.
 						$stt=0; $sio=new SioSetPW(); $formlet=$sio->form(false);
 						if ($sio->success()) {
-							SioSetPW::pushit();
+							SioSetPW::pushit(NULL,@self::$views);
 						}
 					} elseif (SIOSetEmail::inScope()) {  //doing a set-pw post.
 						$stt=0; $sio=new SIOSetEmail(); $formlet=$sio->form(false);
