@@ -1,6 +1,10 @@
 <?php
 mb_internal_encoding('UTF-8');
 class SIO {
+
+//  options. use_username.
+//  v = array of view filenames, 'SIOSetEmail'=>'my_siosetem_v.ixml'
+	
 	public static function run($v=NULL) {
 		if (is_null($v)) {
 			$v = new NView('sio_v.ixml');

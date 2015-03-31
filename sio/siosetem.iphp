@@ -132,7 +132,7 @@ class SIOSetEmail {
 		$query= "update user set email=emailp where id='" .Settings::$usr['ID']. "' and ".self::$munge."='".$ha."'";
 		Settings::$sql->query($query);
 		$nv = new NView("siosetems_v.ixml");
-		$nv->tset($this->en_extras);
+//		$nv->tset($this->en_extras);
 		return $nv;
 	}
 	

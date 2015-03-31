@@ -4,11 +4,15 @@ mb_internal_encoding('UTF-8');
 class SioReg {
 	use Form;
 
-	private static $munge="sha2(concat(ifnull(username,id),'_',ifnull(password,id),'_',ifnull(email,id),'_',ifnull(ts,id)),256)";
-
 	public static function sig() {
 		return "sioreg_";
-	}	
+	}
+		
+	private static $munge="sha2(concat(ifnull(username,id),'_',ifnull(password,id),'_',ifnull(email,id),'_',ifnull(ts,id)),256)";
+	private static $en_static=array(
+			$this->sig() ."mesg_register_success"=>"You have successfully registered.",
+	);
+
 	function __construct($key=NULL,$v=NULL) {
 		$this->iniForm($key,$v);
 		$this->key=$key;
@@ -27,7 +31,6 @@ class SioReg {
 		);
 		$this->en_extras = array(
 			//mesg_success is used by sio.php..
-			$this->sig() ."mesg_register_success"=>"You have successfully registered.",
 			
 			$this->sig() ."note_register_title"=>"Registration Request",
 			$this->sig() ."note_register_message"=>"It appears that you have chosen to register on the website.",
@@ -142,12 +145,13 @@ class SioReg {
 		return $retval;
 	}
 	
-	public static function pushit($hat=NULL) {
+	public static function push_it($hat=NULL) {
+		Dict::set(self::$en_static,'en');
 		$ha=Settings::esc($hat); 
 		$query= "update user set email=emailp,active='on' where active='xx' and ".self::$munge."='".$ha."'";
 		Settings::$sql->query($query);
 		$nv = new NView("sioregs_v.ixml");
-		$nv->tset(array(static::sig() ."mesg_register_success" => NULL));
+		$nv->tset(self::$en_static);
 		return $nv;
 	}
 
