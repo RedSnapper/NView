@@ -8,7 +8,7 @@ class SIOSetPW {
 	}
 	
 	private static $en_static=array(
-			$this->sig() ."mesg_success"=>"You successfully changed your password."
+		"siosetpw_mesg_success"=>"You successfully changed your password."
 	);
 
 	function __construct($key=NULL,$v=NULL) {
