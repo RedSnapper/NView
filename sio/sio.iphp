@@ -34,7 +34,7 @@ sign-in and sign-out.
 				if(!empty(Settings::$qst['siof'])) {
 					$siof=Settings::$qst['siof'];
 					if (SIOSetEmail::conforms($siof)) {
-						$formlet=SIOSetEmail::pushit($siof,self::@$views[SIOSetEmail::sig()]);
+						$formlet=SIOSetEmail::pushit($siof,@self::$views[SIOSetEmail::sig()]);
 						$stt=0;  
 					}
 				} 
