@@ -14,11 +14,7 @@ class SIO {
 		} else {
 			self::$views=$v;
 		}
-		if (is_null(self::$views['sio_'])) {
-			$v = new NView('sio_v.ixml');
-		} else {
-			$v = self::$views['sio_'];
-		}
+		$v = new NView(@self::$views['sio_']);
 		$err = $v->messages();
 		if (isset($err) && !empty($err)) {
 			print $err;
