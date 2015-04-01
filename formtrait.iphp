@@ -9,6 +9,7 @@ trait Form {
 	private $signature; 	//unique signature for identifying this post.
 	private $committed; 	//bool flag for identifying if we committed.
 	private $valid;			//bool flag for identifying if we validated.
+	private $newid;			//set if there is an insertion involving an auto_increment;
 	private $id;			//unique prefix for identifying form fields in the post.
 	private $idprefix;		//other bit for this.
 	private $idprefixlen;	//length of value.
@@ -509,11 +510,11 @@ trait Form {
 		}
 		if (Settings::$sql->query($query)) {
 			if ($r=Settings::$sql->query("select last_insert_id()")) {
-				$val = $r->fetch_row()[0];
-				if ($val != 0) {
+				$this->newid = $r->fetch_row()[0];
+				if ($this->newid != 0) {
 					if ($this->show) {
 						$this->show = false;
-						header("Location: " . Settings::$url . "?" . $val );
+						header("Location: " . Settings::$url . "?" . $this->newid );
 					} else {
 						if (!is_null($this->redirect)) {
 							header("Location: " . $this->redirect);
