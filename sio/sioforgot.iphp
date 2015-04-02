@@ -15,14 +15,14 @@ class SioForgot {
 		"sioforgot_success"=>"sioforgot_sv.ixml"
 	);
 	public static $field_keys = array(
-		static::SIG."prompt_emailaddress",
-		static::SIG."button_resetpassword"
+		"sioforgot_prompt_emailaddress",
+		"sioforgot_button_resetpassword"
 	);
 	public static::$mail_keys = array(
-		static::SIG."mail_head",
-		static::SIG."mail_userhint",
-		static::SIG."mail_url_text",
-		static::SIG."mail_body"
+		"sioforgot_mail_head",
+		"sioforgot_mail_userhint",
+		"sioforgot_mail_url_text",
+		"sioforgot_mail_body"
 	);
 	public static::$extra_keys = array(
 		static::SIG."commit_msg"
