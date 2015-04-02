@@ -23,7 +23,7 @@ class SIOSetPW {
 			static::SIG ."prompt_original_password"=>"Current Password",
 			static::SIG ."prompt_new_password"=>"New Password",
 			static::SIG ."prompt_retype_new_password"=>"Retype New Password",
-			static::SIG ."button_set_new_password"=>"Set New Password"
+			static::SIG ."button_set_new_password"=>"Set New Password",
 			static::SIG ."errors_orig_pw_wrong"=>" The current password doesn't match our records.",
 			static::SIG ."errors_password_empty"=>" You must enter your current password.",
 			static::SIG ."errors_new_pw_empty"=>" You must enter a new password.",
