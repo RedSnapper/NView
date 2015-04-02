@@ -7,7 +7,6 @@ class SIOSetEmail {
 	public static function sig() { return static::SIG; }
 	private static $munge="sha2(concat(ifnull(username,id),'+',ifnull(password,id),'+',ifnull(email,id),'+',ifnull(ts,id)),256)";
 
-	private static $v=array( "siosetem_"=>"siosetem_v.ixml" );
 	private static $v=array(
 		"siosetem_"=>"siosetem_v.ixml",
 		"siosetem_email_body"=>"siosetem_mv.ixml",
@@ -15,14 +14,14 @@ class SIOSetEmail {
 		"siosetem_success"=>"siosetem_sv.ixml"
 	);
 	public static $extra_keys = array(
-		static::SIG .'mesg_success',
-		static::SIG .'mesg_checkem'
+		'siosetem_mesg_success',
+		'siosetem_mesg_checkem'
 	);
 	public static $field_keys = array(
-		static::SIG .'prompt_new_email',
-		static::SIG .'prompt_retype_new_email',
-		static::SIG .'prompt_your_password',
-		static::SIG .'button_set_email'
+		'siosetem_prompt_new_email',
+		'siosetem_prompt_retype_new_email',
+		'siosetem_prompt_your_password',
+		'siosetem_button_set_email'
 	);
 	public static function initialise() {
 		$en = array(
