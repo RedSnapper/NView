@@ -10,9 +10,9 @@ class SioSignOut {
 	public static function sig() { return static::SIG; }
 	private static $v=array( "siosignout_"=> "siosignout_v.ixml" );
 	public static $field_keys = array(
-		static::SIG .'button_signout',
-		static::SIG .'button_newemailaddr',
-		static::SIG .'button_newpassword'
+		'siosignout_button_signout',
+		'siosignout_button_newemailaddr',
+		'siosignout_button_newpassword'
 	);
 	public static function initialise() {
 		$en = array(
