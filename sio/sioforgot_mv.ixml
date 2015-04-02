@@ -1,0 +1,7 @@
+<!DOCTYPE div>
+<div xmlns="http://www.w3.org/1999/xhtml">
+	<h3 data-tr="sioforgot_mail_head" />
+	<p data-tr="sioforgot_mail_body" />
+	<p data-xp="un"><span data-tr="sioforgot_mail_userhint" /></p>
+	<p><a data-xp="ha" data-tr="sioforgot_mail_url_text" /></p>
+</div>
