@@ -7,7 +7,7 @@ class SIOSetEmail {
 	public static function sig() { return static::SIG; }
 	private static $munge="sha2(concat(ifnull(username,id),'+',ifnull(password,id),'+',ifnull(email,id),'+',ifnull(ts,id)),256)";
 
-	private static $v=array( static::SIG=>static::SIG."_v.ixml" );
+	private static $v=array( "siosetem_"=>"siosetem_v.ixml" );
 	private static $v=array(
 		"siosetem_"=>"siosetem_v.ixml",
 		"siosetem_email_body"=>"siosetem_mv.ixml",
@@ -31,7 +31,7 @@ class SIOSetEmail {
 			static::SIG .'prompt_new_email'=>"New Email",
 			static::SIG .'prompt_retype_new_email'=>"Retype New Email",
 			static::SIG .'prompt_your_password'=>"Password",
-			static::SIG .'button_set_email'=>"Set New Email"
+			static::SIG .'button_set_email'=>"Set New Email",
 			static::SIG .'errors_emails_unmatched'=>" Both emails must be the same.",
 			static::SIG .'errors_email_badformat'=>" The email format is not recognised.",
 			static::SIG .'errors_emails_empty'=>" The email must have a value.",
