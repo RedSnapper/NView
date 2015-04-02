@@ -27,7 +27,7 @@ class Dict extends Singleton {
 	public static function set($kv,$ln = NULL) {
 		if (is_null($ln)) { $ln = static::$ln[0]; }
 		if (!isset(static::$lib[$ln])) { static::$lib[$ln] = array(); }
-		static::$lib[$ln] = array_replace(static::$lib[$ln],$kv);
+		static::$lib[$ln] = array_merge(static::$lib[$ln],$kv);
 	}
 	
 	public static function get($key) {
