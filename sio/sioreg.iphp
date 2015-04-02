@@ -13,7 +13,7 @@ class SioReg {
 	private static $munge="sha2(concat(ifnull(username,id),'_',ifnull(password,id),'_',ifnull(email,id),'_',ifnull(ts,id)),256)";
 
 	public static $extra = array(
-			static::SIG ."mesg_success"
+			static::SIG ."mesg_success",
 			static::SIG ."note_register_title",
 			static::SIG ."note_register_message",
 			static::SIG ."note_register_action_link"
@@ -31,7 +31,7 @@ class SioReg {
 			static::SIG ."prompt_email"=>"Email",
 			static::SIG ."prompt_password"=>"Password",
 			static::SIG ."prompt_retype_password"=>"Retype Password",
-			static::SIG ."button_register"=>"Register"
+			static::SIG ."button_register"=>"Register",
 			static::SIG ."note_register_title"=>"Registration Request",
 			static::SIG ."note_register_message"=>"It appears that you have chosen to register on the website.",
 			static::SIG ."note_register_action_link"=>"Please click here to confirm your registration",
