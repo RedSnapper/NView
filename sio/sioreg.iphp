@@ -5,25 +5,24 @@ class SioReg {
 	use Form;
 	const SIG="sioreg_";
 	public static function sig() { return static::SIG; }
+	private static $munge="sha2(concat(ifnull(username,id),'_',ifnull(password,id),'_',ifnull(email,id),'_',ifnull(ts,id)),256)";
 	private static $v=array( 
 		"sioreg_"=>"sioreg_v.ixml",
 		"sioreg_email_body"=>"sioreg_mv.ixml",
 		"sioreg_success"=>"sioreg_sv.ixml"
 	 );
-	private static $munge="sha2(concat(ifnull(username,id),'_',ifnull(password,id),'_',ifnull(email,id),'_',ifnull(ts,id)),256)";
-
 	public static $extra = array(
-			static::SIG ."mesg_success",
-			static::SIG ."note_register_title",
-			static::SIG ."note_register_message",
-			static::SIG ."note_register_action_link"
+		"sioreg_mesg_success",
+		"sioreg_note_register_title",
+		"sioreg_note_register_message",
+		"sioreg_note_register_action_link"
 	);
 	public static $field_keys = array(
-			static::SIG ."prompt_username",
-			static::SIG ."prompt_email",
-			static::SIG ."prompt_password",
-			static::SIG ."prompt_retype_password",
-			static::SIG ."button_register"
+		"sioreg_prompt_username",
+		"sioreg_prompt_email",
+		"sioreg_prompt_password",
+		"sioreg_prompt_retype_password",
+		"sioreg_button_register"
 	);	
 	public static function initialise() {
 		$en = array(
