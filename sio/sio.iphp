@@ -98,7 +98,7 @@ sign-in and sign-out.
 	public static function initialise() {
 		SioSignIn::initialise();
 		SioSignOut::initialise();
-		SioSignReg::initialise();
+		SioReg::initialise();
 		SioSignForgot::initialise();
 		SioSetPW::initialise();
 		SioSetEmail::initialise();
