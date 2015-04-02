@@ -9,10 +9,10 @@ class SIOSetEmail {
 
 	private static $v=array( static::SIG=>static::SIG."_v.ixml" );
 	private static $v=array(
-		static::SIG=>static::SIG."v.ixml",
-		static::SIG."email_body"=>static::SIG."mv.ixml",
-		static::SIG."check_mail"=>static::SIG."pv.ixml",
-		static::SIG."success"=>=>static::SIG."sv.ixml"
+		"siosetem_"=>"siosetem_v.ixml",
+		"siosetem_email_body"=>"siosetem_mv.ixml",
+		"siosetem_check_mail"=>"siosetem_pv.ixml",
+		"siosetem_success"=>"siosetem_sv.ixml"
 	);
 	public static::$extra_keys = array(
 		static::SIG .'mesg_success',

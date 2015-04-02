@@ -6,7 +6,7 @@ class SIOResetPW {
 	const SIG = "sioresetpw_";
 	public static function sig() { return static::SIG; }
 	private static $munge="sha2(concat(ifnull(username,id),'-',ifnull(password,id),'-',ifnull(email,id),'-',ifnull(ts,id)),256)";
-	private static $v=array(static::SIG=>static::SIG."v.ixml");
+	private static $v=array("sioresetpw_"=>"sioresetpw_v.ixml");
 	public static::$field_keys = array(
 		static::SIG .'prompt_password',
 		static::SIG .'prompt_retype_password',

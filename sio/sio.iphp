@@ -1,14 +1,10 @@
 <?php
 mb_internal_encoding('UTF-8');
 class SIO {
-
 	const SIG = "sio_";
-
-	//views can be overridden by custom values
 	private static $v=array(
 		"sio_" => "sio_v.ixml"
 	);
-	
 	private static $use_username=true;
 	
 	public static function run($custom_views=array(),$translations=array('en'=>array('hello'=>'Hello')),$use_un=true) {

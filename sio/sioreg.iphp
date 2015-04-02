@@ -6,9 +6,9 @@ class SioReg {
 	const SIG="sioreg_";
 	public static function sig() { return static::SIG; }
 	private static $v=array( 
-		static::SIG=>static::SIG."v.ixml",
-		static::SIG."email_body"=>static::SIG."mv.ixml",
-		static::SIG."success"=>static::SIG."sv.ixml"
+		"sioreg_"=>"sioreg_v.ixml",
+		"sioreg_email_body"=>"sioreg_mv.ixml",
+		"sioreg_success"=>"sioreg_sv.ixml"
 	 );
 	private static $munge="sha2(concat(ifnull(username,id),'_',ifnull(password,id),'_',ifnull(email,id),'_',ifnull(ts,id)),256)";
 

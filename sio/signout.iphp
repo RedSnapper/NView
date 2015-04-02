@@ -8,7 +8,7 @@ class SioSignOut {
 	use Form;
 	const SIG = "siosignout_";
 	public static function sig() { return static::SIG; }
-	private static $v=array( static::SIG=>static::SIG."v.ixml" );
+	private static $v=array( "siosignout_"=> "siosignout_v.ixml" );
 	public static::$field_keys = array(
 		static::SIG .'button_signout',
 		static::SIG .'button_newemailaddr',

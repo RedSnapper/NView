@@ -6,8 +6,8 @@ class SIOSetPW {
 	const SIG = "siosetpw_";
 	public static function sig() { return static::SIG; }
 	private static $v=array( 
-		static::SIG=>static::SIG."v.ixml",
-		static::SIG."success"=>static::SIG."sv.ixml",
+		"siosetpw_"=>"siosetpw_v.ixml",
+		"siosetpw_success"=>"siosetpw_sv.ixml"
 	);
 	private static $extra_keys=array(
 		static::SIG ."mesg_success"

@@ -8,7 +8,7 @@ class SioSignIn {
 	use Form;
 	const SIG = "siosignin_";
 	public static function sig() { return static::SIG; }
-	private static $v=array(static::SIG=>static::SIG."v.ixml");
+	private static $v=array("siosignin_" => "siosignin_v.ixml");
 	public static::$field_keys = array(
 			static::SIG .'prompt_username',
 			static::SIG .'prompt_password',
