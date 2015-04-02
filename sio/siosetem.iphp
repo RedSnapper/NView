@@ -14,11 +14,11 @@ class SIOSetEmail {
 		"siosetem_check_mail"=>"siosetem_pv.ixml",
 		"siosetem_success"=>"siosetem_sv.ixml"
 	);
-	public static::$extra_keys = array(
+	public static $extra_keys = array(
 		static::SIG .'mesg_success',
 		static::SIG .'mesg_checkem'
 	);
-	public static::$field_keys = array(
+	public static $field_keys = array(
 		static::SIG .'prompt_new_email',
 		static::SIG .'prompt_retype_new_email',
 		static::SIG .'prompt_your_password',

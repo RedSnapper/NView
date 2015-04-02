@@ -9,7 +9,7 @@ class SioSignIn {
 	const SIG = "siosignin_";
 	public static function sig() { return static::SIG; }
 	private static $v=array("siosignin_" => "siosignin_v.ixml");
-	public static::$field_keys = array(
+	public static $field_keys = array(
 		'siosignin_prompt_username',
 		'siosignin_prompt_password',
 		'siosignin_button_signin',

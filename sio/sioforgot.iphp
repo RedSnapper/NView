@@ -14,7 +14,7 @@ class SioForgot {
 		"sioforgot_mailbody"=>"sioforgot_mv.ixml",
 		"sioforgot_success"=>"sioforgot_sv.ixml"
 	);
-	public static::$field_keys = array(
+	public static $field_keys = array(
 		static::SIG."prompt_emailaddress",
 		static::SIG."button_resetpassword"
 	);
