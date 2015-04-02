@@ -10,11 +10,11 @@ class SioSignIn {
 	public static function sig() { return static::SIG; }
 	private static $v=array("siosignin_" => "siosignin_v.ixml");
 	public static::$field_keys = array(
-			static::SIG .'prompt_username',
-			static::SIG .'prompt_password',
-			static::SIG .'button_signin',
-			static::SIG .'button_forgot',
-			static::SIG .'button_register'
+		'siosignin_prompt_username',
+		'siosignin_prompt_password',
+		'siosignin_button_signin',
+		'siosignin_button_forgot',
+		'siosignin_button_register'
 	);
 	public static function initialise() {
 		$en = array(
