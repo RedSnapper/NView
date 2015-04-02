@@ -6,7 +6,7 @@ class SIO {
 
 	//views can be overridden by custom values
 	private static $v=array(
-		"sio_" => "sio_v.ixml"
+		SIO::SIG => "sio_v.ixml"
 	);
 	
 	private static $use_username=true;
@@ -99,7 +99,7 @@ sign-in and sign-out.
 	}
 	
 //This must be run before we overload the translations.
-	private static::initialise() {
+	public static function initialise() {
 		SioSignIn::initialise();
 		SioSignOut::initialise();
 		SioSignReg::initialise();
