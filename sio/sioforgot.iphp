@@ -30,7 +30,7 @@ class SioForgot {
 	public static function initialise() {
 		$en = array(
 			static::SIG .'prompt_emailaddress' => "Email",
-			static::SIG .'button_resetpassword'=>"Reset Password"
+			static::SIG .'button_resetpassword'=>"Reset Password",
 			static::SIG .'errors_bad_email'=>"The email address appears to be wrong",
 			static::SIG .'commit_msg'=>"You should shortly receive an email with instructions for resetting your password.",
 			static::SIG .'mail_head'=>"Password Reset Request",
