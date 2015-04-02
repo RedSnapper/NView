@@ -6,7 +6,7 @@ class SIO {
 
 	//views can be overridden by custom values
 	private static $v=array(
-		self::SIG=>self::SIG."v.ixml"
+		self->SIG=>self->SIG."v.ixml"
 	);
 	
 	private static $use_username=true;
