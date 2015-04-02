@@ -99,7 +99,7 @@ sign-in and sign-out.
 		SioSignIn::initialise();
 		SioSignOut::initialise();
 		SioReg::initialise();
-		SioSignForgot::initialise();
+		SioForgot::initialise();
 		SioSetPW::initialise();
 		SioSetEmail::initialise();
 		SioResetPW::initialise();
