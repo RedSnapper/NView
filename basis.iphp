@@ -1,6 +1,6 @@
 <?php
 mb_internal_encoding('UTF-8');
-set_include_path( get_include_path() . PATH_SEPARATOR . '/websites/shared/lib/' . PATH_SEPARATOR . $_SERVER['DOCUMENT_ROOT']);
+set_include_path( get_include_path() . PATH_SEPARATOR . '/websites/shared/dev/' . PATH_SEPARATOR . $_SERVER['DOCUMENT_ROOT']);
 
 //basic classes / traits used everywhere.
 require_once("patterns.iphp");
