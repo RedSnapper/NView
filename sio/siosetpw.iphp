@@ -10,13 +10,13 @@ class SIOSetPW {
 		"siosetpw_success"=>"siosetpw_sv.ixml"
 	);
 	private static $extra_keys=array(
-		static::SIG ."mesg_success"
+		"siosetpw_mesg_success"
 	);
 	public static $field_keys = array(
-		static::SIG ."prompt_original_password",
-		static::SIG ."prompt_new_password",
-		static::SIG ."prompt_retype_new_password",
-		static::SIG ."button_set_new_password"
+		"siosetpw_prompt_original_password",
+		"siosetpw_prompt_new_password",
+		"siosetpw_prompt_retype_new_password",
+		"siosetpw_button_set_new_password"
 	);
 	public static function initialise() {
 		$en = array(
