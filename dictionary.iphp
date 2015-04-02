@@ -25,9 +25,10 @@ class Dict extends Singleton {
  	}
 
 	public static function set($kv,$ln = NULL) {
-		if (is_null($ln)) { $ln = static::$ln[0]; }
-		if (!isset(static::$lib[$ln])) { static::$lib[$ln] = array(); }
-		static::$lib[$ln] = array_merge(static::$lib[$ln],$kv);
+		if (is_null($ln)) { $ln = self::$ln[0]; }
+		foreach($kv as $k => $v) {
+			self::$lib[$ln][$k]=$v;
+		}
 	}
 	
 	public static function get($key) {
