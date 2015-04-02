@@ -246,17 +246,17 @@ class NView {
 		if (!is_null($this->doc) && !is_null($this->xp)) {
 			$gap = self::GAP_NONE;
 			if (substr($xpath,-6)=="-gap()") {
-				$xpath = substr($xpath,0,-6); //remove the -gap();
+				$xpath = mb_substr($xpath,0,-6); //remove the -gap();
 				if (substr($xpath,-6)=="/child") {
-					$xpath = substr($xpath,0,-6); //remove the child;
+					$xpath = mb_substr($xpath,0,-6); //remove the child;
 					$gap=self::GAP_CHILD;
 				}
 				elseif (substr($xpath,-10)=="/preceding") {
-					$xpath = substr($xpath,0,-10); //remove the child;
+					$xpath = mb_substr($xpath,0,-10); //remove the child;
 					$gap=self::GAP_PRECEDING;
 				}
 				elseif (substr($xpath,-10)=="/following") {
-					$xpath = substr($xpath,0,-10); //remove the child;
+					$xpath = mb_substr($xpath,0,-10); //remove the child;
 					$gap=self::GAP_FOLLOWING;
 				}
 			}
@@ -297,11 +297,11 @@ class NView {
 						}
 						if ($entries) {
 							if ($entries->length == 0 && $gap == self::GAP_NONE) { //maybe this is a new attribute!?
-								$spoint = strrpos($xpath,'/');
-								$apoint = strrpos($xpath,'@');
+								$spoint = mb_strrpos($xpath,'/');
+								$apoint = mb_strrpos($xpath,'@');
 								if ($apoint == $spoint+1) {
-									$aname= substr($xpath,$apoint+1); //grab the attribute name.
-									$xpath= substr($xpath,0,$spoint); //resize the xpath.
+									$aname= mb_substr($xpath,$apoint+1); //grab the attribute name.
+									$xpath= mb_substr($xpath,0,$spoint); //resize the xpath.
 									$gap=self::GAP_NATTR;
 								}
 								if (is_null($ref)) {
@@ -546,6 +546,7 @@ class NView {
 			$this->initDoc();
 			$data = file_get_contents($xview);
 //uncomment these lines if you want newlines stripped from the sourcefile.
+//for str_replace, will need to check encoding mb_check_encoding($data)
 //			$wss = array("\r\n", "\n", "\r", "\t"); //what we will remove
 //			$data = str_replace($wss,"", $data);
 			try {
@@ -575,13 +576,16 @@ class NView {
 		} elseif (strpos($value,'<') === false) {
 			$this->con_file($value);
 		} else {
-
 			// Treat value as xml to be parsed.
-			$wss   = array("\r\n", "\n", "\r", "\t"); //
-			$value = str_replace($wss,"", $value);
-			$this->initDoc();
-			$this->doc->loadXML($value);
-			$this->initXPath();
+			if (mb_check_encoding($value)) {
+				$wss   = array("\r\n", "\n", "\r", "\t"); //
+				$value = str_replace($wss,"", $value); //str_replace should be mb safe.
+				$this->initDoc();
+				$this->doc->loadXML($value);
+				$this->initXPath();
+			} else {
+				$this->doc=NULL;
+			}
 		}
 	}
 

@@ -80,7 +80,7 @@ trait Form {
 		$this->id = $id;
 		$this->idprefix = $this->id . ':';
  		$this->signature = md5($this->id);
-		$this->idprefixlen = strlen($this->idprefix);
+		$this->idprefixlen = mb_strlen($this->idprefix);
 	}
 
 /**
@@ -301,7 +301,7 @@ trait Form {
 			$this->fields = array();
 			foreach ($_POST as $k => $v) {
 				if (strpos($k,$this->idprefix) === 0) {
-					$key = substr($k,$this->idprefixlen);
+					$key = mb_substr($k,$this->idprefixlen);
 					if ($key === $this->subsfield) {
 						$this->subspostv = $v;
 					} else {
@@ -539,7 +539,7 @@ trait Form {
 			if (empty($this->fields[$name][0]) || !is_string($this->fields[$name][0])) {
 				$this->valid = true;
 			} else {
-				$adv = strpos($this->fields[$name][0],"⌽") === false ? 0:1;
+				$adv = mb_strpos($this->fields[$name][0],"⌽") === false ? 0:1;
 				$tf=getenv('RS_SCRATCH_DIR') . '/mtxt_'.$this->signature.'_mac';
 				$fp = fopen($tf,"wb");
 				fwrite($fp,$this->fields[$name][0]);
