@@ -10,36 +10,34 @@ class Dict extends Singleton {
 	private static $lib=array();
 	
 	public static function library() {
-		return '<code>'.print_r(self::$lib,true).'</code>';
+		return '<code>'.print_r(static::$lib,true).'</code>';
 	}
 	
 	public static function setln($ln=array('en')) {
-		self::$ln=$ln;
-		if (!isset(self::$lib[$ln[0]])) {
-			self::$lib[$ln[0]] =  array();
+		static::$ln=$ln;
+		if (!isset(static::$lib[$ln[0]])) {
+			static::$lib[$ln[0]] =  array();
 		}	
 	}
 	
  	public static function ln() {
- 		return self::$ln[0];
+ 		return static::$ln[0];
  	}
 
 	public static function set($kv,$ln = NULL) {
-		if (is_null($ln)) { $ln = self::$ln[0]; }
-		foreach($kv as $k => $v) {
-			self::$lib[$ln][$k]=$v;
-		}
+		if (is_null($ln)) { $ln = static::$ln[0]; }
+		static::$lib[$ln] = array_replace(static::$lib[$ln],$kv);
 	}
 	
 	public static function get($key) {
 		$x = 0;
-		while (($x < count(self::$ln)) && (!isset(self::$lib[self::$ln[$x]][$key]))) {
+		while (($x < count(static::$ln)) && (!isset(static::$lib[static::$ln[$x]][$key]))) {
 		 $x++; 
 		}
-		if ((!isset(self::$ln[$x])) || (!isset(self::$lib[self::$ln[$x]][$key]))) {
+		if ((!isset(static::$ln[$x])) || (!isset(static::$lib[static::$ln[$x]][$key]))) {
 			return '['.$key.']';
 		} else {
-			return self::$lib[self::$ln[$x]][$key];
+			return static::$lib[static::$ln[$x]][$key];
 		}
 	}
 	

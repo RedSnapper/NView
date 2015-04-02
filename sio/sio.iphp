@@ -2,15 +2,23 @@
 mb_internal_encoding('UTF-8');
 class SIO {
 
-//  views. use_username.
-//  v = array of view filenames, 'SIOSetEmail'=>'my_siosetem_v.ixml'
-	private static $views=NULL;
+	const SIG = "sio_";
+
+	//views can be overridden by custom values
+	private static $v=array(
+		static::SIG=>static::SIG."v.ixml"
+	);
+	
 	private static $use_username=true;
 	
-	public static function run($v=array(),$use_un=true) {
-		self::$use_username=$use_un;
-		self::$views=$v;
-		$v = new NView(@self::$views['sio_']);
+	public static function run($custom_views=array(),$translations=array('en'=>array('hello'=>'Hello')),$use_un=true) {
+		static::$use_username=$use_un;
+		static::$v = array_replace(static::$v,$custom_views);
+		static::initialise();
+		foreach ($translations as $lang => $trans_array) {
+			Dict::set($trans_array,$lang);
+		}		
+		$v = new NView(@static::$v[static::SIG]);
 		$err = $v->messages();
 		if (isset($err) && !empty($err)) {
 			print $err;
@@ -26,18 +34,18 @@ sign-in and sign-out.
 				if(!empty(Settings::$qst['siof'])) {
 					$siof=Settings::$qst['siof'];
 					if (SIOSetEmail::conforms($siof)) {
-						$formlet=SIOSetEmail::pushit($siof,@self::$views);
+						$formlet=SIOSetEmail::pushit($siof); //sig.pushit
 						$stt=0;  
 					}
 				} 
 				if ($stt==2 ) {
 					if (SioSetPW::inScope()) {  //doing a set-pw post.
-						$stt=0; $sio=new SioSetPW(); $formlet=$sio->form(false);
+						$stt=0; $sio=new SioSetPW(NULL,static::$v); $formlet=$sio->form(false);
 						if ($sio->success()) {
-							SioSetPW::pushit(NULL,@self::$views);
+							SioSetPW::pushit();
 						}
 					} elseif (SIOSetEmail::inScope()) {  //doing a set-pw post.
-						$stt=0; $sio=new SIOSetEmail(); $formlet=$sio->form(false);
+						$stt=0; $sio=new SIOSetEmail(NULL,static::$v); $formlet=$sio->form(false);
 						if ($sio->success()) {
 							SIOSetEmail::pushit();
 						}
@@ -51,7 +59,7 @@ sign-in and sign-out.
 						$stt=0;  
 						$formlet=SioReg::pushit($siof);
 					} elseif (SioResetPW::conforms($siof)) {
-						$stt=0;  $sio=new SioResetPW($siof);
+						$stt=0; $sio=new SioResetPW($siof,static::$v);
 						$formlet=$sio->form(false);	
 						if ($sio->success()) {
 							$stt=1;
@@ -61,9 +69,9 @@ sign-in and sign-out.
 					}
 				} else {
 					if (SioReg::inScope()) {
-						$stt=0; $sio=new SioReg(); $formlet=$sio->form(false);
+						$stt=0; $sio=new SioReg(NULL,static::$v); $formlet=$sio->form(false);
 					} elseif (SioForgot::inScope()) {
-						$stt=0; $sio=new SioForgot(); $formlet=$sio->form(false);
+						$stt=0; $sio=new SioForgot(NULL,static::$v); $formlet=$sio->form(false);
 						if ($sio->success()) {
 							$formlet=$sio->commitv();
 						}					
@@ -73,15 +81,15 @@ sign-in and sign-out.
 			switch ($stt) {
 				case 0: break;
 				case 1: {
-					$ssi=new SioSignIn(); $formlet=$ssi->form(false);
+					$ssi=new SioSignIn(NULL,static::$v); $formlet=$ssi->form(false);
 					if ($ssi->success()) {
-						$sio=new SioSignOut(); $formlet = $sio->form(false);
+						$sio=new SioSignOut(NULL,static::$v); $formlet = $sio->form(false);
 					} 
 				} break;
 				case 2: {
-					$sso=new SioSignOut(); $formlet=$sso->form(false);
+					$sso=new SioSignOut(NULL,static::$v); $formlet=$sso->form(false);
 					if ($sso->success()) {
-						$sio=new SioSignIn();$formlet=$sio->form(false);
+						$sio=new SioSignIn(NULL,static::$v);$formlet=$sio->form(false);
 					}				
 				} break;
 			}
@@ -89,4 +97,16 @@ sign-in and sign-out.
 			return $v;
 		}
 	}
+	
+//This must be run before we overload the translations.
+	private static::initialise() {
+		SioSignIn::initialise();
+		SioSignOut::initialise();
+		SioSignReg::initialise();
+		SioSignForgot::initialise();
+		SioSetPW::initialise();
+		SioSetEmail::initialise();
+		SioResetPW::initialise();
+	}
+	
 }

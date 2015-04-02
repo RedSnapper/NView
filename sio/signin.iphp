@@ -6,51 +6,48 @@ mb_internal_encoding('UTF-8');
  */
 class SioSignIn {
 	use Form;
-	private $en_fields,$en_errors;	
-	private $gr_fields,$gr_errors;	
-	public static function sig() {
-		return "siosignin_";
+	const SIG = "siosignin_";
+	public static function sig() { return static::SIG; }
+	private static $v=array(static::SIG=>static::SIG."v.ixml");
+	public static::$field_keys = array(
+			static::SIG .'prompt_username',
+			static::SIG .'prompt_password',
+			static::SIG .'button_signin',
+			static::SIG .'button_forgot',
+			static::SIG .'button_register'
+	);
+	public static function initialise() {
+		$en = array(
+			static::SIG .'prompt_username' => "Username",
+			static::SIG .'prompt_password'=>"Password",
+			static::SIG .'button_signin'=>"Sign In",
+			static::SIG .'button_forgot'=>"Forgot Password",
+			static::SIG .'button_register'=>"Register"
+			static::SIG .'errors_username_unmatched'=>"Either the username or password don't match our records",
+			static::SIG .'errors_username_empty'=>"You need to enter your username"
+		);
+		$gr = array(
+			static::SIG .'prompt_username' => "Όνομα Χρήστη",
+			static::SIG .'prompt_password'=>"Κωδικός",
+			static::SIG .'button_signin'=>"Είσοδος",
+			static::SIG .'button_forgot'=>"Ξέχασα τον κωδικό μου",
+			static::SIG .'button_register'=>"Εγγραφή"
+			static::SIG .'errors_username_unmatched'=>"Το όνομα χρήστη ή ο κωδικός δεν ειναι σωστά"
+		);
+		Dict::set($en,'en');
+		Dict::set($gr,'gr');
 	}
 
 /**
  * '__construct'
  */
-	function __construct($key=NULL,$v=NULL) {
-		$this->iniForm($key,$v);
+	function __construct($key=NULL,$custom_views=array()) {
+		static::$v = array_replace(static::$v,$custom_views);
+		$this->iniForm($key,@static::$v[static::SIG]);
 		$this->key=$key;
 		$this->table="user";
 		$this->setfld('username');
-		$this->setfld('password');
-		
-		$this->en_fields = array(
-			$this->sig() .'prompt_username' => "Username",
-			$this->sig() .'prompt_password'=>"Password",
-			$this->sig() .'button_signin'=>"Sign In",
-			$this->sig() .'button_forgot'=>"Forgot Password",
-			$this->sig() .'button_register'=>"Register"
-		);
-		$this->en_errors = array(
-			$this->sig() .'errors_username_unmatched'=>"Either the username or password don't match our records",
-			$this->sig() .'errors_username_empty'=>"You need to enter your username"
-		);
-		
-		$this->gr_fields = array(
-			$this->sig() .'prompt_username' => "Όνομα Χρήστη",
-			$this->sig() .'prompt_password'=>"Κωδικός",
-			$this->sig() .'button_signin'=>"Είσοδος",
-			$this->sig() .'button_forgot'=>"Ξέχασα τον κωδικό μου",
-			$this->sig() .'button_register'=>"Εγγραφή"
-		);
-		$this->gr_errors = array(
-			$this->sig() .'errors_username_unmatched'=>"Το όνομα χρήστη ή ο κωδικός δεν ειναι σωστά"
-		);
-		
-		Dict::set($this->en_fields,'en');
-		Dict::set($this->en_errors,'en');
-		
-		Dict::set($this->gr_fields,'gr');
-		Dict::set($this->gr_errors,'gr');
-		
+		$this->setfld('password');	
 	}
 
 /**
@@ -70,11 +67,11 @@ class SioSignIn {
 	protected function func() {
 		switch ($this->fields['_fn'][0]) {
 			case 'forgot': {
-				$sf=new SIOForgot();
+				$sf=new SIOForgot(NULL,static::$v);
 				return $sf->form();
 			} break;
 			case 'register': {
-				$sf=new SIOReg();
+				$sf=new SIOReg(NULL,static::$v);
 				return $sf->form();
 			} break;
 		}
@@ -96,12 +93,12 @@ class SioSignIn {
 				if (strcmp($rx->fetch_row()[0],"1") === 0) {
 					$retval=true;
 				} else {
-					$this->seterr("username",Dict::get('siosignin_errors_username_unmatched'));
+					$this->seterr("username",Dict::get(static::SIG.'errors_username_unmatched'));
 				}
 				$rx->close();
 			}
 		} else {
-			$this->seterr("username",Dict::get($this->sig().'errors_username_empty'));
+			$this->seterr("username",Dict::get(static::SIG.'errors_username_empty'));
 		}
 		$this->valid = $retval;
 	}
@@ -123,7 +120,7 @@ class SioSignIn {
  */
 	protected function populate() {
 		$this->vset('username');
-		$this->tset($this->en_fields);
+		$this->tset(static::$field_keys);
 	}
 
 }

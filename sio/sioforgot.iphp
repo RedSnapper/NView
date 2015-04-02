@@ -5,40 +5,54 @@ mb_internal_encoding('UTF-8');
  * This requires 
  */
 class SioForgot {
-	private static $munge="sha2(concat(ifnull(username,id),'-',ifnull(password,id),'-',ifnull(email,id),'-',ifnull(ts,id)),256)";
-
 	use Form;
-	public static function sig() {
-		return "sioforgot_";
+	private static $munge="sha2(concat(ifnull(username,id),'-',ifnull(password,id),'-',ifnull(email,id),'-',ifnull(ts,id)),256)";
+	const SIG = "sioforgot_";
+	public static function sig() { return static::SIG; }
+	private static $v=array(
+		static::SIG=>static::SIG."v.ixml",
+		static::SIG."mailbody"=>static::SIG."mv.ixml",
+		static::SIG."success"=>static::SIG."sv.ixml"
+	);
+	public static::$field_keys = array(
+		static::SIG."prompt_emailaddress",
+		static::SIG."button_resetpassword"
+	);
+	public static::$mail_keys = array(
+		static::SIG."mail_head",
+		static::SIG."mail_userhint",
+		static::SIG."mail_url_text",
+		static::SIG."mail_body"
+	);
+	public static::$extra_keys = array(
+		static::SIG."commit_msg"
+	);
+	public static function initialise() {
+		$en = array(
+			static::SIG .'prompt_emailaddress' => "Email",
+			static::SIG .'button_resetpassword'=>"Reset Password"
+			static::SIG .'errors_bad_email'=>"The email address appears to be wrong",
+			static::SIG .'commit_msg'=>"You should shortly receive an email with instructions for resetting your password.",
+			static::SIG .'mail_head'=>"Password Reset Request",
+			static::SIG .'mail_body'=>"It appears that you have posted a password reset request.",
+			static::SIG .'mail_userhint'=>"Your username is:",
+			static::SIG .'mail_url_text'=>"PLEASE CONTINUE HERE",
+			static::SIG .'mail_see_alt'=>"Please see the html alternative of this email",
+			static::SIG .'mail_subject'=>'Password Reset'
+		);
+		Dict::set($en,'en');
 	}
 
 /**
  * '__construct'
  */
-	function __construct($key=NULL,$v=NULL) {
-		$this->iniForm($key,$v);
+	function __construct($key=NULL,$custom_views=array()) {
+		static::$v = array_replace(static::$v,$custom_views);
+		$this->iniForm($key,@static::$v[static::SIG]);
 		$this->key=$key;
 		$this->table="user";
 		$this->setfld('username');
-		$this->setfld('email');
-		
-		$this->en_fields = array(
-			$this->sig() .'prompt_emailaddress' => "Email",
-			$this->sig() .'button_resetpassword'=>"Reset Password"
-		);
-		$this->en_extras = array(
-			$this->sig() .'errors_bad_email'=>"The email address appears to be wrong",
-			$this->sig() .'mail_see_alt'=>"Please see the html alternative of this email",
-			$this->sig() .'commit_msg'=>"You should shortly receive an email with instructions for resetting your password.",
-			$this->sig() .'mail_head'=>"Password Reset Request",
-			$this->sig() .'mail_body'=>"It appears that you have posted a password reset request.",
-			$this->sig() .'mail_userhint'=>"Your username is:",
-			$this->sig() .'mail_url_text'=>"PLEASE CONTINUE HERE",
-			$this->sig() .'mail_subject'=>'Password Reset'
-		);
-		Dict::set($this->en_fields,'en');
-		Dict::set($this->en_extras,'en');
-		
+		$this->setfld('email');	
 	}
 
 /**
@@ -46,9 +60,8 @@ class SioForgot {
  * fn OVERLOADING trait 'Form'.
  */
 	public function commitv() { 
-		$cv=new NView('sioforgots_v.ixml');
-		$cv->set("//*[@data-tr]/@data-tr/preceding-gap()",static::sig());
-		$cv->tset($this->en_extras);
+		$cv=new NView(@static::$v[static::SIG."success"]);
+		$cv->tset(static::$extra_keys);
 		return $cv;
 	}
 
@@ -59,7 +72,7 @@ class SioForgot {
  * errors are placed into the this->view.
  */
 	protected function validate() {
-		$this->valEmail('email',Dict::get($this->sig() .'errors_bad_email'));
+		$this->valEmail('email',Dict::get(static::SIG .'errors_bad_email'));
 	}
 
 /**
@@ -73,17 +86,16 @@ class SioForgot {
 		if ($rx = Settings::$sql->query($qry)) {
 			require_once("/websites/shared/lib/PHPMailer/PHPMailerAutoload.php");
 			while ($f = $rx->fetch_assoc()) {
-				$mail_v=new NView('sioforgotmail_v.ixml');
-				$mail_v->set("//*[@data-tr]/@data-tr/preceding-gap()",static::sig());
-				$mail_v->tset($this->en_extras);
+				$mail_v=new NView(@static::$v[static::SIG."mailbody"]);
+				$mail_v->tset(static::$mail_keys);
 				$mail = new PHPMailer();
 				$mail->isSendmail();
 				$mail->CharSet='utf-8';
 				$mail->Encoding='base64';
-				$mail->setFrom('auto@redsnapper.net', Dict::get($this->sig() .'mail_subject') );
+				$mail->setFrom('auto@redsnapper.net', Dict::get(static::SIG .'mail_subject') );
 				$mail->addBCC('auto@redsnapper.net', 'Auto'); //bcc			
 				$mail->addAddress($em,$f['username']); 				
-				$mail->Subject = Dict::get($this->sig() .'mail_subject');
+				$mail->Subject = Dict::get(static::SIG .'mail_subject');
 				$mail->isHTML(true);
 				$url=$_SERVER["SCRIPT_URI"];
 				if (strpos($url, '?') !== false) {
@@ -94,7 +106,7 @@ class SioForgot {
 				$mail_v->set("//*[@data-xp='un']/child-gap()",$f['username']);
 				$mail_v->set("//*[@data-xp='ha']/@href",$url);
 				$mail->Body = $mail_v->show(false);
-				$mail->AltBody= Dict::get($this->sig() .'mail_see_alt');
+				$mail->AltBody= Dict::get(static::SIG .'mail_see_alt');
 				$mail->send();
 			}
 			$rx->close();
@@ -109,6 +121,6 @@ class SioForgot {
  */
 	protected function populate() {
 		$this->vset('email');
-		$this->tset($this->en_fields);
+		$this->tset(static::$field_keys);
 	}
 }

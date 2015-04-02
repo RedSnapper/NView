@@ -3,51 +3,61 @@ mb_internal_encoding('UTF-8');
 
 class SioReg {
 	use Form;
-
-	public static function sig() {
-		return "sioreg_";
-	}
-		
+	const SIG="sioreg_";
+	public static function sig() { return static::SIG; }
+	private static $v=array( 
+		static::SIG=>static::SIG."v.ixml",
+		static::SIG."email_body"=>static::SIG."mv.ixml",
+		static::SIG."success"=>static::SIG."sv.ixml"
+	 );
 	private static $munge="sha2(concat(ifnull(username,id),'_',ifnull(password,id),'_',ifnull(email,id),'_',ifnull(ts,id)),256)";
-	private static $en_static=array(
-			"sioreg_mesg_success"=>"You have successfully registered."
-	);
 
-	function __construct($key=NULL,$v=NULL) {
-		$this->iniForm($key,$v);
+	public static $extra = array(
+			static::SIG ."mesg_success"
+			static::SIG ."note_register_title",
+			static::SIG ."note_register_message",
+			static::SIG ."note_register_action_link"
+	);
+	public static $field_keys = array(
+			static::SIG ."prompt_username",
+			static::SIG ."prompt_email",
+			static::SIG ."prompt_password",
+			static::SIG ."prompt_retype_password",
+			static::SIG ."button_register"
+	);	
+	public static function initialise() {
+		$en = array(
+			static::SIG ."prompt_username"=>"Username",
+			static::SIG ."prompt_email"=>"Email",
+			static::SIG ."prompt_password"=>"Password",
+			static::SIG ."prompt_retype_password"=>"Retype Password",
+			static::SIG ."button_register"=>"Register"
+			static::SIG ."note_register_title"=>"Registration Request",
+			static::SIG ."note_register_message"=>"It appears that you have chosen to register on the website.",
+			static::SIG ."note_register_action_link"=>"Please click here to confirm your registration",
+			static::SIG ."errors_email_badformat"=>"The email format is not recognised",
+			static::SIG ."errors_no_password"=>" You must enter a password.",
+			static::SIG ."errors_new_pw_different"=>" Both passwords must be the same.",
+			static::SIG ."errors_new_pw_too_short"=>" Passwords must be more than 6 characters.",
+			static::SIG ."errors_new_pw_too_simple"=>" Passwords must be different from your username!",
+			static::SIG ."errors_username_exists"=>"This username already exists on the system. Please choose another.",
+			static::SIG ."errors_no_username"=>"You need to enter a username.",
+			static::SIG ."mesg_register_check_email"=>"To confirm your registration, please check the email just sent to you.",
+			static::SIG ."mesg_see_html_alt"=>"Please see the html alternative of this email.",
+			static::SIG ."mesg_success"=>"You have successfully registered."
+		);
+		Dict::set($en,'en');
+	}
+
+	function __construct($key=NULL,$custom_views=array()) {
+		static::$v = array_replace(static::$v,$custom_views);
+		$this->iniForm($key,@static::$v[static::SIG]);
 		$this->key=$key;
 		$this->table="user";
 		$this->setfld('username');
 		$this->setfld('emailp');
 		$this->setfld('passwordn','','!skip');
 		$this->setfld('passwordb','','!skip');
-		
-		$this->en_fields = array(
-			$this->sig() ."prompt_username"=>"Username",
-			$this->sig() ."prompt_email"=>"Email",
-			$this->sig() ."prompt_password"=>"Password",
-			$this->sig() ."prompt_retype_password"=>"Retype Password",
-			$this->sig() ."button_register"=>"Register"
-		);
-		$this->en_extras = array(
-			//mesg_success is used by sio.php..
-			
-			$this->sig() ."note_register_title"=>"Registration Request",
-			$this->sig() ."note_register_message"=>"It appears that you have chosen to register on the website.",
-			$this->sig() ."note_register_action_link"=>"Please click here to confirm your registration",
-			$this->sig() ."mesg_register_check_email"=>"To confirm your registration, please check the email just sent to you.",
-			$this->sig() ."mesg_see_html_alt"=>"Please see the html alternative of this email.",
-			
-			$this->sig() ."errors_email_badformat"=>"The email format is not recognised",
-			$this->sig() ."errors_no_password"=>" You must enter a password.",
-			$this->sig() ."errors_new_pw_different"=>" Both passwords must be the same.",
-			$this->sig() ."errors_new_pw_too_short"=>" Passwords must be more than 6 characters.",
-			$this->sig() ."errors_new_pw_too_simple"=>" Passwords must be different from your username!",
-			$this->sig() ."errors_username_exists"=>"This username already exists on the system. Please choose another.",
-			$this->sig() ."errors_no_username"=>"You need to enter a username."
-		);
-		Dict::set($this->en_fields,'en');
-		Dict::set($this->en_extras,'en');		
 	}
 	
 	protected function validate() {
@@ -58,41 +68,41 @@ class SioReg {
 			if ($rx = Settings::$sql->query($qry)) {
 				if (strcmp($rx->fetch_row()[0],"0") !== 0) {
 					$retval = false;
-					$this->seterr("username",Dict::get($this->sig().'errors_username_exists'));
+					$this->seterr("username",Dict::get(static::SIG.'errors_username_exists'));
 				} 
 				$rx->close();
 			}
 		} else {
-			$this->seterr("username",Dict::get($this->sig().'errors_no_username'));
+			$this->seterr("username",Dict::get(static::SIG.'errors_no_username'));
 			$retval = false;
 		}
 		if (isset($this->fields['passwordn'][0]) && isset($this->fields['passwordb'][0])) {
 			$pwa=$this->fields['passwordn'][0];
 			$pwb=$this->fields['passwordb'][0];
 			if ($pwa !== $pwb ) {
-				$this->seterr("passwordn",Dict::get($this->sig().'errors_new_pw_different'));
+				$this->seterr("passwordn",Dict::get(static::SIG.'errors_new_pw_different'));
 				$retval = false;
 			} 
 			if (strlen($pwa) < 7) {
-				$this->seterr("passwordn",Dict::get($this->sig().'errors_new_pw_too_short'));
+				$this->seterr("passwordn",Dict::get(static::SIG.'errors_new_pw_too_short'));
 				$retval = false;
 			} 
 			if ($pwa === Settings::$usr['RU']) {
-				$this->seterr("passwordn",Dict::get($this->sig().'errors_new_pw_too_simple'));
+				$this->seterr("passwordn",Dict::get(static::SIG.'errors_new_pw_too_simple'));
 				$retval = false;
 			} 
 		} else {
-			$this->seterr("passwordn",Dict::get($this->sig().'errors_no_password'));
+			$this->seterr("passwordn",Dict::get(static::SIG.'errors_no_password'));
 			$retval = false;
 		}
-		$this->valEmail('emailp',Dict::get($this->sig() .'errors_email_badformat'));
+		$this->valEmail('emailp',Dict::get(static::SIG .'errors_email_badformat'));
 		if ($this->valid) {
 			$this->valid = $retval;
 		}
 	}
 	
 	protected function populate() {
-		$this->tset($this->en_fields);
+		$this->tset(static::$field_keys);
 	}
 	
 	protected function commit() {
@@ -101,19 +111,19 @@ class SioReg {
 		$ph=hash('sha256',$un . hex2bin('5BE0BDA8E0BDBCE0BDBEE0BC8BE0BDA7E0BDB1E0BDB4E0BDBE5D') . hash('sha256',$this->fields['passwordn'][0]));
 		$this->fields['passwordn'][0]='';
 		Settings::$sql->query("insert into user set ts=null,username='".$un."',emailp='".$em."',password='".$ph."',active='xx'");
-		$qry="select ".self::$munge." as munge,email from " . $this->table . " where username='" .$un. "' and active='xx'";
+		$qry="select ".static::$munge." as munge,email from " . $this->table . " where username='" .$un. "' and active='xx'";
 		if ($rx = Settings::$sql->query($qry)) {
 			require_once("/websites/shared/lib/PHPMailer/PHPMailerAutoload.php");
 			while ($f = $rx->fetch_assoc()) {
-				$mail_v=new NView('sioregmail_v.ixml');
-				$mail_v->tset($this->en_extras);
+				$mail_v=new NView(@static::$v[static::SIG."email_body"]);
+				$mail_v->tset(static::$extra);
 				$mail = new PHPMailer();
 				$mail->isSendmail();
 				$mail->CharSet='utf-8';
 				$mail->Encoding='base64';
-				$mail->setFrom('no_reply@redsnapper.net', Dict::get($this->sig() .'note_register_title'));
+				$mail->setFrom('no_reply@redsnapper.net', Dict::get(static::SIG .'note_register_title'));
 				$mail->addAddress($em,$f['email']); 				
-				$mail->Subject = Dict::get($this->sig() .'note_register_title');
+				$mail->Subject = Dict::get(static::SIG.'note_register_title');
 				$mail->isHTML(true);
 				$url=$_SERVER["SCRIPT_URI"];
 				if (strpos($url, '?') !== false) {
@@ -123,7 +133,7 @@ class SioReg {
 				}			
 				$mail_v->set("//*[@data-xp='ha']/@href",$url);
 				$mail->Body = $mail_v->show(false);
-				$mail->AltBody=Dict::get($this->sig() .'mesg_see_html_alt');
+				$mail->AltBody=Dict::get(static::SIG.'mesg_see_html_alt');
 				$mail->send();
 			}
 			$rx->close();
@@ -135,7 +145,7 @@ class SioReg {
 	public static function conforms($hat=NULL) {
 		$retval=false;
 		$ha=Settings::esc($hat); 
-		$query= "select id from user where ".self::$munge."='".$ha."'";
+		$query= "select id from user where ".static::$munge."='".$ha."'";
 		if ($rs = Settings::$sql->query($query)) {
 			if (Settings::rows($rs) == 1) {
 				$retval=true;
@@ -146,12 +156,11 @@ class SioReg {
 	}
 	
 	public static function push_it($hat=NULL) {
-		Dict::set(self::$en_static,'en');
 		$ha=Settings::esc($hat); 
-		$query= "update user set email=emailp,active='on' where active='xx' and ".self::$munge."='".$ha."'";
+		$query= "update user set email=emailp,active='on' where active='xx' and ".static::$munge."='".$ha."'";
 		Settings::$sql->query($query);
-		$nv = new NView("sioregs_v.ixml");
-		$nv->tset(self::$en_static);
+		$nv = new NView(@static::$v[static::SIG."success"]);
+		$nv->tset(static::$extra);
 		return $nv;
 	}
 

@@ -3,32 +3,35 @@ mb_internal_encoding('UTF-8');
 
 class SIOResetPW {
 	use Form;
+	const SIG = "sioresetpw_";
+	public static function sig() { return static::SIG; }
 	private static $munge="sha2(concat(ifnull(username,id),'-',ifnull(password,id),'-',ifnull(email,id),'-',ifnull(ts,id)),256)";
-	public static function sig() {
-		return "sioresetpw_";
+	private static $v=array(static::SIG=>static::SIG."v.ixml");
+	public static::$field_keys = array(
+		static::SIG .'prompt_password',
+		static::SIG .'prompt_retype_password',
+		static::SIG .'button_new_password'
+	);
+	public static function initialise() {
+		$en = array(
+			static::SIG .'prompt_password' => "Password",
+			static::SIG .'prompt_retype_password' => "Retype Password",
+			static::SIG .'button_new_password'=>"Set New Password"
+			static::SIG .'errors_password_different'=>" Both passwords must be the same.",
+			static::SIG .'errors_password_empty'=>" Enter a password.",
+			static::SIG .'errors_password_short'=>" Passwords must be more than six characters.",
+			static::SIG .'errors_password_not_username'=>" Passwords must be different from your username!"
+		);
+		Dict::set($en,'en');
 	}
-	function __construct($key=NULL,$v=NULL) {
-		$this->iniForm($key,$v);
+	
+	function __construct($key=NULL,$custom_views=array()) {
+		static::$v = array_replace(static::$v,$custom_views);
+		$this->iniForm($key,@static::$v[static::SIG]);
 		$this->key=$key; //This will be the siof value passed by url.
 		$this->table="user";
 		$this->setfld('password');
 		$this->setfld('passwordb','','!skip');
-		
-		$this->en_fields = array(
-			$this->sig() .'prompt_password' => "Password",
-			$this->sig() .'prompt_retype_password' => "Retype Password",
-			$this->sig() .'button_new_password'=>"Set New Password"
-		);
-		$this->en_extras = array(
-			$this->sig() .'errors_password_different'=>" Both passwords must be the same.",
-			$this->sig() .'errors_password_empty'=>" Enter a password.",
-			
-			$this->sig() .'errors_password_short'=>" Passwords must be more than six characters.",
-			$this->sig() .'errors_password_not_username'=>" Passwords must be different from your username!"
-		);
-		Dict::set($this->en_fields,'en');
-		Dict::set($this->en_extras,'en');
-		
 	}
 	
 /**
@@ -43,27 +46,26 @@ class SIOResetPW {
 			$pwa=$this->fields['password'][0];
 			$pwb=$this->fields['passwordb'][0];
 			if ($pwa !== $pwb ) {
-				$this->seterr("password",Dict::get($this->sig() .'errors_password_different'));
+				$this->seterr("password",Dict::get(static::SIG .'errors_password_different'));
 				$retval = false;
 			} 
 			if (strlen($pwa) < 7) {
-				$this->seterr("password",Dict::get($this->sig() .'errors_password_short'));
+				$this->seterr("password",Dict::get(static::SIG .'errors_password_short'));
 				$retval = false;
 			} 
 			if ($pwa === Settings::$usr['RU']) {
-				$this->seterr("password",Dict::get($this->sig() .'errors_password_not_username'));
+				$this->seterr("password",Dict::get(static::SIG .'errors_password_not_username'));
 				$retval = false;
 			} 
 		} else {
 			$retval = false;
-			$this->seterr("password",Dict::get($this->sig() .'errors_password_empty'));
+			$this->seterr("password",Dict::get(static::SIG .'errors_password_empty'));
 		}
 		$this->valid = $retval;
 	}
 
 	protected function commit() {
 		$ha=Settings::esc($this->key); //this comes via the url...
-		
 		$query= "select username from user where ".self::$munge."='".$ha."'";
 		if ($rs = Settings::$sql->query($query)) {
 			while ($f = $rs->fetch_assoc()) {
@@ -80,7 +82,7 @@ class SIOResetPW {
 	}
 	
 	protected function populate() {
-		$this->tset($this->en_fields);
+		$this->tset(static::$field_keys);
 	}
 	
 	public static function conforms($hat=NULL) {
