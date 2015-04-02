@@ -22,7 +22,7 @@ class SioSignIn {
 			static::SIG .'prompt_password'=>"Password",
 			static::SIG .'button_signin'=>"Sign In",
 			static::SIG .'button_forgot'=>"Forgot Password",
-			static::SIG .'button_register'=>"Register"
+			static::SIG .'button_register'=>"Register",
 			static::SIG .'errors_username_unmatched'=>"Either the username or password don't match our records",
 			static::SIG .'errors_username_empty'=>"You need to enter your username"
 		);
@@ -31,7 +31,7 @@ class SioSignIn {
 			static::SIG .'prompt_password'=>"Κωδικός",
 			static::SIG .'button_signin'=>"Είσοδος",
 			static::SIG .'button_forgot'=>"Ξέχασα τον κωδικό μου",
-			static::SIG .'button_register'=>"Εγγραφή"
+			static::SIG .'button_register'=>"Εγγραφή",
 			static::SIG .'errors_username_unmatched'=>"Το όνομα χρήστη ή ο κωδικός δεν ειναι σωστά"
 		);
 		Dict::set($en,'en');
