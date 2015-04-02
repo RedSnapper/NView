@@ -18,13 +18,14 @@ class SioForgot {
 		"sioforgot_prompt_emailaddress",
 		"sioforgot_button_resetpassword"
 	);
-	public static::$mail_keys = array(
+	
+	public static $mail_keys = array(
 		"sioforgot_mail_head",
 		"sioforgot_mail_userhint",
 		"sioforgot_mail_url_text",
 		"sioforgot_mail_body"
 	);
-	public static::$extra_keys = array(
+	public static $extra_keys = array(
 		static::SIG."commit_msg"
 	);
 	public static function initialise() {
