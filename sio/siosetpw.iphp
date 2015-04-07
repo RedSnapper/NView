@@ -6,8 +6,6 @@ class SIOSetPW {
 	const SIG = "siosetpw_";
 	public static function sig() { return static::SIG; }
 	private static $v=array();
-	private static $extra_keys=array();
-	public static $field_keys = array();
 	
 /**
  * '__construct'
@@ -76,12 +74,10 @@ class SIOSetPW {
 	}
 	
 	protected function populate() {
-//		$this->tset();
 	}
 	
 	public static function pushit() {
 		$nv = new NView(@static::$v[static::SIG."success"]);
-//		$nv->tset();
 		return $nv;
 	}
 	

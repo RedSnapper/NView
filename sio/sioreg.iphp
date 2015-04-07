@@ -7,53 +7,6 @@ class SioReg {
 	public static function sig() { return static::SIG; }
 	private static $munge="sha2(concat(ifnull(username,id),'_',ifnull(password,id),'_',ifnull(email,id),'_',ifnull(ts,id)),256)";
 	private static $v=array();
-	public static $extra = array();
-	public static $field_keys = array();	
-
-	public static function initialise() {
-//static arrays
-	static::$v=array( 
-		static::SIG=>static::SIG."v.ixml",
-		static::SIG."email_body"=>static::SIG."mv.ixml",
-		static::SIG."success"=>static::SIG."sv.ixml"
-	 );
-	static::$extra = array(
-		static::SIG."mesg_success",
-		static::SIG."note_register_title",
-		static::SIG."note_register_message",
-		static::SIG."note_register_action_link"
-	);
-	static::$field_keys = array(
-		static::SIG."prompt_username",
-		static::SIG."prompt_email",
-		static::SIG."prompt_password",
-		static::SIG."prompt_retype_password",
-		static::SIG."button_register"
-	);	
-	
-//translations
-		$en = array(
-			static::SIG ."prompt_username"=>"Username",
-			static::SIG ."prompt_email"=>"Email",
-			static::SIG ."prompt_password"=>"Password",
-			static::SIG ."prompt_retype_password"=>"Retype Password",
-			static::SIG ."button_register"=>"Register",
-			static::SIG ."note_register_title"=>"Registration Request",
-			static::SIG ."note_register_message"=>"It appears that you have chosen to register on the website.",
-			static::SIG ."note_register_action_link"=>"Please click here to confirm your registration",
-			static::SIG ."errors_email_badformat"=>"The email format is not recognised",
-			static::SIG ."errors_no_password"=>" You must enter a password.",
-			static::SIG ."errors_new_pw_different"=>" Both passwords must be the same.",
-			static::SIG ."errors_new_pw_too_short"=>" Passwords must be more than 6 characters.",
-			static::SIG ."errors_new_pw_too_simple"=>" Passwords must be different from your username!",
-			static::SIG ."errors_username_exists"=>"This username already exists on the system. Please choose another.",
-			static::SIG ."errors_no_username"=>"You need to enter a username.",
-			static::SIG ."mesg_register_check_email"=>"To confirm your registration, please check the email just sent to you.",
-			static::SIG ."mesg_see_html_alt"=>"Please see the html alternative of this email.",
-			static::SIG ."mesg_success"=>"You have successfully registered."
-		);
-		Dict::set($en,'en');
-	}
 
 	function __construct($key=NULL,$custom_views=array()) {
 		static::$v = array_replace(static::$v,$custom_views);
@@ -108,7 +61,6 @@ class SioReg {
 	}
 	
 	protected function populate() {
-//		$this->tset(static::$field_keys);
 	}
 	
 	protected function commit() {
@@ -122,7 +74,6 @@ class SioReg {
 			require_once("/websites/shared/lib/PHPMailer/PHPMailerAutoload.php");
 			while ($f = $rx->fetch_assoc()) {
 				$mail_v=new NView(@static::$v[static::SIG."email_body"]);
-				$mail_v->tset(static::$extra);
 				$mail = new PHPMailer();
 				$mail->isSendmail();
 				$mail->CharSet='utf-8';
@@ -166,8 +117,40 @@ class SioReg {
 		$query= "update user set email=emailp,active='on' where active='xx' and ".static::$munge."='".$ha."'";
 		Settings::$sql->query($query);
 		$nv = new NView(@static::$v[static::SIG."success"]);
-//		$nv->tset(static::$extra);
 		return $nv;
+	}
+
+
+	public static function initialise() {
+//views array
+	static::$v=array( 
+		static::SIG=>static::SIG."v.ixml",
+		static::SIG."email_body"=>static::SIG."mv.ixml",
+		static::SIG."success"=>static::SIG."sv.ixml"
+	 );
+	
+//translations
+		$en = array(
+			static::SIG ."prompt_username"=>"Username",
+			static::SIG ."prompt_email"=>"Email",
+			static::SIG ."prompt_password"=>"Password",
+			static::SIG ."prompt_retype_password"=>"Retype Password",
+			static::SIG ."button_register"=>"Register",
+			static::SIG ."note_register_title"=>"Registration Request",
+			static::SIG ."note_register_message"=>"It appears that you have chosen to register on the website.",
+			static::SIG ."note_register_action_link"=>"Please click here to confirm your registration",
+			static::SIG ."errors_email_badformat"=>"The email format is not recognised",
+			static::SIG ."errors_no_password"=>" You must enter a password.",
+			static::SIG ."errors_new_pw_different"=>" Both passwords must be the same.",
+			static::SIG ."errors_new_pw_too_short"=>" Passwords must be more than 6 characters.",
+			static::SIG ."errors_new_pw_too_simple"=>" Passwords must be different from your username!",
+			static::SIG ."errors_username_exists"=>"This username already exists on the system. Please choose another.",
+			static::SIG ."errors_no_username"=>"You need to enter a username.",
+			static::SIG ."mesg_register_check_email"=>"To confirm your registration, please check the email just sent to you.",
+			static::SIG ."mesg_see_html_alt"=>"Please see the html alternative of this email.",
+			static::SIG ."mesg_success"=>"You have successfully registered."
+		);
+		Dict::set($en,'en');
 	}
 
 }

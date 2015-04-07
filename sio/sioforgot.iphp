@@ -10,46 +10,6 @@ class SioForgot {
 	const SIG = "sioforgot_";
 	public static function sig() { return static::SIG; }
 	private static $v=array();
-	public static $field_keys = array();
-	public static $mail_keys = array();
-	public static $extra_keys = array();
-
-	public static function initialise() {
-//static arrays
-		static::$v=array(
-			static::SIG=>static::SIG."v.ixml",
-			static::SIG."mailbody"=>static::SIG."mv.ixml",
-			static::SIG."success"=>static::SIG."sv.ixml"
-		);
-		static::$field_keys = array(
-			static::SIG."prompt_emailaddress",
-			static::SIG."button_resetpassword"
-		);
-		static::$mail_keys = array(
-			static::SIG."mail_head",
-			static::SIG."mail_userhint",
-			static::SIG."mail_url_text",
-			static::SIG."mail_body"
-		);
-		static::$extra_keys = array(
-			static::SIG."commit_msg"
-		);
-	
-//translations
-		$en = array(
-			static::SIG .'prompt_emailaddress' => "Email",
-			static::SIG .'button_resetpassword'=>"Reset Password",
-			static::SIG .'errors_bad_email'=>"The email address appears to be wrong",
-			static::SIG .'commit_msg'=>"You should shortly receive an email with instructions for resetting your password.",
-			static::SIG .'mail_head'=>"Password Reset Request",
-			static::SIG .'mail_body'=>"It appears that you have posted a password reset request.",
-			static::SIG .'mail_userhint'=>"Your username is:",
-			static::SIG .'mail_url_text'=>"PLEASE CONTINUE HERE",
-			static::SIG .'mail_see_alt'=>"Please see the html alternative of this email",
-			static::SIG .'mail_subject'=>'Password Reset'
-		);
-		Dict::set($en,'en');
-	}
 
 /**
  * '__construct'
@@ -69,7 +29,6 @@ class SioForgot {
  */
 	public function commitv() { 
 		$cv=new NView(@static::$v[static::SIG."success"]);
-//		$cv->tset(static::$extra_keys);
 		return $cv;
 	}
 
@@ -95,7 +54,6 @@ class SioForgot {
 			require_once("/websites/shared/lib/PHPMailer/PHPMailerAutoload.php");
 			while ($f = $rx->fetch_assoc()) {
 				$mail_v=new NView(@static::$v[static::SIG."mailbody"]);
-//				$mail_v->tset(static::$mail_keys);
 				$mail = new PHPMailer();
 				$mail->isSendmail();
 				$mail->CharSet='utf-8';
@@ -129,6 +87,30 @@ class SioForgot {
  */
 	protected function populate() {
 		$this->vset('email');
-//		$this->tset(static::$field_keys);
 	}
+	
+	public static function initialise() {
+//views array
+		static::$v=array(
+			static::SIG=>static::SIG."v.ixml",
+			static::SIG."mailbody"=>static::SIG."mv.ixml",
+			static::SIG."success"=>static::SIG."sv.ixml"
+		);
+
+//translations
+		$en = array(
+			static::SIG .'prompt_emailaddress' => "Email",
+			static::SIG .'button_resetpassword'=>"Reset Password",
+			static::SIG .'errors_bad_email'=>"The email address appears to be wrong",
+			static::SIG .'commit_msg'=>"You should shortly receive an email with instructions for resetting your password.",
+			static::SIG .'mail_head'=>"Password Reset Request",
+			static::SIG .'mail_body'=>"It appears that you have posted a password reset request.",
+			static::SIG .'mail_userhint'=>"Your username is:",
+			static::SIG .'mail_url_text'=>"PLEASE CONTINUE HERE",
+			static::SIG .'mail_see_alt'=>"Please see the html alternative of this email",
+			static::SIG .'mail_subject'=>'Password Reset'
+		);
+		Dict::set($en,'en');
+	}
+	
 }

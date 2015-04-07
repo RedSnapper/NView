@@ -7,8 +7,6 @@ class SIOSetEmail {
 	public static function sig() { return static::SIG; }
 	private static $munge="sha2(concat(ifnull(username,id),'+',ifnull(password,id),'+',ifnull(email,id),'+',ifnull(ts,id)),256)";
 	private static $v=array();
-	private static $extra_keys=array();
-	public static $field_keys = array();
 	
 /**
  * '__construct'
@@ -64,7 +62,6 @@ class SIOSetEmail {
 					require_once("/websites/shared/lib/PHPMailer/PHPMailerAutoload.php");
 					while ($f = $rx->fetch_assoc()) {
 						$mail_v=new NView(@static::$v[static::SIG."email_body"]);
-//						$mail_v->tset($this->en_extras);
 						$mail = new PHPMailer();
 						$mail->isSendmail();
 						$mail->CharSet='utf-8';
@@ -94,7 +91,6 @@ class SIOSetEmail {
 	}
 	
 	protected function populate() {
-//		$this->tset(static::$field_keys);
 	}
 	
 	public static function conforms($hat=NULL) {
@@ -119,27 +115,16 @@ class SIOSetEmail {
 			Settings::$sql->query($query);
 			$nv = new NView(@static::$v[static::SIG."success"]);
 		}
-//		$nv->tset(static::$extra_keys);
 		return $nv;
 	}
 
 	public static function initialise() {
-//static arrays.	
+//view array	
 		static::$v=array(
 			static::SIG=>static::SIG."v.ixml",
 			static::SIG."email_body"=>static::SIG."mv.ixml",
 			static::SIG."check_mail"=>static::SIG."pv.ixml",
 			static::SIG."success"=>static::SIG."sv.ixml"
-		);
-		static::$extra_keys = array(
-			static::SIG.'mesg_success',
-			static::SIG.'mesg_checkem'
-		);
-		static::$field_keys = array(
-			static::SIG.'prompt_new_email',
-			static::SIG.'prompt_retype_new_email',
-			static::SIG.'prompt_your_password',
-			static::SIG.'button_set_email'
 		);
 //Now do translations.	
 		$en = array(

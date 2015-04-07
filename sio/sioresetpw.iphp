@@ -7,29 +7,6 @@ class SIOResetPW {
 	public static function sig() { return static::SIG; }
 	private static $munge="sha2(concat(ifnull(username,id),'-',ifnull(password,id),'-',ifnull(email,id),'-',ifnull(ts,id)),256)";
 	private static $v=array();
-	public static $field_keys = array();
-	
-	public static function initialise() {
-//static arrays
-		static::$v=array(static::SIG=>static::SIG."v.ixml");
-		static::$field_keys = array(
-			static::SIG.'prompt_password',
-			static::SIG.'prompt_retype_password',
-			static::SIG.'button_new_password'
-		);
-	
-//translations
-		$en = array(
-			static::SIG .'prompt_password' => "Password",
-			static::SIG .'prompt_retype_password' => "Retype Password",
-			static::SIG .'button_new_password'=>"Set New Password",
-			static::SIG .'errors_password_different'=>" Both passwords must be the same.",
-			static::SIG .'errors_password_empty'=>" Enter a password.",
-			static::SIG .'errors_password_short'=>" Passwords must be more than six characters.",
-			static::SIG .'errors_password_not_username'=>" Passwords must be different from your username!"
-		);
-		Dict::set($en,'en');
-	}
 	
 	function __construct($key=NULL,$custom_views=array()) {
 		static::$v = array_replace(static::$v,$custom_views);
@@ -88,7 +65,6 @@ class SIOResetPW {
 	}
 	
 	protected function populate() {
-//		$this->tset(static::$field_keys);
 	}
 	
 	public static function conforms($hat=NULL) {
@@ -103,5 +79,23 @@ class SIOResetPW {
 		}
 		return $retval;
 	}
+	
+	public static function initialise() {
+//views arrays
+		static::$v=array(static::SIG=>static::SIG."v.ixml");
+//translations
+		$en = array(
+			static::SIG .'prompt_password' => "Password",
+			static::SIG .'prompt_retype_password' => "Retype Password",
+			static::SIG .'button_new_password'=>"Set New Password",
+			static::SIG .'errors_password_different'=>" Both passwords must be the same.",
+			static::SIG .'errors_password_empty'=>" Enter a password.",
+			static::SIG .'errors_password_short'=>" Passwords must be more than six characters.",
+			static::SIG .'errors_password_not_username'=>" Passwords must be different from your username!"
+		);
+		Dict::set($en,'en');
+	}
+	
+	
 }
 
