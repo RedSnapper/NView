@@ -14,7 +14,6 @@ class SioReg {
 		$this->iniForm($key,@static::$v[static::SIG]);
 		$this->key=$key;
 		$this->table="user";
-		$this->debug=true;
 		if(static::$use_un) {
 			$this->setfld('username');
 		}
@@ -106,7 +105,6 @@ class SioReg {
 		$ph=hash('sha256', $unm . hex2bin('5BE0BDA8E0BDBCE0BDBEE0BC8BE0BDA7E0BDB1E0BDB4E0BDBE5D') . hash('sha256',$this->fields['passwordn'][0]));
 		$this->fields['passwordn'][0]='';
 		$insql="insert into user set ts=null,".$extra."emailp='".$em."',password='".$ph."',active='xx'";
-		print($insql);
 		Settings::$sql->query($insql);
 		if ($rx = Settings::$sql->query($qry)) {
 			require_once("/websites/shared/lib/PHPMailer/PHPMailerAutoload.php");
@@ -117,7 +115,7 @@ class SioReg {
 				$mail->CharSet='utf-8';
 				$mail->Encoding='base64';
 				$mail->setFrom('no_reply@redsnapper.net', Dict::get(static::SIG .'note_register_title'));
-				$mail->addAddress($em,$f['email']); 				
+				$mail->addAddress($em,$f['emailp']); 				
 				$mail->Subject = Dict::get(static::SIG.'note_register_title');
 				$mail->isHTML(true);
 				$url=$_SERVER["SCRIPT_URI"];

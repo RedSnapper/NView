@@ -1,31 +1,6 @@
-<!DOCTYPE fieldset>
-<fieldset  xmlns="http://www.w3.org/1999/xhtml" class="form--cols">
-	<input type="hidden" data-xp="_ident" />
-	<ul class="form__notice">
-		<li>
-			<label class="form__group text" data-semantic="field" data-xp="comment">
-				<span class="error" data-msg="emailp" />
-				<span class="label" data-xp="label" data-tr="prompt_email" />
-				<span class="flex"><input autocomplete="on" type="text" name="emailp" /></span>
-			</label>
-		</li>
-		<li>
-			<label class="form__group text" data-semantic="field" data-xp="comment">
-				<span class="error" data-msg="passwordn" />
-				<span class="label" data-xp="label" data-tr="prompt_password" />
-				<span class="flex"><input type="password" name="passwordn" /></span>
-			</label>
-		</li>
-		<li>
-			<label class="form__group text" data-semantic="field" data-xp="comment">
-				<span class="label" data-xp="label" data-tr="prompt_retype_password" />
-				<span class="flex"><input type="password" name="passwordb" /></span>
-			</label>
-		</li>
-		<li>
-			<label class="form__group submit" data-semantic="field" data-xp="button">
-				<span class="flex"><button class="btn--tertiary" type="submit" name="_fn" value="save" data-tr="button_register" /></span>
-			</label>
-		</li>
-	</ul>
-</fieldset>
+<!DOCTYPE div>
+<div xmlns="http://www.w3.org/1999/xhtml">
+	<h3 data-tr="note_register_title" />
+	<p data-tr="note_register_message" />
+	<p><a data-xp="ha"  data-tr="note_register_action_link" /></p>
+</div>
