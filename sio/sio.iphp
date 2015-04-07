@@ -7,7 +7,6 @@ class SIO {
 	
 	public static function run($custom_views=array(),$translations=array('en'=>array('hello'=>'Hello'))) {
 		static::$v = array_replace(static::$v,$custom_views);
-		static::initialise();
 		foreach ($translations as $lang => $trans_array) {
 			Dict::set($trans_array,$lang);
 		}		
