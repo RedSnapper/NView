@@ -13,8 +13,7 @@ class SioSignOut {
 /**
  * '__construct'
  */
-	function __construct($key=NULL,$custom_views=array()) {
-		static::$v = array_replace(static::$v,$custom_views);
+	function __construct() {
 		$this->iniForm($key,@static::$v[static::SIG]);
 	    $this->key=$key;
 	    $this->table="user";
@@ -27,11 +26,11 @@ class SioSignOut {
 	protected function func() {
 		switch ($this->fields['_fn'][0]) {
 			case 'email': {
-				$sf=new SIOSetEmail(NULL,static::$v);
+				$sf=new SIOSetEmail();
 				return $sf->form();			
 			} break;
 			case 'reset': {
-				$sf=new SIOSetPW(NULL,static::$v);
+				$sf=new SIOSetPW();
 				return $sf->form();			
 			} break;
 		}
