@@ -8,38 +8,6 @@ class SIOSetPW {
 	private static $v=array();
 	private static $extra_keys=array();
 	public static $field_keys = array();
-
-	public static function initialise() {
-//set the static arrays.
-		static::$v=array( 
-			static::SIG=>static::SIG."v.ixml",
-			static::SIG."success"=>static::SIG."sv.ixml"
-		);
-		static::$extra_keys=array(
-			static::SIG."mesg_success"
-		);
-		static::$field_keys = array(
-			static::SIG."prompt_original_password",
-			static::SIG."prompt_new_password",
-			static::SIG."prompt_retype_new_password",
-			static::SIG."button_set_new_password"
-		);
-	
-//now do translations	
-		$en = array(
-			static::SIG ."prompt_original_password"=>"Current Password",
-			static::SIG ."prompt_new_password"=>"New Password",
-			static::SIG ."prompt_retype_new_password"=>"Retype New Password",
-			static::SIG ."button_set_new_password"=>"Set New Password",
-			static::SIG ."errors_orig_pw_wrong"=>" The current password doesn't match our records.",
-			static::SIG ."errors_password_empty"=>" You must enter your current password.",
-			static::SIG ."errors_new_pw_empty"=>" You must enter a new password.",
-			static::SIG ."errors_new_pw_different"=>" Both passwords must be the same.",
-			static::SIG ."errors_new_pw_too_short"=>" Passwords must be more than 6 characters.",
-			static::SIG ."errors_new_pw_too_simple"=>" Passwords must be different from your username!"
-		);
-		Dict::set($en,'en');
-	}
 	
 /**
  * '__construct'
@@ -117,6 +85,37 @@ class SIOSetPW {
 		return $nv;
 	}
 	
+	public static function initialise() {
+//set the static arrays.
+		static::$v=array( 
+			static::SIG=>static::SIG."v.ixml",
+			static::SIG."success"=>static::SIG."sv.ixml"
+		);
+		static::$extra_keys=array(
+			static::SIG."mesg_success"
+		);
+		static::$field_keys = array(
+			static::SIG."prompt_original_password",
+			static::SIG."prompt_new_password",
+			static::SIG."prompt_retype_new_password",
+			static::SIG."button_set_new_password"
+		);
+	
+//now do translations	
+		$en = array(
+			static::SIG ."prompt_original_password"=>"Current Password",
+			static::SIG ."prompt_new_password"=>"New Password",
+			static::SIG ."prompt_retype_new_password"=>"Retype New Password",
+			static::SIG ."button_set_new_password"=>"Set New Password",
+			static::SIG ."errors_orig_pw_wrong"=>" The current password doesn't match our records.",
+			static::SIG ."errors_password_empty"=>" You must enter your current password.",
+			static::SIG ."errors_new_pw_empty"=>" You must enter a new password.",
+			static::SIG ."errors_new_pw_different"=>" Both passwords must be the same.",
+			static::SIG ."errors_new_pw_too_short"=>" Passwords must be more than 6 characters.",
+			static::SIG ."errors_new_pw_too_simple"=>" Passwords must be different from your username!"
+		);
+		Dict::set($en,'en');
+	}
 	
 }
 

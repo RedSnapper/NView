@@ -9,43 +9,6 @@ class SIOSetEmail {
 	private static $v=array();
 	private static $extra_keys=array();
 	public static $field_keys = array();
-
-	public static function initialise() {
-//static arrays.	
-		static::$v=array(
-			static::SIG=>static::SIG."v.ixml",
-			static::SIG."email_body"=>static::SIG."mv.ixml",
-			static::SIG."check_mail"=>static::SIG."pv.ixml",
-			static::SIG."success"=>static::SIG."sv.ixml"
-		);
-		static::$extra_keys = array(
-			static::SIG.'mesg_success',
-			static::SIG.'mesg_checkem'
-		);
-		static::$field_keys = array(
-			static::SIG.'prompt_new_email',
-			static::SIG.'prompt_retype_new_email',
-			static::SIG.'prompt_your_password',
-			static::SIG.'button_set_email'
-		);
-//Now do translations.	
-		$en = array(
-			static::SIG ."mesg_success"=>"You have successfully changed your email.",
-			static::SIG ."mesg_checkem"=>"To set your email address, confirm the change via the email just sent to you.",
-			static::SIG .'prompt_new_email'=>"New Email",
-			static::SIG .'prompt_retype_new_email'=>"Retype New Email",
-			static::SIG .'prompt_your_password'=>"Password",
-			static::SIG .'button_set_email'=>"Set New Email",
-			static::SIG .'errors_emails_unmatched'=>" Both emails must be the same.",
-			static::SIG .'errors_email_badformat'=>" The email format is not recognised.",
-			static::SIG .'errors_emails_empty'=>" The email must have a value.",
-			static::SIG .'note_email_change_title'=>"Email Change Request",
-			static::SIG .'note_email_change_message'=>"It appears that you have chosen to change your e-mail to the one that you received this message on.",
-			static::SIG .'note_email_change_action_link'=>"PLEASE CONTINUE HERE",
-			static::SIG .'note_email_see_html_alt'=>"Please see the html alternative of this email."
-		);
-		Dict::set($en,'en');
-	}
 	
 /**
  * '__construct'
@@ -158,6 +121,43 @@ class SIOSetEmail {
 		}
 		$nv->tset(static::$extra_keys);
 		return $nv;
+	}
+
+	public static function initialise() {
+//static arrays.	
+		static::$v=array(
+			static::SIG=>static::SIG."v.ixml",
+			static::SIG."email_body"=>static::SIG."mv.ixml",
+			static::SIG."check_mail"=>static::SIG."pv.ixml",
+			static::SIG."success"=>static::SIG."sv.ixml"
+		);
+		static::$extra_keys = array(
+			static::SIG.'mesg_success',
+			static::SIG.'mesg_checkem'
+		);
+		static::$field_keys = array(
+			static::SIG.'prompt_new_email',
+			static::SIG.'prompt_retype_new_email',
+			static::SIG.'prompt_your_password',
+			static::SIG.'button_set_email'
+		);
+//Now do translations.	
+		$en = array(
+			static::SIG ."mesg_success"=>"You have successfully changed your email.",
+			static::SIG ."mesg_checkem"=>"To set your email address, confirm the change via the email just sent to you.",
+			static::SIG .'prompt_new_email'=>"New Email",
+			static::SIG .'prompt_retype_new_email'=>"Retype New Email",
+			static::SIG .'prompt_your_password'=>"Password",
+			static::SIG .'button_set_email'=>"Set New Email",
+			static::SIG .'errors_emails_unmatched'=>" Both emails must be the same.",
+			static::SIG .'errors_email_badformat'=>" The email format is not recognised.",
+			static::SIG .'errors_emails_empty'=>" The email must have a value.",
+			static::SIG .'note_email_change_title'=>"Email Change Request",
+			static::SIG .'note_email_change_message'=>"It appears that you have chosen to change your e-mail to the one that you received this message on.",
+			static::SIG .'note_email_change_action_link'=>"PLEASE CONTINUE HERE",
+			static::SIG .'note_email_see_html_alt'=>"Please see the html alternative of this email."
+		);
+		Dict::set($en,'en');
 	}
 
 }
