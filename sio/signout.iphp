@@ -8,13 +8,21 @@ class SioSignOut {
 	use Form;
 	const SIG = "siosignout_";
 	public static function sig() { return static::SIG; }
-	private static $v=array( "siosignout_"=> "siosignout_v.ixml" );
-	public static $field_keys = array(
-		'siosignout_button_signout',
-		'siosignout_button_newemailaddr',
-		'siosignout_button_newpassword'
-	);
+	private static $v=array();
+	public static $field_keys = array();
+	
 	public static function initialise() {
+//set the static arrays.
+		static::$v=array( 
+			static::SIG=>static::SIG."v.ixml",
+		);
+		static::$field_keys = array(
+			static::SIG."button_signout",
+			static::SIG."button_newemailaddr",
+			static::SIG."button_newpassword"
+		);
+	
+//now do translations	
 		$en = array(
 			static::SIG .'button_signout'=>"Sign Out",
 			static::SIG .'button_newemailaddr'=>"Change Registered Email Address",

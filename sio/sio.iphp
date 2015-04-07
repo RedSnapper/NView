@@ -2,9 +2,7 @@
 mb_internal_encoding('UTF-8');
 class SIO {
 	const SIG = "sio_";
-	private static $v=array(
-		"sio_" => "sio_v.ixml"
-	);
+	private static $v=array();
 	private static $use_username=true;
 	
 	public static function run($custom_views=array(),$translations=array('en'=>array('hello'=>'Hello')),$use_un=true) {
@@ -96,6 +94,9 @@ sign-in and sign-out.
 	
 //This must be run before we overload the translations.
 	public static function initialise() {
+		static::$v=array(
+			static::SIG => static::SIG."v.ixml"
+		);
 		SioSignIn::initialise();
 		SioSignOut::initialise();
 		SioReg::initialise();

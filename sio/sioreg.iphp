@@ -6,25 +6,32 @@ class SioReg {
 	const SIG="sioreg_";
 	public static function sig() { return static::SIG; }
 	private static $munge="sha2(concat(ifnull(username,id),'_',ifnull(password,id),'_',ifnull(email,id),'_',ifnull(ts,id)),256)";
-	private static $v=array( 
-		"sioreg_"=>"sioreg_v.ixml",
-		"sioreg_email_body"=>"sioreg_mv.ixml",
-		"sioreg_success"=>"sioreg_sv.ixml"
-	 );
-	public static $extra = array(
-		"sioreg_mesg_success",
-		"sioreg_note_register_title",
-		"sioreg_note_register_message",
-		"sioreg_note_register_action_link"
-	);
-	public static $field_keys = array(
-		"sioreg_prompt_username",
-		"sioreg_prompt_email",
-		"sioreg_prompt_password",
-		"sioreg_prompt_retype_password",
-		"sioreg_button_register"
-	);	
+	private static $v=array();
+	public static $extra = array();
+	public static $field_keys = array();	
+
 	public static function initialise() {
+//static arrays
+	static::$v=array( 
+		static::SIG=>static::SIG."v.ixml",
+		static::SIG."email_body"=>static::SIG."mv.ixml",
+		static::SIG."success"=>static::SIG."sv.ixml"
+	 );
+	static::$extra = array(
+		static::SIG."mesg_success",
+		static::SIG."note_register_title",
+		static::SIG."note_register_message",
+		static::SIG."note_register_action_link"
+	);
+	static::$field_keys = array(
+		static::SIG."prompt_username",
+		static::SIG."prompt_email",
+		static::SIG."prompt_password",
+		static::SIG."prompt_retype_password",
+		static::SIG."button_register"
+	);	
+	
+//translations
 		$en = array(
 			static::SIG ."prompt_username"=>"Username",
 			static::SIG ."prompt_email"=>"Email",

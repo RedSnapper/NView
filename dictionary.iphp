@@ -24,10 +24,12 @@ class Dict extends Singleton {
  		return static::$ln[0];
  	}
 
-	public static function set($kv,$ln = NULL) {
-		if (is_null($ln)) { $ln = self::$ln[0]; }
+	public static function set($kv,$ln = self::$ln[0] ) {
+		if (!isset(static::$lib[$ln])) {
+			static::$lib[$ln] = array();
+		}	
 		foreach($kv as $k => $v) {
-			self::$lib[$ln][$k]=$v;
+			static::$lib[$ln][$k]=$v;
 		}
 	}
 	

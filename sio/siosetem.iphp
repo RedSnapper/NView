@@ -6,24 +6,29 @@ class SIOSetEmail {
 	const SIG = "siosetem_";
 	public static function sig() { return static::SIG; }
 	private static $munge="sha2(concat(ifnull(username,id),'+',ifnull(password,id),'+',ifnull(email,id),'+',ifnull(ts,id)),256)";
+	private static $v=array();
+	private static $extra_keys=array();
+	public static $field_keys = array();
 
-	private static $v=array(
-		"siosetem_"=>"siosetem_v.ixml",
-		"siosetem_email_body"=>"siosetem_mv.ixml",
-		"siosetem_check_mail"=>"siosetem_pv.ixml",
-		"siosetem_success"=>"siosetem_sv.ixml"
-	);
-	public static $extra_keys = array(
-		'siosetem_mesg_success',
-		'siosetem_mesg_checkem'
-	);
-	public static $field_keys = array(
-		'siosetem_prompt_new_email',
-		'siosetem_prompt_retype_new_email',
-		'siosetem_prompt_your_password',
-		'siosetem_button_set_email'
-	);
 	public static function initialise() {
+//static arrays.	
+		static::$v=array(
+			static::SIG=>static::SIG."v.ixml",
+			static::SIG."email_body"=>static::SIG."mv.ixml",
+			static::SIG."check_mail"=>static::SIG."pv.ixml",
+			static::SIG."success"=>static::SIG."sv.ixml"
+		);
+		static::$extra_keys = array(
+			static::SIG.'mesg_success',
+			static::SIG.'mesg_checkem'
+		);
+		static::$field_keys = array(
+			static::SIG.'prompt_new_email',
+			static::SIG.'prompt_retype_new_email',
+			static::SIG.'prompt_your_password',
+			static::SIG.'button_set_email'
+		);
+//Now do translations.	
 		$en = array(
 			static::SIG ."mesg_success"=>"You have successfully changed your email.",
 			static::SIG ."mesg_checkem"=>"To set your email address, confirm the change via the email just sent to you.",

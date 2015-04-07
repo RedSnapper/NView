@@ -8,15 +8,23 @@ class SioSignIn {
 	use Form;
 	const SIG = "siosignin_";
 	public static function sig() { return static::SIG; }
-	private static $v=array("siosignin_" => "siosignin_v.ixml");
-	public static $field_keys = array(
-		'siosignin_prompt_username',
-		'siosignin_prompt_password',
-		'siosignin_button_signin',
-		'siosignin_button_forgot',
-		'siosignin_button_register'
-	);
+	private static $v=array();
+	public static $field_keys = array();
+
 	public static function initialise() {
+//set the static arrays.
+		static::$v=array( 
+			static::SIG=>static::SIG."v.ixml",
+		);
+		static::$field_keys = array(
+			static::SIG."prompt_username",
+			static::SIG."prompt_password",
+			static::SIG."button_signin",
+			static::SIG."button_forgot",
+			static::SIG."button_register"
+		);
+	
+//now do translations	
 		$en = array(
 			static::SIG .'prompt_username' => "Username",
 			static::SIG .'prompt_password'=>"Password",

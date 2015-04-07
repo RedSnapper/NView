@@ -9,25 +9,33 @@ class SioForgot {
 	private static $munge="sha2(concat(ifnull(username,id),'-',ifnull(password,id),'-',ifnull(email,id),'-',ifnull(ts,id)),256)";
 	const SIG = "sioforgot_";
 	public static function sig() { return static::SIG; }
-	private static $v=array(
-		"sioforgot_"=>"sioforgot_v.ixml",
-		"sioforgot_mailbody"=>"sioforgot_mv.ixml",
-		"sioforgot_success"=>"sioforgot_sv.ixml"
-	);
-	public static $field_keys = array(
-		"sioforgot_prompt_emailaddress",
-		"sioforgot_button_resetpassword"
-	);
-	public static $mail_keys = array(
-		"sioforgot_mail_head",
-		"sioforgot_mail_userhint",
-		"sioforgot_mail_url_text",
-		"sioforgot_mail_body"
-	);
-	public static $extra_keys = array(
-		"sioforgot_commit_msg"
-	);
+	private static $v=array();
+	public static $field_keys = array();
+	public static $mail_keys = array();
+	public static $extra_keys = array();
+
 	public static function initialise() {
+//static arrays
+		static::$v=array(
+			static::SIG=>static::SIG."v.ixml",
+			static::SIG."mailbody"=>static::SIG."mv.ixml",
+			static::SIG."success"=>static::SIG."sv.ixml"
+		);
+		static::$field_keys = array(
+			static::SIG."prompt_emailaddress",
+			static::SIG."button_resetpassword"
+		);
+		static::$mail_keys = array(
+			static::SIG."mail_head",
+			static::SIG."mail_userhint",
+			static::SIG."mail_url_text",
+			static::SIG."mail_body"
+		);
+		static::$extra_keys = array(
+			static::SIG."commit_msg"
+		);
+	
+//translations
 		$en = array(
 			static::SIG .'prompt_emailaddress' => "Email",
 			static::SIG .'button_resetpassword'=>"Reset Password",
