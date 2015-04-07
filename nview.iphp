@@ -107,7 +107,7 @@ class NView {
 		if ($xx instanceof DOMNodeList) {
 			print("<ul>");
 			foreach($xx as $nodi) {
-				print('<li>'.print($nodi->value,true).'</li>');
+				print('<li>'. $nodi->value .'</li>');
 			}
 			print("</ul>");
 		}
