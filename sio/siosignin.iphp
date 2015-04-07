@@ -110,7 +110,11 @@ class SioSignIn {
 		if(static::$use_un) {
 			Session::set('username',$this->fields['username'][0]);
 		} else {
-			Session::set('username',$this->fields['email'][0]);
+			$query= "select username from user where email='".$this->fields['email'][0]."'";
+			if ($rs = Settings::$sql->query($query)) {
+				Session::set('username',$rs->fetch_row()[0]);
+				$rs->close();
+			}
 		}
 		Settings::usr();
 		return true;
