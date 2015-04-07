@@ -230,7 +230,7 @@ trait Form {
  * 'tset' translations
  *  This uses any key-value array, ignoring the language.
  */
-	function tset($kv= array('0' => '0')) {
+	function tset($keys = NULL) {
 		$this->view->tset($kv);
 	}
 /**
