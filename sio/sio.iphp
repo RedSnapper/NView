@@ -80,7 +80,7 @@ class SIO {
 					}				
 				} break;
 			}
-			$v->set("//*[@data-xp='sio']",$formlet->show(true));
+			$v->set("//*[@data-xp='sio']",$formlet);
 			return $v;
 		}
 	}
