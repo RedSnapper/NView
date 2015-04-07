@@ -110,6 +110,7 @@ class SioReg {
 			require_once("/websites/shared/lib/PHPMailer/PHPMailerAutoload.php");
 			while ($f = $rx->fetch_assoc()) {
 				$mail_v=new NView(@static::$v[static::SIG."email_body"]);
+				$mail_v->set("//*[@data-tr]/@data-tr/preceding-gap()",static::SIG);
 				$mail = new PHPMailer();
 				$mail->isSendmail();
 				$mail->CharSet='utf-8';
@@ -133,6 +134,7 @@ class SioReg {
 		}
 		$this->show = true;
 		$this->view = new NView(@static::$v[static::SIG."check_mail"]);
+		$this->view->set("//*[@data-tr]/@data-tr/preceding-gap()",static::SIG);
 		return true;
 	}
 	
