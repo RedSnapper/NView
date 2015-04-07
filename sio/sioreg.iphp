@@ -162,7 +162,7 @@ class SioReg {
 		static::$use_un=$using_un;
 //views array
 		static::$v=array( 
-			static::SIG."email_body"=>static::SIG."mv.ixml",
+			static::SIG."email_body"=>static::SIG."mb.ixml",
 			static::SIG."success"=>static::SIG."sv.ixml",
 			static::SIG."check_mail"=>static::SIG."pv.ixml"
 		);
