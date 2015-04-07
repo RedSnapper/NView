@@ -84,7 +84,7 @@ class SioSignIn {
 		if (!is_null($unm) && isset($this->fields['password'][0])) {
 			$ph=hash('sha256',$unm . hex2bin('5BE0BDA8E0BDBCE0BDBEE0BC8BE0BDA7E0BDB1E0BDB4E0BDBE5D') . hash('sha256',$this->fields['password'][0]));
 			$this->fields['password'][0]='';
-			$qry="select count(id) as ok from " . $this->table . " where active='on' and ".$field."='" .$un. "' and password='" . $ph . "'";
+			$qry="select count(id) as ok from " . $this->table . " where active='on' and ".$field."='" .$unm. "' and password='" . $ph . "'";
 			if ($rx = Settings::$sql->query($qry)) {
 				if (strcmp($rx->fetch_row()[0],"1") === 0) {
 					$retval=true;
@@ -122,15 +122,6 @@ class SioSignIn {
 
 	public static function initialise($using_un=true) {	
 		static::$use_un=$using_un;
-		$bt = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,4);
-		print_r($bt);
-
-		if($using_un) {
-			print('[using]');
-		} else {
-			print('[not using]');
-		}
-	
 //translations	
 		$en = array(
 			static::SIG .'prompt_password'=>"Password",
