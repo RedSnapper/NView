@@ -103,13 +103,14 @@ class NView {
  * 'tset - translation hooks'
  */
 	public function tset($kv= array('0' => '0')) {
-		print("<ul>");
 		$xx = $this->get("//*[@data-tr]/@data-tr");
 		if ($xx instanceof DOMNodeList) {
+			print("<ul>");
 			foreach($xx as $nodi) {
 				print('<li>'.print_r($xx,true).'</li>');
 			}
-		print("</ul>");
+			print("</ul>");
+		}
 		
 //		foreach($kv as $k => $v) {
 //			$this->set("//*[@data-tr='" . $k . "']/child-gap()",Dict::get($k));
