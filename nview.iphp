@@ -104,7 +104,7 @@ class NView {
 					$n->parentNode->removeAttributeNode($n);		  //now remove the translation attribute.
 				}
 			} else { //just the one attribute..
-				$tr_attrs = $this->set("//*[@data-tr='".$tr_attrs."']/child-gap()",Dict::get($tr_attrs));
+				$this->set("//*[@data-tr='".$tr_attrs."']/child-gap()",Dict::get($tr_attrs));
 				$this->set("//*[@data-tr='".$tr_attrs."']/@data-tr");
 			}
 		} else {
