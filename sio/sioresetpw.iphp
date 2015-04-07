@@ -8,8 +8,7 @@ class SIOResetPW {
 	private static $munge="sha2(concat(ifnull(username,id),'-',ifnull(password,id),'-',ifnull(email,id),'-',ifnull(ts,id)),256)";
 	private static $v=array();
 	
-	function __construct($key=NULL,$custom_views=array()) {
-		static::$v = array_replace(static::$v,$custom_views);
+	function __construct($key=NULL) {
 		$this->iniForm($key,@static::$v[static::SIG]);
 		$this->key=$key; //This will be the siof value passed by url.
 		$this->table="user";
@@ -77,9 +76,10 @@ class SIOResetPW {
 		return $retval;
 	}
 	
-	public static function initialise() {
+	public static function initialise($using_un=true,$custom_views=array()) {
 //views arrays
 		static::$v=array(static::SIG=>static::SIG."v.ixml");
+		static::$v = array_replace(static::$v,$custom_views);
 //translations
 		$en = array(
 			static::SIG .'prompt_password' => "Password",

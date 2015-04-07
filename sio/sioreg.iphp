@@ -9,8 +9,7 @@ class SioReg {
 	private static $v=array();
 	private static $use_un=true;
 
-	function __construct($key=NULL,$custom_views=array()) {
-		static::$v = array_replace(static::$v,$custom_views);
+	function __construct($key=NULL) {
 		$this->iniForm($key,@static::$v[static::SIG]);
 		$this->key=$key;
 		$this->table="user";
@@ -137,10 +136,9 @@ class SioReg {
 
 	public function commitv() { 
 		$cv=new NView(@static::$v[static::SIG."check_mail"]);
-		$this->view->set("//*[@data-tr]/@data-tr/preceding-gap()",static::SIG);
+		$cv->set("//*[@data-tr]/@data-tr/preceding-gap()",static::SIG);
 		return $cv;
 	}
-
 	
 	public static function conforms($hat=NULL) {
 		$retval=false;
@@ -164,7 +162,7 @@ class SioReg {
 	}
 
 
-	public static function initialise($using_un=true) {	
+	public static function initialise($using_un=true,$custom_views=array()) {	
 		static::$use_un=$using_un;
 //views array
 		static::$v=array( 
@@ -172,6 +170,7 @@ class SioReg {
 			static::SIG."success"=>static::SIG."sv.ixml",
 			static::SIG."check_mail"=>static::SIG."pv.ixml"
 		);
+		static::$v = array_replace(static::$v,$custom_views);
 	
 //translations
 		$en = array(

@@ -10,8 +10,7 @@ class SIOSetPW {
 /**
  * '__construct'
  */
-	function __construct($key=NULL,$custom_views=array()) {
-		static::$v = array_replace(static::$v,$custom_views);
+	function __construct($key=NULL) {
 		$this->iniForm($key,@static::$v[static::SIG]);
 		$this->key=$key;
 		$this->table="user";
@@ -75,15 +74,18 @@ class SIOSetPW {
 	
 	public static function pushit() {
 		$nv = new NView(@static::$v[static::SIG."success"]);
+		$nv->set("//*[@data-tr]/@data-tr/preceding-gap()",static::SIG);
 		return $nv;
 	}
 	
-	public static function initialise() {
+	public static function initialise($using_un=true,$custom_views=array()) {
 //set the static arrays.
 		static::$v=array( 
 			static::SIG=>static::SIG."v.ixml",
 			static::SIG."success"=>static::SIG."sv.ixml"
 		);
+		static::$v = array_replace(static::$v,$custom_views);
+		
 //now do translations	
 		$en = array(
 			static::SIG ."prompt_original_password"=>"Current Password",

@@ -14,8 +14,7 @@ class SioSignIn {
 /**
  * '__construct'
  */
-	function __construct($key=NULL,$custom_views=array()) {
-		static::$v = array_replace(static::$v,$custom_views);
+	function __construct($key=NULL) {
 		$this->iniForm($key,@static::$v[static::SIG]);
 		$this->key=$key;
 		$this->table="user";
@@ -113,7 +112,7 @@ class SioSignIn {
 		return true;
 	}
 
-	public static function initialise($using_un=true) {	
+	public static function initialise($using_un=true,$custom_views=array()) {	
 		static::$use_un=$using_un;
 //translations	
 		$en = array(
@@ -122,6 +121,7 @@ class SioSignIn {
 			static::SIG .'button_forgot'=>"Forgot Password",
 			static::SIG .'button_register'=>"Register",
 		);
+		static::$v = array_replace(static::$v,$custom_views);
 		
 //set the views array.
 		if($using_un) {

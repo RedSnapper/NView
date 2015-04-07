@@ -56,11 +56,12 @@ class SioSignOut {
 		return true;
 	}
 
-	public static function initialise() {
+	public static function initialise($use_un=true,$custom_views=array()) {
 //views array.
 		static::$v=array( 
 			static::SIG=>static::SIG."v.ixml",
 		);
+		static::$v = array_replace(static::$v,$custom_views);
 	
 //now do translations	
 		$en = array(

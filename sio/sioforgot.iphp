@@ -14,8 +14,7 @@ class SioForgot {
 /**
  * '__construct'
  */
-	function __construct($key=NULL,$custom_views=array()) {
-		static::$v = array_replace(static::$v,$custom_views);
+	function __construct($key=NULL) {
 		$this->iniForm($key,@static::$v[static::SIG]);
 		$this->key=$key;
 		$this->table="user";
@@ -79,13 +78,14 @@ class SioForgot {
 		return true;
 	}
 
-	public static function initialise() {
+	public static function initialise($using_un=true,$custom_views=array()) {
 //views array
 		static::$v=array(
 			static::SIG=>static::SIG."v.ixml",
 			static::SIG."mailbody"=>static::SIG."mv.ixml",
 			static::SIG."success"=>static::SIG."sv.ixml"
 		);
+		static::$v = array_replace(static::$v,$custom_views);
 
 //translations
 		$en = array(
