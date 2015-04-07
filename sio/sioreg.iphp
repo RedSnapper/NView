@@ -98,7 +98,7 @@ class SioReg {
 			if (isset($this->fields['emailp'][0])) { //not empty
 				$unm=$this->fields['emailp'][0];
 				$unm=Settings::esc($unm);
-				$extra="username=sha2(".$unm.",256),";
+				$extra="username=sha2(emailp,256),";
 				$qry="select ".static::$munge." as munge,emailp from " . $this->table . " where emailp='" .$unm. "' and active='xx'";
 			} 
 		}
