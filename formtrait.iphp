@@ -86,8 +86,9 @@ trait Form {
 /**
  * 'iniForm'
  * To be used in __construct methods.
+ * vprefix = prefix sig to data-tr in form views.
  */
-	protected function iniForm($idp='',$vp = NULL,$unused=false,$pk='id',$debug=false) {
+	protected function iniForm($idp='',$vp = NULL,$vprefix=true,$pk='id',$debug=false) {
 		$this->debug=$debug;
 		$this->pkey = $pk; //pk has array of primary key fields (?with values?)
 		$this->pksimple = !is_array($pk);
@@ -105,8 +106,9 @@ trait Form {
 		        print $err;
 		    }
 		}
-		$this->view->set("//*[@data-tr]/@data-tr/preceding-gap()",static::sig());
-		
+		if ($vprefix) {
+			$this->view->set("//*[@data-tr]/@data-tr/preceding-gap()",static::sig());
+		}
 		//initialise other members.
 		$this->gflds = array(); //array of sql fields that will be used to get.
 		$this->cflds = array(); //array of sql fields that will be used in commit.

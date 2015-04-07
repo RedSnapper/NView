@@ -95,32 +95,33 @@ class SioSignIn {
 	}
 
 
-	public static function initialise($use_un=true) {
-//set the views array.
-		if($use_un) {
-			static::$v[static::SIG]=static::SIG."uv.ixml";
-		} else {
-			static::$v[static::SIG]=static::SIG."mv.ixml";
-		}
-	
+	public static function initialise($use_un=true) {	
 //translations	
 		$en = array(
-			static::SIG .'prompt_username' => "Username",
 			static::SIG .'prompt_password'=>"Password",
 			static::SIG .'button_signin'=>"Sign In",
 			static::SIG .'button_forgot'=>"Forgot Password",
 			static::SIG .'button_register'=>"Register",
-			static::SIG .'errors_username_unmatched'=>"Either the username or password don't match our records",
-			static::SIG .'errors_username_empty'=>"You need to enter your username"
 		);
 		$gr = array(
-			static::SIG .'prompt_username' => "Όνομα Χρήστη",
 			static::SIG .'prompt_password'=>"Κωδικός",
 			static::SIG .'button_signin'=>"Είσοδος",
 			static::SIG .'button_forgot'=>"Ξέχασα τον κωδικό μου",
 			static::SIG .'button_register'=>"Εγγραφή",
-			static::SIG .'errors_username_unmatched'=>"Το όνομα χρήστη ή ο κωδικός δεν ειναι σωστά"
 		);
+		
+//set the views array.
+		if($use_un) {
+			static::$v[static::SIG]=static::SIG."uv.ixml";
+			$en[static::SIG .'prompt_username']= "Username";
+			$en[static::SIG .'errors_username_unmatched']="Either the username or password don't match our records";
+			$en[static::SIG .'errors_username_empty']="You need to enter your username";
+			$gr[static::SIG .'prompt_username']="Όνομα Χρήστη";
+			$gr[static::SIG .'errors_username_unmatched']="Το όνομα χρήστη ή ο κωδικός δεν ειναι σωστά";
+		} else {
+			static::$v[static::SIG]=static::SIG."mv.ixml";
+		}
+		
 		Dict::set($en,'en');
 		Dict::set($gr,'gr');
 	}
