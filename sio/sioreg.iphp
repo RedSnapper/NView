@@ -147,7 +147,7 @@ class SioReg {
 		return $retval;
 	}
 	
-	public static function push_it($hat=NULL) {
+	public static function pushit($hat=NULL) {
 		if(is_null($hat)) {
 			$nv=new NView(@static::$v[static::SIG."check_mail"]);
 			$nv->set("//*[@data-tr]/@data-tr/preceding-gap()",static::SIG);
