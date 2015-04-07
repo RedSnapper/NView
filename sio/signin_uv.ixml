@@ -1,0 +1,35 @@
+<!DOCTYPE fieldset>
+<fieldset  xmlns="http://www.w3.org/1999/xhtml" class="form--cols">
+	<input type="hidden" data-xp="_ident" />
+	<ul class="form__notice">
+		<li>
+			<label class="form__group text" data-semantic="field" data-xp="comment">
+				<span class="error" data-msg="username" />
+				<span class="label" data-xp="label" data-tr="prompt_username" />
+				<span class="flex"><input autocomplete="off" type="text" name="username" /></span>
+			</label>
+		</li>
+		<li>
+			<label class="form__group text" data-semantic="field" data-xp="comment">
+				<span class="error" data-msg="password" />
+				<span class="label" data-xp="label" data-tr="prompt_password" />
+				<span class="flex"><input autocomplete="off" type="password" name="password" /></span>
+			</label>
+		</li>
+		<li>
+			<label class="form__group submit" data-semantic="button" >
+				<span class="flex"><button class="btn--tertiary" type="submit" name="_fn" value="save" data-tr="button_signin" /></span>
+			</label>
+		</li>
+		<li>
+			<label class="form__group submit" data-semantic="button" >
+				<span class="flex"><button class="btn--tertiary" type="submit" name="_fn" value="forgot" data-tr="button_forgot" /></span>
+			</label>
+		</li>
+		<li>
+			<label class="form__group submit" data-semantic="button" >
+				<span class="flex"><button class="btn--tertiary" type="submit" name="_fn" value="register" data-tr="button_register" /></span>
+			</label>
+		</li>
+	</ul>
+</fieldset>
