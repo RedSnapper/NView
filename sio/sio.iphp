@@ -75,13 +75,12 @@ class SIO {
 				} break;
 				case 2: {
 					$sso=new SioSignOut(); $formlet=$sso->form(false);
-					print_r($formlet->show());
 					if ($sso->success()) {
 						$sio=new SioSignIn(); $formlet=$sio->form(false);
 					}				
 				} break;
 			}
-			$v->set("//*[@data-xp='sio']",$formlet);
+			$v->set("//*[@data-xp='sio']",$formlet->show(true));
 			return $v;
 		}
 	}
