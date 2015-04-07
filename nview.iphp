@@ -320,9 +320,11 @@ class NView {
 								}
 							}
 							if ($value instanceof NView) {
-								$value = clone $value;
-								$value->tset();
+								$value->tidyView();
 								$value = $value->doc->documentElement;
+//								$value = clone $value;
+//								$value->tset();
+//								$value = $value->doc->documentElement;
 							}
 							foreach($entries as $entry) {
 								if ($gap == self::GAP_NATTR && $entry->nodeType==XML_ELEMENT_NODE && isset($aname)) {
