@@ -122,6 +122,9 @@ class SioSignIn {
 
 	public static function initialise($using_un=true) {	
 		static::$use_un=$using_un;
+		$bt = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,2);
+		print_r($bt);
+
 		if($using_un) {
 			print('[using]');
 		} else {
