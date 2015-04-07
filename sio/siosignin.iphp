@@ -65,6 +65,7 @@ class SioSignIn {
 		if(static::$use_un) {
 			if (isset($this->fields['username'][0])) {
 				$unm=$this->fields['username'][0];
+				$unm=Settings::esc($unm);
 				$field="username";
 			} else {
 				$this->seterr("username",Dict::get(static::SIG.'errors_username_empty'));
@@ -75,6 +76,7 @@ class SioSignIn {
 					$this->seterr("email",Dict::get(static::SIG.'errors_email_badformat'));
 				} else { //good format.
 					$unm=$this->fields['email'][0];
+					$unm=Settings::esc($unm);
 					$field="email";
 				} 
 			} else { //set empty error.
