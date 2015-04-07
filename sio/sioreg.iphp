@@ -108,7 +108,7 @@ class SioReg {
 	}
 	
 	protected function populate() {
-		$this->tset(static::$field_keys);
+//		$this->tset(static::$field_keys);
 	}
 	
 	protected function commit() {
@@ -166,7 +166,7 @@ class SioReg {
 		$query= "update user set email=emailp,active='on' where active='xx' and ".static::$munge."='".$ha."'";
 		Settings::$sql->query($query);
 		$nv = new NView(@static::$v[static::SIG."success"]);
-		$nv->tset(static::$extra);
+//		$nv->tset(static::$extra);
 		return $nv;
 	}
 

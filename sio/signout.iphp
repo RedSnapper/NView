@@ -82,8 +82,6 @@ class SioSignOut {
  * fn fulfilling abstract requirement of trait 'Form'.
  */
 	protected function populate() {
-		$this->tset();
-//		$this->tset(static::$field_keys);
 	}
 
 }

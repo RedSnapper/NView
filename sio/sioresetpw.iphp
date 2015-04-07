@@ -88,7 +88,7 @@ class SIOResetPW {
 	}
 	
 	protected function populate() {
-		$this->tset(static::$field_keys);
+//		$this->tset(static::$field_keys);
 	}
 	
 	public static function conforms($hat=NULL) {

@@ -227,13 +227,6 @@ trait Form {
 	}
 
 /**
- * 'tset' translations
- *  This uses any key-value array, ignoring the language.
- */
-	function tset($keys = NULL) {
-		$this->view->tset($keys);
-	}
-/**
  * 'vset'
  */
 	function vset($input='_unused',$kind=NULL,$special=NULL) {

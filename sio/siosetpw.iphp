@@ -76,12 +76,12 @@ class SIOSetPW {
 	}
 	
 	protected function populate() {
-		$this->tset();
+//		$this->tset();
 	}
 	
 	public static function pushit() {
 		$nv = new NView(@static::$v[static::SIG."success"]);
-		$nv->tset();
+//		$nv->tset();
 		return $nv;
 	}
 	

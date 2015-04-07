@@ -69,7 +69,7 @@ class SioForgot {
  */
 	public function commitv() { 
 		$cv=new NView(@static::$v[static::SIG."success"]);
-		$cv->tset(static::$extra_keys);
+//		$cv->tset(static::$extra_keys);
 		return $cv;
 	}
 
@@ -95,7 +95,7 @@ class SioForgot {
 			require_once("/websites/shared/lib/PHPMailer/PHPMailerAutoload.php");
 			while ($f = $rx->fetch_assoc()) {
 				$mail_v=new NView(@static::$v[static::SIG."mailbody"]);
-				$mail_v->tset(static::$mail_keys);
+//				$mail_v->tset(static::$mail_keys);
 				$mail = new PHPMailer();
 				$mail->isSendmail();
 				$mail->CharSet='utf-8';
@@ -129,6 +129,6 @@ class SioForgot {
  */
 	protected function populate() {
 		$this->vset('email');
-		$this->tset(static::$field_keys);
+//		$this->tset(static::$field_keys);
 	}
 }

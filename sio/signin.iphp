@@ -128,7 +128,7 @@ class SioSignIn {
  */
 	protected function populate() {
 		$this->vset('username');
-		$this->tset(static::$field_keys);
+//		$this->tset(static::$field_keys);
 	}
 
 }

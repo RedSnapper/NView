@@ -64,7 +64,7 @@ class SIOSetEmail {
 					require_once("/websites/shared/lib/PHPMailer/PHPMailerAutoload.php");
 					while ($f = $rx->fetch_assoc()) {
 						$mail_v=new NView(@static::$v[static::SIG."email_body"]);
-						$mail_v->tset($this->en_extras);
+//						$mail_v->tset($this->en_extras);
 						$mail = new PHPMailer();
 						$mail->isSendmail();
 						$mail->CharSet='utf-8';
@@ -94,7 +94,7 @@ class SIOSetEmail {
 	}
 	
 	protected function populate() {
-		$this->tset(static::$field_keys);
+//		$this->tset(static::$field_keys);
 	}
 	
 	public static function conforms($hat=NULL) {
@@ -119,7 +119,7 @@ class SIOSetEmail {
 			Settings::$sql->query($query);
 			$nv = new NView(@static::$v[static::SIG."success"]);
 		}
-		$nv->tset(static::$extra_keys);
+//		$nv->tset(static::$extra_keys);
 		return $nv;
 	}
 
