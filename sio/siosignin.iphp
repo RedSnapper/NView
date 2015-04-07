@@ -107,7 +107,11 @@ class SioSignIn {
  * fn OVERLOADING trait 'Form'.
  */
 	protected function commit() {
-		Session::set('username',$this->fields['username'][0]);
+		if(static::$use_un) {
+			Session::set('username',$this->fields['username'][0]);
+		} else {
+			Session::set('username',$this->fields['email'][0]);
+		}
 		Settings::usr();
 		return true;
 	}
