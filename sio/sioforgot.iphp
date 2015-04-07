@@ -24,8 +24,7 @@ class SioForgot {
 	}
 
 /**
- * 'commit'
- * fn OVERLOADING trait 'Form'.
+ * 'commit-view'
  */
 	public function commitv() { 
 		$cv=new NView(@static::$v[static::SIG."success"]);

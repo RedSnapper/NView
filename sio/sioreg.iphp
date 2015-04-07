@@ -132,12 +132,15 @@ class SioReg {
 			}
 			$rx->close();
 		}
-		$this->show = true;
-		print(@static::$v[static::SIG."check_mail"]);
-		$this->view = new NView(@static::$v[static::SIG."check_mail"]);
-		$this->view->set("//*[@data-tr]/@data-tr/preceding-gap()",static::SIG);
 		return true;
 	}
+
+	public function commitv() { 
+		$cv=new NView(@static::$v[static::SIG."check_mail"]);
+		$this->view->set("//*[@data-tr]/@data-tr/preceding-gap()",static::SIG);
+		return $cv;
+	}
+
 	
 	public static function conforms($hat=NULL) {
 		$retval=false;
