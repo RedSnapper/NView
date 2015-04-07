@@ -102,10 +102,13 @@ class NView {
 /**
  * 'tset - translation hooks'
  */
-	public function tset($kv= array('0' => '0'),$prefix='') {
-		foreach($kv as $k => $v) {
-			$this->set("//*[@data-tr='" . $prefix . $k . "']/child-gap()",Dict::get($k));
-		}
+	public function tset($kv= array('0' => '0')) {
+		$xx = $this->get("//*[@data-tr]@data-tr");
+		print_r($xx);
+
+//		foreach($kv as $k => $v) {
+//			$this->set("//*[@data-tr='" . $k . "']/child-gap()",Dict::get($k));
+//		}
 	}
 	
 /**
