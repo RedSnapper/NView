@@ -4,9 +4,9 @@
 	<ul class="form__notice">
 		<li>
 			<label class="form__group text" data-semantic="field" data-xp="comment">
-				<span class="error" data-msg="emailp" />
+				<span class="error" data-msg="email" />
 				<span class="label" data-xp="label" data-tr="prompt_email" />
-				<span class="flex"><input autocomplete="on" type="text" name="emailp" /></span>
+				<span class="flex"><input autocomplete="on" type="text" name="email" /></span>
 			</label>
 		</li>
 		<li>

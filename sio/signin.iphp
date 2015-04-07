@@ -9,6 +9,7 @@ class SioSignIn {
 	const SIG = "siosignin_";
 	public static function sig() { return static::SIG; }
 	private static $v=array();
+	private static $use_un=true;
 
 /**
  * '__construct'
@@ -18,7 +19,11 @@ class SioSignIn {
 		$this->iniForm($key,@static::$v[static::SIG]);
 		$this->key=$key;
 		$this->table="user";
-		$this->setfld('username');
+		if(static::$use_un) {
+			$this->setfld('username');
+		} else {
+			$this->setfld('email');
+		}
 		$this->setfld('password');	
 	}
 
@@ -56,22 +61,43 @@ class SioSignIn {
  */
 	protected function validate() {
 		$retval = false;
-		if (isset($this->fields['username'][0]) && isset($this->fields['password'][0])) {
-			$un=$this->fields['username'][0];
-			$ph=hash('sha256',$un . hex2bin('5BE0BDA8E0BDBCE0BDBEE0BC8BE0BDA7E0BDB1E0BDB4E0BDBE5D') . hash('sha256',$this->fields['password'][0]));
+		$unm = NULL;
+		if(static::$use_un) {
+			if (isset($this->fields['username'][0])) {
+				$unm=$this->fields['username'][0];
+				$field="username";
+			} else {
+				$this->seterr("username",Dict::get(static::SIG.'errors_username_empty'));
+			}		
+		} else { //using email
+			if (isset($this->fields['email'][0])) { //not empty
+				if (!filter_var($this->fields['email'][0], FILTER_VALIDATE_EMAIL)) { //incorrect format
+					$this->seterr("email",Dict::get(static::SIG.'errors_email_badformat'));
+				} else { //good format.
+					$unm=$this->fields['email'][0];
+					$field="email";
+				} 
+			} else { //set empty error.
+				$this->seterr("email",Dict::get(static::SIG.'errors_email_empty'));
+			}
+		}
+		if (!is_null($unm) && isset($this->fields['password'][0])) {
+			$ph=hash('sha256',$unm . hex2bin('5BE0BDA8E0BDBCE0BDBEE0BC8BE0BDA7E0BDB1E0BDB4E0BDBE5D') . hash('sha256',$this->fields['password'][0]));
 			$this->fields['password'][0]='';
-			$qry="select count(id) as ok from " . $this->table . " where active='on' and username='" .$un. "' and password='" . $ph . "'";
+			$qry="select count(id) as ok from " . $this->table . " where active='on' and ".$field."='" .$un. "' and password='" . $ph . "'";
 			if ($rx = Settings::$sql->query($qry)) {
 				if (strcmp($rx->fetch_row()[0],"1") === 0) {
 					$retval=true;
 				} else {
-					$this->seterr("username",Dict::get(static::SIG.'errors_username_unmatched'));
+					if(static::$use_un) {
+						$this->seterr("username",Dict::get(static::SIG.'errors_username_unmatched'));
+					} else {
+						$this->seterr("email",Dict::get(static::SIG.'errors_email_unmatched'));
+					}
 				}
 				$rx->close();
 			}
-		} else {
-			$this->seterr("username",Dict::get(static::SIG.'errors_username_empty'));
-		}
+		} 
 		$this->valid = $retval;
 	}
 
@@ -96,6 +122,8 @@ class SioSignIn {
 
 
 	public static function initialise($use_un=true) {	
+		static::$use_un=$use_un;
+	
 //translations	
 		$en = array(
 			static::SIG .'prompt_password'=>"Password",
@@ -120,6 +148,10 @@ class SioSignIn {
 			$gr[static::SIG .'errors_username_unmatched']="Το όνομα χρήστη ή ο κωδικός δεν ειναι σωστά";
 		} else {
 			static::$v[static::SIG]=static::SIG."mv.ixml";
+			$en[static::SIG ."prompt_email"]= "Email";
+			$en[static::SIG ."errors_email_badformat"]="The email format is not recognised",
+			$en[static::SIG .'errors_email_unmatched']="Either the email or password don't match our records";
+			$en[static::SIG .'errors_email_empty']="You need to enter your email address";
 		}
 		
 		Dict::set($en,'en');
