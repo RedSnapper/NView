@@ -93,10 +93,10 @@ sign-in and sign-out.
 	
 //This must be run before we overload the translations.
 	public static function initialise($use_un=true) {
-		static::$use_username=$use_un;
 		static::$v=array(
 			static::SIG => static::SIG."v.ixml"
 		);
+		static::$use_username=$use_un;
 		SioSignIn::initialise($use_un);
 		SioSignOut::initialise($use_un);
 		SioReg::initialise($use_un);
