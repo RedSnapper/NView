@@ -320,7 +320,6 @@ class NView {
 								}
 							}
 							if ($value instanceof NView) {
-//								$value->tidyView();
 								$value = $value->doc->documentElement;
 							}
 							foreach($entries as $entry) {
