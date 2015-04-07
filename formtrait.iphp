@@ -104,7 +104,6 @@ trait Form {
 			} else {
 				$file .= $vp;
 			}
-			print($file);
 		    $this->view = new NView($file);
 		    $err = $this->view->messages(); //currently unused.
 		    if (!empty($err)) {
