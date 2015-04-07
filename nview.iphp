@@ -103,6 +103,10 @@ class NView {
 					$n->parentNode->appendChild($nvnode);			  //now we have added it in.
 					$n->parentNode->removeAttributeNode($n);		  //now remove the translation attribute.
 				}
+			} elseif ($tr_attrs instanceof DOMNode) {
+					$nvnode = $this->strToNode(Dict::get($tr_attrs->value)); 	//textnode from the dictionary keyed by the attribute value.
+					$tr_attrs->parentNode->appendChild($nvnode);			  	//now we have added it in.
+					$tr_attrs->parentNode->removeAttributeNode($tr_attrs);		//now remove the translation attribute.
 			}
 		} else {
 			foreach($keys as $k) {
