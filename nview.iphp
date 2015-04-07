@@ -322,7 +322,6 @@ class NView {
 							if ($value instanceof NView) {
 								$value->tidyView();
 								$value = $value->doc->documentElement;
-								print('x');
 							}
 							foreach($entries as $entry) {
 								if ($gap == self::GAP_NATTR && $entry->nodeType==XML_ELEMENT_NODE && isset($aname)) {
