@@ -102,19 +102,19 @@ class NView {
 /**
  * 'tset - translation hooks'
  */
-	public function tset($kv= array('0' => '0')) {
-		print("<ul>");
-		$xx = $this->get("//*[@data-tr]/@data-tr");
-		if ($xx instanceof DOMNodeList) {
-			foreach($xx as $nodi) {
-				print('<li>'. $nodi->value .'</li>');
+	public function tset($keys= NULL) {
+		if(is_null($keys)) {
+			$tr_ats = $this->get("//*[@data-tr]/@data-tr");
+			if ($tr_ats instanceof DOMNodeList) {
+				foreach($tr_ats as $n) {
+					$this->set("//*[@data-tr='" . $n->value . "']/child-gap()",Dict::get($n->value));
+				}
+			}
+		} else {
+			foreach($keys as $k) {
+				$this->set("//*[@data-tr='" . $k . "']/child-gap()",Dict::get($k));
 			}
 		}
-		foreach($kv as $k) {
-				print('<li>'. $k .'</li>');
-				$this->set("//*[@data-tr='" . $k . "']/child-gap()",Dict::get($k));
-		}
-		print("</ul>");
 	}
 	
 /**
