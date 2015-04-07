@@ -113,15 +113,6 @@ class SioSignIn {
 		return true;
 	}
 
-/**
- * 'populate'
- * fn fulfilling abstract requirement of trait 'Form'.
- * place this->fields array into view.
- */
-	protected function populate() {
-		$this->vset('username');
-	}
-
 	public static function initialise($using_un=true) {	
 		static::$use_un=$using_un;
 //translations	

@@ -30,7 +30,6 @@ trait Form {
 	private $subspostv; 	//subscriber field-value based on post.
 	private $subsdshow; 	//subscriber (defaults to true) show empty field if deleted..
 	private $subfn; 		//subscriber CNUD function that happened - one of create/null/update/delete
-	abstract protected function populate();   // use $fields to load the inputs.
 
 	public function success() {
 		return $this->committed;
@@ -51,6 +50,9 @@ trait Form {
 
 	protected function validate() { //should be overridden.
 		return true;
+	}
+	
+	protected function populate() { //should be overridden.
 	}
 
 	protected function func() {

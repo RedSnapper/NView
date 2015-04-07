@@ -56,13 +56,6 @@ class SioSignOut {
 		return true;
 	}
 
-/**
- * 'populate'
- * fn fulfilling abstract requirement of trait 'Form'.
- */
-	protected function populate() {
-	}
-	
 	public static function initialise() {
 //views array.
 		static::$v=array( 

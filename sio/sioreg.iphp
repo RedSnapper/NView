@@ -36,13 +36,32 @@ class SioReg {
 					$rx->close();
 				}
 				if (isset($this->fields['passwordn'][0]) && ($this->fields['passwordn'][0] === $this->fields['username'][0])) {
-					$this->seterr("passwordn",Dict::get(static::SIG.'errors_new_pw_too_simple'));
+					$this->seterr("passwordn",Dict::get(static::SIG.'errors_new_pw_too_un_simple'));
 					$retval = false;
 				} 
 			} else {
 				$this->seterr("username",Dict::get(static::SIG.'errors_no_username'));
 				$retval = false;
 			}
+		}
+
+		if (isset($this->fields['emailp'][0])) {
+			$em=Settings::esc($this->fields['emailp'][0]);
+			$qry="select count(id) as ok from " . $this->table . " where emailp='" . $em . "'";
+			if ($rx = Settings::$sql->query($qry)) {
+				if (strcmp($rx->fetch_row()[0],"0") !== 0) {
+					$retval = false;
+					$this->seterr("emailp",Dict::get(static::SIG.'errors_email_exists'));
+				} 
+				$rx->close();
+			}
+			if (isset($this->fields['passwordn'][0]) && ($this->fields['passwordn'][0] === $this->fields['username'][0])) {
+				$this->seterr("passwordn",Dict::get(static::SIG.'errors_new_pw_too_em_simple'));
+				$retval = false;
+			} 
+		} else {
+			$this->seterr("emailp",Dict::get(static::SIG.'errors_no_email'));
+			$retval = false;
 		}
 		if (isset($this->fields['passwordn'][0]) && isset($this->fields['passwordb'][0])) {
 			$pwa=$this->fields['passwordn'][0];
@@ -63,9 +82,6 @@ class SioReg {
 		if ($this->valid) {
 			$this->valid = $retval;
 		}
-	}
-	
-	protected function populate() {
 	}
 	
 	protected function commit() {
@@ -155,9 +171,11 @@ class SioReg {
 			static::SIG ."prompt_retype_password"=>"Retype Password",
 			static::SIG ."button_register"=>"Register",
 			static::SIG ."note_register_title"=>"Registration Request",
-			static::SIG ."note_register_message"=>"It appears that you have chosen to register on the website.",
-			static::SIG ."note_register_action_link"=>"Please click here to confirm your registration",
-			static::SIG ."errors_email_badformat"=>"The email format is not recognised",
+			static::SIG ."note_register_message"=>" It appears that you have chosen to register on the website.",
+			static::SIG ."note_register_action_link"=>" Please click here to confirm your registration.",
+			static::SIG ."errors_email_badformat"=>" The email format is not recognised.",
+			static::SIG ."errors_email_exists"=>" A user with this email already exists on the system. Please use another email.",
+			static::SIG ."errors_no_email"=>" You must enter an email address.",
 			static::SIG ."errors_no_password"=>" You must enter a password.",
 			static::SIG ."errors_new_pw_different"=>" Both passwords must be the same.",
 			static::SIG ."errors_new_pw_too_short"=>" Passwords must be more than 6 characters.",
@@ -171,11 +189,10 @@ class SioReg {
 			$en[static::SIG ."prompt_username"]="Username";
 			$en[static::SIG ."errors_username_exists"]="This username already exists on the system. Please choose another.";
 			$en[static::SIG ."errors_username_empty"]="You need to enter a username.";
-			$en[static::SIG ."errors_new_pw_too_simple"]=" Passwords must be different from your username!";
+			$en[static::SIG ."errors_new_pw_too_un_simple"]=" Passwords must be different from your username!";
 		} else {
 			static::$v[static::SIG]=static::SIG."mv.ixml";
-			$en[static::SIG ."errors_email_exists"]="A user with this email already exists on the system. Please use another email.";
-			$en[static::SIG ."errors_new_pw_too_simple"]=" Passwords must be different from your email!";
+			$en[static::SIG ."errors_new_pw_too_em_simple"]=" Passwords must be different from your email!";
 		}
 		
 		Dict::set($en,'en');

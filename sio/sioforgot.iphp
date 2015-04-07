@@ -80,15 +80,6 @@ class SioForgot {
 		return true;
 	}
 
-/**
- * 'populate'
- * fn fulfilling abstract requirement of trait 'Form'.
- * place this->fields array into view.
- */
-	protected function populate() {
-		$this->vset('email');
-	}
-	
 	public static function initialise() {
 //views array
 		static::$v=array(

@@ -64,9 +64,6 @@ class SIOResetPW {
 		return true;
 	}
 	
-	protected function populate() {
-	}
-	
 	public static function conforms($hat=NULL) {
 		$retval=false;
 		$ha=Settings::esc($hat); 
