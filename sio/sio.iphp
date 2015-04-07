@@ -62,7 +62,8 @@ sign-in and sign-out.
 					if (SioReg::inScope()) {
 						$stt=0; $sio=new SioReg(); $formlet=$sio->form(false);
 						if ($sio->success()) {
-							$formlet=$sio->commitv();
+							print('[got here]');
+							$formlet=$sio->push_it();
 						}					
 					} elseif (SioForgot::inScope()) {
 						$stt=0; $sio=new SioForgot(); $formlet=$sio->form(false);

@@ -133,12 +133,6 @@ class SioReg {
 		}
 		return true;
 	}
-
-	public function commitv() { 
-		$cv=new NView(@static::$v[static::SIG."check_mail"]);
-		$cv->set("//*[@data-tr]/@data-tr/preceding-gap()",static::SIG);
-		return $cv;
-	}
 	
 	public static function conforms($hat=NULL) {
 		$retval=false;
@@ -154,10 +148,16 @@ class SioReg {
 	}
 	
 	public static function push_it($hat=NULL) {
-		$ha=Settings::esc($hat); 
-		$query= "update user set email=emailp,active='on' where active='xx' and ".static::$munge."='".$ha."'";
-		Settings::$sql->query($query);
-		$nv = new NView(@static::$v[static::SIG."success"]);
+		if(is_null($hat)) {
+			$nv=new NView(@static::$v[static::SIG."check_mail"]);
+			$nv->set("//*[@data-tr]/@data-tr/preceding-gap()",static::SIG);
+		} else {
+			$ha=Settings::esc($hat); 
+			$query= "update user set email=emailp,active='on' where active='xx' and ".static::$munge."='".$ha."'";
+			Settings::$sql->query($query);
+			$nv = new NView(@static::$v[static::SIG."success"]);
+			$nv->set("//*[@data-tr]/@data-tr/preceding-gap()",static::SIG);
+		}
 		return $nv;
 	}
 
