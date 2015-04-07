@@ -321,6 +321,7 @@ class NView {
 							}
 							if ($value instanceof NView) {
 								$value->tidyView();
+								print($value->messages());
 								$value = $value->doc->documentElement;
 							}
 							foreach($entries as $entry) {
