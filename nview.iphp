@@ -81,13 +81,6 @@ class NView {
 			if ($asdocument) {
 				//attempt any remaining translations and remove final data-tr attributes.
 				$this->tset();
-				$xq = "//*[@data-tr]/@data-tr";
-				$entries = $this->xp->query($xq);
-				if ($entries) {
-					foreach($entries as $entry) {
-						$entry->parentNode->removeAttributeNode($entry);
-					}
-				}
 				return $this->doc->saveXML();
 			} else {
 				$hs=$this->doc->saveXML();
