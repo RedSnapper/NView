@@ -5,19 +5,12 @@ class SIO {
 	private static $v=array();
 	private static $use_username=true;
 	
-	public static function run($translations=array('en'=>array('hello'=>'Hello'))) {
-		foreach ($translations as $lang => $trans_array) {
-			Dict::set($trans_array,$lang);
-		}		
+	public static function run() {
 		$v = new NView(@static::$v[static::SIG]);
 		$err = $v->messages();
 		if (isset($err) && !empty($err)) {
 			print $err;
 		} else {
-/*
-This is the SIO widget, so it is going to handle everything to do with 
-sign-in and sign-out.
-*/	
 			$formlet=null;
 			$stt=0;		//stt: 0=other, 1=sign-in, 2=sign-out.
 			if (Session::has('username')) { //signed in.
@@ -83,7 +76,7 @@ sign-in and sign-out.
 				case 2: {
 					$sso=new SioSignOut(); $formlet=$sso->form(false);
 					if ($sso->success()) {
-						$sio=new SioSignIn();$formlet=$sio->form(false);
+						$sio=new SioSignIn(); $formlet=$sio->form(false);
 					}				
 				} break;
 			}
@@ -92,13 +85,18 @@ sign-in and sign-out.
 		}
 	}
 	
-//This must be run before we overload the translations.
-	public static function initialise($use_un=true,$custom_views=array()) {
+//This must be run to overload views and translations.
+	public static function initialise($use_un=true,$custom_views=array(),$translations=NULL) {
+		static::$use_username=$use_un;
+		if(!is_null($translations)) {
+			foreach ($translations as $lang => $trans_array) {
+				Dict::set($trans_array,$lang);
+			}		
+		}
 		static::$v=array(
 			static::SIG => static::SIG."v.ixml"
 		);
 		static::$v = array_replace(static::$v,$custom_views);
-		static::$use_username=$use_un;
 		SioSignIn::initialise($use_un,$custom_views);
 		SioSignOut::initialise($use_un,$custom_views);
 		SioReg::initialise($use_un,$custom_views);

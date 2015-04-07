@@ -37,14 +37,6 @@ class SioSignOut {
 	}
 
 /**
- * 'validate'
- * fn fulfilling abstract requirement of trait 'Form'.
- */
-	protected function validate() {
-		$this->valid = true;
-	}
-
-/**
  * 'commit'
  * fn OVERLOADING trait 'Form'.
  */
