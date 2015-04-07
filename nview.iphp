@@ -110,9 +110,9 @@ class NView {
 				print('<li>'. $nodi->value .'</li>');
 			}
 		}
-		foreach($kv as $k => $v) {
-				print('<li>'. $k . "=>" . $v .'</li>');
-//			$this->set("//*[@data-tr='" . $k . "']/child-gap()",Dict::get($k));
+		foreach($kv as $k) {
+				print('<li>'. $k .'</li>');
+				$this->set("//*[@data-tr='" . $k . "']/child-gap()",Dict::get($k));
 		}
 		print("</ul>");
 	}
