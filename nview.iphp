@@ -73,14 +73,12 @@ class NView {
 /**
  * 'show'
  */
-	public function show($asdocument = false) {
+	public function show($fragment = false) {
 		if (is_null($this->doc) || is_null($this->xp)) {
 			return "";
 		} else {
 			$this->tidyView();
-			if ($asdocument) {
-				//attempt any remaining translations and remove final data-tr attributes.
-				$this->tset();
+			if ($fragment) {
 				return $this->doc->saveXML();
 			} else {
 				$hs=$this->doc->saveXML();
@@ -615,6 +613,8 @@ class NView {
  * 'tidyView'
  */
 	private function tidyView() {
+		//attempt any remaining translations and remove final data-tr attributes.
+		$this->tset();
 		$this->doc->normalizeDocument();
 		$xq = "//*[not(node())][not(contains('[area|base|br|col|hr|img|input|link|meta|param|command|keygen|source]',local-name()))]";
 		$entries = $this->xp->query($xq);

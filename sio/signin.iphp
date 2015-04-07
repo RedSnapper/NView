@@ -95,13 +95,15 @@ class SioSignIn {
 	}
 
 
-	public static function initialise() {
+	public static function initialise($use_un=true) {
 //set the views array.
-		static::$v=array( 
-			static::SIG=>static::SIG."v.ixml",
-		);
+		if($use_un) {
+			static::$v[static::SIG]=static::SIG."uv.ixml";
+		} else {
+			static::$v[static::SIG]=static::SIG."mv.ixml";
+		}
 	
-//now do translations	
+//translations	
 		$en = array(
 			static::SIG .'prompt_username' => "Username",
 			static::SIG .'prompt_password'=>"Password",

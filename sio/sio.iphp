@@ -5,8 +5,7 @@ class SIO {
 	private static $v=array();
 	private static $use_username=true;
 	
-	public static function run($custom_views=array(),$translations=array('en'=>array('hello'=>'Hello')),$use_un=true) {
-		static::$use_username=$use_un;
+	public static function run($custom_views=array(),$translations=array('en'=>array('hello'=>'Hello'))) {
 		static::$v = array_replace(static::$v,$custom_views);
 		static::initialise();
 		foreach ($translations as $lang => $trans_array) {
@@ -93,17 +92,18 @@ sign-in and sign-out.
 	}
 	
 //This must be run before we overload the translations.
-	public static function initialise() {
+	public static function initialise($use_un=true) {
+		static::$use_username=$use_un;
 		static::$v=array(
 			static::SIG => static::SIG."v.ixml"
 		);
-		SioSignIn::initialise();
-		SioSignOut::initialise();
-		SioReg::initialise();
-		SioForgot::initialise();
-		SioSetPW::initialise();
-		SioSetEmail::initialise();
-		SioResetPW::initialise();
+		SioSignIn::initialise($use_un);
+		SioSignOut::initialise($use_un);
+		SioReg::initialise($use_un);
+		SioForgot::initialise($use_un);
+		SioSetPW::initialise($use_un);
+		SioSetEmail::initialise($use_un);
+		SioResetPW::initialise($use_un);
 	}
 	
 }
