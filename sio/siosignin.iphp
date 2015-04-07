@@ -122,6 +122,11 @@ class SioSignIn {
 
 	public static function initialise($using_un=true) {	
 		static::$use_un=$using_un;
+		if($using_un) {
+			print('[using]');
+		} else {
+			print('[not using]');
+		}
 	
 //translations	
 		$en = array(
