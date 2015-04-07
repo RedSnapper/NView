@@ -12,8 +12,8 @@ require_once("session.iphp");
 
 //really should only call these if req.
 require_once("sio/sio.iphp");
-require_once("sio/signin.iphp");
-require_once("sio/signout.iphp");
+require_once("sio/siosignin.iphp");
+require_once("sio/siosignout.iphp");
 require_once("sio/sioreg.iphp");
 require_once("sio/sioforgot.iphp");
 require_once("sio/siosetpw.iphp");
