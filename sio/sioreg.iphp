@@ -55,7 +55,7 @@ class SioReg {
 				} 
 				$rx->close();
 			}
-			if (isset($this->fields['passwordn'][0]) && ($this->fields['passwordn'][0] === $this->fields['username'][0])) {
+			if (isset($this->fields['passwordn'][0]) && ($this->fields['passwordn'][0] === $this->fields['emailp'][0])) {
 				$this->seterr("passwordn",Dict::get(static::SIG.'errors_new_pw_too_em_simple'));
 				$retval = false;
 			} 
