@@ -14,6 +14,7 @@ class SioReg {
 		$this->iniForm($key,@static::$v[static::SIG]);
 		$this->key=$key;
 		$this->table="user";
+		$this->debug=true;
 		if(static::$use_un) {
 			$this->setfld('username');
 		}
