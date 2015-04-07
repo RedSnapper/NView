@@ -120,7 +120,6 @@ class SioSignIn {
 		$this->vset('username');
 	}
 
-
 	public static function initialise($use_un=true) {	
 		static::$use_un=$use_un;
 	
@@ -149,7 +148,7 @@ class SioSignIn {
 		} else {
 			static::$v[static::SIG]=static::SIG."mv.ixml";
 			$en[static::SIG ."prompt_email"]= "Email";
-			$en[static::SIG ."errors_email_badformat"]="The email format is not recognised",
+			$en[static::SIG ."errors_email_badformat"]="The email format is not recognised";
 			$en[static::SIG .'errors_email_unmatched']="Either the email or password don't match our records";
 			$en[static::SIG .'errors_email_empty']="You need to enter your email address";
 		}
