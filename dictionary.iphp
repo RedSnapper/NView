@@ -24,7 +24,7 @@ class Dict extends Singleton {
  		return static::$ln[0];
  	}
 
-	public static function set($kv,$ln = self::$ln[0] ) {
+	public static function set($kv,$ln = static::$ln[0] ) {
 		if (!isset(static::$lib[$ln])) {
 			static::$lib[$ln] = array();
 		}	
