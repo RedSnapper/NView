@@ -7,13 +7,16 @@ class SioReg {
 	public static function sig() { return static::SIG; }
 	private static $munge="sha2(concat(ifnull(username,id),'_',ifnull(password,id),'_',ifnull(email,id),'_',ifnull(ts,id)),256)";
 	private static $v=array();
+	private static $use_un=true;
 
 	function __construct($key=NULL,$custom_views=array()) {
 		static::$v = array_replace(static::$v,$custom_views);
 		$this->iniForm($key,@static::$v[static::SIG]);
 		$this->key=$key;
 		$this->table="user";
-		$this->setfld('username');
+		if(static::$use_un) {
+			$this->setfld('username');
+		}
 		$this->setfld('emailp');
 		$this->setfld('passwordn','','!skip');
 		$this->setfld('passwordb','','!skip');
@@ -21,19 +24,25 @@ class SioReg {
 	
 	protected function validate() {
 		$retval = true;
-		if (isset($this->fields['username'][0])) {
-			$un=Settings::esc($this->fields['username'][0]);
-			$qry="select count(id) as ok from " . $this->table . " where username='" . $un . "'";
-			if ($rx = Settings::$sql->query($qry)) {
-				if (strcmp($rx->fetch_row()[0],"0") !== 0) {
+		if(static::$use_un) {
+			if (isset($this->fields['username'][0])) {
+				$un=Settings::esc($this->fields['username'][0]);
+				$qry="select count(id) as ok from " . $this->table . " where username='" . $un . "'";
+				if ($rx = Settings::$sql->query($qry)) {
+					if (strcmp($rx->fetch_row()[0],"0") !== 0) {
+						$retval = false;
+						$this->seterr("username",Dict::get(static::SIG.'errors_username_exists'));
+					} 
+					$rx->close();
+				}
+				if (isset($this->fields['passwordn'][0] && ($this->fields['passwordn'][0] === $this->fields['username'][0])) {
+					$this->seterr("passwordn",Dict::get(static::SIG.'errors_new_pw_too_simple'));
 					$retval = false;
-					$this->seterr("username",Dict::get(static::SIG.'errors_username_exists'));
 				} 
-				$rx->close();
+			} else {
+				$this->seterr("username",Dict::get(static::SIG.'errors_no_username'));
+				$retval = false;
 			}
-		} else {
-			$this->seterr("username",Dict::get(static::SIG.'errors_no_username'));
-			$retval = false;
 		}
 		if (isset($this->fields['passwordn'][0]) && isset($this->fields['passwordb'][0])) {
 			$pwa=$this->fields['passwordn'][0];
@@ -44,10 +53,6 @@ class SioReg {
 			} 
 			if (strlen($pwa) < 7) {
 				$this->seterr("passwordn",Dict::get(static::SIG.'errors_new_pw_too_short'));
-				$retval = false;
-			} 
-			if ($pwa === Settings::$usr['RU']) {
-				$this->seterr("passwordn",Dict::get(static::SIG.'errors_new_pw_too_simple'));
 				$retval = false;
 			} 
 		} else {
@@ -121,17 +126,16 @@ class SioReg {
 	}
 
 
-	public static function initialise() {
+	public static function initialise($using_un=true) {	
+		static::$use_un=$using_un;
 //views array
-	static::$v=array( 
-		static::SIG=>static::SIG."v.ixml",
-		static::SIG."email_body"=>static::SIG."mv.ixml",
-		static::SIG."success"=>static::SIG."sv.ixml"
-	 );
+		static::$v=array( 
+			static::SIG."email_body"=>static::SIG."mv.ixml",
+			static::SIG."success"=>static::SIG."sv.ixml"
+		);
 	
 //translations
 		$en = array(
-			static::SIG ."prompt_username"=>"Username",
 			static::SIG ."prompt_email"=>"Email",
 			static::SIG ."prompt_password"=>"Password",
 			static::SIG ."prompt_retype_password"=>"Retype Password",
@@ -143,13 +147,23 @@ class SioReg {
 			static::SIG ."errors_no_password"=>" You must enter a password.",
 			static::SIG ."errors_new_pw_different"=>" Both passwords must be the same.",
 			static::SIG ."errors_new_pw_too_short"=>" Passwords must be more than 6 characters.",
-			static::SIG ."errors_new_pw_too_simple"=>" Passwords must be different from your username!",
-			static::SIG ."errors_username_exists"=>"This username already exists on the system. Please choose another.",
-			static::SIG ."errors_no_username"=>"You need to enter a username.",
 			static::SIG ."mesg_register_check_email"=>"To confirm your registration, please check the email just sent to you.",
 			static::SIG ."mesg_see_html_alt"=>"Please see the html alternative of this email.",
 			static::SIG ."mesg_success"=>"You have successfully registered."
 		);
+		
+		if(static::$use_un) {
+			static::$v[static::SIG]=static::SIG."uv.ixml";
+			$en[static::SIG ."prompt_username"]="Username";
+			$en[static::SIG ."errors_username_exists"]="This username already exists on the system. Please choose another.";
+			$en[static::SIG ."errors_no_username"]="You need to enter a username.";
+			$en[static::SIG ."errors_new_pw_too_simple"=>" Passwords must be different from your username!";
+		} else {
+			static::$v[static::SIG]=static::SIG."mv.ixml";
+			$en[static::SIG ."errors_email_exists"]="A user with this email already exists on the system. Please use another email.";
+			$en[static::SIG ."errors_new_pw_too_simple"=>" Passwords must be different from your email!";
+		}
+		
 		Dict::set($en,'en');
 	}
 
