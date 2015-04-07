@@ -79,7 +79,8 @@ class NView {
 		} else {
 			$this->tidyView();
 			if ($asdocument) {
-				//remove final data-tr attributes.
+				//attempt any remaining translations and remove final data-tr attributes.
+				$this->tset();
 				$xq = "//*[@data-tr]/@data-tr";
 				$entries = $this->xp->query($xq);
 				if ($entries) {
@@ -104,10 +105,12 @@ class NView {
  */
 	public function tset($keys= NULL) {
 		if(is_null($keys)) {
-			$tr_ats = $this->get("//*[@data-tr]/@data-tr");
-			if ($tr_ats instanceof DOMNodeList) {
-				foreach($tr_ats as $n) {
-					$this->set("//*[@data-tr='" . $n->value . "']/child-gap()",Dict::get($n->value));
+			$tr_attrs = $this->get("//*[@data-tr]/@data-tr");
+			if ($tr_attrs instanceof DOMNodeList) {
+				foreach($tr_attrs as $n) {
+					$nvnode = $this->strToNode(Dict::get($n->value)); //textnode from the dictionary keyed by the attribute value.
+					$n->parentNode->appendChild($nvnode);			  //now we have added it in.
+					$n->parentNode->removeAttributeNode($n);		  //now remove the translation attribute.
 				}
 			}
 		} else {

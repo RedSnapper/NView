@@ -76,12 +76,12 @@ class SIOSetPW {
 	}
 	
 	protected function populate() {
-		$this->tset(static::$field_keys);
+		$this->tset();
 	}
 	
 	public static function pushit() {
 		$nv = new NView(@static::$v[static::SIG."success"]);
-		$nv->tset(static::$extra_keys);
+		$nv->tset();
 		return $nv;
 	}
 	
@@ -91,16 +91,6 @@ class SIOSetPW {
 			static::SIG=>static::SIG."v.ixml",
 			static::SIG."success"=>static::SIG."sv.ixml"
 		);
-		static::$extra_keys=array(
-			static::SIG."mesg_success"
-		);
-		static::$field_keys = array(
-			static::SIG."prompt_original_password",
-			static::SIG."prompt_new_password",
-			static::SIG."prompt_retype_new_password",
-			static::SIG."button_set_new_password"
-		);
-	
 //now do translations	
 		$en = array(
 			static::SIG ."prompt_original_password"=>"Current Password",
