@@ -104,9 +104,12 @@ class NView {
 					$n->parentNode->removeAttributeNode($n);		  //now remove the translation attribute.
 				}
 			} elseif ($tr_attrs instanceof DOMNode) {
+					print('[got here y]');
 					$nvnode = $this->strToNode(Dict::get($tr_attrs->value)); 	//textnode from the dictionary keyed by the attribute value.
 					$tr_attrs->parentNode->appendChild($nvnode);			  	//now we have added it in.
 					$tr_attrs->parentNode->removeAttributeNode($tr_attrs);		//now remove the translation attribute.
+			} else {
+					print('[got here z]');
 			}
 		} else {
 			foreach($keys as $k) {
