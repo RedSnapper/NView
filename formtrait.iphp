@@ -231,7 +231,7 @@ trait Form {
  *  This uses any key-value array, ignoring the language.
  */
 	function tset($keys = NULL) {
-		$this->view->tset($kv);
+		$this->view->tset($keys);
 	}
 /**
  * 'vset'
