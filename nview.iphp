@@ -109,7 +109,7 @@ class NView {
 					$tr_attrs->parentNode->appendChild($nvnode);			  	//now we have added it in.
 					$tr_attrs->parentNode->removeAttributeNode($tr_attrs);		//now remove the translation attribute.
 			} else {
-					print('[got here z]');
+				print(gettype($tr_attrs));
 			}
 		} else {
 			foreach($keys as $k) {
