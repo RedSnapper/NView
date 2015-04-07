@@ -321,6 +321,7 @@ class NView {
 							}
 							if ($value instanceof NView) {
 								$value->tidyView();
+								print('x');
 								$value = $value->doc->documentElement;
 //								$value = clone $value;
 //								$value->tset();
