@@ -287,8 +287,13 @@ trait Form {
 		$us=true;
 		foreach($fms as $fm) {
 			if(! $fm->isMe()) { $us=false; }
-		}	
+		}
+		
 		if ( $us ) {
+			if($this->debug) {
+				print('[this is us]');
+			}
+		
 			foreach($fms as $fm) {
 				$fm->show=$show;
 				$fm->fields = array();
@@ -324,6 +329,10 @@ trait Form {
 				}
 			}
 		} else {
+			if($this->debug) {
+				print('[this is not us]');
+			}
+		
 			foreach($fms as $fm) {
 				$fm->setfields(false);
 			}
