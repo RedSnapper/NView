@@ -289,7 +289,7 @@ trait Form {
 		foreach($fms as $fm) {
 			if(! $fm->isMe()) { $us=false; }
 			if($fm->debug) { $debug = true; 
-				forminfo();
+				$fm->forminfo();
 			}
 		}
 		
