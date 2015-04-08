@@ -285,12 +285,14 @@ trait Form {
  */
 	public static function formlets($fms=array(),$show=true) {
 		$us=true;
+		$debug=false;
 		foreach($fms as $fm) {
 			if(! $fm->isMe()) { $us=false; }
+			if($fm->debug) { $debug = true; }
 		}
 		
 		if ( $us ) {
-			if($this->debug) {
+			if($debug) {
 				print('[this is us]');
 			}
 		
@@ -329,7 +331,7 @@ trait Form {
 				}
 			}
 		} else {
-			if($this->debug) {
+			if($debug) {
 				print('[this is not us]');
 			}
 		
