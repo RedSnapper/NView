@@ -289,7 +289,7 @@ trait Form {
 		foreach($fms as $fm) {
 			if(! $fm->isMe()) { $us=false; }
 			if($fm->debug) { $debug = true; 
-				print('['.$fm->sig().']');
+				forminfo();
 			}
 		}
 		
@@ -344,27 +344,32 @@ trait Form {
 	}
 
 
+	public function forminfo() {
+		print('<br /><br />id['.$this->id.'] sig['.static::sig().'] ident['.$this->ident().']<br />');
+		if (isset($_POST[static::sig()])) {
+			print("This form has been posted ");
+			if ($_POST[static::sig()] === $this->ident()) {
+				print("and the ident() matches the id, so this is in scope..");
+				if($this->isMe()) {
+					print(" ... and isMe() agrees!<br />");
+				} else {
+					print(" ... and isMe() FAILS to agree!!<br />");
+				}
+			} else {
+				print("and the post failed to match because (post)".$_POST[static::sig()]."!=(ident)".$this->ident()."<br />");
+			}
+		} else {
+			print("<p>This form has not been posted.</p>");
+		}
+	}
+
+
 /**
  * 'form'
  */
 	public function form($show=true) {
 		if($this->debug) {
-			print('<br />DEBUG: id['.$this->id.'] sig['.static::sig().'] ident['.$this->ident().']<br />');
-			if (isset($_POST[static::sig()])) {
-				print("This form has been posted ");
-				if ($_POST[static::sig()] === $this->ident()) {
-					print("and the ident() matches the id, so this is in scope..");
-					if($this->isMe()) {
-						print(" ... and isMe() agrees!<br />");
-					} else {
-						print(" ... and isMe() FAILS to agree!!<br />");
-					}
-				} else {
-					print("and the post failed to match because (post)".$_POST[static::sig()]."!=(ident)".$this->ident()."<br />");
-				}
-			} else {
-				print("<p>This form has not been posted.</p>");
-			}
+			$this->forminfo();
 		}
 		if($this->isMe()) {
 			$this->show=$show;
