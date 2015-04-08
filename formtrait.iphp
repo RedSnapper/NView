@@ -35,6 +35,10 @@ trait Form {
 		return $this->committed;
 	}
 	
+	public function newId() {
+		return $this->newid;
+	}
+	
 	public function getId() {
 		return $this->id;
 	}
