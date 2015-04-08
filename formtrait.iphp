@@ -5,7 +5,7 @@ mb_internal_encoding('UTF-8');
  * trait 'Form'
  */
 trait Form {
-	private $debug;
+	public $debug;
 	private $signature; 	//unique signature for identifying this post.
 	private $committed; 	//bool flag for identifying if we committed.
 	private $valid;			//bool flag for identifying if we validated.
