@@ -6,6 +6,7 @@ mb_internal_encoding('UTF-8');
  */
 trait Form {
 	public $debug;
+	public $show;			//whether or not to show the form.
 	private $signature; 	//unique signature for identifying this post.
 	private $committed; 	//bool flag for identifying if we committed.
 	private $valid;			//bool flag for identifying if we validated.
@@ -23,7 +24,6 @@ trait Form {
 	protected $cflds;		//array of sql values that will be used during a commit.
 	protected $names;		//array of input names
 	protected $view;		//the formlet view (instance of an NView)
-	protected $show;		//whether or not to show the form.
 	protected $redirect;	//where to go on insert.
 	private $subsfield; 	//subscriber field-name  for indicating presence/absence.
 	private $subsvalue; 	//subscriber field-value based on sql.
@@ -284,8 +284,7 @@ trait Form {
  * LIMITATIONS: currently this does not support subscribers (which should be orthogonal) or functions.
  */
 	public static function formlets($fms=array(),$show=true) {
-		$us=true;
-		$debug=false;
+		$us=true; $debug=false;
 		foreach($fms as $fm) {
 			if(! $fm->isMe()) { $us=false; }
 			if($fm->debug) { $debug = true; 
@@ -294,10 +293,7 @@ trait Form {
 		}
 		
 		if ( $us ) {
-			if($debug) {
-				print('[this is us]');
-			}
-		
+			if($debug) { print('[this is us]'); }
 			foreach($fms as $fm) {
 				$fm->show=$show;
 				$fm->fields = array();
