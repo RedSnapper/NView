@@ -34,6 +34,9 @@ trait Form {
 	public function success() {
 		return $this->committed;
 	}
+	public function setcommit($state = true) {
+		$this->committed = $state;
+	}
 	
 	public function newId() {
 		return $this->newid;
@@ -314,9 +317,9 @@ trait Form {
 			if ($valid) {
 				foreach($fms as $fm) {
 		//if commit() causes a break (eg, mail failure, etc) the other formlets WILL continue to commit.
-					if (!$fm->committed) {
-						$fm->committed = $fm->commit();						
-						if ( $fm->show || !($fm->committed) ) { //do not repop if !show and com.
+					if (!$fm->success()) {
+						$fm->setcommit($fm->commit());						
+						if ( $fm->show || !($fm->success()) ) { //do not repop if !show and com.
 							$fm->setfields(true); //we can repopulate the fields if we want.
 						}
 					}
