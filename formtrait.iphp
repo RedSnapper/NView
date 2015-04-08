@@ -346,6 +346,9 @@ trait Form {
 
 	public function forminfo() {
 		print('<br /><br />id['.$this->id.'] sig['.static::sig().'] ident['.$this->ident().']<br />');
+		if(isset($_POST)) {
+			print('<code>'. print_r($_POST,true). '</code>');
+		}		
 		if (isset($_POST[static::sig()])) {
 			print("This form has been posted ");
 			if ($_POST[static::sig()] === $this->ident()) {
