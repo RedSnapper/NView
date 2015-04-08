@@ -288,7 +288,9 @@ trait Form {
 		$debug=false;
 		foreach($fms as $fm) {
 			if(! $fm->isMe()) { $us=false; }
-			if($fm->debug) { $debug = true; }
+			if($fm->debug) { $debug = true; 
+				print('['.$fm->sig().']');
+			}
 		}
 		
 		if ( $us ) {
