@@ -302,9 +302,7 @@ trait Form {
 				$fm->forminfo();
 			}
 		}
-		
 		if ( $us ) {
-			if($debug) { print('[this is us]'); }
 			foreach($fms as $fm) {
 				$fm->show=$show;
 				$fm->setfrompost();
@@ -316,7 +314,6 @@ trait Form {
 			}
 			if ($valid) {
 				foreach($fms as $fm) {
-		//if commit() causes a break (eg, mail failure, etc) the other formlets WILL continue to commit.
 					if (!$fm->success()) {
 						$fm->setcommit($fm->commit());						
 						if ( $fm->show || !($fm->success()) ) { //do not repop if !show and com.
@@ -326,10 +323,6 @@ trait Form {
 				}
 			}
 		} else {
-			if($debug) {
-				print('[this is not us]');
-			}
-		
 			foreach($fms as $fm) {
 				$fm->setfields(false);
 			}
