@@ -275,6 +275,62 @@ trait Form {
 		}
 	}
 
+
+/**
+ * 'formlets'
+ * Processes multiple interdependent formlets, preventing invalidity from commits.
+ * All formlets must be processed for a commit.
+ * Call reveal() for each fm after this.
+ * LIMITATIONS: currently this does not support subscribers (which should be orthogonal) or functions.
+ */
+	public static function formlets($fms=array(),$show=true) {
+		$us=true;
+		foreach($fms as $fm) {
+			if(! $fm->isMe()) { $us=false; }
+		}	
+		if ( $us ) {
+			foreach($fms as $fm) {
+				$fm->show=$show;
+				$fm->fields = array();
+				foreach ($_POST as $k => $v) {
+					if (strpos($k,$fm->idprefix) === 0) {
+						$key = mb_substr($k,$fm->idprefixlen);
+						if ($key === $fm->subsfield) {
+							$fm->subspostv = $v;
+						} else {
+							if (isset($fm->fields[$key])) {
+								$fm->fields[$key][]= $v;
+							} else {
+								$fm->fields[$key]= array($v);
+							}
+						}
+					}
+				}
+			}
+			$valid = true;
+			foreach($fms as $fm) {
+				$fm->validate();
+				$valid = $valid && $fm->valid;
+			}
+			if ($valid) {
+				foreach($fms as $fm) {
+		//if commit() causes a break (eg, mail failure, etc) the other formlets WILL continue to commit.
+					if (!$fm->committed) {
+						$fm->committed = $fm->commit();						
+						if ( $fm->show || !($fm->committed) ) { //do not repop if !show and com.
+							$fm->setfields(true); //we can repopulate the fields if we want.
+						}
+					}
+				}
+			}
+		} else {
+			foreach($fms as $fm) {
+				$fm->setfields(false);
+			}
+		}
+	}
+
+
 /**
  * 'form'
  */
@@ -352,6 +408,10 @@ trait Form {
 		} else {
 			$this->setfields(false); //we can populate the fields if we want.
 		}
+		return $this->reveal();
+	}
+
+	protected function reveal() {
 		if ( $this->show || !($this->committed) ) { //don't repop if !show and com.
 			$this->populate();
 			$this->view->set("//*[@data-msg][not(node())]");
@@ -363,7 +423,6 @@ trait Form {
 			return null;
 		}
 	}
-
 /**
  * 'subscriber'
  * This is called only during a post. so we need to find out the current state of the sql.
