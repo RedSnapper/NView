@@ -237,7 +237,7 @@ trait Form {
 /**
  * 'vset'
  */
-	function vset($input='_unused',$kind=NULL,$special=NULL) {
+	public function vset($input='_unused',$kind=NULL,$special=NULL) {
 		$val=NULL;
 		if (is_null($special)) {
 			if ($input === $this->subsfield) {
@@ -411,7 +411,7 @@ trait Form {
 		return $this->reveal();
 	}
 
-	protected function reveal() {
+	public function reveal() {
 		if ( $this->show || !($this->committed) ) { //don't repop if !show and com.
 			$this->populate();
 			$this->view->set("//*[@data-msg][not(node())]");
@@ -477,7 +477,7 @@ trait Form {
 /**
  * 'setfields'
  */
-	protected function setfields($inpost=false) {
+	public function setfields($inpost=false) {
 		if (!$inpost) {
 			$getf = array_combine($this->gflds,$this->names);
 			$flds = "";
@@ -515,7 +515,7 @@ trait Form {
 /**
  * 'commit'
  */
-	protected function commit() {
+	public function commit() {
 		if($this->debug) {
 			print("<br />DEBUG:Processing commit.");
 		}
