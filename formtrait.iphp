@@ -39,6 +39,10 @@ trait Form {
 		return $this->newid;
 	}
 	
+	public function valid() {
+		return $this->valid;
+	}
+	
 	public function getId() {
 		return $this->id;
 	}
@@ -305,7 +309,7 @@ trait Form {
 			$valid = true;
 			foreach($fms as $fm) {
 				$fm->validate();
-				$valid = $valid && $fm->valid;
+				$valid = $valid && $fm->valid();
 			}
 			if ($valid) {
 				foreach($fms as $fm) {
