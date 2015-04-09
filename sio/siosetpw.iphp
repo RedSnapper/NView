@@ -101,7 +101,7 @@ class SIOSetPW {
 			static::SIG ."errors_new_pw_empty"=>" You must enter a new password.",
 			static::SIG ."errors_new_pw_different"=>" Both passwords must be the same.",
 			static::SIG ."errors_new_pw_too_short"=>" Passwords must be more than 6 characters.",
-			static::SIG ."errors_new_pw_too_un_simple"=>" Passwords must be different from your username!"
+			static::SIG ."errors_new_pw_too_un_simple"=>" Passwords must be different from your username!",
 			static::SIG ."errors_new_pw_too_em_simple"=>" Passwords must be different from your email!"
 		);
 		$de = array(
@@ -114,7 +114,7 @@ class SIOSetPW {
 			static::SIG ."errors_new_pw_empty"=>" Bitte geben Sie ein neues Passwort ein.",
 			static::SIG ."errors_new_pw_different"=>" Beide Passwörter müssen übereinstimmen.",
 			static::SIG ."errors_new_pw_too_short"=>" Das Passwort muss aus mehr als sechs Zeichen bestehen.",
-			static::SIG ."errors_new_pw_too_un_simple"=>" Passwort und Benutzername dürfen nicht übereinstimmen."
+			static::SIG ."errors_new_pw_too_un_simple"=>" Passwort und Benutzername dürfen nicht übereinstimmen.",
 			static::SIG ."errors_new_pw_too_em_simple"=>" Passwort und E-Mail dürfen nicht übereinstimmen."
 		);
 		Dict::set($en,'en');
