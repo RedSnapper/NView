@@ -578,10 +578,16 @@ trait Form {
 		$flist = rtrim($flist,",");
 		$ulist = rtrim($ulist,",");
 		$vlist = rtrim($vlist,",");
+		$ignore = "";
+		$dupekey = "";
 		if (empty($flist)) {
+			$ignore = " ignore ";
 			$klist = rtrim($klist,","); //we need to get rid of this one also..
 		}
-		$query="insert into "  . $this->table . "(" . $klist . $flist . ") values(" . $vlist . ") on duplicate key update " . $ulist;
+		if (!empty($ulist)) {
+			$dupekey = " on duplicate key update ";
+		}
+		$query="insert " .$ignore. "into "  . $this->table . "(" . $klist . $flist . ") values(" . $vlist . ")".$dupekey.$ulist;
 		if($this->debug) {
 			print('<br />DEBUG: Commit SQL=' . $query);
 		}
