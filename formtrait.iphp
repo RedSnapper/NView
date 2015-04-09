@@ -355,13 +355,13 @@ trait Form {
 	}
 	
 	public function forminfo() {
-		print('<br /><br />id['.$this->id.'] sig['.static::sig().'] ident['.$this->ident().']<br />');
+		print('<br /><br />id['.$this->id.'] sig['.static::sig().'] signature['.$this->signature.'] ident['.$this->ident().']<br />');
 		if(isset($_POST)) {
 			print('<code>'. print_r($_POST,true). '</code>');
 		}		
-		if (isset($_POST[static::sig()])) {
+		if (isset($_POST[$this->signature])) {
 			print("This form has been posted ");
-			if ($_POST[static::sig()] === $this->ident()) {
+			if ($_POST[$this->signature] === $this->ident()) {
 				print("and the ident() matches the id, so this is in scope..");
 				if($this->isMe()) {
 					print(" ... and isMe() agrees!<br />");
@@ -369,7 +369,7 @@ trait Form {
 					print(" ... and isMe() FAILS to agree!!<br />");
 				}
 			} else {
-				print("and the post failed to match because (post)".$_POST[static::sig()]."!=(ident)".$this->ident()."<br />");
+				print("and the post failed to match because (post)".$_POST[$this->signature]."!=(ident)".$this->ident()."<br />");
 			}
 		} else {
 			print("<p>This form has not been posted.</p>");
