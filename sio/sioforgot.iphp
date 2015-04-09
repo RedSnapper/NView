@@ -99,7 +99,7 @@ class SioForgot {
 			static::SIG .'mail_subject'=>'Password Reset'
 		);
 		$de = array(
-			static::SIG .'prompt_emailaddress'=> "E-Mail-Adresse"
+			static::SIG .'prompt_emailaddress'=> "E-Mail-Adresse",
 			static::SIG .'button_resetpassword'=> "Passwort zurücksetzen",
 			static::SIG .'errors_bad_email'=> "Diese E-Mail-Adresse scheint falsch zu sein.",
 			static::SIG .'commit_msg'=> "Sie erhalten in Kürze eine E-Mail mit der Anleitung, wie Sie Ihr Passwort zurücksetzen können.",
