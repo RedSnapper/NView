@@ -107,6 +107,21 @@ class SioSignIn {
  * fn OVERLOADING trait 'Form'.
  */
 	protected function commit() {
+		if(static::$use_un) {
+			Session::set('username',$this->fields['username'][0]);
+			$query= "select email from user where username='".$this->fields['username'][0]."'";
+			if ($rs = Settings::$sql->query($query)) {
+				Session::set('email',$rs->fetch_row()[0]);
+				$rs->close();
+			}
+		} else {
+			Session::set('email',$this->fields['email'][0]);
+			$query= "select username from user where email='".$this->fields['email'][0]."'";
+			if ($rs = Settings::$sql->query($query)) {
+				Session::set('username',$rs->fetch_row()[0]);
+				$rs->close();
+			}
+		}
 		Settings::usr();
 		return true;
 	}
