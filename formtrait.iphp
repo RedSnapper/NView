@@ -507,6 +507,9 @@ trait Form {
 			}
 			$flds = rtrim($flds,",");
 			$condition=$this->pkeysql();
+			if(empty($flds)) {
+				$flds = "true";
+			}
 			$query="select " . $flds . " from " . $this->table . " where " . $condition;
 			if($this->debug) {
 				print('<br />DEBUG: Set fields SQL=' . $query);
