@@ -578,6 +578,9 @@ trait Form {
 		$flist = rtrim($flist,",");
 		$ulist = rtrim($ulist,",");
 		$vlist = rtrim($vlist,",");
+		if (empty($flist)) {
+			$klist = rtrim($klist,","); //we need to get rid of this one also..
+		}
 		$query="insert into "  . $this->table . "(" . $klist . $flist . ") values(" . $vlist . ") on duplicate key update " . $ulist;
 		if($this->debug) {
 			print('<br />DEBUG: Commit SQL=' . $query);
