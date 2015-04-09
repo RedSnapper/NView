@@ -87,9 +87,11 @@ class Settings extends Singleton {
 					self::$usr['RU']=Session::get('username');
 				}
 			}
-			if ($rx = self::$sql->query("select id from user where active='on' and username='". self::$usr['RU'] ."'")) {
+			if ($rx = self::$sql->query("select id,username,email from user where active='on' and username='". self::$usr['RU'] ."'")) {
 				while ($row = $rx->fetch_assoc()) {
 					self::$usr['ID']=$row['id'];
+					self::$usr['username']=$row['username'];
+					self::$usr['email']=$row['email'];
 				}
 				$rx->close();
 			}

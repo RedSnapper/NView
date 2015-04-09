@@ -152,7 +152,7 @@ trait Form {
  * 'isMe' used to test if a particular form instance is being posted.
  */
  	public function isMe() {
-		return (isset($_POST[static::sig()]) && ($_POST[static::sig()] === $this->ident()));
+		return (isset($_POST[$this->signature]) && ($_POST[$this->signature] === $this->ident()));
 	}
 
 /**
@@ -429,9 +429,9 @@ trait Form {
 		if ( $this->show || !($this->committed) ) { //don't repop if !show and com.
 			$this->populate();
 			$this->view->set("//*[@data-msg][not(node())]");
-			$this->view->set("//*[@data-xp='_ident']/@name",static::sig());
+			$this->view->set("//*[@data-xp='_ident']/@name",$this->signature);
 			$this->view->set("//*[@data-xp='_ident']/@value",$this->ident());
-			$this->view->set("//*[@name][@name!='" . static::sig() . "']/@name/preceding-gap()",$this->idprefix);
+			$this->view->set("//*[@name][@name!='" . $this->signature . "']/@name/preceding-gap()",$this->idprefix);
 			return $this->view;
 		} else {
 			return null;
