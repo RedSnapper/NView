@@ -477,6 +477,9 @@ trait Form {
 			$field = array_keys($this->pkey)[0]; 
 		}
 		$query="select " . $field . " from " . $this->table . " where " . $this->pkeysql();
+		if($this->debug) {
+			print("<p>setsubsvalue() sql:".$query."</p>");
+		}
 		if ($rx = Settings::$sql->query($query)) {
 			if ($rx->num_rows > 0) {
 				$this->subsvalue="true";
