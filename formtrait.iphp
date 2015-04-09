@@ -110,12 +110,16 @@ trait Form {
 		    $this->view = $vp;
 		} else {
 			$bt = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,1);
-			$file_ar=pathinfo($bt[0]['file']); //want the file.
-			$file=$file_ar['dirname'].'/';
-			if(empty($vp)) { //need this b/c form is a trait.
-				$file .= $file_ar['filename'];
+			if (strpos($vp,'/') === false) {
+				$file_ar=pathinfo($bt[0]['file']); //want the file.
+				$file=$file_ar['dirname'].'/';
+				if(empty($vp)) { //need this b/c form is a trait.
+					$file .= $file_ar['filename'];
+				} else {
+					$file .= $vp;
+				}
 			} else {
-				$file .= $vp;
+				$file = $vp;
 			}
 		    $this->view = new NView($file);
 		    $err = $this->view->messages(); //currently unused.
