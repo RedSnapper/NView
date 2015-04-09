@@ -88,11 +88,6 @@ class SIO {
 //This must be run to overload views and translations.
 	public static function initialise($use_un=true,$custom_views=array(),$translations=NULL) {
 		static::$use_username=$use_un;
-		if(!is_null($translations)) {
-			foreach ($translations as $lang => $trans_array) {
-				Dict::set($trans_array,$lang);
-			}		
-		}
 		static::$v=array(
 			static::SIG => static::SIG."v.ixml"
 		);
@@ -101,9 +96,15 @@ class SIO {
 		SioSignOut::initialise($use_un,$custom_views);
 		SioReg::initialise($use_un,$custom_views);
 		SioForgot::initialise($use_un,$custom_views);
-		SioSetPW::initialise($use_un,$custom_views);
 		SioSetEmail::initialise($use_un,$custom_views);
+		SioSetPW::initialise($use_un,$custom_views);
 		SioResetPW::initialise($use_un,$custom_views);
+		//now override any translations
+		if(!is_null($translations)) {
+			foreach ($translations as $lang => $trans_array) {
+				Dict::set($trans_array,$lang);
+			}		
+		}
+		
 	}
-	
 }

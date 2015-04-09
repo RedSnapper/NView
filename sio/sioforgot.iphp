@@ -1,9 +1,7 @@
 <?php
 mb_internal_encoding('UTF-8');
 
-/**
- * This requires 
- */
+//This is the 'sending end' of the paired sioresetpw_ class
 class SioForgot {
 	use Form;
 	private static $munge="sha2(concat(ifnull(username,id),'-',ifnull(password,id),'-',ifnull(email,id),'-',ifnull(ts,id)),256)";
@@ -100,7 +98,20 @@ class SioForgot {
 			static::SIG .'mail_see_alt'=>"Please see the html alternative of this email",
 			static::SIG .'mail_subject'=>'Password Reset'
 		);
+		$de = array(
+			static::SIG .'prompt_emailaddress'=> "E-Mail-Adresse"
+			static::SIG .'button_resetpassword'=> "Passwort zurücksetzen",
+			static::SIG .'errors_bad_email'=> "Diese E-Mail-Adresse scheint falsch zu sein.",
+			static::SIG .'commit_msg'=> "Sie erhalten in Kürze eine E-Mail mit der Anleitung, wie Sie Ihr Passwort zurücksetzen können.",
+			static::SIG .'mail_head'=> "Zurücksetzen des Passwortes",
+			static::SIG .'mail_body'=> "Sie möchten Ihr Passwort zurücksetzen.",
+			static::SIG .'mail_userhint'=> "Ihr Benutzername ist:",
+			static::SIG .'mail_url_text'=> "Bitte hier fortfahren",
+			static::SIG .'mail_see_alt'=> "Sollte die E-Mail nicht korrekt dargestellt werden, wechseln Sie bitte in das HTML-Format.",
+			static::SIG .'mail_subject'=> "Passwort zurücksetzen"
+		);
 		Dict::set($en,'en');
+		Dict::set($de,'de');
 	}
 	
 }

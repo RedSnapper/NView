@@ -60,6 +60,12 @@ class SioSignOut {
 			static::SIG .'button_newemailaddr'=>"Change Registered Email Address",
 			static::SIG .'button_newpassword'=>"Change Password"
 		);
+		$de = array(
+			static::SIG .'button_signout'=>"Abmelden",
+			static::SIG .'button_newemailaddr'=>"E-Mail-Adresse ändern",
+			static::SIG .'button_newpassword'=>"Passwort ändern"
+		);
 		Dict::set($en,'en');
+		Dict::set($de,'de');
 	}
 }

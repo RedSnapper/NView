@@ -109,7 +109,13 @@ class SioSignIn {
 	protected function commit() {
 		if(static::$use_un) {
 			Session::set('username',$this->fields['username'][0]);
+			$query= "select email from user where username='".$this->fields['username'][0]."'";
+			if ($rs = Settings::$sql->query($query)) {
+				Session::set('email',$rs->fetch_row()[0]);
+				$rs->close();
+			}
 		} else {
+			Session::set('email',$this->fields['email'][0]);
 			$query= "select username from user where email='".$this->fields['email'][0]."'";
 			if ($rs = Settings::$sql->query($query)) {
 				Session::set('username',$rs->fetch_row()[0]);
@@ -127,9 +133,14 @@ class SioSignIn {
 			static::SIG .'prompt_password'=>"Password",
 			static::SIG .'button_signin'=>"Sign In",
 			static::SIG .'button_forgot'=>"Forgot Password",
-			static::SIG .'button_register'=>"Register",
+			static::SIG .'button_register'=>"Register"
 		);
-		static::$v = array_replace(static::$v,$custom_views);
+		$de = array(
+			static::SIG .'prompt_password'=>"Passwort",
+			static::SIG .'button_signin'=>"Anmelden",
+			static::SIG .'button_forgot'=>"Passwort vergessen",
+			static::SIG .'button_register'=>"Registrieren"
+		);
 		
 //set the views array.
 		if($using_un) {
@@ -137,15 +148,28 @@ class SioSignIn {
 			$en[static::SIG .'prompt_username']= "Username";
 			$en[static::SIG .'errors_username_unmatched']="Either the username or password don't match our records";
 			$en[static::SIG .'errors_username_empty']="You need to enter your username";
+
+			$de[static::SIG .'prompt_username']= "Benutzername";
+			$de[static::SIG .'errors_username_unmatched']="Benutzername und/oder Passwort nicht korrekt.";
+			$de[static::SIG .'errors_username_empty']="Bitte geben Sie Ihren Benutzernamen an.";
+
 		} else {
 			static::$v[static::SIG]=static::SIG."mv.ixml";
 			$en[static::SIG ."prompt_email"]= "Email";
 			$en[static::SIG ."errors_email_badformat"]="The email format is not recognised";
 			$en[static::SIG .'errors_email_unmatched']="Either the email or password don't match our records";
 			$en[static::SIG .'errors_email_empty']="You need to enter your email address";
+
+			$de[static::SIG ."prompt_email"]= "E-Mail";
+			$de[static::SIG ."errors_email_badformat"]="Das E-Mail-Format kann nicht erkannt werden.";
+			$de[static::SIG .'errors_email_unmatched']="E-Mail und/oder Passwort nicht korrekt.";
+			$de[static::SIG .'errors_email_empty']="Bitte geben Sie Ihr Passwort ein.";
+
 		}
-		
+		//set the views after all the above.
+		static::$v = array_replace(static::$v,$custom_views);
 		Dict::set($en,'en');
+		Dict::set($de,'de');
 	}
 
 

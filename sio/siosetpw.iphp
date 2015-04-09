@@ -28,7 +28,7 @@ class SIOSetPW {
 	protected function validate() {
 		$retval = true;
 		if (isset($this->fields['password'][0])) {
-			$ph=hash('sha256',Settings::$usr['RU'] . hex2bin('5BE0BDA8E0BDBCE0BDBEE0BC8BE0BDA7E0BDB1E0BDB4E0BDBE5D') . hash('sha256',$this->fields['password'][0]));
+			$ph=hash('sha256',Settings::$usr['username'] . hex2bin('5BE0BDA8E0BDBCE0BDBEE0BC8BE0BDA7E0BDB1E0BDB4E0BDBE5D') . hash('sha256',$this->fields['password'][0]));
 			$this->fields['password'][0]='';
 			$qry="select count(id) as ok from " . $this->table . " where active='on' and id='" .Settings::$usr['ID']. "' and password='" . $ph . "'";
 			if ($rx = Settings::$sql->query($qry)) {
@@ -53,8 +53,12 @@ class SIOSetPW {
 				$this->seterr("passwordn",Dict::get(static::SIG.'errors_new_pw_too_short'));
 				$retval = false;
 			} 
-			if ($pwa === Settings::$usr['RU']) {
-				$this->seterr("passwordn",Dict::get(static::SIG.'errors_new_pw_too_simple'));
+			if ($pwa === Settings::$usr['username']) {
+				$this->seterr("passwordn",Dict::get(static::SIG.'errors_new_pw_too_un_simple'));
+				$retval = false;
+			} 
+			if ($pwa === Settings::$usr['email']) {
+				$this->seterr("password",Dict::get(static::SIG .'errors_new_pw_too_em_simple'));
 				$retval = false;
 			} 
 		} else {
@@ -65,7 +69,7 @@ class SIOSetPW {
 	}
 
 	protected function commit() {
-		$ph=Settings::esc(hash('sha256',Settings::$usr['RU'] . hex2bin('5BE0BDA8E0BDBCE0BDBEE0BC8BE0BDA7E0BDB1E0BDB4E0BDBE5D') . hash('sha256',$this->fields['passwordn'][0])));
+		$ph=Settings::esc(hash('sha256',Settings::$usr['username'] . hex2bin('5BE0BDA8E0BDBCE0BDBEE0BC8BE0BDA7E0BDB1E0BDB4E0BDBE5D') . hash('sha256',$this->fields['passwordn'][0])));
 		$qry="update " . $this->table . " set password='".$ph."' where active='on' and id='" .Settings::$usr['ID']. "'";
 		Settings::$sql->query($qry);
 		$this->show = false;
@@ -97,9 +101,24 @@ class SIOSetPW {
 			static::SIG ."errors_new_pw_empty"=>" You must enter a new password.",
 			static::SIG ."errors_new_pw_different"=>" Both passwords must be the same.",
 			static::SIG ."errors_new_pw_too_short"=>" Passwords must be more than 6 characters.",
-			static::SIG ."errors_new_pw_too_simple"=>" Passwords must be different from your username!"
+			static::SIG ."errors_new_pw_too_un_simple"=>" Passwords must be different from your username!"
+			static::SIG ."errors_new_pw_too_em_simple"=>" Passwords must be different from your email!"
+		);
+		$de = array(
+			static::SIG ."prompt_original_password"=>"Bisheriges Passwort",
+			static::SIG ."prompt_new_password"=>"Neues Passwort",
+			static::SIG ."prompt_retype_new_password"=>"Neues Passwort wiederholen",
+			static::SIG ."button_set_new_password"=>"Neues Passwort festlegen",
+			static::SIG ."errors_orig_pw_wrong"=>" Das bisherige Passwort ist nicht korrekt.",
+			static::SIG ."errors_password_empty"=>" Bitte geben Sie Ihr bisheriges Passwort ein.",
+			static::SIG ."errors_new_pw_empty"=>" Bitte geben Sie ein neues Passwort ein.",
+			static::SIG ."errors_new_pw_different"=>" Beide Passwörter müssen übereinstimmen.",
+			static::SIG ."errors_new_pw_too_short"=>" Das Passwort muss aus mehr als sechs Zeichen bestehen.",
+			static::SIG ."errors_new_pw_too_un_simple"=>" Passwort und Benutzername dürfen nicht übereinstimmen."
+			static::SIG ."errors_new_pw_too_em_simple"=>" Passwort und E-Mail dürfen nicht übereinstimmen."
 		);
 		Dict::set($en,'en');
+		Dict::set($de,'de');
 	}
 	
 }

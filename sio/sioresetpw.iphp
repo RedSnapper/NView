@@ -1,6 +1,7 @@
 <?php
 mb_internal_encoding('UTF-8');
 
+//This is the 'receiving end' of the paired sioforgot_ class
 class SIOResetPW {
 	use Form;
 	const SIG = "sioresetpw_";
@@ -24,6 +25,18 @@ class SIOResetPW {
  */
 	protected function validate() {
 		$retval = $this->valid;
+		$the_username="[[broken username]]";
+		$the_email="[[broken email]]";
+		$query= "select username,email from user where ".self::$munge."='".$this->key."'";
+		if ($rs = Settings::$sql->query($query)) {
+			while ($f = $rs->fetch_assoc()) {
+				$the_username=$f['username'];
+				$the_email=$f['email'];
+			}
+			$rs->close();
+		} else {
+			$retval = false;
+		}
 		if (isset($this->fields['password'][0]) && isset($this->fields['passwordb'][0])) {
 			$pwa=$this->fields['password'][0];
 			$pwb=$this->fields['passwordb'][0];
@@ -35,8 +48,12 @@ class SIOResetPW {
 				$this->seterr("password",Dict::get(static::SIG .'errors_password_short'));
 				$retval = false;
 			} 
-			if ($pwa === Settings::$usr['RU']) {
-				$this->seterr("password",Dict::get(static::SIG .'errors_password_not_username'));
+			if ($pwa === $the_username) {
+				$this->seterr("password",Dict::get(static::SIG .'errors_new_pw_too_un_simple'));
+				$retval = false;
+			} 
+			if ($pwa === $the_email) {
+				$this->seterr("password",Dict::get(static::SIG .'errors_new_pw_too_em_simple'));
 				$retval = false;
 			} 
 		} else {
@@ -55,7 +72,6 @@ class SIOResetPW {
 				$cond=" and ".self::$munge."='".$ha."'";
 				$qry="update " . $this->table . " set password='".$ph."' where active='on' ".$cond ;
 				Settings::$sql->query($qry);
-			
 			}
 			$rs->close();
 		}
@@ -88,9 +104,21 @@ class SIOResetPW {
 			static::SIG .'errors_password_different'=>" Both passwords must be the same.",
 			static::SIG .'errors_password_empty'=>" Enter a password.",
 			static::SIG .'errors_password_short'=>" Passwords must be more than six characters.",
-			static::SIG .'errors_password_not_username'=>" Passwords must be different from your username!"
+			static::SIG ."errors_new_pw_too_un_simple"=>" Passwords must be different from your username!",
+			static::SIG .'errors_new_pw_too_em_simple'=>"  Passwords must be different from your email!"
+		);
+		$de = array(
+			static::SIG .'prompt_password' => "Passwort",
+			static::SIG .'prompt_retype_password' => "Passwort wiederholen",
+			static::SIG .'button_new_password'=>"Neues Passwort festlegen",
+			static::SIG .'errors_password_different'=>" Beide Passwörter müssen übereinstimmen.",
+			static::SIG .'errors_password_empty'=>" Bitte geben Sie Ihr Passwort ein.",
+			static::SIG .'errors_password_short'=>" Das Passwort muss aus mehr als sechs Zeichen bestehen.",
+			static::SIG .'errors_new_pw_too_un_simple'=>" Passwort und Benutzername dürfen nicht übereinstimmen.",
+			static::SIG .'errors_new_pw_too_em_simple'=>" Passwort und E-Mail dürfen nicht übereinstimmen."
 		);
 		Dict::set($en,'en');
+		Dict::set($de,'de');
 	}
 	
 	

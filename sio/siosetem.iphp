@@ -7,6 +7,8 @@ class SIOSetEmail {
 	public static function sig() { return static::SIG; }
 	private static $munge="sha2(concat(ifnull(username,id),'+',ifnull(password,id),'+',ifnull(email,id),'+',ifnull(ts,id)),256)";
 	private static $v=array();
+	private static $un_used;
+
 	
 /**
  * '__construct'
@@ -48,7 +50,7 @@ class SIOSetEmail {
 	}
 
 	protected function commit() {
-		$ph=hash('sha256',Settings::$usr['RU'] . hex2bin('5BE0BDA8E0BDBCE0BDBEE0BC8BE0BDA7E0BDB1E0BDB4E0BDBE5D') . hash('sha256',$this->fields['password'][0]));
+		$ph=hash('sha256', Settings::$usr['username'] . hex2bin('5BE0BDA8E0BDBCE0BDBEE0BC8BE0BDA7E0BDB1E0BDB4E0BDBE5D') . hash('sha256',$this->fields['password'][0]));
 		$this->fields['password'][0]='';
 		$qpy="select count(id) as ok from " . $this->table . " where active='on' and id='" .Settings::$usr['ID']. "' and password='" . $ph . "' and active='on'";
 		if ($ry = Settings::$sql->query($qpy)) {
@@ -66,7 +68,11 @@ class SIOSetEmail {
 						$mail->CharSet='utf-8';
 						$mail->Encoding='base64';
 						$mail->setFrom('no_reply@redsnapper.net', Dict::get(static::SIG .'note_email_change_title'));
-						$mail->addAddress($em,Settings::$usr['RU']); 				
+						if (static::$un_used) {
+							$mail->addAddress($em,Settings::$usr['username']); 
+						} else {
+							$mail->addAddress($em); 
+						}
 						$mail->Subject = Dict::get(static::SIG .'note_email_change_title');
 						$mail->isHTML(true);
 						$url=$_SERVER["SCRIPT_URI"];
@@ -115,6 +121,7 @@ class SIOSetEmail {
 	}
 
 	public static function initialise($using_un=true,$custom_views=array()) {
+		static::$un_used = $using_un;
 //view array	
 		static::$v=array(
 			static::SIG=>static::SIG."v.ixml",
@@ -139,7 +146,23 @@ class SIOSetEmail {
 			static::SIG .'note_email_change_action_link'=>"PLEASE CONTINUE HERE",
 			static::SIG .'note_email_see_html_alt'=>"Please see the html alternative of this email."
 		);
+		$de = array(
+			static::SIG ."mesg_success"=>"Sie haben Ihre E-Mail-Adresse erfolgreich geändert.",
+			static::SIG ."mesg_checkem"=>"Um Ihre E-Mail-Adresse zu bestätigen, lesen Sie bitte die E-Mail, die Ihnen gerade zugeschickt wurde.",
+			static::SIG .'prompt_new_email'=>"Neue E-Mail-Adresse",
+			static::SIG .'prompt_retype_new_email'=>"Neue E-Mail-Adresse wiederholen.",
+			static::SIG .'prompt_your_password'=>"Passwort",
+			static::SIG .'button_set_email'=>"Neue E-Mail-Adresse festlegen",
+			static::SIG .'errors_emails_unmatched'=>" Beide E-Mail-Adressen müssen übereinstimmen.",
+			static::SIG .'errors_email_badformat'=>" Das E-Mail-Format kann nicht erkannt werden.",
+			static::SIG .'errors_emails_empty'=>" Sie müssen Ihre E-Mail-Adresse eingeben.",
+			static::SIG .'note_email_change_title'=>"E-Mail-Adresse ändern",
+			static::SIG .'note_email_change_message'=>"Sie möchten die E-Mail-Adresse, an die diese E-Mail geschickt wurde, verwenden.",
+			static::SIG .'note_email_change_action_link'=>"Bitte hier fortfahren",
+			static::SIG .'note_email_see_html_alt'=>"Sollte die E-Mail nicht korrekt dargestellt werden, wechseln Sie bitte in das HTML-Format."
+		);
 		Dict::set($en,'en');
+		Dict::set($de,'de');
 	}
 
 }
