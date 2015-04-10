@@ -1,4 +1,4 @@
 <!DOCTYPE fieldset>
-<fieldset xmlns="http://www.w3.org/1999/xhtml" class="form--cols">
-	<h3 data-tr="mesg_success" />
+<fieldset xmlns="http://www.w3.org/1999/xhtml" class="siso__fieldset">
+	<h3 class="siso__msg" data-tr="mesg_success" />
 </fieldset>

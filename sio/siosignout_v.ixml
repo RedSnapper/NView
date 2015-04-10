@@ -1,13 +1,21 @@
 <!DOCTYPE fieldset>
-<fieldset xmlns="http://www.w3.org/1999/xhtml">
+<fieldset xmlns="http://www.w3.org/1999/xhtml" class="siso__fieldset">
 	<input type="hidden" data-xp="_ident" />
-	<label class="form__group submit" data-semantic="button">
-		<button data-xp="btnemail" class="btn--email" type="submit" name="_fn" value="email" data-tr="button_newemailaddr" />
-	</label>
-	<label class="form__group submit" data-semantic="button">
-		<button data-xp="btnreset" class="btn--reset" type="submit" name="_fn" value="reset" data-tr="button_newpassword" />
-	</label>
-	<label class="form__group submit" data-semantic="button">
-		<button class="btn--so" type="submit" name="_fn" value="save" data-tr="button_signout" />
-	</label>
+	<ul class="siso__signout">
+		<li>
+			<label class="siso__group" data-semantic="button">
+				<button data-xp="btnemail" class="siso__button--email" type="submit" name="_fn" value="email" data-tr="button_newemailaddr" />
+			</label>
+		</li>
+		<li>
+			<label class="siso__group" data-semantic="button">
+				<button data-xp="btnreset" class="siso__button--password" type="submit" name="_fn" value="reset" data-tr="button_newpassword" />
+			</label>
+		</li>
+		<li>
+			<label class="siso__group" data-semantic="button">
+				<button class="siso__button--signout" type="submit" name="_fn" value="save" data-tr="button_signout" />
+			</label>
+		</li>
+	</ul>
 </fieldset>

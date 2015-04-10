@@ -1,6 +1,6 @@
 <!DOCTYPE div>
 <div xmlns="http://www.w3.org/1999/xhtml">
-	<h3 data-tr="note_register_title" />
+	<h3 class="siso__title" data-tr="note_register_title" />
 	<p data-tr="note_register_message" />
 	<p><a data-xp="ha"  data-tr="note_register_action_link" /></p>
 </div>

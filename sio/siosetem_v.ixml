@@ -1,31 +1,33 @@
 <!DOCTYPE fieldset>
-<fieldset  xmlns="http://www.w3.org/1999/xhtml" class="form--cols">
+<fieldset  xmlns="http://www.w3.org/1999/xhtml" class="siso__fieldset">
 	<input type="hidden" data-xp="_ident" />
-	<ul class="form__notice">
+	<ul class="siso__formlet">
 		<li>
-			<label class="form__group text" data-semantic="field" data-xp="comment">
-				<span class="error" data-msg="emailp" />
-				<span class="label" data-xp="label" data-tr="prompt_new_email" />
-				<span class="flex"><input type="email" name="emailp" /></span>
+			<label class="siso__group" data-semantic="field" data-xp="comment">
+				<span class="siso__label" data-xp="label" data-tr="prompt_new_email" />
+				<div class="siso__flex"><input class="siso__input" type="email" name="emailp" /></div>
+				<span class="siso__error" data-msg="emailp" />
 			</label>
 		</li>
 		<li>
-			<label class="form__group text" data-semantic="field" data-xp="comment">
-				<span class="error" data-msg="emailb" />
-				<span class="label" data-xp="label" data-tr="prompt_retype_new_email" />
-				<span class="flex"><input type="email" name="emailb" /></span>
+			<label class="siso__group" data-semantic="field" data-xp="comment">
+				<span class="siso__label" data-xp="label" data-tr="prompt_retype_new_email" />
+				<div class="siso__flex"><input class="siso__input" type="email" name="emailb" /></div>
+				<span class="siso__error" data-msg="emailb" />
 			</label>
 		</li>
 		<li>
-			<label class="form__group text" data-semantic="field" data-xp="comment">
-				<span class="error" data-msg="password" />
-				<span class="label" data-xp="label" data-tr="prompt_your_password" />
-				<span class="flex"><input autocomplete="off" type="password" name="password" /></span>
+			<label class="siso__group" data-semantic="field" data-xp="comment">
+				<span class="siso__label" data-xp="label" data-tr="prompt_your_password" />
+				<div class="siso__flex"><input class="siso__input" autocomplete="off" type="password" name="password" /></div>
+				<span class="siso__error" data-msg="password" />
 			</label>
 		</li>
+	</ul>
+	<ul class="siso__buttons">
 		<li>
-			<label class="form__group submit" data-semantic="field" data-xp="button">
-				<span class="flex"><button class="btn--tertiary" type="submit" name="_fn" value="save" data-tr="button_set_email" /></span>
+			<label class="siso__group" data-semantic="field" data-xp="button">
+				<button class="siso__button--primary" type="submit" name="_fn" value="save" data-tr="button_set_email" />
 			</label>
 		</li>
 	</ul>
