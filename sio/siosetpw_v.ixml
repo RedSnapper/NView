@@ -23,10 +23,10 @@
 			</label>
 		</li>
 	</ul>
-	<ul class="siso__buttons">
+	<ul class="siso__btns">
 		<li>
-			<label class="siso__control" data-semantic="field" data-xp="button">
-				<button class="siso__button--primary" type="submit" name="_fn" value="save" data-tr="button_set_new_password" />
+			<label class="siso__button" data-semantic="field" data-xp="button">
+				<button class="siso__btn--primary" type="submit" name="_fn" value="save" data-tr="button_set_new_password" />
 			</label>
 		</li>
 	</ul>

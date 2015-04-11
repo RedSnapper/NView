@@ -17,20 +17,22 @@
 			</label>
 		</li>
 	</ul>
-	<ul class="siso__buttons--signin">
+	<ul class="siso__btns--primary">
 		<li>
-			<label class="siso__control" data-semantic="button" >
-				<button class="siso__button--signin" type="submit" name="_fn" value="save" data-tr="button_signin" />
+			<label class="siso__button" data-semantic="button" >
+				<button class="siso__btn--signin" type="submit" name="_fn" value="save" data-tr="button_signin" />
+			</label>
+		</li>
+	</ul>
+	<ul class="siso__btns--secondary">
+		<li>
+			<label class="siso__button" data-semantic="button" >
+				<button class="siso__btn--forgot" type="submit" name="_fn" value="forgot" data-tr="button_forgot" />
 			</label>
 		</li>
 		<li>
-			<label class="siso__control" data-semantic="button" >
-				<button class="siso__button--forgot" type="submit" name="_fn" value="forgot" data-tr="button_forgot" />
-			</label>
-		</li>
-		<li>
-			<label class="siso__control" data-semantic="button" >
-				<button class="siso__button--register" type="submit" name="_fn" value="register" data-tr="button_register" />
+			<label class="siso__button" data-semantic="button" >
+				<button class="siso__btn--register" type="submit" name="_fn" value="register" data-tr="button_register" />
 			</label>
 		</li>
 	</ul>
