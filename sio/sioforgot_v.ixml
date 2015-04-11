@@ -13,7 +13,7 @@
 	<ul class="siso__buttons">
 		<li>
 			<label class="siso__control" data-semantic="field" data-xp="button">
-				<button class="siso__button--reset" type="submit" name="_fn" value="save" data-tr="button_resetpassword" /></span>
+				<button class="siso__button--reset" type="submit" name="_fn" value="save" data-tr="button_resetpassword" />
 			</label>
 		</li>
 	</ul>
