@@ -3,7 +3,7 @@
 	<input type="hidden" data-xp="_ident" />
 	<ul class="siso__formlet">
 		<li>
-			<label class="siso__group" data-semantic="field" data-xp="comment">
+			<label class="siso__control" data-semantic="field" data-xp="comment">
 				<span class="siso__label" data-xp="label" data-tr="prompt_emailaddress" />
 				<div class="siso__flex"><input class="siso__input" autocomplete="on" type="email" name="email" /></div>
 				<span class="siso__error" data-msg="email" />
@@ -12,7 +12,7 @@
 	</ul>
 	<ul class="siso__buttons">
 		<li>
-			<label class="siso__group" data-semantic="field" data-xp="button">
+			<label class="siso__control" data-semantic="field" data-xp="button">
 				<button class="siso__button--reset" type="submit" name="_fn" value="save" data-tr="button_resetpassword" /></span>
 			</label>
 		</li>

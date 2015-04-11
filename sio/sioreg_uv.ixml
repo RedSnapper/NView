@@ -3,28 +3,28 @@
 	<input type="hidden" data-xp="_ident" />
 	<ul class="siso__formlet">
 		<li>
-			<label class="siso__group" data-semantic="field" data-xp="comment">
+			<label class="siso__control" data-semantic="field" data-xp="comment">
 				<span class="siso__label" data-xp="label" data-tr="prompt_username" />
 				<div class="siso__flex" ><input class="siso__input" autocomplete="off" type="text" name="username" /></div>
 				<span class="siso__error" data-msg="username" />
 			</label>
 		</li>
 		<li>
-			<label class="siso__group" data-semantic="field" data-xp="comment">
+			<label class="siso__control" data-semantic="field" data-xp="comment">
 				<span class="siso__label" data-xp="label" data-tr="prompt_email" />
 				<div class="siso__flex"><input class="siso__input" autocomplete="on" type="email" name="emailp" /></div>
 				<span class="siso__error" data-msg="emailp" />
 			</label>
 		</li>
 		<li>
-			<label class="siso__group" data-semantic="field" data-xp="comment">
+			<label class="siso__control" data-semantic="field" data-xp="comment">
 				<span class="siso__label" data-xp="label" data-tr="prompt_password" />
 				<div class="siso__flex"><input class="siso__input" type="password" name="passwordn" /></div>
 				<span class="siso__error" data-msg="passwordn" />
 			</label>
 		</li>
 		<li>
-			<label class="siso__group" data-semantic="field" data-xp="comment">
+			<label class="siso__control" data-semantic="field" data-xp="comment">
 				<span class="siso__label" data-xp="label" data-tr="prompt_retype_password" />
 				<div class="siso__flex"><input class="siso__input" type="password" name="passwordb" /></div>
 			</label>
@@ -32,7 +32,7 @@
 	</ul>
 	<ul class="siso__buttons">
 		<li>
-			<label class="siso__group" data-semantic="field" data-xp="button">
+			<label class="siso__control" data-semantic="field" data-xp="button">
 				<button class="siso__button--primary" type="submit" name="_fn" value="save" data-tr="button_register" />
 			</label>
 		</li>
