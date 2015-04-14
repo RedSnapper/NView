@@ -694,5 +694,23 @@ trait Form {
 			}
 		}
 	}
+	
+	public function valUnique($name='',$msg="This must be unique") {
+		if (isset($this->fields[$name][0])) {
+			if (empty($this->fields[$name][0]) || !is_string($this->fields[$name][0])) {
+				$value=$this->fields[$name][0];
+				Settings::esc($value);
+				$sql="select " . $name . " from " . $this->table . " where " . $name . "=" . $value . " and not(" . $this->pkeysql() . ")";
+				if ($rx = Settings::$sql->query($sql)) {
+					if ($rx->num_rows > 0) {
+						$this->valid = false;
+						$this->seterr($name,$msg);
+					}
+					$rx->close();
+				}
+			}
+		}
+	}
+	
 
 }
