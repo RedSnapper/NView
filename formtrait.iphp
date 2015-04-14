@@ -155,11 +155,11 @@ trait Form {
  		$retval = false;
  		if ( isset($_POST[static::sig()]) ) {
  			$svl = $_POST[static::sig()];
- 			if(is_array($svl)) {
+// 			if(is_array($svl)) {
  				$retval = in_array($this->ident(), $svl);
- 			} else {
- 				$retval = ($svl === $this->ident()); 
- 			}
+// 			} else {
+// 				$retval = ($svl === $this->ident()); 
+// 			}
  		}
 		return $retval;
 	}
@@ -372,12 +372,12 @@ trait Form {
 			print("This form has been posted ");
  	//contains this value!! we may have multiple formlets in a post.
  			$psig = $_POST[static::sig()];
- 			if (is_array($psig)) {
+ //			if (is_array($psig)) {
 				$found = ( in_array($this->ident(),$psig));
- 			} else {
-				print("and there is only one formlet so the id is a value<br />");
-				$found = ($psig === $this->ident());
- 			}
+//			} else {
+//				print("and there is only one formlet so the id is a value<br />");
+//				$found = ($psig === $this->ident());
+// 			}
 			if ($found) {
 				print("and the ident() matches the id, so this is in scope..");
 				if($this->isMe()) {
