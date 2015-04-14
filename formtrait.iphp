@@ -152,16 +152,7 @@ trait Form {
  * 'isMe' used to test if a particular form instance is being posted.
  */
  	public function isMe() {
- 		$retval = false;
- 		if ( isset($_POST[static::sig()]) ) {
- 			$svl = $_POST[static::sig()];
-// 			if(is_array($svl)) {
- 				$retval = in_array($this->ident(), $svl);
-// 			} else {
-// 				$retval = ($svl === $this->ident()); 
-// 			}
- 		}
-		return $retval;
+ 		return ( isset($_POST[static::sig()]) && in_array($this->ident(), $_POST[static::sig()] ) );
 	}
 
 /**
@@ -370,15 +361,7 @@ trait Form {
 		}		
 		if (isset($_POST[static::sig()])) {
 			print("This form has been posted ");
- 	//contains this value!! we may have multiple formlets in a post.
- 			$psig = $_POST[static::sig()];
- //			if (is_array($psig)) {
-				$found = ( in_array($this->ident(),$psig));
-//			} else {
-//				print("and there is only one formlet so the id is a value<br />");
-//				$found = ($psig === $this->ident());
-// 			}
-			if ($found) {
+			if (in_array($this->ident(),$_POST[static::sig()])) {
 				print("and the ident() matches the id, so this is in scope..");
 				if($this->isMe()) {
 					print(" ... and isMe() agrees!<br />");
