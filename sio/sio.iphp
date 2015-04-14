@@ -52,7 +52,6 @@ class SIO {
 						$stt=1;
 					}
 				} else {
-					print('[looking for a reg form.]');
 					if (SioReg::inScope()) {
 						$stt=0; $sio=new SioReg(); $formlet=$sio->form(false);
 						if ($sio->success()) {
