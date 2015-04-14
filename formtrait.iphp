@@ -79,7 +79,7 @@ trait Form {
 		return "form_";
 	}
 	
-	private function ident() {
+	private function ident() { //ident includes userid.
  		$ident = '';
  		if(!empty(Settings::$usr['ID'])) {
 			$ident = md5( Settings::$usr['ID'] . '_' . $this->signature );
@@ -446,7 +446,7 @@ trait Form {
 		if ( $this->show || !($this->committed) ) { //don't repop if !show and com.
 			$this->populate();
 			$this->view->set("//*[@data-msg][not(node())]");
-			$this->view->set("//*[@data-xp='_ident']/@name",static::sig());
+			$this->view->set("//*[@data-xp='_ident']/@name",static::sig()."[]"); //we have to force this to be an array.
 			$this->view->set("//*[@data-xp='_ident']/@value",$this->ident());
 			$this->view->set("//*[@name][@name!='" . static::sig() . "']/@name/preceding-gap()",$this->idprefix);
 			return $this->view;
