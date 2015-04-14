@@ -152,7 +152,16 @@ trait Form {
  * 'isMe' used to test if a particular form instance is being posted.
  */
  	public function isMe() {
-		return (isset($_POST[$this->signature]) && ($_POST[$this->signature] === $this->ident()));
+ 		$retval = false;
+ 		if ( isset($_POST[static::sig()]) ) {
+ 			$svl = $_POST[static::sig()];
+ 			if(is_array($svl)) {
+ 				$retval = in_array($this->ident(), $svl);
+ 			} else {
+ 				$retval = ($svl === $this->ident()); 
+ 			}
+ 		}
+		return $retval;
 	}
 
 /**
@@ -359,9 +368,17 @@ trait Form {
 		if(isset($_POST)) {
 			print('<code>'. print_r($_POST,true). '</code>');
 		}		
-		if (isset($_POST[$this->signature])) {
+		if (isset($_POST[static::sig()])) {
 			print("This form has been posted ");
-			if ($_POST[$this->signature] === $this->ident()) {
+ 	//contains this value!! we may have multiple formlets in a post.
+ 			$psig = $_POST[static::sig()];
+ 			if (is_array($psig)) {
+				$found = ( in_array($this->ident(),$psig));
+ 			} else {
+				print("and there is only one formlet so the id is a value<br />");
+				$found = ($psig === $this->ident());
+ 			}
+			if ($found) {
 				print("and the ident() matches the id, so this is in scope..");
 				if($this->isMe()) {
 					print(" ... and isMe() agrees!<br />");
@@ -369,7 +386,7 @@ trait Form {
 					print(" ... and isMe() FAILS to agree!!<br />");
 				}
 			} else {
-				print("and the post failed to match because (post)".$_POST[$this->signature]."!=(ident)".$this->ident()."<br />");
+				print("and the post failed to match because (post)".$_POST[static::sig()]."!=(ident)".$this->ident()."<br />");
 			}
 		} else {
 			print("<p>This form has not been posted.</p>");
@@ -429,9 +446,9 @@ trait Form {
 		if ( $this->show || !($this->committed) ) { //don't repop if !show and com.
 			$this->populate();
 			$this->view->set("//*[@data-msg][not(node())]");
-			$this->view->set("//*[@data-xp='_ident']/@name",$this->signature);
+			$this->view->set("//*[@data-xp='_ident']/@name",static::sig());
 			$this->view->set("//*[@data-xp='_ident']/@value",$this->ident());
-			$this->view->set("//*[@name][@name!='" . $this->signature . "']/@name/preceding-gap()",$this->idprefix);
+			$this->view->set("//*[@name][@name!='" . static::sig() . "']/@name/preceding-gap()",$this->idprefix);
 			return $this->view;
 		} else {
 			return null;

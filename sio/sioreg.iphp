@@ -10,6 +10,7 @@ class SioReg {
 	private static $use_un=true;
 
 	function __construct($key=NULL) {
+		$this->debug = true;
 		$this->iniForm($key,@static::$v[static::SIG]);
 		$this->key=$key;
 		$this->table="user";
