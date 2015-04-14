@@ -117,7 +117,7 @@ class Settings extends Singleton {
 /**
  * 'esc' mysql escape.
  */
-	public static function esc($s) {
+	public static function esc(&$s) {
 		if(!is_null(self::$sql)) {
 			self::$sql->real_escape_string($s);
 		}
