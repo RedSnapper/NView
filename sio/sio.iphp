@@ -54,11 +54,9 @@ class SIO {
 				} else {
 					print('[looking for a reg form.]');
 					if (SioReg::inScope()) {
-						print('[in scope for reg]');
 						$stt=0; $sio=new SioReg(); $formlet=$sio->form(false);
 						if ($sio->success()) {
-							print('[reg. success would normally push.]');
-//							$formlet=$sio->pushit();
+							$formlet=$sio->pushit();
 							$formlet=NULL;
 						}					
 					} elseif (SioForgot::inScope()) {
