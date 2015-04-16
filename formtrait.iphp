@@ -700,7 +700,7 @@ trait Form {
 			if (!empty($this->fields[$name][0]) && is_string($this->fields[$name][0])) {
 				$value=$this->fields[$name][0];
 				Settings::esc($value);
-				$sql="select " . $name . " from " . $this->table . " where " . $name . "=" . $value . " and not(" . $this->pkeysql() . ")";
+				$sql="select " . $name . " from " . $this->table . " where " . $name . "='" . $value . "' and not(" . $this->pkeysql() . ")";
 				print("Debugging:".$sql);
 				if ($rx = Settings::$sql->query($sql)) {
 					if ($rx->num_rows > 0) {
