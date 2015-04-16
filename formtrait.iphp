@@ -37,15 +37,15 @@ trait Form {
 	public function setcommit($state = true) {
 		$this->committed = $state;
 	}
-	
+
 	public function newId() {
 		return $this->newid;
 	}
-	
+
 	public function valid() {
 		return $this->valid;
 	}
-	
+
 	public function getId() {
 		return $this->id;
 	}
@@ -56,13 +56,13 @@ trait Form {
 			print('<br />DEBUG: Delete SQL=' . $q);
 		} else {
 			Settings::$sql->query($q);
-		} 
-	}	
+		}
+	}
 
 	public function validate() { //should be overridden.
 		return true;
 	}
-	
+
 	public function populate() { //should be overridden.
 	}
 
@@ -78,7 +78,7 @@ trait Form {
 		print("This is an error. sig() needs to be defined by the form class.");
 		return "form_";
 	}
-	
+
 	private function ident() { //ident includes userid.
  		$ident = '';
  		if(!empty(Settings::$usr['ID'])) {
@@ -88,7 +88,7 @@ trait Form {
 		}
 		return $ident;
 	}
-		
+
 	private function setId($id) {
 		$this->id = $id;
 		$this->idprefix = $this->id . ':';
@@ -177,7 +177,7 @@ trait Form {
 			$this->cflds[$name] = $csql;
 		}
 	}
-	
+
 /**
  * 'setsub'
  */
@@ -204,7 +204,7 @@ trait Form {
 		} else {
 			$condition='';
 			foreach ($this->pkey as $k => $v) {
-				Settings::esc($k); 
+				Settings::esc($k);
 				if(is_null($v)) {
 					$condition.= $k ." is NULL and ";
 				} else {
@@ -261,7 +261,7 @@ trait Form {
 				} else {
 					$val='true';
 				}
-			} else {	
+			} else {
 				if (isset($this->fields[$input])) {
 					$val=$this->fields[$input][0];
 				}
@@ -302,7 +302,7 @@ trait Form {
 		$us=true; $debug=false;
 		foreach($fms as $fm) {
 			if(! $fm->isMe()) { $us=false; }
-			if($fm->debug) { $debug = true; 
+			if($fm->debug) { $debug = true;
 				$fm->forminfo();
 			}
 		}
@@ -319,7 +319,7 @@ trait Form {
 			if ($valid) {
 				foreach($fms as $fm) {
 					if (!$fm->success()) {
-						$fm->setcommit($fm->commit());						
+						$fm->setcommit($fm->commit());
 						if ( $fm->show || !($fm->success()) ) { //do not repop if !show and com.
 							$fm->setfields(true); //we can repopulate the fields if we want.
 						}
@@ -353,12 +353,12 @@ trait Form {
 			print("<br />Posted fields<pre>".print_r($this->fields,true)."</pre>");
 		}
 	}
-	
+
 	public function forminfo() {
 		print('<br /><br />id['.$this->id.'] sig['.static::sig().'] signature['.$this->signature.'] ident['.$this->ident().']<br />');
 		if(isset($_POST)) {
 			print('<code>'. print_r($_POST,true). '</code>');
-		}		
+		}
 		if (isset($_POST[static::sig()])) {
 			print("This form has been posted ");
 			if (in_array($this->ident(),$_POST[static::sig()])) {
@@ -403,7 +403,7 @@ trait Form {
 					}
 					$this->subscriber();
 				}
-				if (! $this->committed) {		
+				if (! $this->committed) {
 					if($this->debug) {
 						print("<p>fn Save, about to validate</p>");
 					}
@@ -412,7 +412,7 @@ trait Form {
 						print("<p>Validate returned".$this->valid."</p>");
 					}
 					if ($this->valid && ! $this->committed) {
-						$this->committed = $this->commit();						
+						$this->committed = $this->commit();
 						if ( $this->show || !($this->committed) ) { //do not repop if !show and com.
 							$this->setfields(true); //we can repopulate the fields if we want.
 						}
@@ -471,10 +471,10 @@ trait Form {
 	}
 
 	private function setsubsvalue() {
-		if ($this->pksimple) { 
-			$field = $this->pkey; 
-		} else { 
-			$field = array_keys($this->pkey)[0]; 
+		if ($this->pksimple) {
+			$field = $this->pkey;
+		} else {
+			$field = array_keys($this->pkey)[0];
 		}
 		$query="select " . $field . " from " . $this->table . " where " . $this->pkeysql();
 		if($this->debug) {
@@ -541,7 +541,7 @@ trait Form {
 		}
 		$retval = false;
 		$klist=""; $ulist = ""; $flist=""; $vlist = "";
-		
+
 		//This sets the primary key values.
 		if ($this->pksimple) {
 			$vlist = is_null($this->key)? "NULL," : "'". $this->key . "',";
@@ -694,10 +694,10 @@ trait Form {
 			}
 		}
 	}
-	
+
 	public function valUnique($name='',$msg="This must be unique") {
 		if (isset($this->fields[$name][0])) {
-			if (empty($this->fields[$name][0]) || !is_string($this->fields[$name][0])) {
+			if (!empty($this->fields[$name][0]) && is_string($this->fields[$name][0])) {
 				$value=$this->fields[$name][0];
 				Settings::esc($value);
 				$sql="select " . $name . " from " . $this->table . " where " . $name . "=" . $value . " and not(" . $this->pkeysql() . ")";
@@ -711,6 +711,5 @@ trait Form {
 			}
 		}
 	}
-	
 
 }
