@@ -4,7 +4,7 @@ class SIO {
 	const SIG = "sio_";
 	private static $v=array();
 	private static $use_username=true;
-	
+
 	public static function run() {
 		$v = new NView(@static::$v[static::SIG]);
 		$err = $v->messages();
@@ -19,9 +19,9 @@ class SIO {
 					$siof=Settings::$qst['siof'];
 					if (SIOSetEmail::conforms($siof)) {
 						$formlet=SIOSetEmail::pushit($siof); //sig.pushit
-						$stt=0;  
+						$stt=0;
 					}
-				} 
+				}
 				if ($stt==2 ) {
 					if (SioSetPW::inScope()) {  //doing a set-pw post.
 						$stt=0; $sio=new SioSetPW(); $formlet=$sio->form(false);
@@ -34,17 +34,17 @@ class SIO {
 							SIOSetEmail::pushit();
 						}
 					}
-				}		
+				}
 			} else { //not-signed in
 				$stt=1; //default = sign-in.
 				if(!empty(Settings::$qst['siof'])) {
 					$siof=Settings::$qst['siof'];
 					if (SioReg::conforms($siof)) {
-						$stt=0;  
+						$stt=0;
 						$formlet=SioReg::pushit($siof);
 					} elseif (SioResetPW::conforms($siof)) {
 						$stt=0; $sio=new SioResetPW($siof);
-						$formlet=$sio->form(false);	
+						$formlet=$sio->form(false);
 						if ($sio->success()) {
 							$stt=1;
 						}
@@ -56,15 +56,14 @@ class SIO {
 						$stt=0; $sio=new SioReg(); $formlet=$sio->form(false);
 						if ($sio->success()) {
 							$formlet=$sio->pushit();
-							$formlet=NULL;
-						}					
+						}
 					} elseif (SioForgot::inScope()) {
 						$stt=0; $sio=new SioForgot(); $formlet=$sio->form(false);
 						if ($sio->success()) {
 							$formlet=$sio->commitv();
-						}					
+						}
 					}
-				}		
+				}
 			}
 			switch ($stt) {
 				case 0: break;
@@ -72,20 +71,20 @@ class SIO {
 					$ssi=new SioSignIn(); $formlet=$ssi->form(false);
 					if ($ssi->success()) {
 						$sio=new SioSignOut(); $formlet = $sio->form(false);
-					} 
+					}
 				} break;
 				case 2: {
 					$sso=new SioSignOut(); $formlet=$sso->form(false);
 					if ($sso->success()) {
 						$sio=new SioSignIn(); $formlet=$sio->form(false);
-					}				
+					}
 				} break;
 			}
 			$v->set("//*[@data-xp='sio']",$formlet);
 			return $v;
 		}
 	}
-	
+
 //This must be run to overload views and translations.
 	public static function initialise($use_un=true,$custom_views=array(),$translations=NULL) {
 		static::$use_username=$use_un;
@@ -104,8 +103,8 @@ class SIO {
 		if(!is_null($translations)) {
 			foreach ($translations as $lang => $trans_array) {
 				Dict::set($trans_array,$lang);
-			}		
+			}
 		}
-		
+
 	}
 }
