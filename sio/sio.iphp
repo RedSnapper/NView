@@ -91,7 +91,6 @@ class SIO {
 		static::$v=array(
 			static::SIG => static::SIG."v.ixml"
 		);
-		static::$v = array_replace(static::$v,$custom_views);
 		SioSignIn::initialise($use_un,$custom_views);
 		SioSignOut::initialise($use_un,$custom_views);
 		SioReg::initialise($use_un,$custom_views);
@@ -100,6 +99,7 @@ class SIO {
 		SioSetPW::initialise($use_un,$custom_views);
 		SioResetPW::initialise($use_un,$custom_views);
 		//now override any translations
+		static::$v = array_replace(static::$v,$custom_views);
 		if(!is_null($translations)) {
 			foreach ($translations as $lang => $trans_array) {
 				Dict::set($trans_array,$lang);
