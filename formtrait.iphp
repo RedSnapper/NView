@@ -24,7 +24,7 @@ trait Form {
 	protected $cflds;		//array of sql values that will be used during a commit.
 	protected $names;		//array of input names
 	protected $view;		//the formlet view (instance of an NView)
-	protected $redirect;	//where to go on insert.
+	private $redirect;	//where to go on insert.
 	private $subsfield; 	//subscriber field-name  for indicating presence/absence.
 	private $subsvalue; 	//subscriber field-value based on sql.
 	private $subspostv; 	//subscriber field-value based on post.
