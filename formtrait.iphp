@@ -37,6 +37,9 @@ trait Form {
 	public function setcommit($state = true) {
 		$this->committed = $state;
 	}
+	public function setredirect($redirect) {
+		$this->redirect = $redirect;
+	}
 
 	public function newId() {
 		return $this->newid;
