@@ -24,7 +24,7 @@ trait Form {
 	protected $cflds;		//array of sql values that will be used during a commit.
 	protected $names;		//array of input names
 	protected $view;		//the formlet view (instance of an NView)
-	private $redirect;	//where to go on insert.
+	protected $redirect;	//where to go on insert.
 	private $subsfield; 	//subscriber field-name  for indicating presence/absence.
 	private $subsvalue; 	//subscriber field-value based on sql.
 	private $subspostv; 	//subscriber field-value based on post.
@@ -36,9 +36,6 @@ trait Form {
 	}
 	public function setcommit($state = true) {
 		$this->committed = $state;
-	}
-	public function setredirect($redirect) {
-		$this->redirect = $redirect;
 	}
 
 	public function newId() {
