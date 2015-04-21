@@ -246,7 +246,6 @@ class NView {
  * 'set'
  */
 	public function set($xpath,$value=null,$ref=null) {
-
 		//replace node at string xpath with node 'value'.
 		set_error_handler(array($this,'doMsg'), E_ALL | E_STRICT);
 		if (!is_null($this->doc) && !is_null($this->xp)) {
@@ -324,32 +323,32 @@ class NView {
 							}
 							foreach($entries as $entry) {
 								if ($gap == self::GAP_NATTR && $entry->nodeType==XML_ELEMENT_NODE && isset($aname)) {
-									$entry->setAttribute($aname,utf8_encode($value));
+									$entry->setAttribute($aname,mb_convert_encoding($value));
 								} else {
 									if (($entry->nodeType == XML_ATTRIBUTE_NODE) && (gettype($value) != "object")) {
 										switch ($gap) {
 											case self::GAP_NONE: {
-												$entry->value = utf8_encode($value);
+												$entry->value = mb_convert_encoding($value);
 											} break;
 											case self::GAP_PRECEDING: {
-												$entry->value = utf8_encode($value) . $entry->value ;
+												$entry->value = mb_convert_encoding($value) . $entry->value ;
 											} break;
 											case self::GAP_FOLLOWING:
 											case self::GAP_CHILD: {
-												$entry->value .= utf8_encode($value);
+												$entry->value .= mb_convert_encoding($value);
 											} break;
 										}
 									} elseif (($entry->nodeType == XML_CDATA_SECTION_NODE) && (gettype($value) != "object")) {
 										switch ($gap) {
 											case self::GAP_NONE: {
-												$entry->data = utf8_encode($value);
+												$entry->data = mb_convert_encoding($value);
 											} break;
 											case self::GAP_PRECEDING: {
-												$entry->insertData(0,utf8_encode($value));
+												$entry->insertData(0,mb_convert_encoding($value));
 											} break;
 											case self::GAP_FOLLOWING:
 											case self::GAP_CHILD: {
-												$entry->appendData(utf8_encode($value));
+												$entry->appendData(mb_convert_encoding($value));
 											} break;
 										}
 									} else {
