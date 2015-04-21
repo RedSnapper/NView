@@ -608,21 +608,26 @@ trait Form {
 				if ($this->newid != 0) {
 					if ($this->show || !is_null($this->redirect)) {
 						$this->show = false;
+						print("[1: {$this->redirect}]");
 						if (!is_null($this->redirect)) {
 							$new_url = $this->redirect;
 						} else {
 							$new_url = Settings::$url;
 						}
+						print("[2: {$new_url}]");
 						if (mb_strpos($new_url,"?") === false) {
 						  $new_url .= "?";
 						}
+						print("[3: {$new_url}]");
 						if (is_null($this->insert_qs)) {
 							$new_url .= "[[ID]]";
 						} else {
 							$new_url .= $this->insert_qs;
 						}
+						print("[4: {$new_url}]");
 						$new_url = str_replace($new_url,"[[ID]]", $this->newid); 
-						header("Location: " . $new_url );
+						print("[5: {$new_url}]");
+//						header("Location: " . $new_url );
 					}
 				}
 				$r->close();
