@@ -20,7 +20,7 @@ class SioReg {
 		$this->setfld('passwordn','','!skip');
 		$this->setfld('passwordb','','!skip');
 	}
-	
+
 	protected function validate() {
 		$retval = true;
 		if(static::$use_un) {
@@ -31,13 +31,13 @@ class SioReg {
 					if (strcmp($rx->fetch_row()[0],"0") !== 0) {
 						$retval = false;
 						$this->seterr("username",Dict::get(static::SIG.'errors_username_exists'));
-					} 
+					}
 					$rx->close();
 				}
 				if (isset($this->fields['passwordn'][0]) && ($this->fields['passwordn'][0] === $this->fields['username'][0])) {
 					$this->seterr("passwordn",Dict::get(static::SIG.'errors_new_pw_too_un_simple'));
 					$retval = false;
-				} 
+				}
 			} else {
 				$this->seterr("username",Dict::get(static::SIG.'errors_no_username'));
 				$retval = false;
@@ -51,13 +51,13 @@ class SioReg {
 				if (strcmp($rx->fetch_row()[0],"0") !== 0) {
 					$retval = false;
 					$this->seterr("emailp",Dict::get(static::SIG.'errors_email_exists'));
-				} 
+				}
 				$rx->close();
 			}
 			if (isset($this->fields['passwordn'][0]) && ($this->fields['passwordn'][0] === $this->fields['emailp'][0])) {
 				$this->seterr("passwordn",Dict::get(static::SIG.'errors_new_pw_too_em_simple'));
 				$retval = false;
-			} 
+			}
 		} else {
 			$this->seterr("emailp",Dict::get(static::SIG.'errors_no_email'));
 			$retval = false;
@@ -68,11 +68,11 @@ class SioReg {
 			if ($pwa !== $pwb ) {
 				$this->seterr("passwordn",Dict::get(static::SIG.'errors_new_pw_different'));
 				$retval = false;
-			} 
+			}
 			if (strlen($pwa) < 7) {
 				$this->seterr("passwordn",Dict::get(static::SIG.'errors_new_pw_too_short'));
 				$retval = false;
-			} 
+			}
 		} else {
 			$this->seterr("passwordn",Dict::get(static::SIG.'errors_no_password'));
 			$retval = false;
@@ -82,7 +82,7 @@ class SioReg {
 			$this->valid = $retval;
 		}
 	}
-	
+
 	protected function commit() {
 		$unm = NULL;
 		if(static::$use_un) {
@@ -98,7 +98,7 @@ class SioReg {
 				$unm=Settings::esc($unm);
 				$extra="username=left(sha2('".$unm."',256),16),";
 				$qry="select ".static::$munge." as munge,emailp from " . $this->table . " where emailp='" .$unm. "' and active='xx'";
-			} 
+			}
 		}
 		$em=$this->fields['emailp'][0]; $em=Settings::esc($em);
 		$ph=hash('sha256', $unm . hex2bin('5BE0BDA8E0BDBCE0BDBEE0BC8BE0BDA7E0BDB1E0BDB4E0BDBE5D') . hash('sha256',$this->fields['passwordn'][0]));
@@ -115,7 +115,7 @@ class SioReg {
 				$mail->CharSet='utf-8';
 				$mail->Encoding='base64';
 				$mail->setFrom('no_reply@redsnapper.net', Dict::get(static::SIG .'note_register_title'));
-				$mail->addAddress($em,$f['emailp']); 				
+				$mail->addAddress($em,$f['emailp']);
 				$mail->Subject = Dict::get(static::SIG.'note_register_title');
 				$mail->isHTML(true);
 				$url=$_SERVER["SCRIPT_URI"];
@@ -123,7 +123,7 @@ class SioReg {
 					$url .= '&amp;siof=' . $f['munge'];
 				} else {
 					$url .= '?siof=' . $f['munge'];
-				}			
+				}
 				$mail_v->set("//*[@data-xp='ha']/@href",$url);
 				$mail->Body = $mail_v->show(false);
 				$mail->AltBody=Dict::get(static::SIG.'mesg_see_html_alt');
@@ -133,10 +133,10 @@ class SioReg {
 		}
 		return true;
 	}
-	
+
 	public static function conforms($hat=NULL) {
 		$retval=false;
-		$ha=Settings::esc($hat); 
+		$ha=Settings::esc($hat);
 		$query= "select id from user where ".static::$munge."='".$ha."'";
 		if ($rs = Settings::$sql->query($query)) {
 			if (Settings::rows($rs) == 1) {
@@ -146,13 +146,13 @@ class SioReg {
 		}
 		return $retval;
 	}
-	
+
 	public static function pushit($hat=NULL) {
 		if(is_null($hat)) {
 			$nv=new NView(@static::$v[static::SIG."check_mail"]);
 			$nv->set("//*[@data-tr]/@data-tr/preceding-gap()",static::SIG);
 		} else {
-			$ha=Settings::esc($hat); 
+			$ha=Settings::esc($hat);
 			$query= "update user set email=emailp,active='on' where active='xx' and ".static::$munge."='".$ha."'";
 			Settings::$sql->query($query);
 			$nv = new NView(@static::$v[static::SIG."success"]);
@@ -161,16 +161,15 @@ class SioReg {
 		return $nv;
 	}
 
-
-	public static function initialise($using_un=true,$custom_views=array()) {	
+	public static function initialise($using_un=true,$custom_views=array()) {
 		static::$use_un=$using_un;
 //views array
-		static::$v=array( 
+		static::$v=array(
 			static::SIG."email_body"=>static::SIG."mb.ixml",
 			static::SIG."success"=>static::SIG."sv.ixml",
 			static::SIG."check_mail"=>static::SIG."pv.ixml"
 		);
-	
+
 //translations
 		$en = array(
 			static::SIG ."prompt_email"=>"Email",
@@ -190,7 +189,7 @@ class SioReg {
 			static::SIG ."mesg_see_html_alt"=>"Please see the html alternative of this email.",
 			static::SIG ."mesg_success"=>"You have successfully registered."
 		);
-		
+
 		$de = array(
 			static::SIG .'prompt_email'=> 'E-Mail',
 			static::SIG .'prompt_password'=> 'Passwort',
@@ -208,7 +207,7 @@ class SioReg {
 			static::SIG .'mesg_see_html_alt'=> 'Sollte die E-Mail nicht korrekt dargestellt werden, wechseln Sie bitte in das HTML-Format.',
 			static::SIG .'mesg_success'=> 'Sie wurden erfolgreich registriert.'
 		);
-		
+
 		if(static::$use_un) {
 			static::$v[static::SIG]=static::SIG."uv.ixml";
 			$en[static::SIG ."prompt_username"]="Username";
@@ -229,7 +228,7 @@ class SioReg {
 		}
 		//set these after any contextual changes;
 		static::$v = array_replace(static::$v,$custom_views);
-		
+
 		Dict::set($en,'en');
 		Dict::set($de,'de');
 	}
