@@ -283,6 +283,9 @@ trait Form {
 				case "xp": {
 						$this->view->set("//*[@data-xp='" .$input . "']/child-gap()",$val);
 				} break;
+				case "label": {
+						$this->view->set("//*[@data-xp='" .$input . "']//[@data-xp='label']/text()",$val);
+				} break;
 				default: {
 						$this->view->set("//*[@name='" . $input . "']/@value",$val);
 				} break;
