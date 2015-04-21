@@ -119,7 +119,7 @@ class Settings extends Singleton {
  */
 	public static function esc(&$s) {
 		if(!is_null(self::$sql)) {
-			self::$sql->real_escape_string($s);
+			$s=self::$sql->real_escape_string($s);
 		}
 		return $s;
 	}
