@@ -323,32 +323,32 @@ class NView {
 							}
 							foreach($entries as $entry) {
 								if ($gap == self::GAP_NATTR && $entry->nodeType==XML_ELEMENT_NODE && isset($aname)) {
-									$entry->setAttribute($aname,mb_convert_encoding($value));
+									$entry->setAttribute($aname,strval($value));
 								} else {
 									if (($entry->nodeType == XML_ATTRIBUTE_NODE) && (gettype($value) != "object")) {
 										switch ($gap) {
 											case self::GAP_NONE: {
-												$entry->value = mb_convert_encoding($value);
+												$entry->value = strval($value);
 											} break;
 											case self::GAP_PRECEDING: {
-												$entry->value = mb_convert_encoding($value) . $entry->value ;
+												$entry->value = strval($value) . $entry->value ;
 											} break;
 											case self::GAP_FOLLOWING:
 											case self::GAP_CHILD: {
-												$entry->value .= mb_convert_encoding($value);
+												$entry->value .= strval($value);
 											} break;
 										}
 									} elseif (($entry->nodeType == XML_CDATA_SECTION_NODE) && (gettype($value) != "object")) {
 										switch ($gap) {
 											case self::GAP_NONE: {
-												$entry->data = mb_convert_encoding($value);
+												$entry->data = strval($value);
 											} break;
 											case self::GAP_PRECEDING: {
-												$entry->insertData(0,mb_convert_encoding($value));
+												$entry->insertData(0,strval($value));
 											} break;
 											case self::GAP_FOLLOWING:
 											case self::GAP_CHILD: {
-												$entry->appendData(mb_convert_encoding($value));
+												$entry->appendData(strval($value));
 											} break;
 										}
 									} else {
