@@ -303,7 +303,7 @@ trait Form {
  * Call reveal() for each fm after this.
  * LIMITATIONS: currently this does not support subscribers (which should be orthogonal) or functions.
  */
-	public static function formlets($fms=array(),$valfn=function() {return true;},$show=true) {
+	public static function formlets($fms=array(),$valfn=NULL,$show=true) {
 		$us=true; $debug=false;
 		foreach($fms as $fm) {
 			if(! $fm->isMe()) { $us=false; }
