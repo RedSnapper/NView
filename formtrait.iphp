@@ -321,7 +321,9 @@ trait Form {
 				$fm->validate();
 				$valid = $valid && $fm->valid();
 			}
-			$valid = $valid && $valfn();
+			if (!is_null($valfun)) {
+				$valid = $valid && $valfn();
+			}
 			if ($valid) {
 				foreach($fms as $fm) {
 					if (!$fm->success()) {
