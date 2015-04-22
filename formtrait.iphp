@@ -624,8 +624,12 @@ trait Form {
 						} else {
 							$new_url .= $this->insert_qs;
 						}
-						$new_url = str_replace("[[ID]]", $this->newid,$new_url); 
-						header("Location: " . $new_url );
+						$new_url = str_replace("[[ID]]", $this->newid,$new_url);
+						if($this->debug) {
+							print('<br />DEBUG: Redirect set to =' . $new_url);
+						} else {
+							header("Location: " . $new_url );
+						}
 					}
 				}
 				$r->close();
