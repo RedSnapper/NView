@@ -46,7 +46,7 @@ class SioReg {
 
 		if (isset($this->fields['emailp'][0])) {
 			$em=Settings::esc($this->fields['emailp'][0]);
-			$qry="select count(id) as ok from " . $this->table . " where emailp='" . $em . "'";
+			$qry="select count(id) as ok from " . $this->table . " where email='".$em."' or emailp='" . $em . "'";
 			if ($rx = Settings::$sql->query($qry)) {
 				if (strcmp($rx->fetch_row()[0],"0") !== 0) {
 					$retval = false;
