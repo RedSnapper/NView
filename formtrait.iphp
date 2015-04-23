@@ -702,11 +702,11 @@ trait Form {
 	}
 	public function valNotZero($name='',$msg=" This must be filled correctly.") {
 		if (isset($this->fields[$name][0])) {
-		    $val=$this->fields[$name][0];
-			if ((empty($val) || !is_int($val)) || $val === 0 ) {
-				$this->valid = false;
-				$this->seterr($name,$msg);
-			}
+		    $val=intval($this->fields[$name][0]);
+            if ( $val === 0 ) {
+                $this->valid = false;
+                $this->seterr($name,$msg);
+            }
 		}
 	}
 	public function valNoWhitespace($name='',$msg=" This must contain no whitespace.") {
