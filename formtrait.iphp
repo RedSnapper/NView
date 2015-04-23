@@ -684,7 +684,7 @@ trait Form {
 			$this->seterr($name,$msg);
 		}
 	}
-	public function valNumeric($name='',$msg="This must be a number") {
+	public function valNumeric($name='',$msg=" This must be a number.") {
 		if (isset($this->fields[$name][0])) {
 			if (empty($this->fields[$name][0]) || !is_numeric($this->fields[$name][0])) {
 				$this->valid = false;
@@ -692,7 +692,7 @@ trait Form {
 			}
 		}
 	}
-	public function valInt($name='',$msg="This must be a whole number") {
+	public function valInt($name='',$msg=" This must be a whole number.") {
 		if (isset($this->fields[$name][0])) {
 			if (empty($this->fields[$name][0]) || !is_int($this->fields[$name][0])) {
 				$this->valid = false;
@@ -700,7 +700,16 @@ trait Form {
 			}
 		}
 	}
-	public function valNoWhitespace($name='',$msg="This must contain no whitespace") {
+	public function valNotZero($name='',$msg=" This must be filled correctly.") {
+		if (isset($this->fields[$name][0])) {
+		    $val=$this->fields[$name][0];
+			if ((empty($val) || !is_int($val)) || $val === 0 ) {
+				$this->valid = false;
+				$this->seterr($name,$msg);
+			}
+		}
+	}
+	public function valNoWhitespace($name='',$msg=" This must contain no whitespace.") {
 		if (isset($this->fields[$name][0])) {
 			if (empty($this->fields[$name][0]) || !is_string($this->fields[$name][0]) || preg_match('/\s/',$this->fields[$name][0])) {
 				$this->valid = false;
