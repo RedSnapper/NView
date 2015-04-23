@@ -23,9 +23,9 @@ class Settings extends Singleton {
 		if($_SERVER['QUERY_STRING']) {
 			parse_str($_SERVER['QUERY_STRING'],self::$qst);
 			self::$req=array_keys(self::$qst);
-			foreach(self::$req as $n => $v) {
-                self::$req[$n]=rtrim($v,"#");
-			}
+//			foreach(self::$req as $n => $v) {
+//              self::$req[$n]=rtrim($v,"#");
+//			}
 		}
 		self::$url=strtok($_SERVER["REQUEST_URI"],'?');
 		if ( !empty($_SERVER['PHP_AUTH_USER']) ) {
