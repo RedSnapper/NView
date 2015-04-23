@@ -24,13 +24,13 @@ trait Form {
 	protected $cflds;		//array of sql values that will be used during a commit.
 	protected $names;		//array of input names
 	protected $view;		//the formlet view (instance of an NView)
-	protected $redirect;	//where to go on insert.
 	private $subsfield; 	//subscriber field-name  for indicating presence/absence.
 	private $subsvalue; 	//subscriber field-value based on sql.
 	private $subspostv; 	//subscriber field-value based on post.
 	private $subsdshow; 	//subscriber (defaults to true) show empty field if deleted..
 	private $subfn; 		//subscriber CNUD function that happened - one of create/null/update/delete
-	private $insert_qs; 	//query string for new records. id placeholder = [[ID]]
+	public $redirect;	    //where to go on insert.
+	public $insert_qs; 	    //query string for new records. id placeholder = [[ID]]
 
 	public function success() {
 		return $this->committed;
