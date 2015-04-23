@@ -18,27 +18,30 @@ class Settings extends Singleton {
 /**
  * '__construct'
  */
- 
+
  	protected function __construct() {
 		if($_SERVER['QUERY_STRING']) {
 			parse_str($_SERVER['QUERY_STRING'],self::$qst);
 			self::$req=array_keys(self::$qst);
+			foreach(self::$req as $n => $v) {
+
+			}
 		}
 		self::$url=strtok($_SERVER["REQUEST_URI"],'?');
-		if ( !empty($_SERVER['PHP_AUTH_USER']) ) { 
+		if ( !empty($_SERVER['PHP_AUTH_USER']) ) {
 			self::$usr['RU']= $_SERVER['PHP_AUTH_USER'];
-		} elseif ( isset($_SERVER['REDIRECT_REMOTE_USER']) ) { 
-			self::$usr['RU']= $_SERVER['REDIRECT_REMOTE_USER']; 
-		} elseif ( isset($_SERVER['REMOTE_USER']) ) { 
+		} elseif ( isset($_SERVER['REDIRECT_REMOTE_USER']) ) {
+			self::$usr['RU']= $_SERVER['REDIRECT_REMOTE_USER'];
+		} elseif ( isset($_SERVER['REMOTE_USER']) ) {
 			self::$usr['RU']= $_SERVER['REMOTE_USER'];
-		}  else { 
-			self::$usr['RU']= 'unknown'; 
+		}  else {
+			self::$usr['RU']= 'unknown';
 		}
 		self::$usr['uid']=0;
 		self::$usr['ID']=0;
 		if(isset($_SERVER["RS_SQLCONFIG_FILE"])) { //the path to the my.cnf for this connection.
 			self::$sql = mysqli_init();
-			self::$sqls = parse_ini_file($_SERVER["RS_SQLCONFIG_FILE"]); 
+			self::$sqls = parse_ini_file($_SERVER["RS_SQLCONFIG_FILE"]);
 			mysqli_options(self::$sql,MYSQLI_READ_DEFAULT_FILE,$_SERVER["RS_SQLCONFIG_FILE"]);
 			mysqli_real_connect(self::$sql,self::$sqls['host'],self::$sqls['user'],self::$sqls['password'],self::$sqls['database']);
 		} else {
@@ -79,7 +82,7 @@ class Settings extends Singleton {
 	public static function usr($construct = true) {
 		if($construct) {
 			if (Session::has('username')) {
-				$name=Session::get('username'); 
+				$name=Session::get('username');
 				if (empty($name)) {
 					Session::del();
 					self::$usr['RU']='';
@@ -123,7 +126,7 @@ class Settings extends Singleton {
 		}
 		return $s;
 	}
-	
+
 	public static function table_exists($table) {
 		$retval=false;
 		if(!is_null(self::$sql)) {
@@ -138,7 +141,7 @@ class Settings extends Singleton {
 		}
 		return $retval;
 	}
-	
+
 	public static function field_exists($table,$fieldname) {
 		$retval=false;
 		if(!is_null(self::$sql)) {
@@ -153,7 +156,7 @@ class Settings extends Singleton {
 		}
 		return $retval;
 	}
-	
+
 	public static function sphinx_esc ( $s ) {
 		$retval="";
 		if (mb_check_encoding($s)) {
@@ -161,8 +164,8 @@ class Settings extends Singleton {
 			$to   = array ( '\\\\', '\\\(','\\\)','\\\|','\\\-','\\\!','\\\@','\\\~','\\\"', '\\\&', '\\\/', '\\\^', '\\\$', '\\\=', "\\'", "\\x00", "\\n", "\\r", "\\x1a" );
 			$retval=str_replace( $from, $to, $s );
 		}
-		return $retval; 
-	}	
+		return $retval;
+	}
 
 /**
  * 'close'

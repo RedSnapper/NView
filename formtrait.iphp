@@ -141,6 +141,7 @@ trait Form {
 		$this->redirect = NULL;
 		$this->subsfield =NULL;
 		$this->subsvalue =NULL;
+		$this->newid=0;
 	}
 
 /**
