@@ -421,10 +421,17 @@ trait Form {
 						print("<p>Validate returned".$this->valid."</p>");
 					}
 					if ($this->valid && ! $this->committed) {
+                        if($this->debug) {
+                            print("<p>About to commit</p>");
+                        }
 						$this->committed = $this->commit();
 						if ( $this->show || !($this->committed) ) { //do not repop if !show and com.
 							$this->setfields(true); //we can repopulate the fields if we want.
 						}
+					} else {
+                        if($this->debug) {
+                            print("<p>Will not commit</p>");
+                        }
 					}
 				}
 			}
