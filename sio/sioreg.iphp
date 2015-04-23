@@ -191,7 +191,7 @@ class SioReg {
 		);
 
 		$de = array(
-			static::SIG .'prompt_email'=> 'E-Mail',
+			static::SIG .'prompt_email'=> 'E-Mail-Adresse',
 			static::SIG .'prompt_password'=> 'Passwort',
 			static::SIG .'prompt_retype_password'=> 'Passwort wiederholen',
 			static::SIG .'button_register'=> 'Registrieren',
@@ -199,13 +199,13 @@ class SioReg {
 			static::SIG .'note_register_message'=> 'Sie möchten sich auf unserer Website registrieren.',
 			static::SIG .'note_register_action_link'=> 'Bitte bestätigen Sie Ihre Registrierung.',
 			static::SIG .'errors_email_badformat'=> 'Das E-Mail-Format kann nicht erkannt werden.',
-			static::SIG ."errors_email_exists"=>" Dieser E-Mail wird bereits verwendet. Bitte wählen Sie einen anderen E-Mail. ",
-			static::SIG .'errors_no_password'=> 'Bitte geben Sie Ihr Passwort ein.',
-			static::SIG .'errors_new_pw_different'=> 'Die beiden Passwörter müssen übereinstimmen.',
-			static::SIG .'errors_new_pw_too_short'=> 'Das Passwort muss aus mehr als sechs Zeichen bestehen.',
-			static::SIG .'mesg_register_check_email'=> 'Um Ihre Registrierung zu bestätigen, lesen Sie bitte die E-Mail, die Ihnen gerade zugeschickt wurde.',
-			static::SIG .'mesg_see_html_alt'=> 'Sollte die E-Mail nicht korrekt dargestellt werden, wechseln Sie bitte in das HTML-Format.',
-			static::SIG .'mesg_success'=> 'Sie wurden erfolgreich registriert.'
+			static::SIG ."errors_email_exists"=>" Diese  E-Mail-Adresse wird bereits verwendet. Bitte wählen Sie eine andere E-Mail-Adresse.",
+			static::SIG .'errors_no_password'=> "Bitte geben Sie Ihr Passwort ein.",
+			static::SIG .'errors_new_pw_different'=> "Die beiden Passwörter müssen übereinstimmen.",
+			static::SIG .'errors_new_pw_too_short'=> "Das Passwort muss aus mehr als sechs Zeichen bestehen.",
+			static::SIG .'mesg_register_check_email'=> "Um Ihre Registrierung zu bestätigen, lesen Sie bitte die E-Mail, die Ihnen gerade zugeschickt wurde.",
+			static::SIG .'mesg_see_html_alt'=> "Sollte die E-Mail nicht korrekt dargestellt werden, wechseln Sie bitte in das HTML-Format.",
+			static::SIG .'mesg_success'=> "Sie wurden erfolgreich registriert."
 		);
 
 		if(static::$use_un) {
@@ -224,7 +224,7 @@ class SioReg {
 		} else {
 			static::$v[static::SIG]=static::SIG."mv.ixml";
 			$en[static::SIG ."errors_new_pw_too_em_simple"]=" Passwords must be different from your email!";
-			$de[static::SIG ."errors_new_pw_too_em_simple"]=" Passwort und E-Mail dürfen nicht übereinstimmen.";
+			$de[static::SIG ."errors_new_pw_too_em_simple"]=" Passwort und E-Mail-Adresse dürfen nicht übereinstimmen.";
 		}
 		//set these after any contextual changes;
 		static::$v = array_replace(static::$v,$custom_views);
