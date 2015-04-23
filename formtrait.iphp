@@ -621,8 +621,7 @@ trait Form {
 		return $retval;
 	}
 
-
-	public function redirection($redirect=NULL,$insert_qs=NULL,$newid == 0) {
+	public function redirection($redirect=NULL,$insert_qs=NULL,$newid=0) {
         if ($newid != 0) {
             if (!is_null($redirect)) {
                 $new_url = $redirect;
