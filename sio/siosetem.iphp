@@ -9,19 +9,19 @@ class SIOSetEmail {
 	private static $v=array();
 	private static $un_used;
 
-	
+
 /**
  * '__construct'
  */
 	function __construct($key=NULL) {
 		$this->iniForm($key,@static::$v[static::SIG]);
 		$this->key=$key;
-		$this->table="user";
+		$this->table="sio_user";
 		$this->setfld('password','','!skip');
 		$this->setfld('emailp');
-		$this->setfld('emailb','','!skip');	
+		$this->setfld('emailb','','!skip');
 	}
-	
+
 /**
  * 'validate'
  * fn fulfilling abstract requirement of trait 'Form'.
@@ -57,10 +57,10 @@ class SIOSetEmail {
 			if (strcmp($ry->fetch_row()[0],"1") === 0) {
 				$em=$this->fields['emailp'][0];
 				$em=Settings::esc($em);
-				Settings::$sql->query("update user set ts=null,emailp='".$em."' where id='".Settings::$usr['ID']."'");
+				Settings::$sql->query("update ".$this->table." set ts=null,emailp='".$em."' where id='".Settings::$usr['ID']."'");
 				$qry="select username,".static::$munge." as munge from " . $this->table . " where id='" .Settings::$usr['ID']. "' and active='on'";
 				if ($rx = Settings::$sql->query($qry)) {
-					require_once("/websites/shared/lib/PHPMailer/PHPMailerAutoload.php");
+					require_once("PHPMailer/PHPMailerAutoload.php");
 					while ($f = $rx->fetch_assoc()) {
 						$mail_v=new NView(@static::$v[static::SIG."email_body"]);
 						$mail = new PHPMailer();
@@ -69,9 +69,9 @@ class SIOSetEmail {
 						$mail->Encoding='base64';
 						$mail->setFrom('no_reply@redsnapper.net', Dict::get(static::SIG .'note_email_change_title'));
 						if (static::$un_used) {
-							$mail->addAddress($em,Settings::$usr['username']); 
+							$mail->addAddress($em,Settings::$usr['username']);
 						} else {
-							$mail->addAddress($em); 
+							$mail->addAddress($em);
 						}
 						$mail->Subject = Dict::get(static::SIG .'note_email_change_title');
 						$mail->isHTML(true);
@@ -80,7 +80,7 @@ class SIOSetEmail {
 							$url .= '&amp;siof=' . $f['munge'];
 						} else {
 							$url .= '?siof=' . $f['munge'];
-						}			
+						}
 						$mail_v->set("//*[@data-xp='ha']/@href",$url);
 						$mail->Body = $mail_v->show(false);
 						$mail->AltBody=Dict::get(static::SIG .'note_email_see_html_alt');
@@ -94,11 +94,11 @@ class SIOSetEmail {
 		$this->show = false;
 		return true;
 	}
-	
+
 	public static function conforms($hat=NULL) {
 		$retval=false;
-		$ha=Settings::esc($hat); 
-		$query= "select id from user where id='" .Settings::$usr['ID']. "' and ".static::$munge."='".$ha."'";
+		$ha=Settings::esc($hat);
+		$query= "select id from sio_user where id='" .Settings::$usr['ID']. "' and ".static::$munge."='".$ha."'";
 		if ($rs = Settings::$sql->query($query)) {
 			if (Settings::rows($rs) == 1) {
 				$retval=true;
@@ -107,13 +107,13 @@ class SIOSetEmail {
 		}
 		return $retval;
 	}
-	
+
 	public static function pushit($hat=NULL) {
 		if (is_null($hat)) { //check email
 			$nv = new NView(@static::$v[static::SIG."check_mail"]);
 		} else { 			 //set success..
-			$ha=Settings::esc($hat); 
-			$query= "update user set email=emailp where id='" .Settings::$usr['ID']. "' and ".static::$munge."='".$ha."'";
+			$ha=Settings::esc($hat);
+			$query= "update sio_user set email=emailp where id='" .Settings::$usr['ID']. "' and ".static::$munge."='".$ha."'";
 			Settings::$sql->query($query);
 			$nv = new NView(@static::$v[static::SIG."success"]);
 		}
@@ -122,7 +122,7 @@ class SIOSetEmail {
 
 	public static function initialise($using_un=true,$custom_views=array()) {
 		static::$un_used = $using_un;
-//view array	
+//view array
 		static::$v=array(
 			static::SIG=>static::SIG."v.ixml",
 			static::SIG."email_body"=>static::SIG."mv.ixml",
@@ -130,7 +130,7 @@ class SIOSetEmail {
 			static::SIG."success"=>static::SIG."sv.ixml"
 		);
 		static::$v = array_replace(static::$v,$custom_views);
-//Now do translations.	
+//Now do translations.
 		$en = array(
 			static::SIG ."mesg_success"=>"You have successfully changed your email.",
 			static::SIG ."mesg_checkem"=>"To set your email address, confirm the change via the email just sent to you.",

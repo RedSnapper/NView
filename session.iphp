@@ -14,7 +14,7 @@ class Session extends Singleton {
 
 	public static function setto($tom_p=1440) {
 		self::$tom = Settings::$sql->escape_string($tom_p);
-		Settings::$sql->query("delete from session where TIMESTAMPADD(MINUTE," . self::$tom . ",ts) < CURRENT_TIMESTAMP");
+		Settings::$sql->query("delete from sio_session where TIMESTAMPADD(MINUTE," . self::$tom . ",ts) < CURRENT_TIMESTAMP");
 	}
 
 /**
@@ -25,7 +25,7 @@ class Session extends Singleton {
 		if (!empty(self::$session)) {
 			if (!empty($nam)) {
 				$sqlname = Settings::$sql->escape_string($nam);
-				$query= "select count(sid) as found from sessiondata where sid='" . self::$sqlsess . "' and name='" . $sqlname . "'";
+				$query= "select count(sid) as found from sio_sessiondata where sid='" . self::$sqlsess . "' and name='" . $sqlname . "'";
 				if ($x = Settings::$sql->query($query)) {
 					if (strcmp($x->fetch_row()[0],"1") === 0) {
 						$retval=true;
@@ -43,7 +43,7 @@ class Session extends Singleton {
 		$retval = false;
 		if (!empty(self::$session) && !is_null($nam) ) {
 			$sqlname = Settings::$sql->escape_string($nam);
-			if ($rx = Settings::$sql->query("select value from sessiondata where sid='" . self::$sqlsess . "' and name='" . $sqlname . "'")) {
+			if ($rx = Settings::$sql->query("select value from sio_sessiondata where sid='" . self::$sqlsess . "' and name='" . $sqlname . "'")) {
 				$retval = $rx->fetch_row()[0];
 				$rx->close();
 			}
@@ -56,10 +56,10 @@ class Session extends Singleton {
 		if (!empty(self::$session) && !is_null($nam) ) {
 			$sqlnam = Settings::$sql->escape_string($nam);
 			if (is_null($nam)) {
-				Settings::$sql->query("replace into sessiondata (sid,name,value) values ('" . self::$sqlsess . "','" . $sqlnam . "',null)");
+				Settings::$sql->query("replace into sio_sessiondata (sid,name,value) values ('" . self::$sqlsess . "','" . $sqlnam . "',null)");
 			} else {
 				$sqlval = Settings::$sql->escape_string($val);
-				Settings::$sql->query("replace into sessiondata (sid,name,value) values ('" . self::$sqlsess . "','" . $sqlnam . "','" . $sqlval . "')");
+				Settings::$sql->query("replace into sio_sessiondata (sid,name,value) values ('" . self::$sqlsess . "','" . $sqlnam . "','" . $sqlval . "')");
 			}
 		}
 		return $retval;
@@ -69,11 +69,11 @@ class Session extends Singleton {
 		if (!empty(self::$session)) {
 			if(!is_null($nam)) {
 				$sqlname = Settings::$sql->escape_string($nam);
-				$query="delete from sessiondata where sid='" . self::$sqlsess . "' and name='" . $sqlname . "'";
+				$query="delete from sio_sessiondata where sid='" . self::$sqlsess . "' and name='" . $sqlname . "'";
 				Settings::$sql->query($query);
 			} else {
-				Settings::$sql->query("delete from session where id='" . self::$sqlsess . "'");
-				Settings::$sql->query("delete from sessiondata where sid='" . self::$sqlsess . "'");
+				Settings::$sql->query("delete from sio_session where id='" . self::$sqlsess . "'");
+				Settings::$sql->query("delete from sio_sessiondata where sid='" . self::$sqlsess . "'");
 			}
 		}
 	}
@@ -103,10 +103,10 @@ class Session extends Singleton {
 		}
 		if (!empty(self::$session)) {
 			self::$sqlsess = Settings::$sql->escape_string(self::$session);
-			Settings::$sql->query("delete sessiondata from sessiondata left join session on sid=id where id is null");
-			if ($rx = Settings::$sql->query("select count(id) as scount from session where id='" . self::$sqlsess . "'")) {
+			Settings::$sql->query("delete sio_sessiondata from sio_sessiondata left join sio_session on sid=id where id is null");
+			if ($rx = Settings::$sql->query("select count(id) as scount from sio_session where id='" . self::$sqlsess . "'")) {
 				if (strcmp($rx->fetch_row()[0],"0") === 0) {
-					Settings::$sql->query("replace into session set id='" . self::$sqlsess . "'");
+					Settings::$sql->query("replace into sio_session set id='" . self::$sqlsess . "'");
 				}
 				$rx->close();
 			}

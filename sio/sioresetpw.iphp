@@ -8,15 +8,15 @@ class SIOResetPW {
 	public static function sig() { return static::SIG; }
 	private static $munge="sha2(concat(ifnull(username,id),'-',ifnull(password,id),'-',ifnull(email,id),'-',ifnull(ts,id)),256)";
 	private static $v=array();
-	
+
 	function __construct($key=NULL) {
 		$this->iniForm($key,@static::$v[static::SIG]);
 		$this->key=$key; //This will be the siof value passed by url.
-		$this->table="user";
+		$this->table="sio_user";
 		$this->setfld('password');
 		$this->setfld('passwordb','','!skip');
 	}
-	
+
 /**
  * 'validate'
  * fn fulfilling abstract requirement of trait 'Form'.
@@ -27,7 +27,7 @@ class SIOResetPW {
 		$retval = $this->valid;
 		$the_username="[[broken username]]";
 		$the_email="[[broken email]]";
-		$query= "select username,email from user where ".self::$munge."='".$this->key."'";
+		$query= "select username,email from ".$this->table." where ".self::$munge."='".$this->key."'";
 		if ($rs = Settings::$sql->query($query)) {
 			while ($f = $rs->fetch_assoc()) {
 				$the_username=$f['username'];
@@ -43,19 +43,19 @@ class SIOResetPW {
 			if ($pwa !== $pwb ) {
 				$this->seterr("password",Dict::get(static::SIG .'errors_password_different'));
 				$retval = false;
-			} 
+			}
 			if (strlen($pwa) < 7) {
 				$this->seterr("password",Dict::get(static::SIG .'errors_password_short'));
 				$retval = false;
-			} 
+			}
 			if ($pwa === $the_username) {
 				$this->seterr("password",Dict::get(static::SIG .'errors_new_pw_too_un_simple'));
 				$retval = false;
-			} 
+			}
 			if ($pwa === $the_email) {
 				$this->seterr("password",Dict::get(static::SIG .'errors_new_pw_too_em_simple'));
 				$retval = false;
-			} 
+			}
 		} else {
 			$retval = false;
 			$this->seterr("password",Dict::get(static::SIG .'errors_password_empty'));
@@ -65,7 +65,7 @@ class SIOResetPW {
 
 	protected function commit() {
 		$ha=Settings::esc($this->key); //this comes via the url...
-		$query= "select username from user where ".self::$munge."='".$ha."'";
+		$query= "select username from ".$this->table." where ".self::$munge."='".$ha."'";
 		if ($rs = Settings::$sql->query($query)) {
 			while ($f = $rs->fetch_assoc()) {
 				$ph=Settings::esc(hash('sha256',$f['username'].hex2bin('5BE0BDA8E0BDBCE0BDBEE0BC8BE0BDA7E0BDB1E0BDB4E0BDBE5D') . hash('sha256',$this->fields['password'][0])));
@@ -78,11 +78,11 @@ class SIOResetPW {
 		$this->show = false;
 		return true;
 	}
-	
+
 	public static function conforms($hat=NULL) {
 		$retval=false;
-		$ha=Settings::esc($hat); 
-		$query= "select id from user where ".self::$munge."='".$ha."'";
+		$ha=Settings::esc($hat);
+		$query= "select id from ".$this->table." where ".self::$munge."='".$ha."'";
 		if ($rs = Settings::$sql->query($query)) {
 			if (Settings::rows($rs) == 1) {
 				$retval=true;
@@ -91,7 +91,7 @@ class SIOResetPW {
 		}
 		return $retval;
 	}
-	
+
 	public static function initialise($using_un=true,$custom_views=array()) {
 //views arrays
 		static::$v=array(static::SIG=>static::SIG."v.ixml");
@@ -120,7 +120,7 @@ class SIOResetPW {
 		Dict::set($en,'en');
 		Dict::set($de,'de');
 	}
-	
-	
+
+
 }
 

@@ -23,9 +23,6 @@ class Settings extends Singleton {
 		if($_SERVER['QUERY_STRING']) {
 			parse_str($_SERVER['QUERY_STRING'],self::$qst);
 			self::$req=array_keys(self::$qst);
-//			foreach(self::$req as $n => $v) {
-//              self::$req[$n]=rtrim($v,"#");
-//			}
 		}
 		self::$url=strtok($_SERVER["REQUEST_URI"],'?');
 		if ( !empty($_SERVER['PHP_AUTH_USER']) ) {
@@ -61,14 +58,32 @@ class Settings extends Singleton {
 			self::$sphinx = null;
 		}
 		self::$sql->set_charset("utf8");
-		if (!self::table_exists("session")) {
-			self::$sql->query("CREATE TABLE session(id varchar(255) NOT NULL,ts timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, PRIMARY KEY (id), KEY ts (ts)) ENGINE=InnoDB DEFAULT CHARSET=utf8");
+		if (!self::table_exists("sio_session")) {
+            self::$sql->query("CREATE TABLE sio_session(id varchar(255) NOT NULL,ts timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,PRIMARY KEY(id),KEY ts (ts)) ENGINE=InnoDB DEFAULT CHARSET=utf8");
+        }
+		if (!self::table_exists("sio_sessiondata")) {
+			self::$sql->query("CREATE TABLE sio_sessiondata(sid varchar(200) NOT NULL,name varchar(128) NOT NULL,value longtext NOT NULL,PRIMARY KEY(sid,name)) ENGINE=InnoDB DEFAULT CHARSET=utf8");
 		}
-		if (!self::table_exists("sessiondata")) {
-			self::$sql->query("CREATE TABLE sessiondata (sid varchar(200) NOT NULL,name varchar(128) NOT NULL,value longtext NOT NULL,PRIMARY KEY (sid,name)) ENGINE=InnoDB DEFAULT CHARSET=utf8");
+		if (!self::table_exists("sio_user")) {
+		    self::$sql->query("CREATE TABLE sio_user (id int(11) NOT NULL AUTO_INCREMENT,username varchar(68) NOT NULL DEFAULT '',password varchar(250) DEFAULT NULL, email text, emailp text,active char(2) DEFAULT 'on',ts timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,  PRIMARY KEY (id),  UNIQUE KEY username (username),  UNIQUE KEY ausername (username,active)) ENGINE=InnoDB DEFAULT CHARSET=utf8");
 		}
-		if (!self::table_exists("user")) {
-			self::$sql->query("CREATE TABLE user (id int(11) NOT NULL AUTO_INCREMENT,username varchar(68) NOT NULL DEFAULT '',password varchar(250) DEFAULT NULL,email text default NULL,emailp text default NULL,active char(2) DEFAULT 'on',ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,PRIMARY KEY (id),UNIQUE KEY username (username),UNIQUE KEY ausername (username,active)) ENGINE=InnoDB DEFAULT CHARSET=utf8");
+		if (!self::table_exists("sio_userprofile")) {
+		    self::$sql->query("CREATE TABLE sio_userprofile (user int(11) NOT NULL AUTO_INCREMENT,ts timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,PRIMARY KEY (user)) ENGINE=InnoDB DEFAULT CHARSET=utf8");
+		}
+		if (!self::table_exists("sio_activity")) {
+		    self::$sql->query("CREATE TABLE sio_activity(id int(11) NOT NULL AUTO_INCREMENT, name varchar(120) NOT NULL DEFAULT 'unknown', active char(2) DEFAULT'on',PRIMARY KEY(id),UNIQUE KEY (name),KEY(active),KEY(name, active)) ENGINE=InnoDB DEFAULT CHARSET=utf8");
+		}
+		if (!self::table_exists("sio_role")) {
+		    self::$sql->query("CREATE TABLE sio_role(id int(11) NOT NULL AUTO_INCREMENT,cat int(11) NOT NULL DEFAULT '0',name varchar(68) NOT NULL DEFAULT 'None',comment text,active char(2) DEFAULT 'on',PRIMARY KEY(id),UNIQUE KEY (name),KEY (name,active)) ENGINE=InnoDB DEFAULT CHARSET=utf8");
+		}
+		if (!self::table_exists("sio_rolecat")) {
+		    self::$sql->query("CREATE TABLE sio_rolecat(id int(11) NOT NULL AUTO_INCREMENT,name varchar(68) NOT NULL DEFAULT 'None',active char(2) DEFAULT 'on',PRIMARY KEY(id),UNIQUE KEY(name),KEY(name,active)) ENGINE=InnoDB DEFAULT CHARSET=utf8");
+		}
+		if (!self::table_exists("sio_userroles")) {
+		    self::$sql->query("CREATE TABLE sio_userroles(user int(11) NOT NULL DEFAULT '0',role int(11) NOT NULL DEFAULT '0',PRIMARY KEY(user,role)) ENGINE=InnoDB DEFAULT CHARSET=utf8");
+		}
+		if (!self::table_exists("sio_roleactivities")) {
+		    self::$sql->query("CREATE TABLE sio_roleactivities(role int(11) NOT NULL DEFAULT '0',activity int(11) NOT NULL DEFAULT '0',PRIMARY KEY(role,activity)) ENGINE=InnoDB DEFAULT CHARSET=utf8");
 		}
 		self::$website='http';
 		if($_SERVER["HTTPS"]=='on') { self::$website.='s'; }
@@ -90,7 +105,7 @@ class Settings extends Singleton {
 					self::$usr['RU']=Session::get('username');
 				}
 			}
-			if ($rx = self::$sql->query("select id,username,email from user where active='on' and username='". self::$usr['RU'] ."'")) {
+			if ($rx = self::$sql->query("select id,username,email from sio_user where active='on' and username='". self::$usr['RU'] ."'")) {
 				while ($row = $rx->fetch_assoc()) {
 					self::$usr['ID']=$row['id'];
 					self::$usr['username']=$row['username'];
@@ -131,8 +146,8 @@ class Settings extends Singleton {
 		$retval=false;
 		if(!is_null(self::$sql)) {
 			if ($rx = self::$sql->query("select count(*) as present from information_schema.columns where table_schema = '".self::$sqls['database']."' and table_name = '".$table."'")) {
-				while ($row = $rx->fetch_assoc()) {
-					if ($row['present'] > 0) {
+				while ($f = $rx->fetch_assoc()) {
+					if ($f['present'] > 0) {
 						$retval = true;
 					}
 				}

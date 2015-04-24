@@ -17,7 +17,7 @@ class SioSignIn {
 	function __construct($key=NULL) {
 		$this->iniForm($key,@static::$v[static::SIG]);
 		$this->key=$key;
-		$this->table="user";
+		$this->table="sio_user";
 		if(static::$use_un) {
 			$this->setfld('username');
 		} else {
@@ -109,14 +109,14 @@ class SioSignIn {
 	protected function commit() {
 		if(static::$use_un) {
 			Session::set('username',$this->fields['username'][0]);
-			$query= "select email from user where username='".$this->fields['username'][0]."'";
+			$query= "select email from ".$this->table." where username='".$this->fields['username'][0]."'";
 			if ($rs = Settings::$sql->query($query)) {
 				Session::set('email',$rs->fetch_row()[0]);
 				$rs->close();
 			}
 		} else {
 			Session::set('email',$this->fields['email'][0]);
-			$query= "select username from user where email='".$this->fields['email'][0]."'";
+			$query= "select username from ".$this->table." where email='".$this->fields['email'][0]."'";
 			if ($rs = Settings::$sql->query($query)) {
 				Session::set('username',$rs->fetch_row()[0]);
 				$rs->close();

@@ -6,19 +6,19 @@ class SIOSetPW {
 	const SIG = "siosetpw_";
 	public static function sig() { return static::SIG; }
 	private static $v=array();
-	
+
 /**
  * '__construct'
  */
 	function __construct($key=NULL) {
 		$this->iniForm($key,@static::$v[static::SIG]);
 		$this->key=$key;
-		$this->table="user";
+		$this->table="sio_user";
 		$this->setfld('password','','!skip');
 		$this->setfld('passwordn','','!skip');
 		$this->setfld('passwordb','','!skip');
 	}
-	
+
 /**
  * 'validate'
  * fn fulfilling abstract requirement of trait 'Form'.
@@ -48,19 +48,19 @@ class SIOSetPW {
 			if ($pwa !== $pwb ) {
 				$this->seterr("passwordn",Dict::get(static::SIG.'errors_new_pw_different'));
 				$retval = false;
-			} 
+			}
 			if (strlen($pwa) < 7) {
 				$this->seterr("passwordn",Dict::get(static::SIG.'errors_new_pw_too_short'));
 				$retval = false;
-			} 
+			}
 			if ($pwa === Settings::$usr['username']) {
 				$this->seterr("passwordn",Dict::get(static::SIG.'errors_new_pw_too_un_simple'));
 				$retval = false;
-			} 
+			}
 			if ($pwa === Settings::$usr['email']) {
 				$this->seterr("password",Dict::get(static::SIG .'errors_new_pw_too_em_simple'));
 				$retval = false;
-			} 
+			}
 		} else {
 			$this->seterr("passwordn",Dict::get(static::SIG.'errors_new_pw_empty'));
 			$retval = false;
@@ -75,22 +75,22 @@ class SIOSetPW {
 		$this->show = false;
 		return true;
 	}
-	
+
 	public static function pushit() {
 		$nv = new NView(@static::$v[static::SIG."success"]);
 		$nv->set("//*[@data-tr]/@data-tr/preceding-gap()",static::SIG);
 		return $nv;
 	}
-	
+
 	public static function initialise($using_un=true,$custom_views=array()) {
 //set the static arrays.
-		static::$v=array( 
+		static::$v=array(
 			static::SIG=>static::SIG."v.ixml",
 			static::SIG."success"=>static::SIG."sv.ixml"
 		);
 		static::$v = array_replace(static::$v,$custom_views);
-		
-//now do translations	
+
+//now do translations
 		$en = array(
 			static::SIG ."prompt_original_password"=>"Current Password",
 			static::SIG ."prompt_new_password"=>"New Password",
@@ -120,6 +120,6 @@ class SIOSetPW {
 		Dict::set($en,'en');
 		Dict::set($de,'de');
 	}
-	
+
 }
 

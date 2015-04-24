@@ -11,7 +11,7 @@ class SIO {
 		if (isset($err) && !empty($err)) {
 			print $err;
 		} else {
-			$formlet=null;
+        $formlet=null;
 			$stt=0;		//stt: 0=other, 1=sign-in, 2=sign-out.
 			if (Session::has('username')) { //signed in.
 				$stt=2; //default = sign-out.
