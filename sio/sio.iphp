@@ -22,7 +22,7 @@ class SIO {
 						$formlet=SIOSetEmail::pushit($siof); //sig.pushit
 						$stt=0;
 					} else {
-						$stt=1;
+						header("Location: " . Settings::$url);
 					}
 				}
 				if ($stt==2 ) {
