@@ -52,6 +52,7 @@ class SIO {
 							print('[got to push]');
 							SioResetPW::pushit();
 						} else {
+							$stt=1;
 							print('[form failed]');
 						}
 					} else {
