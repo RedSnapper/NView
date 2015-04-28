@@ -9,6 +9,7 @@ require_once("formtrait.iphp");
 require_once("dictionary.iphp");
 require_once("settings.iphp");
 require_once("session.iphp");
+require_once("export.iphp");
 
 //really should only call these if req.
 require_once("sio/sio.iphp");
