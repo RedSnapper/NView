@@ -82,7 +82,7 @@ class SIOResetPW {
 	public static function conforms($hat=NULL) {
 		$retval=false;
 		$ha=Settings::esc($hat);
-		$query= "select id from ".$this->table." where ".self::$munge."='".$ha."'";
+		$query= "select id from sio_user where ".self::$munge."='".$ha."'";
 		if ($rs = Settings::$sql->query($query)) {
 			if (Settings::rows($rs) == 1) {
 				$retval=true;

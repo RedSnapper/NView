@@ -8,13 +8,15 @@ class SioForgot {
 	const SIG = "sioforgot_";
 	public static function sig() { return static::SIG; }
 	private static $v=array();
+	private static $usernaming=true;
 
 /**
  * '__construct'
  */
-	function __construct($key=NULL) {
+	function __construct($key=NULL,$use_username=true) {
 		$this->iniForm($key,@static::$v[static::SIG]);
 		$this->key=$key;
+		$this->usernaming=$use_username;
 		$this->table="sio_user";
 		$this->setfld('username');
 		$this->setfld('email');

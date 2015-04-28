@@ -59,7 +59,7 @@ class SIO {
 							$formlet=$sio->pushit();
 						}
 					} elseif (SioForgot::inScope() || isset(Settings::$qst[SioForgot::SIG]) ) {
-						$stt=0; $sio=new SioForgot(); $formlet=$sio->form(false);
+						$stt=0; $sio=new SioForgot(); $formlet=$sio->form(false,static::$use_username);
 						if ($sio->success()) {
 							$formlet=$sio->commitv();
 						}

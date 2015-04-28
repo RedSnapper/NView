@@ -105,6 +105,12 @@ class SioReg {
 		$this->fields['passwordn'][0]='';
 		$insql="insert into ".$this->table." set ts=null,".$extra."emailp='".$em."',password='".$ph."',active='xx'";
 		Settings::$sql->query($insql);
+		if ($r=Settings::$sql->query("select last_insert_id()")) {
+			$this->newid = intval($r->fetch_row()[0]);
+			if ($this->newid !== 0) {
+				$query= "insert into sio_userprofile set user=".$this->newid."";
+			}
+		}
 		if ($rx = Settings::$sql->query($qry)) {
 			require_once("PHPMailer/PHPMailerAutoload.php");
 			while ($f = $rx->fetch_assoc()) {
