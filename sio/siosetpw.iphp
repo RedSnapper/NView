@@ -30,7 +30,14 @@ class SIOSetPW {
 	protected function validate() {
 		$retval = true;
 		if (isset($this->fields['password'][0])) {
-			$ph=hash('sha256',Settings::$usr['username'] . hex2bin('5BE0BDA8E0BDBCE0BDBEE0BC8BE0BDA7E0BDB1E0BDB4E0BDBE5D') . hash('sha256',$this->fields['password'][0]));
+			if($this->usernaming) {
+				$unm=Settings::$usr['username'];
+			} else {
+				$unm=Settings::$usr['email'];
+			}
+			Settings::esc($unm);
+		
+			$ph=hash('sha256',$unm. hex2bin('5BE0BDA8E0BDBCE0BDBEE0BC8BE0BDA7E0BDB1E0BDB4E0BDBE5D') . hash('sha256',$this->fields['password'][0]));
 			$this->fields['password'][0]='';
 			$qry="select count(id) as ok from " . $this->table . " where active='on' and id='" .Settings::$usr['ID']. "' and password='" . $ph . "'";
 			if ($rx = Settings::$sql->query($qry)) {
@@ -77,7 +84,7 @@ class SIOSetPW {
 			$unm=Settings::$usr['email'];
 		}
 		Settings::esc($unm);
-		$ph=hash('sha256',Settings::$usr['username'] . hex2bin('5BE0BDA8E0BDBCE0BDBEE0BC8BE0BDA7E0BDB1E0BDB4E0BDBE5D') . hash('sha256',$this->fields['passwordn'][0]));
+		$ph=hash('sha256',$unm . hex2bin('5BE0BDA8E0BDBCE0BDBEE0BC8BE0BDA7E0BDB1E0BDB4E0BDBE5D') . hash('sha256',$this->fields['passwordn'][0]));
 		Settings::esc($ph);
 		$qry="update " . $this->table . " set password='".$ph."' where active='on' and id='" .Settings::$usr['ID']. "'";
 		Settings::$sql->query($qry);
