@@ -76,6 +76,7 @@ class SIOResetPW {
 			}
 			$rs->close();
 		}
+		header("Location:".Settings::$url); //drop the siof.
 		$this->show = false;
 		return true;
 	}
