@@ -92,7 +92,7 @@ class SIOSetPW {
 		return true;
 	}
 
-	public static function pushit() {
+	public function pushit() {
 		$nv = new NView(@static::$v[static::SIG."success"]);
 		$nv->set("//*[@data-tr]/@data-tr/preceding-gap()",static::SIG);
 		return $nv;

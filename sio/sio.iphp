@@ -29,12 +29,12 @@ class SIO {
 					if (SioSetPW::inScope()) {  //doing a set-pw post.
 						$stt=0; $sio=new SioSetPW(null,static::$use_username); $formlet=$sio->form(false);
 						if ($sio->success()) {
-							SioSetPW::pushit();
+							$formlet=$sio->pushit();
 						}
 					} elseif (SIOSetEmail::inScope()) {  //doing a set-pw post.
 						$stt=0; $sio=new SIOSetEmail(); $formlet=$sio->form(false);
 						if ($sio->success()) {
-							SIOSetEmail::pushit();
+							$formlet=SIOSetEmail::pushit();
 						}
 					}
 				}
