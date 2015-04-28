@@ -46,7 +46,7 @@ class SIO {
 						$stt=0;
 						$formlet=SioReg::pushit($siof);
 					} elseif (SioResetPW::conforms($siof)) {
-						$stt=0; $sio=new SioResetPW($siof);
+						$stt=0; $sio=new SioResetPW($siof,static::$use_username);
 						$formlet=$sio->form(false);
 						if ($sio->success()) { //else this is a get/failed post.
 							$formlet=SioResetPW::pushit();

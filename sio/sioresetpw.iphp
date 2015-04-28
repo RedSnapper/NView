@@ -9,10 +9,12 @@ class SIOResetPW {
 	//this munge must be the same as the one in sioforgot_
 	private static $munge="sha2(concat(ifnull(username,id),'-',ifnull(password,id),'-',ifnull(email,id),'-',ifnull(ts,id)),256)";
 	private static $v=array();
+	private $usernaming=true;
 
-	function __construct($key=NULL) {
+	function __construct($key=NULL,$use_username=true) {
 		$this->iniForm($key,@static::$v[static::SIG]);
 		$this->key=$key; //This will be the siof value passed by url.
+		$this->usernaming=$use_username;
 		$this->table="sio_user";
 		$this->setfld('password');
 		$this->setfld('passwordb','','!skip');
@@ -66,10 +68,16 @@ class SIOResetPW {
 
 	protected function commit() {
 		$ha=Settings::esc($this->key); //this comes via the url...
-		$query= "select username from ".$this->table." where ".self::$munge."='".$ha."'";
+		$query= "select username,email from ".$this->table." where ".self::$munge."='".$ha."'";
 		if ($rs = Settings::$sql->query($query)) {
 			while ($f = $rs->fetch_assoc()) {
-				$ph=hash('sha256',$f['username'].hex2bin('5BE0BDA8E0BDBCE0BDBEE0BC8BE0BDA7E0BDB1E0BDB4E0BDBE5D') . hash('sha256',$this->fields['password'][0]));
+				if($this->usernaming) {
+					$unm=$f['username'];
+				} else { //using email
+					$unm=$f['email'];
+				}
+				$unm=Settings::esc($unm);
+				$ph=hash('sha256', $unm . hex2bin('5BE0BDA8E0BDBCE0BDBEE0BC8BE0BDA7E0BDB1E0BDB4E0BDBE5D') . hash('sha256',$this->fields['password'][0]));
 				Settings::esc($ph);
 				$cond=" and ".self::$munge."='".$ha."'";
 				$qry="update " . $this->table . " set password='".$ph."',ts=current_timestamp where active='on' ".$cond ;
