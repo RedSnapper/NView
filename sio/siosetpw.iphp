@@ -108,6 +108,7 @@ class SIOSetPW {
 
 //now do translations
 		$en = array(
+			static::SIG ."mesg_success"=>"You have successfully changed your password.",
 			static::SIG ."prompt_original_password"=>"Current Password",
 			static::SIG ."prompt_new_password"=>"New Password",
 			static::SIG ."prompt_retype_new_password"=>"Retype New Password",
@@ -121,6 +122,7 @@ class SIOSetPW {
 			static::SIG ."errors_new_pw_too_em_simple"=>" Passwords must be different from your email!"
 		);
 		$de = array(
+			static::SIG ."mesg_success"=>"Sie haben Ihre passwort erfolgreich geändert.",
 			static::SIG ."prompt_original_password"=>"Bisheriges Passwort",
 			static::SIG ."prompt_new_password"=>"Neues Passwort",
 			static::SIG ."prompt_retype_new_password"=>"Neues Passwort wiederholen",
