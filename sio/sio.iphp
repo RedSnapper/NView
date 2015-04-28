@@ -52,7 +52,7 @@ class SIO {
 							$formlet=SioResetPW::pushit();
 						} else {
 							$formlet=NULL;
-							header("Location: " . Settings::$url);
+//							header("Location: " . Settings::$url);
 							print('[form failed]');
 						}
 					} else {
