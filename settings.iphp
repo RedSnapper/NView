@@ -9,6 +9,7 @@ class Settings extends Singleton {
 	public static $sphinx=null;
 	public static $sql=null;
 	public static $url=null; //current url
+	public static $msg=array();	//array of application variables
 	public static $usr=array();	//current user details
 	public static $req=array();	//querystring for unnamed parameters.
 	public static $qst=array();	//associational querystring - for named parameters.
