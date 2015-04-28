@@ -8,7 +8,7 @@ class SioForgot {
 	const SIG = "sioforgot_";
 	public static function sig() { return static::SIG; }
 	private static $v=array();
-	private static $usernaming=true;
+	private $usernaming=true;
 
 /**
  * '__construct'
@@ -67,7 +67,11 @@ class SioForgot {
 				} else {
 					$url .= '?siof=' . $f['munge'];
 				}
-				$mail_v->set("//*[@data-xp='un']/child-gap()",$f['username']);
+				if ($this->usernaming) {
+					$mail_v->set("//*[@data-xp='un']/child-gap()",$f['username']);
+				} else {
+					$mail_v->set("//*[@data-xp='un']");
+				}
 				$mail_v->set("//*[@data-xp='ha']/@href",$url);
 				$mail->Body = $mail_v->show(false);
 				$mail->AltBody= Dict::get(static::SIG .'mail_see_alt');
