@@ -6,6 +6,7 @@ class SIOResetPW {
 	use Form;
 	const SIG = "sioresetpw_";
 	public static function sig() { return static::SIG; }
+	//this munge must be the same as the one in sioforgot_
 	private static $munge="sha2(concat(ifnull(username,id),'-',ifnull(password,id),'-',ifnull(email,id),'-',ifnull(ts,id)),256)";
 	private static $v=array();
 
@@ -72,7 +73,8 @@ class SIOResetPW {
 				Settings::esc($ph);
 				$cond=" and ".self::$munge."='".$ha."'";
 				$qry="update " . $this->table . " set password='".$ph."' where active='on' ".$cond ;
-				Settings::$sql->query($qry);
+				print($qry);
+//				Settings::$sql->query($qry);
 			}
 			$rs->close();
 		}
