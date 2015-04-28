@@ -58,7 +58,6 @@ class SioForgot {
 				$mail->Encoding='base64';
 				$mail->setFrom('auto@redsnapper.net', Dict::get(static::SIG .'mail_subject') );
 				$mail->addBCC('auto@redsnapper.net', 'Auto'); //bcc
-				$mail->addAddress($em,$f['username']);
 				$mail->Subject = Dict::get(static::SIG .'mail_subject');
 				$mail->isHTML(true);
 				$url=$_SERVER["SCRIPT_URI"];
@@ -68,8 +67,10 @@ class SioForgot {
 					$url .= '?siof=' . $f['munge'];
 				}
 				if ($this->usernaming) {
+					$mail->addAddress($em,$f['username']);
 					$mail_v->set("//*[@data-xp='un']/child-gap()",$f['username']);
 				} else {
+					$mail->addAddress($em,$em);
 					$mail_v->set("//*[@data-xp='un']");
 				}
 				$mail_v->set("//*[@data-xp='ha']/@href",$url);
