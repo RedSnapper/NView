@@ -48,13 +48,9 @@ class SIO {
 					} elseif (SioResetPW::conforms($siof)) {
 						$stt=0; $sio=new SioResetPW($siof);
 						$formlet=$sio->form(false);
-						if ($sio->success()) {
+						if ($sio->success()) { //else this is a get/failed post.
 							$formlet=SioResetPW::pushit();
-						} else {
-							$formlet=NULL;
-//							header("Location: " . Settings::$url);
-							print('[form failed]');
-						}
+						} 
 					} else {
 						$stt=1;
 					}
