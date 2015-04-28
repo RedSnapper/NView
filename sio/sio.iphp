@@ -21,6 +21,9 @@ class SIO {
 					if (SIOSetEmail::conforms($siof)) {
 						$formlet=SIOSetEmail::pushit($siof); //sig.pushit
 						$stt=0;
+					} else {
+						$stt=0;
+						header("Location:".Settings::$url);
 					}
 				}
 				if ($stt==2 ) {
@@ -50,7 +53,8 @@ class SIO {
 							$stt=1;
 						}
 					} else {
-						$stt=1;
+						$stt=0;
+						header("Location:".Settings::$url);
 					}
 				} else {
 					if (SioReg::inScope() || isset(Settings::$qst[SioReg::SIG]) ) {
