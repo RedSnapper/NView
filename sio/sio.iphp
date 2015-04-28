@@ -49,7 +49,7 @@ class SIO {
 						$stt=0; $sio=new SioResetPW($siof);
 						$formlet=$sio->form(false);
 						if ($sio->success()) {
-							$stt=1;
+							SioResetPW::pushit();
 						}
 					} else {
 						$stt=1;

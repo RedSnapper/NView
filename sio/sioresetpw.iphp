@@ -76,9 +76,14 @@ class SIOResetPW {
 			}
 			$rs->close();
 		}
-		header("Location:".Settings::$url); //drop the siof.
 		$this->show = false;
 		return true;
+	}
+
+	public static function pushit() {
+		$nv = new NView(@static::$v[static::SIG."success"]);
+		$nv->set("//*[@data-tr]/@data-tr/preceding-gap()",static::SIG);
+		return $nv;
 	}
 
 	public static function conforms($hat=NULL) {
@@ -96,10 +101,14 @@ class SIOResetPW {
 
 	public static function initialise($using_un=true,$custom_views=array()) {
 //views arrays
-		static::$v=array(static::SIG=>static::SIG."v.ixml");
+		static::$v=array(
+			static::SIG=>static::SIG."v.ixml",
+			static::SIG."success"=>static::SIG."sv.ixml"
+		);
 		static::$v = array_replace(static::$v,$custom_views);
 //translations
 		$en = array(
+			static::SIG ."mesg_success"=>"You have successfully changed your password.",
 			static::SIG .'prompt_password' => "Password",
 			static::SIG .'prompt_retype_password' => "Retype Password",
 			static::SIG .'button_new_password'=>"Set New Password",
@@ -110,6 +119,7 @@ class SIOResetPW {
 			static::SIG .'errors_new_pw_too_em_simple'=>"  Passwords must be different from your email!"
 		);
 		$de = array(
+			static::SIG ."mesg_success"=>"Sie haben Ihre passwort erfolgreich geändert.",
 			static::SIG .'prompt_password' => "Passwort",
 			static::SIG .'prompt_retype_password' => "Passwort wiederholen",
 			static::SIG .'button_new_password'=>"Neues Passwort festlegen",
