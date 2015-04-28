@@ -72,6 +72,7 @@ class SIOResetPW {
 				Settings::esc($ph);
 				$cond=" and ".self::$munge."='".$ha."'";
 				$qry="update " . $this->table . " set password='".$ph."' where active='on' ".$cond ;
+				print("[".$qry."]");
 				Settings::$sql->query($qry);
 			}
 			$rs->close();

@@ -22,7 +22,7 @@ class SIO {
 						$formlet=SIOSetEmail::pushit($siof); //sig.pushit
 						$stt=0;
 					} else {
-						header("Location: " . Settings::$url);
+						$stt=1;
 					}
 				}
 				if ($stt==2 ) {
@@ -49,10 +49,10 @@ class SIO {
 						$stt=0; $sio=new SioResetPW($siof);
 						$formlet=$sio->form(false);
 						if ($sio->success()) {
-							print('[got to push]');
-							SioResetPW::pushit();
+							$formlet=SioResetPW::pushit();
 						} else {
-							$stt=1;
+							$formlet=NULL;
+							header("Location: " . Settings::$url);
 							print('[form failed]');
 						}
 					} else {
