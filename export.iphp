@@ -2,7 +2,7 @@
 mb_internal_encoding('UTF-8');
 
 class Export {
-	static function csv($fn="data.csv",$addheaders=true,$sql="select null") {
+	static function csv($fn="data.csv",$addheaders=true,$sql="select a,b,c") {
 		if($addheaders) {
 			header("Content-Type: text/csv; charset=UTF-16LE");
 			header("Content-Disposition: attachment; filename=".$fn );
