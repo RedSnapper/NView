@@ -46,6 +46,7 @@ class SIO {
 						$stt=0;
 						$formlet=SioReg::pushit($siof);
 					} elseif (SioResetPW::conforms($siof)) {
+						print("[it conforms]")
 						$stt=0; $sio=new SioResetPW($siof);
 						$formlet=$sio->form(false);
 						if ($sio->success()) {
