@@ -435,6 +435,7 @@ trait Form {
 					}
 				}
 			}
+			header("X-Form-".static::sig().": " . $this->committed ? "true":"false");
 		} else {
 			$this->setfields(false); //we can populate the fields if we want.
 		}
