@@ -420,8 +420,8 @@ trait Form {
 					if($this->debug) {
 						print("<p>Validate returned".$this->valid."</p>");
 					}
-					if (! $this->valid) {
-						header("X-Form-".static::sig().": invalid");
+					if (!$this->valid) {
+						Settings::$msg[static::sig()."-status"]="invalid";
 					} 
 					if ($this->valid && ! $this->committed) {
                         if($this->debug) {
@@ -431,7 +431,7 @@ trait Form {
 						if ( $this->show || !($this->committed) ) { //do not repop if !show and com.
 							$this->setfields(true); //we can repopulate the fields if we want.
 							if ($this->committed) {
-								header("X-Form-".static::sig().": true");
+								Settings::$msg[static::sig()."-status"]="committed";
 							} 
 						}
 					} else {
