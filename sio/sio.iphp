@@ -4,6 +4,7 @@ class SIO {
 	const SIG = "sio_";
 	private static $v=array();
 	private static $use_username=true;
+//print_r(Settings::$qst);
 
 	public static function run() {
 		$v = new NView(@static::$v[static::SIG]);
@@ -52,12 +53,12 @@ class SIO {
 						$stt=1;
 					}
 				} else {
-					if (SioReg::inScope() || isset(Settings::$req[SioReg::SIG]) ) {
+					if (SioReg::inScope() || isset(Settings::$qst[SioReg::SIG]) ) {
 						$stt=0; $sio=new SioReg(); $formlet=$sio->form(false);
 						if ($sio->success()) {
 							$formlet=$sio->pushit();
 						}
-					} elseif (SioForgot::inScope() || isset(Settings::$req[SioForgot::SIG]) ) {
+					} elseif (SioForgot::inScope() || isset(Settings::$qst[SioForgot::SIG]) ) {
 						$stt=0; $sio=new SioForgot(); $formlet=$sio->form(false);
 						if ($sio->success()) {
 							$formlet=$sio->commitv();
