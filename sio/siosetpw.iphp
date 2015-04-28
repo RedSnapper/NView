@@ -69,7 +69,8 @@ class SIOSetPW {
 	}
 
 	protected function commit() {
-		$ph=Settings::esc(hash('sha256',Settings::$usr['username'] . hex2bin('5BE0BDA8E0BDBCE0BDBEE0BC8BE0BDA7E0BDB1E0BDB4E0BDBE5D') . hash('sha256',$this->fields['passwordn'][0])));
+		$ph=hash('sha256',Settings::$usr['username'] . hex2bin('5BE0BDA8E0BDBCE0BDBEE0BC8BE0BDA7E0BDB1E0BDB4E0BDBE5D') . hash('sha256',$this->fields['passwordn'][0]));
+		Settings::esc($ph);
 		$qry="update " . $this->table . " set password='".$ph."' where active='on' and id='" .Settings::$usr['ID']. "'";
 		Settings::$sql->query($qry);
 		$this->show = false;
