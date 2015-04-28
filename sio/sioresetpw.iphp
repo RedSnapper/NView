@@ -72,9 +72,8 @@ class SIOResetPW {
 				$ph=hash('sha256',$f['username'].hex2bin('5BE0BDA8E0BDBCE0BDBEE0BC8BE0BDA7E0BDB1E0BDB4E0BDBE5D') . hash('sha256',$this->fields['password'][0]));
 				Settings::esc($ph);
 				$cond=" and ".self::$munge."='".$ha."'";
-				$qry="update " . $this->table . " set password='".$ph."' where active='on' ".$cond ;
-				print($qry);
-//				Settings::$sql->query($qry);
+				$qry="update " . $this->table . " set password='".$ph."',ts=current_timestamp where active='on' ".$cond ;
+				Settings::$sql->query($qry);
 			}
 			$rs->close();
 		}
