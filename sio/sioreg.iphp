@@ -137,7 +137,7 @@ class SioReg {
 	public static function conforms($hat=NULL) {
 		$retval=false;
 		$ha=Settings::esc($hat);
-		$query= "select id from ".static::$table." where ".static::$munge."='".$ha."'";
+		$query= "select id from sio_user where ".static::$munge."='".$ha."'";
 		if ($rs = Settings::$sql->query($query)) {
 			if (Settings::rows($rs) == 1) {
 				$retval=true;
@@ -153,7 +153,7 @@ class SioReg {
 			$nv->set("//*[@data-tr]/@data-tr/preceding-gap()",static::SIG);
 		} else {
 			$ha=Settings::esc($hat);
-			$query= "update ".static::$table." set email=emailp,active='on' where active='xx' and ".static::$munge."='".$ha."'";
+			$query= "update sio_user set email=emailp,active='on' where active='xx' and ".static::$munge."='".$ha."'";
 			Settings::$sql->query($query);
 			$nv = new NView(@static::$v[static::SIG."success"]);
 			$nv->set("//*[@data-tr]/@data-tr/preceding-gap()",static::SIG);
