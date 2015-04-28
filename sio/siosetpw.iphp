@@ -6,14 +6,16 @@ class SIOSetPW {
 	const SIG = "siosetpw_";
 	public static function sig() { return static::SIG; }
 	private static $v=array();
+	private $usernaming=true;
 
 /**
  * '__construct'
  */
-	function __construct($key=NULL) {
+	function __construct($key=NULL,$use_username=true) {
 		$this->iniForm($key,@static::$v[static::SIG]);
 		$this->key=$key;
 		$this->table="sio_user";
+		$this->usernaming=$use_username;
 		$this->setfld('password','','!skip');
 		$this->setfld('passwordn','','!skip');
 		$this->setfld('passwordb','','!skip');
@@ -69,6 +71,12 @@ class SIOSetPW {
 	}
 
 	protected function commit() {
+		if($this->usernaming) {
+			$unm=Settings::$usr['username'];
+		} else {
+			$unm=Settings::$usr['email'];
+		}
+		Settings::esc($unm);
 		$ph=hash('sha256',Settings::$usr['username'] . hex2bin('5BE0BDA8E0BDBCE0BDBEE0BC8BE0BDA7E0BDB1E0BDB4E0BDBE5D') . hash('sha256',$this->fields['passwordn'][0]));
 		Settings::esc($ph);
 		$qry="update " . $this->table . " set password='".$ph."' where active='on' and id='" .Settings::$usr['ID']. "'";

@@ -27,7 +27,7 @@ class SIO {
 				}
 				if ($stt==2 ) {
 					if (SioSetPW::inScope()) {  //doing a set-pw post.
-						$stt=0; $sio=new SioSetPW(); $formlet=$sio->form(false);
+						$stt=0; $sio=new SioSetPW(null,static::$use_username); $formlet=$sio->form(false);
 						if ($sio->success()) {
 							SioSetPW::pushit();
 						}
