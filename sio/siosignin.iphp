@@ -84,7 +84,6 @@ class SioSignIn {
 			$ph=SIOSetPW::enhash($unm,$this->fields['password'][0]);
 			Settings::esc($unm);
 			$qry="select count(id) as ok from " . $this->table . " where active='on' and ".$field."='" .$unm. "' and password='" . $ph . "'";
-			print($qry);
 			if ($rx = Settings::$sql->query($qry)) {
 				if (strcmp($rx->fetch_row()[0],"1") === 0) {
 					$retval=true;
