@@ -81,7 +81,6 @@ class SIOSetPW {
 		}
 		$ph=SIOSetPW::enhash($unm,$this->fields['passwordn'][0]);
 		$qry="update " . $this->table . " set password='".$ph."' where active='on' and id='" .Settings::$usr['ID']. "'";
-		print($qry);
 		Settings::$sql->query($qry);
 		$this->show = false;
 		return true;
