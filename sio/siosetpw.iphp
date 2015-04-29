@@ -93,7 +93,7 @@ class SIOSetPW {
 		return $nv;
 	}
 	
-	public static function enhash($umn=NULL,&$pw=NULL) {
+	public static function enhash($unm=NULL,&$pw=NULL) {
 		if (!is_null($unm)) {
 			Settings::esc($unm);
 			$str= $unm . hex2bin('5BE0BDA8E0BDBCE0BDBEE0BC8BE0BDA7E0BDB1E0BDB4E0BDBE5D') . hash('sha256',$pw,false);
