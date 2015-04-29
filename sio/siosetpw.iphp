@@ -93,14 +93,18 @@ class SIOSetPW {
 		return $nv;
 	}
 	
-	public static function enhash(&$umn=NULL,&$pw=NULL) {
-		$unm = Settings::esc($unm);
-		$str= $unm . hex2bin('5BE0BDA8E0BDBCE0BDBEE0BC8BE0BDA7E0BDB1E0BDB4E0BDBE5D') . hash('sha256',$pw,false);
-		print($str);
-		$ph=hash('sha256', $str, false);
-		Settings::esc($ph);
-		$pw=NULL;
-		return $ph;
+	public static function enhash($umn=NULL,&$pw=NULL) {
+		if (!isnull($unm)) {
+			Settings::esc($unm);
+			$str= $unm . hex2bin('5BE0BDA8E0BDBCE0BDBEE0BC8BE0BDA7E0BDB1E0BDB4E0BDBE5D') . hash('sha256',$pw,false);
+			print($str);
+			$ph=hash('sha256', $str, false);
+			Settings::esc($ph);
+			$pw=NULL;
+			return $ph;
+		} else {
+			return NULL;
+		}
 	}
 
 	public static function initialise($use_un=true,$custom_views=array()) {
