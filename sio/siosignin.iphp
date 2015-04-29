@@ -97,6 +97,8 @@ class SioSignIn {
 				}
 				$rx->close();
 			}
+		} else { //set empty error.
+			$this->seterr("password",Dict::get(static::SIG.'errors_odd_error'));
 		}
 		$this->valid = $retval;
 	}
@@ -165,6 +167,8 @@ class SioSignIn {
 			$de[static::SIG .'errors_email_empty']=" Bitte geben Sie Ihr Passwort ein.";
 
 		}
+		$en[static::SIG ."errors_odd_error"]= "Odd Error Occured: Please contact administrator";
+		
 		//set the views after all the above.
 		static::$v = array_replace(static::$v,$custom_views);
 		Dict::set($en,'en');
