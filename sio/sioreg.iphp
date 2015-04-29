@@ -90,7 +90,7 @@ class SioReg {
 			if (isset($this->fields['username'][0])) {
 				$uname=$this->fields['username'][0];
 				$unm=$uname;
-				Settings::esc($uname)
+				Settings::esc($uname);
 				$extra="username='".$uname."',";
 				$qry="select ".static::$munge." as munge,emailp from " . $this->table . " where username='" .$uname. "' and active='xx'";
 			}
