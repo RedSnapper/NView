@@ -3,8 +3,7 @@ mb_internal_encoding('UTF-8');
 class SIO {
 	const SIG = "sio_";
 	private static $v=array();
-	private static $use_username=true;
-//print_r(Settings::$qst);
+	private static $use_un=true;
 
 	public static function run() {
 		$v = new NView(@static::$v[static::SIG]);
@@ -27,7 +26,7 @@ class SIO {
 				}
 				if ($stt==2 ) {
 					if (SioSetPW::inScope()) {  //doing a set-pw post.
-						$stt=0; $sio=new SioSetPW(null,static::$use_username); $formlet=$sio->form(false);
+						$stt=0; $sio=new SioSetPW(null); $formlet=$sio->form(false);
 						if ($sio->success()) {
 							$formlet=$sio->pushit();
 						}
@@ -46,7 +45,7 @@ class SIO {
 						$stt=0;
 						$formlet=SioReg::pushit($siof);
 					} elseif (SioResetPW::conforms($siof)) {
-						$stt=0; $sio=new SioResetPW($siof,static::$use_username);
+						$stt=0; $sio=new SioResetPW($siof);
 						$formlet=$sio->form(false);
 						if ($sio->success()) { //else this is a get/failed post.
 							$formlet=SioResetPW::pushit();
@@ -61,7 +60,7 @@ class SIO {
 							$formlet=$sio->pushit();
 						}
 					} elseif (SioForgot::inScope() || isset(Settings::$qst[SioForgot::SIG]) ) {
-						$stt=0; $sio=new SioForgot(null,static::$use_username); $formlet=$sio->form(false);
+						$stt=0; $sio=new SioForgot(null); $formlet=$sio->form(false);
 						if ($sio->success()) {
 							$formlet=$sio->commitv();
 						}
@@ -90,7 +89,7 @@ class SIO {
 
 //This must be run to overload views and translations.
 	public static function initialise($use_un=true,$custom_views=array(),$translations=NULL) {
-		static::$use_username=$use_un;
+		static::$use_un=$use_un;
 		static::$v=array(
 			static::SIG => static::SIG."v.ixml"
 		);

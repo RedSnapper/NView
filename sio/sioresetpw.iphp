@@ -9,12 +9,11 @@ class SIOResetPW {
 	//this munge must be the same as the one in sioforgot_
 	private static $munge="sha2(concat(ifnull(username,id),'-',ifnull(password,id),'-',ifnull(email,id),'-',ifnull(ts,id)),256)";
 	private static $v=array();
-	private $usernaming=true;
+	private static $use_un=true;
 
-	function __construct($key=NULL,$use_username=true) {
+	function __construct($key=NULL) {
 		$this->iniForm($key,@static::$v[static::SIG]);
 		$this->key=$key; //This will be the siof value passed by url.
-		$this->usernaming=$use_username;
 		$this->table="sio_user";
 		$this->setfld('password');
 		$this->setfld('passwordb','','!skip');
@@ -71,14 +70,12 @@ class SIOResetPW {
 		$query= "select username,email from ".$this->table." where ".self::$munge."='".$ha."'";
 		if ($rs = Settings::$sql->query($query)) {
 			while ($f = $rs->fetch_assoc()) {
-				if($this->usernaming) {
+				if(static::$use_un) {
 					$unm=$f['username'];
 				} else { //using email
 					$unm=$f['email'];
 				}
-				$unm=Settings::esc($unm);
-				$ph=hash('sha256', $unm . hex2bin('5BE0BDA8E0BDBCE0BDBEE0BC8BE0BDA7E0BDB1E0BDB4E0BDBE5D') . hash('sha256',$this->fields['password'][0]));
-				Settings::esc($ph);
+				$ph=SIOSetPW::enhash($unm,$this->fields['password'][0]);
 				$cond=" and ".self::$munge."='".$ha."'";
 				$qry="update " . $this->table . " set password='".$ph."',ts=current_timestamp where active='on' ".$cond ;
 				Settings::$sql->query($qry);
@@ -108,7 +105,8 @@ class SIOResetPW {
 		return $retval;
 	}
 
-	public static function initialise($using_un=true,$custom_views=array()) {
+	public static function initialise($use_un=true,$custom_views=array()) {
+		static::$use_un=$use_un;
 //views arrays
 		static::$v=array(
 			static::SIG=>static::SIG."v.ixml",

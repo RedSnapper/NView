@@ -9,15 +9,14 @@ class SioForgot {
 	const SIG = "sioforgot_";
 	public static function sig() { return static::SIG; }
 	private static $v=array();
-	private $usernaming=true;
+	private static $use_un=true;
 
 /**
  * '__construct'
  */
-	function __construct($key=NULL,$use_username=true) {
+	function __construct($key=NULL) {
 		$this->iniForm($key,@static::$v[static::SIG]);
 		$this->key=$key;
-		$this->usernaming=$use_username;
 		$this->table="sio_user";
 		$this->setfld('username');
 		$this->setfld('email');
@@ -67,7 +66,7 @@ class SioForgot {
 				} else {
 					$url .= '?siof=' . $f['munge'];
 				}
-				if ($this->usernaming) {
+				if (static::$use_un) {
 					$mail->addAddress($em,$f['username']);
 					$mail_v->set("//*[@data-xp='un']/child-gap()",$f['username']);
 				} else {
@@ -84,7 +83,8 @@ class SioForgot {
 		return true;
 	}
 
-	public static function initialise($using_un=true,$custom_views=array()) {
+	public static function initialise($use_un=true,$custom_views=array()) {
+		static::$use_un=$use_un;
 //views array
 		static::$v=array(
 			static::SIG=>static::SIG."v.ixml",

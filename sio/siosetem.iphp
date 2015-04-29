@@ -7,8 +7,7 @@ class SIOSetEmail {
 	public static function sig() { return static::SIG; }
 	private static $munge="sha2(concat(ifnull(username,id),'+',ifnull(password,id),'+',ifnull(email,id),'+',ifnull(ts,id)),256)";
 	private static $v=array();
-	private static $un_used;
-
+	private static $use_un=true;
 
 /**
  * '__construct'
@@ -50,8 +49,12 @@ class SIOSetEmail {
 	}
 
 	protected function commit() {
-		$ph=hash('sha256', Settings::$usr['username'] . hex2bin('5BE0BDA8E0BDBCE0BDBEE0BC8BE0BDA7E0BDB1E0BDB4E0BDBE5D') . hash('sha256',$this->fields['password'][0]));
-		$this->fields['password'][0]='';
+		if(static::$use_un) {
+			$unm=$Settings::$usr['username'];
+		} else { //using email
+			$unm=Settings::$usr['email'];
+		}
+		$ph=SIOSetPW::enhash($unm,$this->fields['password'][0]);
 		$qpy="select count(id) as ok from " . $this->table . " where active='on' and id='" .Settings::$usr['ID']. "' and password='" . $ph . "' and active='on'";
 		if ($ry = Settings::$sql->query($qpy)) {
 			if (strcmp($ry->fetch_row()[0],"1") === 0) {
@@ -68,7 +71,7 @@ class SIOSetEmail {
 						$mail->CharSet='utf-8';
 						$mail->Encoding='base64';
 						$mail->setFrom('no_reply@redsnapper.net', Dict::get(static::SIG .'note_email_change_title'));
-						if (static::$un_used) {
+						if (static::$use_un) {
 							$mail->addAddress($em,Settings::$usr['username']);
 						} else {
 							$mail->addAddress($em);
@@ -120,8 +123,8 @@ class SIOSetEmail {
 		return $nv;
 	}
 
-	public static function initialise($using_un=true,$custom_views=array()) {
-		static::$un_used = $using_un;
+	public static function initialise($use_un=true,$custom_views=array()) {
+		static::$use_un=$use_un;
 //view array
 		static::$v=array(
 			static::SIG=>static::SIG."v.ixml",

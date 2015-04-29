@@ -6,16 +6,15 @@ class SIOSetPW {
 	const SIG = "siosetpw_";
 	public static function sig() { return static::SIG; }
 	private static $v=array();
-	private $usernaming=true;
+	private static $use_un=true;
 
 /**
  * '__construct'
  */
-	function __construct($key=NULL,$use_username=true) {
+	function __construct($key=NULL) {
 		$this->iniForm($key,@static::$v[static::SIG]);
 		$this->key=$key;
 		$this->table="sio_user";
-		$this->usernaming=$use_username;
 		$this->setfld('password','','!skip');
 		$this->setfld('passwordn','','!skip');
 		$this->setfld('passwordb','','!skip');
@@ -30,14 +29,12 @@ class SIOSetPW {
 	protected function validate() {
 		$retval = true;
 		if (isset($this->fields['password'][0])) {
-			if($this->usernaming) {
-				$unm=Settings::$usr['username'];
-			} else {
+			if(static::$use_un) {
+				$unm=$Settings::$usr['username'];
+			} else { //using email
 				$unm=Settings::$usr['email'];
 			}
-			Settings::esc($unm);
-		
-			$ph=hash('sha256',$unm. hex2bin('5BE0BDA8E0BDBCE0BDBEE0BC8BE0BDA7E0BDB1E0BDB4E0BDBE5D') . hash('sha256',$this->fields['password'][0]));
+			$ph=SIOSetPW::enhash($unm,$this->fields['password'][0]);
 			$this->fields['password'][0]='';
 			$qry="select count(id) as ok from " . $this->table . " where active='on' and id='" .Settings::$usr['ID']. "' and password='" . $ph . "'";
 			if ($rx = Settings::$sql->query($qry)) {
@@ -78,14 +75,12 @@ class SIOSetPW {
 	}
 
 	protected function commit() {
-		if($this->usernaming) {
-			$unm=Settings::$usr['username'];
-		} else {
+		if(static::$use_un) {
+			$unm=$Settings::$usr['username'];
+		} else { //using email
 			$unm=Settings::$usr['email'];
 		}
-		Settings::esc($unm);
-		$ph=hash('sha256',$unm . hex2bin('5BE0BDA8E0BDBCE0BDBEE0BC8BE0BDA7E0BDB1E0BDB4E0BDBE5D') . hash('sha256',$this->fields['passwordn'][0]));
-		Settings::esc($ph);
+		$ph=SIOSetPW::enhash($unm,$this->fields['passwordn'][0]);
 		$qry="update " . $this->table . " set password='".$ph."' where active='on' and id='" .Settings::$usr['ID']. "'";
 		Settings::$sql->query($qry);
 		$this->show = false;
@@ -97,8 +92,17 @@ class SIOSetPW {
 		$nv->set("//*[@data-tr]/@data-tr/preceding-gap()",static::SIG);
 		return $nv;
 	}
+	
+	public static function enhash(&$umn=NULL,&$pw=NULL) {
+		Settings::esc($unm);
+		$ph=hash('sha256',$unm,hex2bin('5BE0BDA8E0BDBCE0BDBEE0BC8BE0BDA7E0BDB1E0BDB4E0BDBE5D') . hash('sha256',$pw));
+		Settings::esc($ph);
+		$pw=NULL;
+		return $ph;
+	}
 
-	public static function initialise($using_un=true,$custom_views=array()) {
+	public static function initialise($use_un=true,$custom_views=array()) {
+		static::$use_un=$use_un;
 //set the static arrays.
 		static::$v=array(
 			static::SIG=>static::SIG."v.ixml",

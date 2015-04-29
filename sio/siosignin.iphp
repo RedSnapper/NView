@@ -64,7 +64,6 @@ class SioSignIn {
 		if(static::$use_un) {
 			if (isset($this->fields['username'][0])) {
 				$unm=$this->fields['username'][0];
-				$unm=Settings::esc($unm);
 				$field="username";
 			} else {
 				$this->seterr("username",Dict::get(static::SIG.'errors_username_empty'));
@@ -75,7 +74,6 @@ class SioSignIn {
 					$this->seterr("email",Dict::get(static::SIG.'errors_email_badformat'));
 				} else { //good format.
 					$unm=$this->fields['email'][0];
-					$unm=Settings::esc($unm);
 					$field="email";
 				}
 			} else { //set empty error.
@@ -83,8 +81,8 @@ class SioSignIn {
 			}
 		}
 		if (!is_null($unm) && isset($this->fields['password'][0])) {
-			$ph=hash('sha256', $unm . hex2bin('5BE0BDA8E0BDBCE0BDBEE0BC8BE0BDA7E0BDB1E0BDB4E0BDBE5D') . hash('sha256',$this->fields['password'][0]));
-			$this->fields['password'][0]='';
+			$ph=SIOSetPW::enhash($unm,$this->fields['password'][0]);
+			Settings::esc($unm);
 			$qry="select count(id) as ok from " . $this->table . " where active='on' and ".$field."='" .$unm. "' and password='" . $ph . "'";
 			if ($rx = Settings::$sql->query($qry)) {
 				if (strcmp($rx->fetch_row()[0],"1") === 0) {
@@ -126,8 +124,8 @@ class SioSignIn {
 		return true;
 	}
 
-	public static function initialise($using_un=true,$custom_views=array()) {
-		static::$use_un=$using_un;
+	public static function initialise($use_un=true,$custom_views=array()) {
+		static::$use_un=$use_un;
 //translations
 		$en = array(
 			static::SIG .'prompt_password'=>"Password",

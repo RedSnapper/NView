@@ -9,6 +9,7 @@ class SioSignOut {
 	const SIG = "siosignout_";
 	public static function sig() { return static::SIG; }
 	private static $v=array();
+	private static $use_un=true;
 
 /**
  * '__construct'
@@ -48,6 +49,7 @@ class SioSignOut {
 	}
 
 	public static function initialise($use_un=true,$custom_views=array()) {
+		static::$use_un=$use_un;
 //views array.
 		static::$v=array(
 			static::SIG=>static::SIG."v.ixml",

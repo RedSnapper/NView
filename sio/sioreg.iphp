@@ -85,24 +85,23 @@ class SioReg {
 
 	protected function commit() {
 		$unm = NULL;
+		$em=$this->fields['emailp'][0]; Settings::esc($em);
 		if(static::$use_un) {
 			if (isset($this->fields['username'][0])) {
-				$unm=$this->fields['username'][0];
-				$unm=Settings::esc($unm);
-				$extra="username='".$unm."',";
-				$qry="select ".static::$munge." as munge,emailp from " . $this->table . " where username='" .$unm. "' and active='xx'";
+				$uname=$this->fields['username'][0];
+				$unm=$uname;
+				Settings::esc($uname)
+				$extra="username='".$uname."',";
+				$qry="select ".static::$munge." as munge,emailp from " . $this->table . " where username='" .$uname. "' and active='xx'";
 			}
 		} else { //using email
 			if (isset($this->fields['emailp'][0])) { //not empty
 				$unm=$this->fields['emailp'][0];
-				$unm=Settings::esc($unm);
 				$extra="username='".uniqid("u",true)."',";
-				$qry="select ".static::$munge." as munge,emailp from " . $this->table . " where emailp='" .$unm. "' and active='xx'";
+				$qry="select ".static::$munge." as munge,emailp from " . $this->table . " where emailp='" .$em . "' and active='xx'";
 			}
 		}
-		$em=$this->fields['emailp'][0]; $em=Settings::esc($em);
-		$ph=hash('sha256', $unm . hex2bin('5BE0BDA8E0BDBCE0BDBEE0BC8BE0BDA7E0BDB1E0BDB4E0BDBE5D') . hash('sha256',$this->fields['passwordn'][0]));
-		$this->fields['passwordn'][0]='';
+		$ph=SIOSetPW::enhash($unm,$this->fields['passwordn'][0]);
 		$insql="insert into ".$this->table." set ts=null,".$extra."emailp='".$em."',password='".$ph."',active='xx'";
 		Settings::$sql->query($insql);
 		if ($r=Settings::$sql->query("select last_insert_id()")) {
@@ -167,8 +166,8 @@ class SioReg {
 		return $nv;
 	}
 
-	public static function initialise($using_un=true,$custom_views=array()) {
-		static::$use_un=$using_un;
+	public static function initialise($use_un=true,$custom_views=array()) {
+		static::$use_un=$use_un;
 //views array
 		static::$v=array(
 			static::SIG."email_body"=>static::SIG."mb.ixml",
