@@ -141,7 +141,7 @@ class SioSignIn {
 		);
 
 //set the views array.
-		if($using_un) {
+		if(static::$use_un) {
 			static::$v[static::SIG]=static::SIG."uv.ixml";
 			$en[static::SIG .'prompt_username']= "Username";
 			$en[static::SIG .'errors_username_unmatched']=" Either the username or password don't match our records.";
