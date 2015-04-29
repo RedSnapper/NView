@@ -35,7 +35,6 @@ class SIOSetPW {
 				$unm=Settings::$usr['email'];
 			}
 			$ph=SIOSetPW::enhash($unm,$this->fields['password'][0]);
-			$this->fields['password'][0]='';
 			$qry="select count(id) as ok from " . $this->table . " where active='on' and id='" .Settings::$usr['ID']. "' and password='" . $ph . "'";
 			if ($rx = Settings::$sql->query($qry)) {
 				if (strcmp($rx->fetch_row()[0],"1") !== 0) {
@@ -64,7 +63,7 @@ class SIOSetPW {
 				$retval = false;
 			}
 			if ($pwa === Settings::$usr['email']) {
-				$this->seterr("password",Dict::get(static::SIG .'errors_new_pw_too_em_simple'));
+				$this->seterr("passwordn",Dict::get(static::SIG .'errors_new_pw_too_em_simple'));
 				$retval = false;
 			}
 		} else {
@@ -82,6 +81,7 @@ class SIOSetPW {
 		}
 		$ph=SIOSetPW::enhash($unm,$this->fields['passwordn'][0]);
 		$qry="update " . $this->table . " set password='".$ph."' where active='on' and id='" .Settings::$usr['ID']. "'";
+		print($qry);
 		Settings::$sql->query($qry);
 		$this->show = false;
 		return true;
