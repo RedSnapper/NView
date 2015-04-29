@@ -17,6 +17,7 @@ class SioSignIn {
 	function __construct($key=NULL) {
 		$this->iniForm($key,@static::$v[static::SIG]);
 		$this->key=$key;
+		$this->debug = true;
 		$this->table="sio_user";
 		if(static::$use_un) {
 			$this->setfld('username');
