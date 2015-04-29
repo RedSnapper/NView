@@ -124,7 +124,6 @@ class Settings extends Singleton {
                  }
                 $rx->close();
             }
-
 		} else {
 			Session::del('username');
 			self::$usr['ID']=NULL;
