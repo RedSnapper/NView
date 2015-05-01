@@ -23,7 +23,7 @@ class Settings extends Singleton {
  	protected function __construct() {
 		if($_SERVER['QUERY_STRING']) {
 			parse_str($_SERVER['QUERY_STRING'],self::$qst);
-			self::$req=array_keys(self::$qst);
+			self::$req=explode ('&',$_SERVER['QUERY_STRING']);
 		}
 		self::$url=strtok($_SERVER["REQUEST_URI"],'?');
 		if ( !empty($_SERVER['PHP_AUTH_USER']) ) {
