@@ -63,6 +63,7 @@ class SioSignIn {
 		$unm = NULL;
 		if(static::$use_un) {
 			if (isset($this->fields['username'][0])) {
+                $this->fields['username'][0]=mb_strtolower($this->fields['username'][0]);
 				$unm=$this->fields['username'][0];
 				$field="username";
 			} else {
@@ -171,7 +172,7 @@ class SioSignIn {
 
 		}
 		$en[static::SIG ."errors_odd_error"]= "Odd Error Occured: Please contact administrator";
-		
+
 		//set the views after all the above.
 		static::$v = array_replace(static::$v,$custom_views);
 		Dict::set($en,'en');
