@@ -289,6 +289,9 @@ trait Form {
 				case "label": {
 						$this->view->set("//*[@data-xp='" .$input . "']//*[@data-xp='label']/text()",$val);
 				} break;
+				case "hide": {
+						$this->view->set("//*[@data-xp='" .$input . "']/@style","display:none;");
+				} break;
 				default: {
 						$this->view->set("//*[@name='" . $input . "']/@value",$val);
 				} break;
@@ -422,7 +425,7 @@ trait Form {
 					}
 					if (!$this->valid) {
 						Settings::$msg[static::sig()."-status"]="invalid";
-					} 
+					}
 					if ($this->valid && ! $this->committed) {
                         if($this->debug) {
                             print("<p>About to commit</p>");
@@ -432,7 +435,7 @@ trait Form {
 							$this->setfields(true); //we can repopulate the fields if we want.
 							if ($this->committed) {
 								Settings::$msg[static::sig()."-status"]="committed";
-							} 
+							}
 						}
 					} else {
                         if($this->debug) {
