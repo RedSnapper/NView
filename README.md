@@ -1,5 +1,7 @@
 ![NView](logo.png)
 
+[Docs](http://redsnapper.github.io/NView)
+
 ##What is NView, and why use it?
 * Natural Views, which are a means of being able to separate php from html completely. There are several key advantages that this offers:
  * More readable code / design.
