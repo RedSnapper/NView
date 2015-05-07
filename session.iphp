@@ -12,6 +12,9 @@ class Session extends Singleton {
 	private static $session=null;
 	private static $sqlsess=null;
 
+/*
+ * set timeout (in minutes)
+*/
 	public static function setto($tom_p=1440) {
 		self::$tom = Settings::$sql->escape_string($tom_p);
 		Settings::$sql->query("delete from sio_session where TIMESTAMPADD(MINUTE," . self::$tom . ",ts) < CURRENT_TIMESTAMP");

@@ -137,6 +137,7 @@ trait Form {
 		$this->names = array(); //array of input names.
 		$this->committed = false;
 		$this->valid = true;
+		$this->show = true;
 		$this->insert_qs=NULL;
 		$this->redirect = NULL;
 		$this->subsfield =NULL;
