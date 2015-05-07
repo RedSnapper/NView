@@ -34,8 +34,20 @@ class SioSignIn {
 		return md5($this->signature);
 	}
 
+
+/*
+ * populate, by common demand...
+*/
+	public function populate() { 
+		if(static::$use_un) {
+			$this->vset('username');
+		} else { //using email
+			$this->vset('email');
+		}
+	}
+
 /**
- * 'validate'
+ * 'func'
  * fn fulfilling form trait func, which deals with different button presses.
  * These are set by values in the buttons on the view.
  * fn 'save' - the default action - is handled higher up.
@@ -98,7 +110,7 @@ class SioSignIn {
 				$rx->close();
 			}
 		} else { //set empty error.
-			$this->seterr("password",Dict::get(static::SIG.'errors_odd_error'));
+			$this->seterr("password",Dict::get(static::SIG.'errors_password_empty'));
 		}
 		$this->valid = $retval;
 	}
@@ -171,7 +183,7 @@ class SioSignIn {
 			$de[static::SIG .'errors_email_empty']=" Bitte geben Sie Ihr Passwort ein.";
 
 		}
-		$en[static::SIG ."errors_odd_error"]= "Odd Error Occured: Please contact administrator";
+		$en[static::SIG ."errors_password_empty"]= "You need to enter your email address and password!";
 
 		//set the views after all the above.
 		static::$v = array_replace(static::$v,$custom_views);

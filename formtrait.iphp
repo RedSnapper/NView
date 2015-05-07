@@ -416,7 +416,7 @@ trait Form {
 					}
 					$this->subscriber();
 				}
-				if (! $this->committed) {
+				if (!$this->committed) {
 					if($this->debug) {
 						print("<p>fn Save, about to validate</p>");
 					}
