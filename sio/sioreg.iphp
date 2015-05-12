@@ -83,7 +83,7 @@ class SioReg {
 		}
 	}
 
-	protected function commit() {
+	public function commit() {
 		$unm = NULL;
 		$em=$this->fields['emailp'][0]; Settings::esc($em);
 		if(static::$use_un) {
