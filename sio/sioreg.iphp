@@ -21,7 +21,7 @@ class SioReg {
 		$this->setfld('passwordb','','!skip');
 	}
 
-	protected function validate() {
+	public function validate() {
 		$retval = true;
 		if(static::$use_un) {
 			if (isset($this->fields['username'][0])) {
