@@ -1,0 +1,29 @@
+<?php
+mb_internal_encoding('UTF-8');
+set_include_path( get_include_path() . PATH_SEPARATOR . __DIR__ . PATH_SEPARATOR . $_SERVER['DOCUMENT_ROOT']);
+
+//basic classes / traits used everywhere.
+require_once("patterns.iphp");
+require_once("nview.iphp");
+require_once("formtrait.iphp");
+require_once("dictionary.iphp");
+require_once("settings.iphp");
+require_once("session.iphp");
+require_once("export.iphp");
+
+//really should only call these if req.
+require_once("sio/sio.iphp");
+require_once("sio/siosignin.iphp");
+require_once("sio/siosignout.iphp");
+require_once("sio/sioreg.iphp");
+require_once("sio/sioforgot.iphp");
+require_once("sio/siosetpw.iphp");
+require_once("sio/siosetem.iphp");
+require_once("sio/sioresetpw.iphp");
+
+Settings::getInstance(); //initialise settings..
+Session::getInstance();  //initialise session.
+Settings::usr();		 //maybe this should be set by sio.
+Session::setto(144000); //100 days
+
+
