@@ -95,23 +95,25 @@ class NView {
  * 'tset - translation hooks'
  */
 	public function tset($keys= NULL) {
-		if(is_null($keys) && class_exists("Dict")) {
-			$tr_attrs = $this->get("//*[@data-tr]/@data-tr");
-			if ($tr_attrs instanceof DOMNodeList) {
-				foreach($tr_attrs as $n) {
-					$nvnode = $this->strToNode(Dict::get($n->value)); //textnode from the dictionary keyed by the attribute value.
-					$n->parentNode->appendChild($nvnode);			  //now we have added it in.
-					$n->parentNode->removeAttributeNode($n);		  //now remove the translation attribute.
-				}
-			} else { //just the one attribute..
-				$this->set("//*[@data-tr='".$tr_attrs."']/child-gap()",Dict::get($tr_attrs));
-				$this->set("//*[@data-tr='".$tr_attrs."']/@data-tr");
-			}
-		} else {
-			foreach($keys as $k) {
-				$this->set("//*[@data-tr='" . $k . "']/child-gap()",Dict::get($k));
-			}
-		}
+	    if(class_exists("Dict")) {
+            if(is_null($keys)) {
+                $tr_attrs = $this->get("//*[@data-tr]/@data-tr");
+                if ($tr_attrs instanceof DOMNodeList) {
+                    foreach($tr_attrs as $n) {
+                        $nvnode = $this->strToNode(Dict::get($n->value)); //textnode from the dictionary keyed by the attribute value.
+                        $n->parentNode->appendChild($nvnode);			  //now we have added it in.
+                        $n->parentNode->removeAttributeNode($n);		  //now remove the translation attribute.
+                    }
+                } else { //just the one attribute..
+                    $this->set("//*[@data-tr='".$tr_attrs."']/child-gap()",Dict::get($tr_attrs));
+                    $this->set("//*[@data-tr='".$tr_attrs."']/@data-tr");
+                }
+            } else {
+                foreach($keys as $k) {
+                    $this->set("//*[@data-tr='" . $k . "']/child-gap()",Dict::get($k));
+                }
+            }
+        }
 	}
 
 /**
