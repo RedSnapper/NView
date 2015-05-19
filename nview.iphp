@@ -90,12 +90,12 @@ class NView {
 			}
 		}
 	}
-	
+
 /**
  * 'tset - translation hooks'
  */
 	public function tset($keys= NULL) {
-		if(is_null($keys)) {
+		if(is_null($keys) && class_exists("Dict")) {
 			$tr_attrs = $this->get("//*[@data-tr]/@data-tr");
 			if ($tr_attrs instanceof DOMNodeList) {
 				foreach($tr_attrs as $n) {
@@ -113,7 +113,7 @@ class NView {
 			}
 		}
 	}
-	
+
 /**
  * 'addNamespace'
  */
@@ -122,7 +122,7 @@ class NView {
 			$this->xp->registerNamespace($prefix,$namespace);
 		}
 	}
-	
+
 
 /**
  * 'strToNode'
@@ -147,7 +147,7 @@ class NView {
 		}
 		$node = $this->doc->importNode($fnode, true);
 		return $node;
-		
+
 	}
 
 /**
@@ -633,7 +633,7 @@ class NView {
 	function doMsg($errno, $errstr='', $errfile='', $errline=0) {
 		$this->msgs[] = array($errno, $errstr, $errfile, $errline); //this adds to the array
 	}
-	
+
 	function noMsg($errno, $errstr='', $errfile='', $errline=0) {
 		$this->errs .= $errstr; //error was made.
 	}
