@@ -210,12 +210,6 @@ class NView {
 							$retval = new DOMDocument("1.0","utf-8");
 							$retval->preserveWhiteSpace = true;
 							$retval->formatOutput = false;
-/* not sure if we need the following bit here */
-                            if (empty($entry->prefix)) {
-                                $entry->setAttribute("xmlns",$value->namespaceURI);
-                            } else {
-                                $entry->setAttribute("xmlns:".$value->prefix,$value->namespaceURI);
-                            }
 							$node = $retval->importNode($entry, true);
 							$retval->appendChild($node);
 							$olde= $this->doc->documentElement;
@@ -507,16 +501,11 @@ class NView {
 			$this->initXPath();
 		} elseif ($value->nodeType == XML_ELEMENT_NODE) {
 			$this->initDoc();
-			if (empty($value->prefix)) {
-			    $value->setAttribute("xmlns",$value->namespaceURI);
-			} else {
-			    $value->setAttribute("xmlns:".$value->prefix,$value->namespaceURI);
-			}
 			$node = $this->doc->importNode($value, true);
 			$this->doc->appendChild($node);
 			$olde= $value->ownerDocument->documentElement;
 			if ($olde->hasAttributes()) {
-			    $myde= $this->doc->documentElement;
+				$myde= $this->doc->documentElement;
 				foreach ($olde->attributes as $attr) {
 					if (substr($attr->nodeName,0,6)=="xmlns:") {
 						$myde->removeAttribute($attr->nodeName);
