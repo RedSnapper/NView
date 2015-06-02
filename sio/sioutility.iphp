@@ -77,6 +77,7 @@ class SioUtility {
         if($this->numeric)
         {
         	$regex['pw_error_no_number']= "/^(?=.+[\d]).+$/";
+        	print('got here');
         } else {
         	unset($this->pw_regex['pw_error_no_number']);
         }
