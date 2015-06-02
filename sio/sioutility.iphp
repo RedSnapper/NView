@@ -121,7 +121,7 @@ class SioUtility {
 			//so, a single repeated character should have a low score, and every letter being different is high.
 			//therefore, where N is the number of chars in the password, and U being the number of unique letters,
 			//we are looking at a result of (U/N) 
-			$score_a = $asize / $score_len;
+			$score_a = 0.25 * $asize / $score_len; //the effect of duplicate characters should not be too high.
 			$cc=preg_replace('/(.)./','\1',bin2hex($password)); //This is the character class string.
 			$cz=gzdeflate($cc,9);				//deflate of char. class string.
 			$score_b = min($score_len,strlen($cz)-1) / $score_len;	//5 is the minimum value of gzdeflate length.	
