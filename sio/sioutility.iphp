@@ -170,7 +170,8 @@ class SioUtility {
 		$en = array(
 			"pw_error_length_too_short"=>" Passwords must be more than six characters.",
 			"pw_error_not_mixed_case"=>" Passwords must include both upper and lower case characters.",
-			"pw_error_no_number"=>" Passwords must include at least one digit."
+			"pw_error_no_number"=>" Passwords must include at least one digit.",
+			"pw_error_no_alpha"=>" Passwords must include at least one letter."
 		);
 
 		$de = array(
