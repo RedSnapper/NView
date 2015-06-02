@@ -112,7 +112,7 @@ class SioUtility {
     	$score = 0;
     	$pw_len=strlen($password);
     	if ($pw_len > 0) {
-			$score_len=max($pw_len,5);
+			$score_len=max($pw_len,6);
 			$pa=str_split($password);		//all the characters, in an array.
 			$ar = array_unique($pa);		//just the unique characters, sorted.
 			$asize=count($ar);				//the size of the alphabet being used.
@@ -131,7 +131,8 @@ class SioUtility {
 			$score_c = min($score_len,strlen($pz)-5) / $score_len;	//5 is the minimum value of gzdeflate length.
 				
 			$normal = 100 * ($score_a * $score_b * $score_c);
-			$score = (int) max(0,min($normal,100));
+			$score = $normal;
+//			$score = (int) max(0,min($normal,100));
 		}
      	return $score;
    }
