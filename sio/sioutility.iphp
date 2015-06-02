@@ -57,7 +57,7 @@ class SioUtility {
     {
         $this->minLength = (int) $minLength;
     }
-    public function pw_set_minScore($minScore=30) 
+    public function pw_set_minScore($minScore=0) 
     {
         $this->minScore = (int) $minScore;
     }
