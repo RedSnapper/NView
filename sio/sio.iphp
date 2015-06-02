@@ -108,6 +108,6 @@ class SIO {
 				Dict::set($trans_array,$lang);
 			}
 		}
-		$this->utility = new SioUtility();
+		static::$utility = new SioUtility();
 	}
 }
