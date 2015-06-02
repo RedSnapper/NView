@@ -127,7 +127,7 @@ class SioUtility {
 			$score_b = min($score_len,strlen($cz)-1) / $score_len;	//5 is the minimum value of gzdeflate length.	
 			$pz=gzdeflate($password,9);			//deflate of password
 			$score_c = min($score_len,strlen($pz)-1) / $score_len;	//5 is the minimum value of gzdeflate length.	
-			$normal = 100 * (sqrt($score_a * $score_b * $score_c));
+			$normal = 100 * (pow($score_a * $score_b * $score_c,2));
 			$score = (int) max(0,min($normal,100));
 		}
      	return $score;
