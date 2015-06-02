@@ -76,8 +76,7 @@ class SioUtility {
         $this->numeric = (boolean) $numeric;
         if($this->numeric)
         {
-        	$regex['pw_error_no_number']= "/^(?=.+[\d]).+$/";
-        	print('got here');
+        	$this->pw_regex['pw_error_no_number']= "/^(?=.+[\d]).+$/";
         } else {
         	unset($this->pw_regex['pw_error_no_number']);
         }
@@ -87,7 +86,7 @@ class SioUtility {
         $this->symbols = (boolean) $symbols;
         if($this->symbols)
         {
-        	$regex['pw_error_no_symbols']= "/^(?=.+[^\w\s]).+$/";
+        	$this->pw_regex['pw_error_no_symbols']= "/^(?=.+[^\w\s]).+$/";
         } else {
         	unset($this->pw_regex['pw_error_no_symbols']);
         }
@@ -97,7 +96,7 @@ class SioUtility {
         $this->mixedCase = (boolean) $mixedCase;
         if($this->mixedCase)
         {
-        	$regex['pw_error_not_mixed_case']= "/^(?=.*[a-z])(?=.*[A-Z]).+$/";
+        	$this->pw_regex['pw_error_not_mixed_case']= "/^(?=.*[a-z])(?=.*[A-Z]).+$/";
         } else {
         	unset($this->pw_regex['pw_error_not_mixed_case']);
         }
@@ -154,7 +153,6 @@ class SioUtility {
     	}
     	   	
  		foreach($this->pw_regex as $sig => $reg) {
- 			print('('.$sig.')');
  			if (!(boolean) preg_match($reg,$password)) {
     			$err_arr[]=$sig;
  			}
