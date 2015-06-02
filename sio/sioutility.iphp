@@ -130,7 +130,6 @@ class SioUtility {
 			$normal = 100 * ($score_a * $score_b * $score_c);
 			$score = (int) max(0,min($normal,100));
 		}
-		print( '[[' . $score . ']]');
      	return $score;
    }
 
@@ -154,6 +153,7 @@ class SioUtility {
     	}
     	   	
  		foreach($this->pw_regex as $sig => $reg) {
+ 			print('('.$sig.')');
  			if (!(boolean) preg_match($reg,$password)) {
     			$err_arr[]=$sig;
  			}
