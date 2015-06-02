@@ -112,7 +112,7 @@ class SioUtility {
     	$score = 0;
     	$pw_len=strlen($password);
     	if ($pw_len > 0) {
-		
+			$score_len=min($pw_len,5);
 			$pa=str_split($password);		//all the characters, in an array.
 			$ar = array_unique($pa);		//just the unique characters, sorted.
 			$asize=count($ar);				//the size of the alphabet being used.
@@ -121,12 +121,12 @@ class SioUtility {
 			//so, a single repeated character should have a low score, and every letter being different is high.
 			//therefore, where N is the number of chars in the password, and U being the number of unique letters,
 			//we are looking at a result of (U/N) 
-			$score_a = $asize / $pw_len;
+			$score_a = $asize / $score_len;
 			$cc=preg_replace('/(.)./','\1',bin2hex($password)); //This is the character class string.
 			$cz=gzdeflate($cc,9);				//deflate of char. class string.
-			$score_b = min($pw_len,strlen($cz)-1) / $pw_len;	//5 is the minimum value of gzdeflate length.	
+			$score_b = min($score_len,strlen($cz)-1) / $score_len;	//5 is the minimum value of gzdeflate length.	
 			$pz=gzdeflate($password,9);			//deflate of password
-			$score_c = min($pw_len,strlen($pz)-1) / $pw_len;	//5 is the minimum value of gzdeflate length.	
+			$score_c = min($score_len,strlen($pz)-1) / $score_len;	//5 is the minimum value of gzdeflate length.	
 			$normal = 100 * ($score_a * $score_b * $score_c);
 			$score = (int) max(0,min($normal,100));
 		}
