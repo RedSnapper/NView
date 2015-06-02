@@ -124,6 +124,8 @@ class SioUtility {
 			$score_a = $asize / $score_len; //the effect of duplicate characters should not be too high.
 			$score_a = 1.0;
 			
+			$password=implode($ar);
+			
 			$cc=preg_replace('/(.)./','\1',bin2hex($password)); //This is the character class string.
 			$cz=gzdeflate($cc,9);				//deflate of char. class string.
 			$score_b = min($score_len,strlen($cz)-5) / $score_len;	//5 is the minimum value of gzdeflate length.	
