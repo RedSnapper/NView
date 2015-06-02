@@ -13,6 +13,7 @@ require_once("export.iphp");
 
 //really should only call these if req.
 require_once("sio/sio.iphp");
+require_once("sio/sioutility.iphp");
 require_once("sio/siosignin.iphp");
 require_once("sio/siosignout.iphp");
 require_once("sio/sioreg.iphp");
