@@ -115,7 +115,7 @@ class SioUtility {
 		
 			$pa=str_split($password);		//all the characters, in an array.
 			$ar = array_unique($pa);		//just the unique characters, sorted.
-			$asize=size($ar);				//the size of the alphabet being used.
+			$asize=count($ar);				//the size of the alphabet being used.
 
 			//one score is set by considering the size of the unique by the size of the password.
 			//so, a single repeated character should have a low score, and every letter being different is high.
