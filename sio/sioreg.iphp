@@ -69,10 +69,12 @@ class SioReg {
 				$this->seterr("passwordn",Dict::get(static::SIG.'errors_new_pw_different'));
 				$retval = false;
 			}
-			if (strlen($pwa) < 7) {
-				$this->seterr("passwordn",Dict::get(static::SIG.'errors_new_pw_too_short'));
-				$retval = false;
+			$err_ar = array();
+			$pw_retval = SIO::$utility->pw_validate($pwa,$err_ar);
+			foreach($err_a as $err) {
+				$this->seterr("passwordn",Dict::get($err));
 			}
+			$retval= $retval && $pw_retval;
 		} else {
 			$this->seterr("passwordn",Dict::get(static::SIG.'errors_no_password'));
 			$retval = false;
