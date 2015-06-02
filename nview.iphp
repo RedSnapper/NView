@@ -501,6 +501,11 @@ class NView {
 			$this->initXPath();
 		} elseif ($value->nodeType == XML_ELEMENT_NODE) {
 			$this->initDoc();
+			if (empty($value->prefix)) {
+				$value->setAttribute("xmlns",$value->namespaceURI);
+			} else {
+				$value->setAttribute("xmlns:".$value->prefix,$value->namespaceURI);
+			}			
 			$node = $this->doc->importNode($value, true);
 			$this->doc->appendChild($node);
 			$olde= $value->ownerDocument->documentElement;
