@@ -50,6 +50,7 @@ class SioUtility {
     	$this->pw_set_needsNumeric();
     	$this->pw_set_needsSymbols();
     	$this->pw_set_needsMixedCase();
+    	$this->initialise();
     }
 
 	/*pw settings functions */
@@ -163,5 +164,22 @@ class SioUtility {
  		}   
         return count($err_arr) == 0;
     }
+    
+	private function initialise() {
+//translations
+		$en = array(
+			"pw_error_length_too_short"=>" Passwords must be more than six characters.",
+			"pw_error_not_mixed_case"=>" Passwords must include both upper and lower case characters.",
+			"pw_error_no_number"=>" Passwords must include at least one digit."
+		);
+
+		$de = array(
+			'pw_error_length_too_short'=> "Das Passwort muss aus mehr als sechs Zeichen bestehen."
+		);
+
+		Dict::set($en,'en');
+		Dict::set($de,'de');
+	}
+    
 
 }

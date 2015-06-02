@@ -103,11 +103,11 @@ class SIO {
 		SioResetPW::initialise($use_un,$custom_views);
 		//now override any translations
 		static::$v = array_replace(static::$v,$custom_views);
+		static::$utility = new SioUtility();
 		if(!is_null($translations)) {
 			foreach ($translations as $lang => $trans_array) {
 				Dict::set($trans_array,$lang);
 			}
 		}
-		static::$utility = new SioUtility();
 	}
 }
