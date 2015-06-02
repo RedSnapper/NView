@@ -131,7 +131,7 @@ class SioUtility {
 			$pz=gzdeflate($password,9,ZLIB_ENCODING_RAW);			//deflate of password
 			$score_c = max($min,min($score_len,strlen($pz)-5) / $score_len);	//5 is the minimum value of gzdeflate length.
 				
-			$normal = 100 * ($score_a * $score_b * $score_c);
+			$normal = 100 * pow($score_a * $score_b * $score_c,2);
 			$score = (int) max(0,min($normal,100));
 		}
      	return $score;
