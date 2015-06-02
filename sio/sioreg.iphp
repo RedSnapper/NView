@@ -74,6 +74,7 @@ class SioReg {
 			foreach($err_ar as $err) {
 				$this->seterr("passwordn",Dict::get($err));
 			}
+			$this->seterr("passwordn",count($err_ar));
 			$retval= $retval && $pw_retval;
 		} else {
 			$this->seterr("passwordn",Dict::get(static::SIG.'errors_no_password'));
