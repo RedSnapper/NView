@@ -112,7 +112,7 @@ class SioUtility {
     	$score = 0;
     	$pw_len=strlen($password);
     	if ($pw_len > 0) {
-			$score_len=min($pw_len,5);
+			$score_len=max($pw_len,5);
 			$pa=str_split($password);		//all the characters, in an array.
 			$ar = array_unique($pa);		//just the unique characters, sorted.
 			$asize=count($ar);				//the size of the alphabet being used.
