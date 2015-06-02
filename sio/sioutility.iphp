@@ -123,16 +123,13 @@ class SioUtility {
 			//we are looking at a result of (U/N) 
 			$score_a = $asize / $score_len; //the effect of duplicate characters should not be too high.
 			$score_a = 1.0;
-			
-			$password=implode($ar);
-			
+	
 			$cc=preg_replace('/(.)./','\1',bin2hex($password)); //This is the character class string.
 			$cz=gzdeflate($cc,9);				//deflate of char. class string.
 			$score_b = min($score_len,strlen($cz)-5) / $score_len;	//5 is the minimum value of gzdeflate length.	
 			
 			$pz=gzdeflate($password,9);			//deflate of password
 			$score_c = min($score_len,strlen($pz)-5) / $score_len;	//5 is the minimum value of gzdeflate length.
-			$score_c = 1.0;
 				
 			$normal = 100 * ($score_a * $score_b * $score_c);
 			$score = (int) max(0,min($normal,100));
