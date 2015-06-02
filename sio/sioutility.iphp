@@ -152,7 +152,7 @@ class SioUtility {
     		}
     	}
     	   	
- 		foreach($this->regex as $sig => $reg) {
+ 		foreach($this->pw_regex as $sig => $reg) {
  			if (!(boolean) preg_match($reg,$password)) {
     			$err_arr[]=$sig;
  			}
