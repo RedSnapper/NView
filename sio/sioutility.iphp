@@ -130,6 +130,7 @@ class SioUtility {
 			$normal = 100 * ($score_a * $score_b * $score_c);
 			$score = (int) max(0,min($normal,100));
 		}
+		print( '[[' . $score . ']]');
      	return $score;
    }
 
