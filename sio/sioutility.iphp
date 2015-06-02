@@ -124,9 +124,9 @@ class SioUtility {
 			$score_a = $asize / $pw_len;
 			$cc=preg_replace('/(.)./','\1',bin2hex($password)); //This is the character class string.
 			$cz=gzdeflate($cc,9);				//deflate of char. class string.
-			$score_b = strlen($cz) / $pw_len;	//5 is the minimum value of gzdeflate length.	
+			$score_b = min($pw_len,strlen($cz)-5) / $pw_len;	//5 is the minimum value of gzdeflate length.	
 			$pz=gzdeflate($password,9);			//deflate of password
-			$score_c = strlen($pz) / $pw_len;	//5 is the minimum value of gzdeflate length.	
+			$score_c = min($pw_len,strlen($pz)-5) / $pw_len;	//5 is the minimum value of gzdeflate length.	
 			$normal = 100 * ($score_a * $score_b * $score_c);
 			$score = (int) max(0,min($normal,100));
 		}
