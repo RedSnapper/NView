@@ -191,8 +191,7 @@ class SioReg {
 			static::SIG ."errors_no_email"=>" You must enter an email address.",
 			static::SIG ."errors_no_password"=>" You must enter a password.",
 			static::SIG ."errors_new_pw_different"=>" Both passwords must be the same.",
-			static::SIG ."errors_new_pw_too_short"=>" Passwords must be more than six characters.",
-			static::SIG ."mesg_register_check_email"=>"To set your email address, confirm the change via the email just sent to you.",
+			static::SIG ."mesg_register_check_email"=>"Thank you for registering.  A confirmation email has been sent to your email address for verification.",
 			static::SIG ."mesg_see_html_alt"=>"Please see the html alternative of this email.",
 			static::SIG ."mesg_success"=>"You have successfully registered."
 		);
@@ -209,7 +208,6 @@ class SioReg {
 			static::SIG ."errors_email_exists"=>" Diese  E-Mail-Adresse wird bereits verwendet. Bitte wählen Sie eine andere E-Mail-Adresse.",
 			static::SIG .'errors_no_password'=> "Bitte geben Sie Ihr Passwort ein.",
 			static::SIG .'errors_new_pw_different'=> "Die beiden Passwörter müssen übereinstimmen.",
-			static::SIG .'errors_new_pw_too_short'=> "Das Passwort muss aus mehr als sechs Zeichen bestehen.",
 			static::SIG .'mesg_register_check_email'=> "Um Ihre Registrierung zu bestätigen, lesen Sie bitte die E-Mail, die Ihnen gerade zugeschickt wurde.",
 			static::SIG .'mesg_see_html_alt'=> "Sollte die E-Mail nicht korrekt dargestellt werden, wechseln Sie bitte in das HTML-Format.",
 			static::SIG .'mesg_success'=> "Sie wurden erfolgreich registriert."
