@@ -54,10 +54,12 @@ class SIOSetPW {
 				$this->seterr("passwordn",Dict::get(static::SIG.'errors_new_pw_different'));
 				$retval = false;
 			}
-			if (strlen($pwa) < 7) {
-				$this->seterr("passwordn",Dict::get(static::SIG.'errors_new_pw_too_short'));
-				$retval = false;
+			$err_ar = array();
+			$pw_retval = SIO::$utility->pw_validate($pwa,$err_ar);
+			foreach($err_ar as $err) {
+				$this->seterr("passwordn",Dict::get($err));
 			}
+			$retval= $retval && $pw_retval;
 			if ($pwa === Settings::$usr['username']) {
 				$this->seterr("passwordn",Dict::get(static::SIG.'errors_new_pw_too_un_simple'));
 				$retval = false;
@@ -124,7 +126,6 @@ class SIOSetPW {
 			static::SIG ."errors_password_empty"=>" You must enter your current password.",
 			static::SIG ."errors_new_pw_empty"=>" You must enter a new password.",
 			static::SIG ."errors_new_pw_different"=>" Both passwords must be the same.",
-			static::SIG ."errors_new_pw_too_short"=>" Passwords must be more than 6 characters.",
 			static::SIG ."errors_new_pw_too_un_simple"=>" Passwords must be different from your username!",
 			static::SIG ."errors_new_pw_too_em_simple"=>" Passwords must be different from your email!"
 		);
@@ -138,7 +139,6 @@ class SIOSetPW {
 			static::SIG ."errors_password_empty"=>" Bitte geben Sie Ihr bisheriges Passwort ein.",
 			static::SIG ."errors_new_pw_empty"=>" Bitte geben Sie ein neues Passwort ein.",
 			static::SIG ."errors_new_pw_different"=>" Beide Passwörter müssen übereinstimmen.",
-			static::SIG ."errors_new_pw_too_short"=>" Das Passwort muss aus mehr als sechs Zeichen bestehen.",
 			static::SIG ."errors_new_pw_too_un_simple"=>" Passwort und Benutzername dürfen nicht übereinstimmen.",
 			static::SIG ."errors_new_pw_too_em_simple"=>" Passwort und E-Mail dürfen nicht übereinstimmen."
 		);
