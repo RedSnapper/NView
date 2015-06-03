@@ -168,16 +168,16 @@ class SioUtility {
 	private function initialise() {
 //translations
 		$en = array(
-			"pw_error_length_too_short"=>" Passwords must be more than six characters.",
+			"pw_error_length_too_short"=>" Passwords must be more than seven characters.",
 			"pw_error_not_mixed_case"=>" Passwords must include both upper and lower case characters.",
 			"pw_error_no_number"=>" Passwords must include at least one digit.",
 			"pw_error_no_alpha"=>" Passwords must include at least one letter.",
-            "pw_error_no_symbols"=>" Password must contain at lease one symbol eg.$",
+            "pw_error_no_symbols"=>" Password must contain at least one symbol. E.g. $",
             "pw_error_low_score"=> " Password strength is too low"
 		);
 
 		$de = array(
-			'pw_error_length_too_short'=> "Das Passwort muss aus mehr als sechs Zeichen bestehen."
+			'pw_error_length_too_short'=> "Das Passwort muss aus mehr als sieben Zeichen bestehen."
 		);
 
 		Dict::set($en,'en');
