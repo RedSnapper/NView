@@ -349,7 +349,10 @@ trait Form {
 						$this->view->set("//*[@data-xp='" .$input . "']//*[@data-xp='label']/text()",$val);
 				} break;
 				case "hide": {
-						$this->view->set("//*[@data-xp='" .$input . "']/@style","display:none;");
+						$this->view->set("//*[@data-xp='" .$input . "']/@class/child-gap()"," hide");
+				} break;
+				case "delete": {
+						$this->view->set("//*[@data-xp='" .$input . "']");
 				} break;
 				default: {
 						$this->view->set("//*[@name='" . $input . "']/@value",$val);
