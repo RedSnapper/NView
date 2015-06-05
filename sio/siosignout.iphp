@@ -42,9 +42,7 @@ class SioSignOut {
  * fn OVERLOADING trait 'Form'.
  */
 	protected function commit() {
-		Settings::$usr['ID']=NULL;
-		Settings::usr(false);
-		Session::del();
+		SIO::signout();
 		return true;
 	}
 

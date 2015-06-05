@@ -6,7 +6,7 @@ class SIO {
 	private static $use_un=true;
 	public static $utility = NULL;
 
-	public static function run() {
+	public static function run($key=NULL) {
 		$v = new NView(@static::$v[static::SIG]);
 		$err = $v->messages();
 		if (isset($err) && !empty($err)) {
@@ -27,12 +27,12 @@ class SIO {
 				}
 				if ($stt==2 ) {
 					if (SioSetPW::inScope()) {  //doing a set-pw post.
-						$stt=0; $sio=new SioSetPW(null); $formlet=$sio->form(false);
+						$stt=0; $sio=new SioSetPW($key); $formlet=$sio->form(false);
 						if ($sio->success()) {
 							$formlet=$sio->pushit();
 						}
 					} elseif (SIOSetEmail::inScope()) {  //doing a set-pw post.
-						$stt=0; $sio=new SIOSetEmail(); $formlet=$sio->form(false);
+						$stt=0; $sio=new SIOSetEmail($key); $formlet=$sio->form(false);
 						if ($sio->success()) {
 							$formlet=SIOSetEmail::pushit();
 						}
@@ -56,12 +56,12 @@ class SIO {
 					}
 				} else {
 					if (SioReg::inScope() || isset(Settings::$qst[SioReg::SIG]) ) {
-						$stt=0; $sio=new SioReg(); $formlet=$sio->form(false);
+						$stt=0; $sio=new SioReg($key); $formlet=$sio->form(false);
 						if ($sio->success()) {
 							$formlet=$sio->pushit();
 						}
 					} elseif (SioForgot::inScope() || isset(Settings::$qst[SioForgot::SIG]) ) {
-						$stt=0; $sio=new SioForgot(null); $formlet=$sio->form(false);
+						$stt=0; $sio=new SioForgot($key); $formlet=$sio->form(false);
 						if ($sio->success()) {
 							$formlet=$sio->commitv();
 						}
@@ -71,15 +71,15 @@ class SIO {
 			switch ($stt) {
 				case 0: break;
 				case 1: {
-					$ssi=new SioSignIn(); $formlet=$ssi->form(false);
+					$ssi=new SioSignIn($key); $formlet=$ssi->form(false);
 					if ($ssi->success()) {
-						$sio=new SioSignOut(); $formlet = $sio->form(false);
+						$sio=new SioSignOut($key); $formlet = $sio->form(false);
 					}
 				} break;
 				case 2: {
-					$sso=new SioSignOut(); $formlet=$sso->form(false);
+					$sso=new SioSignOut($key); $formlet=$sso->form(false);
 					if ($sso->success()) {
-						$sio=new SioSignIn(); $formlet=$sio->form(false);
+						$sio=new SioSignIn($key); $formlet=$sio->form(false);
 					}
 				} break;
 			}
@@ -109,5 +109,11 @@ class SIO {
 				Dict::set($trans_array,$lang);
 			}
 		}
+	}
+
+	public static function signout(){
+		Settings::$usr['ID']=NULL;
+		Settings::usr(false);
+		Session::del();
 	}
 }
