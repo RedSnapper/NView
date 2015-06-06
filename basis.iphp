@@ -2,6 +2,7 @@
 mb_internal_encoding('UTF-8');
 set_include_path( get_include_path() . PATH_SEPARATOR . __DIR__ . PATH_SEPARATOR . $_SERVER['DOCUMENT_ROOT']);
 
+require 'vendor/autoload.php';
 //basic classes / traits used everywhere.
 require_once("patterns.iphp");
 require_once("nview.iphp");
