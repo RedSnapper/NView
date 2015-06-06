@@ -87,7 +87,7 @@ class Settings extends Singleton {
 		    self::$sql->query("CREATE TABLE sio_roleactivities(role int(11) NOT NULL DEFAULT '0',activity int(11) NOT NULL DEFAULT '0',PRIMARY KEY(role,activity)) ENGINE=InnoDB DEFAULT CHARSET=utf8");
 		}
 		self::$website='http';
-		if($_SERVER["HTTPS"]=='on') { self::$website.='s'; }
+		if(!empty($_SERVER['HTTPS']) && $_SERVER["HTTPS"]=='on') { self::$website.='s'; }
 		self::$website.='://' . $_SERVER["HTTP_HOST"] . '/';
 	}
 
