@@ -50,7 +50,7 @@ class Settings extends Singleton {
 			self::$sql = new mysqli(self::$sqls['host'],self::$sqls['user'],self::$sqls['password'],self::$sqls['database']);
 		}
 		if (self::$sql->connect_error) {
-    			die('SQL Connection Error (' . $mysqli->connect_errno . ') ' . $mysqli->connect_error);
+			die('SQL Connection Error (' . self::$sql->connect_errno . ') ' . self::$sql->connect_error);
 		}
 		$srch=getenv('RS_SEARCH_HOST');
 		if (!empty($srch)) {
