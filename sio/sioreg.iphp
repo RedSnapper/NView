@@ -85,6 +85,10 @@ class SioReg {
 		}
 	}
 
+	public function populate() { 
+		$this->vset('emailp');
+	}
+
 	public function commit() {
 		$unm = NULL;
 		$em=$this->fields['emailp'][0]; Settings::esc($em);
