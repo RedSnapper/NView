@@ -49,7 +49,6 @@ class SioForgot {
 		$em=$this->fields['email'][0];
 		$qry="select username,".self::$munge." as munge from " . $this->table . " where active='on' and email='" . $em . "'";
 		if ($rx = Settings::$sql->query($qry)) {
-			require_once("PHPMailer/PHPMailerAutoload.php");
 			while ($f = $rx->fetch_assoc()) {
 				$mail_v=new NView(@static::$v[static::SIG."mailbody"]);
 				$mail = new PHPMailer();

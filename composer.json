@@ -1,0 +1,6 @@
+{
+    "name": "redsnapper/nview",
+    "require": {
+        "phpmailer/phpmailer": "5.2.10"
+    }
+}
