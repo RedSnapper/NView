@@ -1,0 +1,9 @@
+<!DOCTYPE table>
+<table class="js-dtable stripe" xmlns="http://www.w3.org/1999/xhtml" data-ajax="" >
+	<thead>
+		<tr data-xp="row"><th data-xp="heading"></th></tr>
+	</thead>
+	<tfoot>
+		<tr data-xp="row"></tr>
+	</tfoot>
+</table>
