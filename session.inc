@@ -82,6 +82,18 @@ class Session extends Singleton {
 	}
 
 /**
+ * 'fresh'
+ * Returns a boolean. Tests to see if the current session is a new session, or a recovered session..
+ */
+	public static function fresh() {
+		$retval = false;
+		if( (!isset($_COOKIE["session"])) || (self::$session === $_COOKIE["session"])) {
+			$retval = true;
+		}
+		return $retval;
+	}
+
+/**
  * '__construct'
  * Set / manage the session cookie and it's correlating data-record.
  */
