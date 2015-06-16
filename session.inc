@@ -8,9 +8,10 @@ mb_internal_encoding('UTF-8');
  */
 class Session extends Singleton {
 
-	private static $tom=null; //timeout minutes
+	private static $tom=null; 		//timeout minutes
 	private static $session=null;
 	private static $sqlsess=null;
+	private static $apache_cookie=null;		//This is the session cookie or '[new session]'- used for session-only variables.
 
 /*
  * set timeout (in minutes)
@@ -28,7 +29,7 @@ class Session extends Singleton {
 		if (!empty(self::$session)) {
 			if (!empty($nam)) {
 				$sqlname = Settings::$sql->escape_string($nam);
-				$query= "select count(sid) as found from sio_sessiondata where sid='" . self::$sqlsess . "' and name='" . $sqlname . "'";
+				$query= "select count(sid) as found from sio_sessiondata where sid='" . self::$sqlsess . "' and name='" . $sqlname . "' and (session is NULL or session='".self::$apache_cookie."' or session='_NEW')";
 				if ($x = Settings::$sql->query($query)) {
 					if (strcmp($x->fetch_row()[0],"1") === 0) {
 						$retval=true;
@@ -46,7 +47,7 @@ class Session extends Singleton {
 		$retval = false;
 		if (!empty(self::$session) && !is_null($nam) ) {
 			$sqlname = Settings::$sql->escape_string($nam);
-			if ($rx = Settings::$sql->query("select value from sio_sessiondata where sid='" . self::$sqlsess . "' and name='" . $sqlname . "'")) {
+			if ($rx = Settings::$sql->query("select value from sio_sessiondata where sid='" . self::$sqlsess . "' and name='" . $sqlname . "' and (session is NULL or session='".self::$apache_cookie."' or session='_NEW')")) {
 				$retval = $rx->fetch_row()[0];
 				$rx->close();
 			}
@@ -54,16 +55,13 @@ class Session extends Singleton {
 		return $retval;
 	}
 
-	public static function set($nam=NULL,$val=NULL) {
+	public static function set($nam=NULL,$val=NULL,$session_only=false) {
 		$retval = false;
 		if (!empty(self::$session) && !is_null($nam) ) {
 			$sqlnam = Settings::$sql->escape_string($nam);
-			if (is_null($nam)) {
-				Settings::$sql->query("replace into sio_sessiondata (sid,name,value) values ('" . self::$sqlsess . "','" . $sqlnam . "',null)");
-			} else {
-				$sqlval = Settings::$sql->escape_string($val);
-				Settings::$sql->query("replace into sio_sessiondata (sid,name,value) values ('" . self::$sqlsess . "','" . $sqlnam . "','" . $sqlval . "')");
-			}
+			$sonly = $session_only ? "'".self::$apache_cookie."'" : "NULL";
+			$value = is_null($val) ? "NULL" : "'".Settings::$sql->escape_string($val)."'";
+			Settings::$sql->query("replace into sio_sessiondata (sid,name,value,session) values ('" . self::$sqlsess . "','{$sqlnam}',{$value},{$sonly})");
 		}
 		return $retval;
 	}
@@ -78,6 +76,18 @@ class Session extends Singleton {
 				Settings::$sql->query("delete from sio_session where id='" . self::$sqlsess . "'");
 				Settings::$sql->query("delete from sio_sessiondata where sid='" . self::$sqlsess . "'");
 			}
+		}
+	}
+
+/**
+ * 'set cookie as found.'
+ */
+	private static function tidy_session() {
+		if((self::$apache_cookie === "_NEW") && isset($_COOKIE["session"])) {
+			self::$apache_cookie = Settings::$sql->escape_string($_COOKIE["session"]);
+			Settings::$sql->query("update sio_sessiondata set session='".self::$apache_cookie."' where sid='".self::$sqlsess."' and session='_NEW'");
+			//Delete stale data.
+//			Settings::$sql->query("delete from sio_sessiondata where session is not null and session!=sid and session!='_NEW'");
 		}
 	}
 
@@ -98,6 +108,11 @@ class Session extends Singleton {
  * Set / manage the session cookie and it's correlating data-record.
  */
 	protected function __construct() {
+		if(isset($_COOKIE["session"])) {
+			self::$apache_cookie = Settings::$sql->escape_string($_COOKIE["session"]);
+		} else {
+			self::$apache_cookie = "_NEW";
+		}
 		if(!isset($_COOKIE["xsession"])) {
 			if(!isset($_COOKIE["session"])) {
 					$session_id = getenv("UNIQUE_ID");
@@ -126,6 +141,7 @@ class Session extends Singleton {
 				$rx->close();
 			}
 		}
+		self::tidy_session();	//always make sure that the _NEW is updated.
 	}
 
 }

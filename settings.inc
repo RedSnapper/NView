@@ -62,8 +62,9 @@ class Settings extends Singleton {
 		if (!self::table_exists("sio_session")) {
             self::$sql->query("CREATE TABLE sio_session(id varchar(255) NOT NULL,ts timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,PRIMARY KEY(id),KEY ts (ts)) ENGINE=InnoDB DEFAULT CHARSET=utf8");
         }
+        //session field is the normal session cookie, not the xsession value. sid is the xsession key.
 		if (!self::table_exists("sio_sessiondata")) {
-			self::$sql->query("CREATE TABLE sio_sessiondata(sid varchar(200) NOT NULL,name varchar(128) NOT NULL,value longtext NOT NULL,ts timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,PRIMARY KEY(sid,name)) ENGINE=InnoDB DEFAULT CHARSET=utf8");
+			self::$sql->query("CREATE TABLE sio_sessiondata(sid varchar(200) NOT NULL,name varchar(128) NOT NULL,value longtext NOT NULL,session varchar(200) NOT NULL,ts timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,PRIMARY KEY(sid,name)) ENGINE=InnoDB DEFAULT CHARSET=utf8");
 		}
 		if (!self::table_exists("sio_user")) {
 		    self::$sql->query("CREATE TABLE sio_user (id int(11) NOT NULL AUTO_INCREMENT,username varchar(68) NOT NULL DEFAULT '',password varchar(250) DEFAULT NULL, email text, emailp text,active char(2) DEFAULT 'on',ts timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,  PRIMARY KEY (id),  UNIQUE KEY username (username),  UNIQUE KEY ausername (username,active)) ENGINE=InnoDB DEFAULT CHARSET=utf8");
