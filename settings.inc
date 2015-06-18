@@ -54,9 +54,9 @@ class Settings extends Singleton {
 		}
 		$srch=getenv('RS_SEARCH_HOST');
 		if (!empty($srch)) {
-	                self::$sphinx = new mysqli(getenv('RS_SEARCH_HOST'),NULL,NULL,NULL,9306);
+	       self::$sphinx = new mysqli(getenv('RS_SEARCH_HOST'),NULL,NULL,NULL,9306);
 		} else {
-			self::$sphinx = null;
+		   self::$sphinx = null;
 		}
 		self::$sql->set_charset("utf8");
 		if (!self::table_exists("sio_session")) {

@@ -53,7 +53,7 @@ class Session extends Singleton {
 					$rx->close();
 				}
 			} else {
-				$retval = self::$session			
+				$retval = self::$session;			
 			}
 		}
 		return $retval;
