@@ -143,8 +143,6 @@ trait Form {
  		if(!empty(Settings::$usr['ID'])) {
 			$ident = hash('sha256',Settings::$usr['ID'] . '_' . $this->signature,false);
 		} else {
-#			$foo = Session::get();
-#			print "Foo[ {$foo} ]";
 			$ident = hash('sha256',Session::get() . '_' .$this->signature,false);
 		}
 		return $ident;
