@@ -45,7 +45,7 @@ class Session extends Singleton {
 
 	public static function get($nam=NULL) {
 		$retval = false;
-		if (!empty(self::$session))
+		if (!empty(self::$session)) {
 			if(!is_null($nam)) {
 				$sqlname = Settings::$sql->escape_string($nam);
 				if ($rx = Settings::$sql->query("select value from sio_sessiondata where sid='" . self::$sqlsess . "' and name='" . $sqlname . "' and (session is NULL or session='".self::$apache_cookie."' or session='_NEW')")) {
