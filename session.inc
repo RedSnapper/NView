@@ -45,11 +45,15 @@ class Session extends Singleton {
 
 	public static function get($nam=NULL) {
 		$retval = false;
-		if (!empty(self::$session) && !is_null($nam) ) {
-			$sqlname = Settings::$sql->escape_string($nam);
-			if ($rx = Settings::$sql->query("select value from sio_sessiondata where sid='" . self::$sqlsess . "' and name='" . $sqlname . "' and (session is NULL or session='".self::$apache_cookie."' or session='_NEW')")) {
-				$retval = $rx->fetch_row()[0];
-				$rx->close();
+		if (!empty(self::$session))
+			if(!is_null($nam)) {
+				$sqlname = Settings::$sql->escape_string($nam);
+				if ($rx = Settings::$sql->query("select value from sio_sessiondata where sid='" . self::$sqlsess . "' and name='" . $sqlname . "' and (session is NULL or session='".self::$apache_cookie."' or session='_NEW')")) {
+					$retval = $rx->fetch_row()[0];
+					$rx->close();
+				}
+			} else {
+				$retval = self::$session			
 			}
 		}
 		return $retval;

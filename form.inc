@@ -141,9 +141,9 @@ trait Form {
 	private function ident() { //ident includes userid.
  		$ident = '';
  		if(!empty(Settings::$usr['ID'])) {
-			$ident = md5( Settings::$usr['ID'] . '_' . $this->signature );
+			$ident = hash('sha256',Settings::$usr['ID'] . '_' . $this->signature,false);
 		} else {
-			$ident = md5( $this->signature );
+			$ident = hash('sha256',Session::get() . '_' .$this->signature,false);
 		}
 		return $ident;
 	}
