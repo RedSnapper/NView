@@ -138,11 +138,13 @@ trait Form {
 		return "form_";
 	}
 
-	private function ident() { //ident includes userid.
+	private function ident() { //ident includes userid and is used as a SCRF Token
  		$ident = '';
  		if(!empty(Settings::$usr['ID'])) {
 			$ident = hash('sha256',Settings::$usr['ID'] . '_' . $this->signature,false);
 		} else {
+			$foo = Session::get();
+			print "Foo[ {$foo} ]";
 			$ident = hash('sha256',Session::get() . '_' .$this->signature,false);
 		}
 		return $ident;
