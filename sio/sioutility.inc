@@ -38,11 +38,6 @@ class SioUtility {
     private $mixedCase;
     
     /**
-     * @var boolean Sio requires a unique email address.
-     */
-    private $uniqueEmail;
-    
-    /**
      * @var array pw_regex that contains the regular expression tests and the (default) error sigs.
      */
     private $pw_regex = array();
@@ -55,7 +50,6 @@ class SioUtility {
     	$this->pw_set_needsNumeric();
     	$this->pw_set_needsSymbols();
     	$this->pw_set_needsMixedCase();
-    	$this->em_set_needsUnique();
     	$this->initialise();
     }
 
@@ -108,10 +102,6 @@ class SioUtility {
         	unset($this->pw_regex['pw_error_not_mixed_case']);
         }
     }
-    public function em_set_needsUnique($uniqeness=true) 
-    {
-        $this->uniqueEmail = (boolean) $uniqeness;
-    }
 
     /**
      * Score a password for complexity.
@@ -149,26 +139,6 @@ class SioUtility {
    }
 
     /**
-     * Validate the email against all requirements
-     *
-     * @populates the errors array.
-     */
-    public function em_validate($email="",&$err_arr)
-    {
-    	if ($this->uniqueEmail) {
-			$em=Settings::esc($email);
-			$qry="select count(id) as ok from sio_user where email='".$em."' or emailp='" . $em . "'";
-			if ($rx = Settings::$sql->query($qry)) {
-				if (strcmp($rx->fetch_row()[0],"0") !== 0) {
-					$err_arr[]='errors_email_exists';
-				}
-				$rx->close();
-			}
-		}
-        return count($err_arr) == 0;
-	}
-
-    /**
      * Validate the password against all requirements
      *
      * @returns bool
@@ -203,14 +173,11 @@ class SioUtility {
 			"pw_error_no_number"=>" Passwords must include at least one digit.",
 			"pw_error_no_alpha"=>" Passwords must include at least one letter.",
             "pw_error_no_symbols"=>" Password must contain at least one symbol. E.g. $",
-            "pw_error_low_score"=> " Password strength is too low",
-            "errors_email_exists"=>" A user with this email already exists on the system. Please use another email."
-
+            "pw_error_low_score"=> " Password strength is too low"
 		);
 
 		$de = array(
-			"pw_error_length_too_short"=> "Das Passwort muss aus mehr als sieben Zeichen bestehen.",
-			"errors_email_exists"=>" Diese  E-Mail-Adresse wird bereits verwendet. Bitte wählen Sie eine andere E-Mail-Adresse."
+			'pw_error_length_too_short'=> "Das Passwort muss aus mehr als sieben Zeichen bestehen."
 		);
 
 		Dict::set($en,'en');

@@ -92,9 +92,12 @@ class SioSignIn {
 			}
 		} else { //using email
 			if (isset($this->fields['email'][0])) { //not empty
-				$this->valEmail('email',Dict::get(static::SIG .'errors_email_badformat'));
-				$unm=$this->fields['email'][0];
-				$field="email";
+				if (!filter_var($this->fields['email'][0], FILTER_VALIDATE_EMAIL)) { //incorrect format
+					$this->seterr("email",Dict::get(static::SIG.'errors_email_badformat'));
+				} else { //good format.
+					$unm=$this->fields['email'][0];
+					$field="email";
+				}
 			} else { //set empty error.
 				$this->seterr("email",Dict::get(static::SIG.'errors_email_empty'));
 			}
