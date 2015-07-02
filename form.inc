@@ -686,7 +686,7 @@ trait Form {
 							$val = "'".$vv."'";
 						}
 					} else {
-						if (isset($this->bflds[$name])) {
+						if (isset($this->bflds[$n])) {
 							$val="false";
 						} else {
 							$val="default";
