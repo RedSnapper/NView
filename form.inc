@@ -96,7 +96,7 @@ trait Form {
  * This allows for inputs to be filtered or amended before validation.
  * Uses for things like pushing inputs to lower case, etc.
  */
-	public function prefilter() {
+	public function prefilter() { //can be overridden.
 	}
 
 /**
