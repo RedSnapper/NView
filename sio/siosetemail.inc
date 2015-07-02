@@ -21,6 +21,15 @@ class SIOSetEmail {
 		$this->setfld('emailb','','!skip');
 	}
 
+	public function prefilter() {
+		if (isset($this->fields['emailp'][0])) {
+			$this->fields['emailp'][0]=mb_strtolower($this->fields['emailp'][0]); 
+		}
+		if (isset($this->fields['emailb'][0])) {
+			$this->fields['emailb'][0]=mb_strtolower($this->fields['emailb'][0]); 
+		}
+	}
+
 /**
  * 'validate'
  * fn fulfilling abstract requirement of trait 'Form'.

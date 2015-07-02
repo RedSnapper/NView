@@ -21,6 +21,15 @@ class SioReg {
 		$this->setfld('passwordb','','!skip');
 	}
 
+	public function prefilter() {
+		if (isset($this->fields['username'][0])) {
+			$this->fields['username'][0]=mb_strtolower($this->fields['username'][0]); 
+		}
+		if (isset($this->fields['emailp'][0])) {
+			$this->fields['emailp'][0]=mb_strtolower($this->fields['emailp'][0]); 
+		}
+	}
+
 	public function validate() {
 		$retval = true;
 		if(static::$use_un) {
@@ -90,24 +99,22 @@ class SioReg {
 	}
 
 	public function commit() {
-		$unm = NULL;
-		$em=$this->fields['emailp'][0]; Settings::esc($em);
+		$em=$this->fields['emailp'][0]; 
+		$id_for_hash=$em;	//unescaped used for munge case when registering via email..
+		Settings::esc($em); //escaped.
 		if(static::$use_un) {
 			if (isset($this->fields['username'][0])) {
 				$uname=$this->fields['username'][0];
-				$unm=$uname;
+				$id_for_hash=$uname;	//use username.
 				Settings::esc($uname);
 				$extra="username='".$uname."',";
 				$qry="select ".static::$munge." as munge,emailp from " . $this->table . " where username='" .$uname. "' and active='xx'";
 			}
 		} else { //using email
-			if (isset($this->fields['emailp'][0])) { //not empty
-				$unm=$this->fields['emailp'][0];
-				$extra="username='".uniqid("u",true)."',";
-				$qry="select ".static::$munge." as munge,emailp from " . $this->table . " where emailp='" .$em . "' and active='xx'";
-			}
+			$extra="username='".mb_strtolower(uniqid("u",true))."',";
+			$qry="select ".static::$munge." as munge,emailp from " . $this->table . " where emailp='" .$em . "' and active='xx'";
 		}
-		$ph=SIOSetPW::enhash($unm,$this->fields['passwordn'][0]);
+		$ph=SIOSetPW::enhash($id_for_hash,$this->fields['passwordn'][0]);
 		$insql="insert into ".$this->table." set ts=null,".$extra."emailp='".$em."',password='".$ph."',active='xx'";
 		Settings::$sql->query($insql);
 		if ($r=Settings::$sql->query("select last_insert_id()")) {

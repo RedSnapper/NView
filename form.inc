@@ -91,6 +91,14 @@ trait Form {
 		}
 	}
 
+
+/**
+ * This allows for inputs to be filtered or amended before validation.
+ * Uses for things like pushing inputs to lower case, etc.
+ */
+	public function prefilter() {
+	}
+
 /**
  * This is the validation code block of the formlet.
  * Except for formlets that require no validation, it will be over-ridden.
@@ -386,6 +394,7 @@ trait Form {
 			}
 			$valid = true;
 			foreach($fms as $fm) {
+				$fm->prefilter();
 				$fm->validate();
 				$valid = $valid && $fm->valid();
 			}
@@ -483,6 +492,7 @@ trait Form {
 					if($this->debug) {
 						print("<p>fn Save, about to validate</p>");
 					}
+					$this->prefilter();
 					$this->validate();
 					if($this->debug) {
 						print("<p>Validate returned".$this->valid."</p>");

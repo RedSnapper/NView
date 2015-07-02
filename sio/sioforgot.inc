@@ -29,6 +29,16 @@ class SioForgot {
 		$cv=new NView(@static::$v[static::SIG."success"]);
 		return $cv;
 	}
+	
+	
+	public function prefilter() {
+		if (isset($this->fields['username'][0])) {
+			$this->fields['username'][0]=mb_strtolower($this->fields['username'][0]); 
+		}
+		if (isset($this->fields['email'][0])) {
+			$this->fields['email'][0]=mb_strtolower($this->fields['email'][0]); 
+		}
+	}
 
 /**
  * 'validate'
@@ -47,6 +57,7 @@ class SioForgot {
 	protected function commit() {
 		$this->show=false;
 		$em=$this->fields['email'][0];
+		Settings::esc($em);
 		$qry="select username,".self::$munge." as munge from " . $this->table . " where active='on' and email='" . $em . "'";
 		if ($rx = Settings::$sql->query($qry)) {
 			while ($f = $rx->fetch_assoc()) {

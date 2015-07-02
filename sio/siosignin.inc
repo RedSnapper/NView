@@ -64,6 +64,16 @@ class SioSignIn {
 			} break;
 		}
 	}
+	
+	public function prefilter() {
+		if (isset($this->fields['username'][0])) {
+			$this->fields['username'][0]=mb_strtolower($this->fields['username'][0]); 
+		}
+		if (isset($this->fields['email'][0])) {
+			$this->fields['email'][0]=mb_strtolower($this->fields['email'][0]); 
+		}
+	}
+	
 /**
  * 'validate'
  * fn fulfilling abstract requirement of trait 'Form'.
@@ -75,7 +85,6 @@ class SioSignIn {
 		$unm = NULL;
 		if(static::$use_un) {
 			if (isset($this->fields['username'][0])) {
-                $this->fields['username'][0]=mb_strtolower($this->fields['username'][0]);
 				$unm=$this->fields['username'][0];
 				$field="username";
 			} else {
