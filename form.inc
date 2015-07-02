@@ -255,7 +255,7 @@ trait Form {
  */
 	public function setboolfld($name=NULL,$gsql=NULL,$csql=NULL) {
 		if (! is_null($name) ) {
-			array_push($this->bflds,$name);
+			$this->bflds[$name]=true;
 			$this->setfld($name,$gsql,$csql);
 		}
 	}
@@ -354,7 +354,7 @@ trait Form {
 		if (!is_null($val)) {
 			switch($kind) {
 				case "cb": {
-					if (($val == '1' && !array_key_exists($name,$this->bflds)) || ($val == 'on') || ($val == 'true') || ($val == 'checked') ) {
+					if (($val == '1' && isset($this->bflds[$name])) || ($val == 'on') || ($val == 'true') || ($val == 'checked') ) {
 						$this->view->set("//*[@name='" . $input . "']/@value",$val);
 						$this->view->set("//*[@name='" . $input . "']/@checked",'checked');
 					}
@@ -462,7 +462,6 @@ trait Form {
 				print("and the ident() matches the id, so this is in scope..");
 				if($this->isMe()) {
 					print(" ... and isMe() agrees!<br />");
-					print("<p>bfields:".print_r($this->bflds,true)."</p>");
 				} else {
 					print(" ... and isMe() FAILS to agree!!<br />");
 				}
@@ -679,7 +678,7 @@ trait Form {
 			if ($this->cflds[$n] != '!skip') {
 				if (is_null($this->cflds[$n])) {
 					if(array_key_exists($n,$this->fields)) {
-						if (array_key_exists($n,$this->bflds)) {
+						if (isset($this->bflds[$name])) {
 							$val="true";
 						} else {
 							$vv=$this->fields[$n][0];
@@ -687,7 +686,7 @@ trait Form {
 							$val = "'".$vv."'";
 						}
 					} else {
-						if (array_key_exists($n,$this->bflds)) {
+						if (isset($this->bflds[$name])) {
 							$val="false";
 						} else {
 							$val="default";
