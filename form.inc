@@ -199,6 +199,7 @@ trait Form {
 			$this->view->set("//*[@data-tr]/@data-tr/preceding-gap()",static::sig());
 		}
 		//initialise other members.
+		$this->bflds = array(); //array of boolean fields
 		$this->gflds = array(); //array of sql fields that will be used to get.
 		$this->cflds = array(); //array of sql fields that will be used in commit.
 		$this->names = array(); //array of input names.
