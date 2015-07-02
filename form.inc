@@ -678,7 +678,7 @@ trait Form {
 			if ($this->cflds[$n] != '!skip') {
 				if (is_null($this->cflds[$n])) {
 					if(array_key_exists($n,$this->fields)) {
-						if (isset($this->bflds[$name])) {
+						if (isset($this->bflds[$n])) {
 							$val="true";
 						} else {
 							$vv=$this->fields[$n][0];
