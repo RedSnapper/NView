@@ -54,14 +54,11 @@ class SioReg {
 		}
 
 		if (isset($this->fields['emailp'][0])) {
-			$em=Settings::esc($this->fields['emailp'][0]);
-			$qry="select count(id) as ok from " . $this->table . " where email='".$em."' or emailp='" . $em . "'";
-			if ($rx = Settings::$sql->query($qry)) {
-				if (strcmp($rx->fetch_row()[0],"0") !== 0) {
-					$retval = false;
-					$this->seterr("emailp",Dict::get(static::SIG.'errors_email_exists'));
-				}
-				$rx->close();
+			$raw_email = $this->fields['emailp'][0];
+			$em_err_ar = array();
+			$em_retval = SIO::$utility->em_validate($raw_email,$em_err_ar);
+			foreach($em_err_ar as $err) {
+				$this->seterr("emailp",Dict::get($err));
 			}
 			if (isset($this->fields['passwordn'][0]) && ($this->fields['passwordn'][0] === $this->fields['emailp'][0])) {
 				$this->seterr("passwordn",Dict::get(static::SIG.'errors_new_pw_too_em_simple'));
