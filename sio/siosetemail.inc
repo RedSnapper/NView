@@ -59,7 +59,7 @@ class SIOSetEmail {
 
 	protected function commit() {
 		if(static::$use_un) {
-			$unm=$Settings::$usr['username'];
+			$unm=Settings::$usr['username'];
 		} else { //using email
 			$unm=Settings::$usr['email'];
 		}
