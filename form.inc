@@ -20,6 +20,7 @@ trait Form {
 	protected $pkey;		//[array/string] name(s) of primary key in sql.
 	protected $key;			//[array/string] value(s) of primary key
 	protected $table;   	//name of table to be used in sql
+	protected $bflds;		//array of sql boolean fields
 	protected $gflds;		//array of sql fields that will be used to get.
 	protected $cflds;		//array of sql values that will be used during a commit.
 	protected $names;		//array of input names
@@ -249,6 +250,16 @@ trait Form {
 	}
 
 /**
+ * 'setboolfld'
+ */
+	public function setboolfld($name=NULL,$gsql=NULL,$csql=NULL) {
+		if (! is_null($name) ) {
+			array_push($this->bflds,$name);
+			$this->setfld($name,$gsql,$csql);
+		}
+	}
+
+/**
  * 'setsub'
  */
 	public function setsub($name=NULL,$dshow=true) {
@@ -342,7 +353,7 @@ trait Form {
 		if (!is_null($val)) {
 			switch($kind) {
 				case "cb": {
-					if ($val == 'on' || $val == 'true' || $val == 'checked' ) {
+					if (($val == '1' && !array_key_exists($name,$this->bflds)) || ($val == 'on') || ($val == 'true') || ($val == 'checked') ) {
 						$this->view->set("//*[@name='" . $input . "']/@value",$val);
 						$this->view->set("//*[@name='" . $input . "']/@checked",'checked');
 					}
@@ -663,14 +674,22 @@ trait Form {
 			print("<br />fields<pre>".print_r($this->fields,true)."</pre>");
 		}
 		foreach ($this->names as $n) {
-			if (is_null($this->cflds[$n]) || ($this->cflds[$n] != '!skip')) {
+			if ($this->cflds[$n] != '!skip') {
 				if (is_null($this->cflds[$n])) {
 					if(array_key_exists($n,$this->fields)) {
-						$vv=$this->fields[$n][0];
-						Settings::esc($vv);
-						$val = "'".$vv."'";
+						if (array_key_exists($n,$this->bflds) ) {
+							$val="true";
+						} else {
+							$vv=$this->fields[$n][0];
+							Settings::esc($vv);
+							$val = "'".$vv."'";
+						}
 					} else {
-						$val="''";
+						if (array_key_exists($n,$this->bflds)) {
+							$val="false";
+						} else {
+							$val="default";
+						}
 					}
 				} else {
 					$val = $this->cflds[$n];
