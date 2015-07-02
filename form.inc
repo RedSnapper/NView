@@ -462,6 +462,7 @@ trait Form {
 				print("and the ident() matches the id, so this is in scope..");
 				if($this->isMe()) {
 					print(" ... and isMe() agrees!<br />");
+					print("<p>bfields:".print_r($this->bflds,true)."</p>");
 				} else {
 					print(" ... and isMe() FAILS to agree!!<br />");
 				}
@@ -678,7 +679,7 @@ trait Form {
 			if ($this->cflds[$n] != '!skip') {
 				if (is_null($this->cflds[$n])) {
 					if(array_key_exists($n,$this->fields)) {
-						if (array_key_exists($n,$this->bflds) ) {
+						if (array_key_exists($n,$this->bflds)) {
 							$val="true";
 						} else {
 							$vv=$this->fields[$n][0];
