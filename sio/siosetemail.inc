@@ -54,13 +54,13 @@ class SIOSetEmail {
 		$this->valEmail('emailp',Dict::get(static::SIG .'errors_email_badformat'));
 		$pwdval = false;
 		if (isset($this->fields['password'][0])) {
-            if(static::$use_un) {
-                $unm = Settings::$usr['username'];
-                $field="username";
-            } else {
-                $unm = Settings::$usr['email'];
-                $field="email";
-            }
+			if(static::$use_un) {
+				$unm = Settings::$usr['username'];
+				$field="username";
+			} else {
+				$unm = Settings::$usr['email'];
+				$field="email";
+			}
 			$ph=SIOSetPW::enhash($unm,$this->fields['password'][0]);
 			Settings::esc($unm);
 			$qry="select count(id) as ok from " . $this->table . " where active='on' and ".$field."='" .$unm. "' and password='" . $ph . "'";
@@ -72,7 +72,7 @@ class SIOSetEmail {
 				}
 				$rx->close();
 			} else {
-			    $this->seterr("password","Unexpected Query Error.");
+				$this->seterr("password","Unexpected Query Error.");
 			}
 		} else { //set empty error.
 			$this->seterr("password",Dict::get(static::SIG.'errors_password_empty'));
@@ -92,7 +92,8 @@ class SIOSetEmail {
 			if (strcmp($ry->fetch_row()[0],"1") === 0) {
 				$em=$this->fields['emailp'][0];
 				$em=Settings::esc($em);
-				Settings::$sql->query("update ".$this->table." set ts=null,emailp='".$em."' where id='".Settings::$usr['ID']."'");
+				$cqry="update ".$this->table." set ts=null,emailp='".$em."' where id='".Settings::$usr['ID']."'";
+				Settings::$sql->query($cqry);
 				$qry="select username,".static::$munge." as munge from " . $this->table . " where id='" .Settings::$usr['ID']. "' and active='on'";
 				if ($rx = Settings::$sql->query($qry)) {
 					require_once("PHPMailer/PHPMailerAutoload.php");
@@ -112,13 +113,13 @@ class SIOSetEmail {
 						$mail->isHTML(true);
 						$url=$_SERVER["SCRIPT_URI"];
 						if (strpos($url, '?') !== false) {
-						    $url .= "&amp;siof=" . $f['munge'];
+							$url .= "&amp;siof=" . $f['munge'];
 						} else {
-						    $url .= "?siof=" . $f['munge'];
+							$url .= "?siof=" . $f['munge'];
 						}
-                        if(!static::$use_un) {
-                             $url .= "&amp;sioh=" . SIOSetPW::enhash($this->fields['emailp'][0],$this->fields['password'][0]);
-                        }
+						if(!static::$use_un) {
+							$url .= "&amp;sioh=" . SIOSetPW::enhash($this->fields['emailp'][0],$this->fields['password'][0]);
+						}
 						$mail_v->set("//*[@data-xp='ha']/@href",$url);
 						$mail->Body = $mail_v->show(false);
 						$mail->AltBody=Dict::get(static::SIG .'note_email_see_html_alt');
@@ -149,23 +150,23 @@ class SIOSetEmail {
 	public static function pushit($ha=NULL) {
 		if (is_null($ha)) { //check email
 			$nv = new NView(@static::$v[static::SIG."check_mail"]);
-		} else { 			 //set success..
+		} else {			 //set success..
 			Settings::esc($ha);
 			if(static::$use_un) {
-                $query= "update sio_user set email=emailp where id='" .Settings::$usr['ID']. "' and ".static::$munge."='".$ha."'";
-  			    Settings::$sql->query($query);
-			    $nv = new NView(@static::$v[static::SIG."success"]);
-           } else {
-                $sioh=@Settings::$qst['sioh'];
-		        if (!is_null($sioh)) {
-                    Settings::esc($sioh);
-                    $query= "update sio_user set email=emailp,password='".$sioh."' where id='" .Settings::$usr['ID']. "' and ".static::$munge."='".$ha."'";
-                    Settings::$sql->query($query);
-                    $nv = new NView(@static::$v[static::SIG."success"]);
-                } else {
-                    $nv = new NView(@static::$v[static::SIG."failure"]);
-                }
-            }
+				$query= "update sio_user set email=emailp where id='" .Settings::$usr['ID']. "' and ".static::$munge."='".$ha."'";
+				Settings::$sql->query($query);
+				$nv = new NView(@static::$v[static::SIG."success"]);
+		   } else {
+				$sioh=@Settings::$qst['sioh'];
+				if (!is_null($sioh)) {
+					Settings::esc($sioh);
+					$query= "update sio_user set email=emailp,password='".$sioh."' where id='" .Settings::$usr['ID']. "' and ".static::$munge."='".$ha."'";
+					Settings::$sql->query($query);
+					$nv = new NView(@static::$v[static::SIG."success"]);
+				} else {
+					$nv = new NView(@static::$v[static::SIG."failure"]);
+				}
+			}
 		}
 		return $nv;
 	}
