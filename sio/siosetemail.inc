@@ -61,7 +61,7 @@ class SIOSetEmail {
 				$x_unm = Settings::$usr['email'];
 				$x_fld="email";
 			}
-			$x_pass = $this->fields['password'][0]);
+			$x_pass = $this->fields['password'][0];
 			$x_hsh=SIOSetPW::enhash($x_unm,$x_pass);
 			Settings::esc($x_unm);
 			$qry="select count(id) as ok from " . $this->table . " where active='on' and ".$x_fld."='" .$x_unm. "' and password='" . $x_hsh . "'";
