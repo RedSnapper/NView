@@ -8,6 +8,9 @@ class SIOSetEmail {
 	private static $munge="sha2(concat(ifnull(username,id),'+',ifnull(password,id),'+',ifnull(email,id),'+',ifnull(ts,id)),256)";
 	private static $v=array();
 	private static $use_un=true;
+	private static $x_hsh=NULL;
+	private static $x_unm=NULL;
+	private static $x_fld=NULL;
 
 /**
  * '__construct'
@@ -27,6 +30,17 @@ class SIOSetEmail {
 		}
 		if (isset($this->fields['emailb'][0])) {
 			$this->fields['emailb'][0]=mb_strtolower($this->fields['emailb'][0]);
+		}
+		if (isset($this->fields['password'][0])) {
+			if(static::$use_un) {
+				$this->x_unm = Settings::$usr['username'];
+				$this->x_fld="username";
+			} else {
+				$this->x_unm = Settings::$usr['email'];
+				$this->x_fld="email";
+			}
+			$this->x_hsh=SIOSetPW::enhash($this->x_unm,$this->fields['password'][0]);
+			Settings::esc($this->x_unm);
 		}
 	}
 
@@ -54,16 +68,7 @@ class SIOSetEmail {
 		$this->valEmail('emailp',Dict::get(static::SIG .'errors_email_badformat'));
 		$pwdval = false;
 		if (isset($this->fields['password'][0])) {
-			if(static::$use_un) {
-				$unm = Settings::$usr['username'];
-				$field="username";
-			} else {
-				$unm = Settings::$usr['email'];
-				$field="email";
-			}
-			$ph=SIOSetPW::enhash($unm,$this->fields['password'][0]);
-			Settings::esc($unm);
-			$qry="select count(id) as ok from " . $this->table . " where active='on' and ".$field."='" .$unm. "' and password='" . $ph . "'";
+			$qry="select count(id) as ok from " . $this->table . " where active='on' and ".$this->x_fld."='" .$this->x_unm. "' and password='" . $this->x_hsh . "'";
 			if ($rx = Settings::$sql->query($qry)) {
 				if (strcmp($rx->fetch_row()[0],"1") === 0) {
 					$pwdval=true;
@@ -81,54 +86,42 @@ class SIOSetEmail {
 	}
 
 	protected function commit() {
-		if(static::$use_un) {
-			$unm=Settings::$usr['username'];
-		} else { //using email
-			$unm=Settings::$usr['email'];
-		}
-		$ph=SIOSetPW::enhash($unm,$this->fields['password'][0]);
-		$qpy="select count(id) as ok from " . $this->table . " where active='on' and id='" .Settings::$usr['ID']. "' and password='" . $ph . "' and active='on'";
-		if ($ry = Settings::$sql->query($qpy)) {
-			if (strcmp($ry->fetch_row()[0],"1") === 0) {
-				$em=$this->fields['emailp'][0];
-				$em=Settings::esc($em);
-				$cqry="update ".$this->table." set ts=null,emailp='".$em."' where id='".Settings::$usr['ID']."'";
-				Settings::$sql->query($cqry);
-				$qry="select username,".static::$munge." as munge from " . $this->table . " where id='" .Settings::$usr['ID']. "' and active='on'";
-				if ($rx = Settings::$sql->query($qry)) {
-					require_once("PHPMailer/PHPMailerAutoload.php");
-					while ($f = $rx->fetch_assoc()) {
-						$mail_v=new NView(@static::$v[static::SIG."email_body"]);
-						$mail = new PHPMailer();
-						$mail->isSendmail();
-						$mail->CharSet='utf-8';
-						$mail->Encoding='base64';
-						$mail->setFrom('no_reply@redsnapper.net', Dict::get(static::SIG .'note_email_change_title'));
-						if (static::$use_un) {
-							$mail->addAddress($em,Settings::$usr['username']);
-						} else {
-							$mail->addAddress($em);
-						}
-						$mail->Subject = Dict::get(static::SIG .'note_email_change_title');
-						$mail->isHTML(true);
-						$url=$_SERVER["SCRIPT_URI"];
-						if (strpos($url, '?') !== false) {
-							$url .= "&amp;siof=" . $f['munge'];
-						} else {
-							$url .= "?siof=" . $f['munge'];
-						}
-						if(!static::$use_un) {
-							$url .= "&amp;sioh=" . SIOSetPW::enhash($this->fields['emailp'][0],$this->fields['password'][0]);
-						}
-						$mail_v->set("//*[@data-xp='ha']/@href",$url);
-						$mail->Body = $mail_v->show(false);
-						$mail->AltBody=Dict::get(static::SIG .'note_email_see_html_alt');
-						$mail->send();
-					}
-					$rx->close();
+		$em=$this->fields['emailp'][0];
+		$emq=Settings::esc($em);
+		$cqry="update ".$this->table." set ts=null,emailp='".$emq."' where id='".Settings::$usr['ID']."'";
+		Settings::$sql->query($cqry);
+		$qry="select username,".static::$munge." as munge from " . $this->table . " where id='" .Settings::$usr['ID']. "' and active='on'";
+		if ($rx = Settings::$sql->query($qry)) {
+			require_once("PHPMailer/PHPMailerAutoload.php");
+			while ($f = $rx->fetch_assoc()) {
+				$mail_v=new NView(@static::$v[static::SIG."email_body"]);
+				$mail = new PHPMailer();
+				$mail->isSendmail();
+				$mail->CharSet='utf-8';
+				$mail->Encoding='base64';
+				$mail->setFrom('no_reply@redsnapper.net', Dict::get(static::SIG .'note_email_change_title'));
+				if (static::$use_un) {
+					$mail->addAddress($em,Settings::$usr['username']);
+				} else {
+					$mail->addAddress($em);
 				}
-				$ry->close();
+				$mail->Subject = Dict::get(static::SIG .'note_email_change_title');
+				$mail->isHTML(true);
+				$url=$_SERVER["SCRIPT_URI"];
+				if (strpos($url, '?') !== false) {
+					$url .= "&amp;siof=" . $f['munge'];
+				} else {
+					$url .= "?siof=" . $f['munge'];
+				}
+				if(!static::$use_un) {
+					$url .= "&amp;sioh=" . SIOSetPW::enhash($this->fields['emailp'][0],$this->fields['password'][0]);
+				}
+				$mail_v->set("//*[@data-xp='ha']/@href",$url);
+				$mail->Body = $mail_v->show(false);
+				$mail->AltBody=Dict::get(static::SIG .'note_email_see_html_alt');
+				$mail->send();
 			}
+			$rx->close();
 		}
 		$this->show = false;
 		return true;
