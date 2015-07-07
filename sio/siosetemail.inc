@@ -8,9 +8,6 @@ class SIOSetEmail {
 	private static $munge="sha2(concat(ifnull(username,id),'+',ifnull(password,id),'+',ifnull(email,id),'+',ifnull(ts,id)),256)";
 	private static $v=array();
 	private static $use_un=true;
-	private static $x_hsh=NULL;
-	private static $x_unm=NULL;
-	private static $x_fld=NULL;
 
 /**
  * '__construct'
@@ -30,17 +27,6 @@ class SIOSetEmail {
 		}
 		if (isset($this->fields['emailb'][0])) {
 			$this->fields['emailb'][0]=mb_strtolower($this->fields['emailb'][0]);
-		}
-		if (isset($this->fields['password'][0])) {
-			if(static::$use_un) {
-				$self->x_unm = Settings::$usr['username'];
-				$self->x_fld="username";
-			} else {
-				$self->x_unm = Settings::$usr['email'];
-				$self->x_fld="email";
-			}
-			$self->x_hsh=SIOSetPW::enhash($self->x_unm,$this->fields['password'][0]);
-			Settings::esc($self->x_unm);
 		}
 	}
 
@@ -68,7 +54,16 @@ class SIOSetEmail {
 		$this->valEmail('emailp',Dict::get(static::SIG .'errors_email_badformat'));
 		$pwdval = false;
 		if (isset($this->fields['password'][0])) {
-			$qry="select count(id) as ok from " . $this->table . " where active='on' and ".$self->x_fld."='" .$self->x_unm. "' and password='" . $self->x_hsh . "'";
+			if(static::$use_un) {
+				$x_unm = Settings::$usr['username'];
+				$x_fld="username";
+			} else {
+				$x_unm = Settings::$usr['email'];
+				$x_fld="email";
+			}
+			$x_hsh=SIOSetPW::enhash($x_unm,$this->fields['password'][0]);
+			Settings::esc($x_unm);
+			$qry="select count(id) as ok from " . $this->table . " where active='on' and ".$x_fld."='" .$x_unm. "' and password='" . $x_hsh . "'";
 			if ($rx = Settings::$sql->query($qry)) {
 				if (strcmp($rx->fetch_row()[0],"1") === 0) {
 					$pwdval=true;
