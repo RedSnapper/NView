@@ -179,7 +179,7 @@ class SIOSetEmail {
 			static::SIG=>static::SIG."v.ixml",
 			static::SIG."email_body"=>static::SIG."mv.ixml",
 			static::SIG."check_mail"=>static::SIG."pv.ixml",
-			static::SIG."success"=>static::SIG."sv.ixml"
+			static::SIG."success"=>static::SIG."sv.ixml",
 			static::SIG."failure"=>static::SIG."fv.ixml"
 		);
 		static::$v = array_replace(static::$v,$custom_views);
