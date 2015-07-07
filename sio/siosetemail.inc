@@ -87,7 +87,6 @@ class SIOSetEmail {
 		Settings::$sql->query($cqry);
 		$qry="select username,".static::$munge." as munge from " . $this->table . " where id='" .Settings::$usr['ID']. "' and active='on'";
 		if ($rx = Settings::$sql->query($qry)) {
-			require_once("PHPMailer/PHPMailerAutoload.php");
 			while ($f = $rx->fetch_assoc()) {
 				$mail_v=new NView(@static::$v[static::SIG."email_body"]);
 				$mail = new PHPMailer();
