@@ -55,10 +55,10 @@ class SIOSetEmail {
 		$pwdval = false;
 		if (isset($this->fields['password'][0])) {
             if(static::$use_un) {
-                $unm = self::$usr['username'];
+                $unm = Settings::$usr['username'];
                 $field="username";
             } else {
-                $unm = self::$usr['email'];
+                $unm = Settings::$usr['email'];
                 $field="email";
             }
 			$ph=SIOSetPW::enhash($unm,$this->fields['password'][0]);
