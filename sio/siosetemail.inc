@@ -103,12 +103,12 @@ class SIOSetEmail {
 				$mail->isHTML(true);
 				$url=$_SERVER["SCRIPT_URI"];
 				if (strpos($url, '?') !== false) {
-					$url .= "&amp;siof=" . $f['munge'];
+					$url .= "&siof=" . $f['munge'];
 				} else {
 					$url .= "?siof=" . $f['munge'];
 				}
 				if(!static::$use_un) {
-					$url .= "&amp;sioh=" . SIOSetPW::enhash($this->fields['emailp'][0],$this->fields['password'][0]);
+					$url .= "&sioh=" . SIOSetPW::enhash($this->fields['emailp'][0],$this->fields['password'][0]);
 				}
 				$mail_v->set("//*[@data-xp='ha']/@href",$url);
 				$mail->Body = $mail_v->show(false);
@@ -144,7 +144,7 @@ class SIOSetEmail {
 				Settings::$sql->query($query);
 				$nv = new NView(@static::$v[static::SIG."success"]);
 		   } else {
-				$sioh=@Settings::$qst['sioh'];
+				$sioh=Settings::$qst['sioh'];
 				if (!is_null($sioh)) {
 					Settings::esc($sioh);
 					$query= "update sio_user set email=emailp,password='".$sioh."' where id='" .Settings::$usr['ID']. "' and ".static::$munge."='".$ha."'";

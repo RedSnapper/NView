@@ -29,14 +29,14 @@ class SioForgot {
 		$cv=new NView(@static::$v[static::SIG."success"]);
 		return $cv;
 	}
-	
-	
+
+
 	public function prefilter() {
 		if (isset($this->fields['username'][0])) {
-			$this->fields['username'][0]=mb_strtolower($this->fields['username'][0]); 
+			$this->fields['username'][0]=mb_strtolower($this->fields['username'][0]);
 		}
 		if (isset($this->fields['email'][0])) {
-			$this->fields['email'][0]=mb_strtolower($this->fields['email'][0]); 
+			$this->fields['email'][0]=mb_strtolower($this->fields['email'][0]);
 		}
 	}
 
@@ -72,7 +72,7 @@ class SioForgot {
 				$mail->isHTML(true);
 				$url=$_SERVER["SCRIPT_URI"];
 				if (strpos($url, '?') !== false) {
-					$url .= '&amp;siof=' . $f['munge'];
+					$url .= '&siof=' . $f['munge'];
 				} else {
 					$url .= '?siof=' . $f['munge'];
 				}

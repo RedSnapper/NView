@@ -23,10 +23,10 @@ class SioReg {
 
 	public function prefilter() {
 		if (isset($this->fields['username'][0])) {
-			$this->fields['username'][0]=mb_strtolower($this->fields['username'][0]); 
+			$this->fields['username'][0]=mb_strtolower($this->fields['username'][0]);
 		}
 		if (isset($this->fields['emailp'][0])) {
-			$this->fields['emailp'][0]=mb_strtolower($this->fields['emailp'][0]); 
+			$this->fields['emailp'][0]=mb_strtolower($this->fields['emailp'][0]);
 		}
 	}
 
@@ -94,12 +94,12 @@ class SioReg {
 		}
 	}
 
-	public function populate() { 
+	public function populate() {
 		$this->vset('emailp');
 	}
 
 	public function commit() {
-		$em=$this->fields['emailp'][0]; 
+		$em=$this->fields['emailp'][0];
 		$id_for_hash=$em;	//unescaped used for munge case when registering via email..
 		Settings::esc($em); //escaped.
 		if(static::$use_un) {
@@ -137,7 +137,7 @@ class SioReg {
 				$mail->isHTML(true);
 				$url=$_SERVER["SCRIPT_URI"];
 				if (strpos($url, '?') !== false) {
-					$url .= '&amp;siof=' . $f['munge'];
+					$url .= '&siof=' . $f['munge'];
 				} else {
 					$url .= '?siof=' . $f['munge'];
 				}
