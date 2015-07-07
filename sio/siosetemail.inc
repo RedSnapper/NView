@@ -150,6 +150,7 @@ class SIOSetEmail {
 						$pw_hash=Session::get(static::SIG);
 						$query= "update sio_user set email=emailp,password='".$pw_hash."' where id='" .Settings::$usr['ID']. "' and ".static::$munge."='".$ha."'";
 						Settings::$sql->query($query);
+						Session::del(static::SIG);
 						$nv = new NView(@static::$v[static::SIG."success"]);
 					} else {
 						$nv = new NView(@static::$v[static::SIG."failure"]);
