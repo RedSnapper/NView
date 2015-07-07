@@ -108,7 +108,7 @@ class SIOSetEmail {
 					$url .= "?siof=" . $f['munge'];
 				}
 				if(!static::$use_un) {
-					$url .= "&sioh=" . SIOSetPW::enhash($this->fields['emailp'][0],$this->fields['password'][0]);
+					Session::set(static::SIG,SIOSetPW::enhash($this->fields['emailp'][0],$this->fields['password'][0]));
 				}
 				$mail_v->set("//*[@data-xp='ha']/@href",$url);
 				$mail->Body = $mail_v->show(false);
@@ -144,14 +144,15 @@ class SIOSetEmail {
 				Settings::$sql->query($query);
 				$nv = new NView(@static::$v[static::SIG."success"]);
 		   } else {
-				$sioh=Settings::$qst['sioh'];
-				if (!is_null($sioh)) {
-					Settings::esc($sioh);
-					$query= "update sio_user set email=emailp,password='".$sioh."' where id='" .Settings::$usr['ID']. "' and ".static::$munge."='".$ha."'";
-					Settings::$sql->query($query);
-					$nv = new NView(@static::$v[static::SIG."success"]);
-				} else {
-					$nv = new NView(@static::$v[static::SIG."failure"]);
+				if(!static::$use_un) {
+					if (Session::has(static::SIG)) {
+						$pw_hash=Session::get(static::SIG);
+						$query= "update sio_user set email=emailp,password='".$pw_hash."' where id='" .Settings::$usr['ID']. "' and ".static::$munge."='".$ha."'";
+						Settings::$sql->query($query);
+						$nv = new NView(@static::$v[static::SIG."success"]);
+					} else {
+						$nv = new NView(@static::$v[static::SIG."failure"]);
+					}
 				}
 			}
 		}
