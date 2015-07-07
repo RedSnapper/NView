@@ -152,6 +152,7 @@ class SIOSetEmail {
 						Settings::$sql->query($query);
 						Session::del(static::SIG);
 						$nv = new NView(@static::$v[static::SIG."success"]);
+						SIO::signout();
 					} else {
 						$nv = new NView(@static::$v[static::SIG."failure"]);
 					}
