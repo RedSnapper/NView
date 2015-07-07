@@ -95,7 +95,7 @@ class SIOSetEmail {
 				Settings::$sql->query("update ".$this->table." set ts=null,emailp='".$em."' where id='".Settings::$usr['ID']."'");
 				$qry="select username,".static::$munge." as munge from " . $this->table . " where id='" .Settings::$usr['ID']. "' and active='on'";
 				if ($rx = Settings::$sql->query($qry)) {
-//					require_once("PHPMailer/PHPMailerAutoload.php");
+					require_once("PHPMailer/PHPMailerAutoload.php");
 					while ($f = $rx->fetch_assoc()) {
 						$mail_v=new NView(@static::$v[static::SIG."email_body"]);
 						$mail = new PHPMailer();
@@ -112,14 +112,12 @@ class SIOSetEmail {
 						$mail->isHTML(true);
 						$url=$_SERVER["SCRIPT_URI"];
 						if (strpos($url, '?') !== false) {
-						    $url .= "&amp;";
+						    $url .= "&amp;siof=" . $f['munge'];
 						} else {
-						    $url .= "?";
+						    $url .= "?siof=" . $f['munge'];
 						}
-                        if(static::$use_un) {
-                            $url .= 'siof=' . $f['munge'];
-                        } else {
-                            $url .= 'siof=' . $f['munge'] . '&amp;sioh=' . SIOSetPW::enhash($this->fields['emailp'][0],$this->fields['password'][0]);
+                        if(!static::$use_un) {
+                             $url .= "&amp;sioh=" . SIOSetPW::enhash($this->fields['emailp'][0],$this->fields['password'][0]);
                         }
 						$mail_v->set("//*[@data-xp='ha']/@href",$url);
 						$mail->Body = $mail_v->show(false);
