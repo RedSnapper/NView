@@ -148,8 +148,8 @@ trait Form {
 	}
 
 	private function ident() { //ident includes userid and is used as a SCRF Token
- 		$ident = '';
- 		if(!empty(Settings::$usr['ID'])) {
+		$ident = '';
+		if(!empty(Settings::$usr['ID'])) {
 			$ident = hash('sha256',Settings::$usr['ID'] . '_' . $this->signature,false);
 		} else {
 			$ident = hash('sha256',Session::get() . '_' .$this->signature,false);
@@ -160,7 +160,7 @@ trait Form {
 	private function setId($id) {
 		$this->id = $id;
 		$this->idprefix = $this->id . ':';
- 		$this->signature = md5($this->id);
+		$this->signature = md5($this->id);
 		$this->idprefixlen = mb_strlen($this->idprefix);
 	}
 
@@ -175,7 +175,7 @@ trait Form {
 		$this->pksimple = !is_array($pk);
 		$this->setId('_' . static::sig() . $idp);
 		if ($vp instanceof NView) {
-		    $this->view = $vp;
+			$this->view = $vp;
 		} else {
 			$bt = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS,1);
 			if (strpos($vp,'/') === false) {
@@ -189,11 +189,11 @@ trait Form {
 			} else {
 				$file = $vp;
 			}
-		    $this->view = new NView($file);
-		    $err = $this->view->messages(); //currently unused.
-		    if (!empty($err)) {
-		        print $err;
-		    }
+			$this->view = new NView($file);
+			$err = $this->view->messages(); //currently unused.
+			if (!empty($err)) {
+				print $err;
+			}
 		}
 		if ($vprefix) {
 			$this->view->set("//*[@data-tr]/@data-tr/preceding-gap()",static::sig());
@@ -216,15 +216,15 @@ trait Form {
 /**
  * 'inScope' used to test if a particular class of form is being posted.
  */
- 	public static function inScope() {
+	public static function inScope() {
 		return (isset($_POST[static::sig()]));
 	}
 
 /**
  * 'isMe' used to test if a particular form instance is being posted.
  */
- 	public function isMe() {
- 		return ( isset($_POST[static::sig()]) && in_array($this->ident(), $_POST[static::sig()] ) );
+	public function isMe() {
+		return ( isset($_POST[static::sig()]) && in_array($this->ident(), $_POST[static::sig()] ) );
 	}
 
 /**
@@ -326,7 +326,7 @@ trait Form {
 				}
 				$err = $v->messages();
 				if (!empty($err)) {
-				 	$v->set("//*[@data-xp='debug']",$err);
+					$v->set("//*[@data-xp='debug']",$err);
 				}
 			}
 	}
@@ -513,9 +513,9 @@ trait Form {
 						Settings::$msg[static::sig()."-status"]="invalid";
 					}
 					if ($this->valid && ! $this->committed) {
-                        if($this->debug) {
-                            print("<p>About to commit</p>");
-                        }
+						if($this->debug) {
+							print("<p>About to commit</p>");
+						}
 						$this->committed = $this->commit();
 						if ( $this->show || !($this->committed) ) { //do not repop if !show and com.
 							$this->setfields(true); //we can repopulate the fields if we want.
@@ -524,9 +524,9 @@ trait Form {
 							}
 						}
 					} else {
-                        if($this->debug) {
-                            print("<p>Will not commit</p>");
-                        }
+						if($this->debug) {
+							print("<p>Will not commit</p>");
+						}
 					}
 				}
 			}
@@ -718,12 +718,12 @@ trait Form {
 		}
 		if (Settings::$sql->query($query)) {
 			if ($r=Settings::$sql->query("select last_insert_id()")) {
-                $this->newid = intval($r->fetch_row()[0]);
-                if (($this->newid !== 0) && ($this->show || !is_null($this->redirect))) {
-                    $this->show = false;
-                    $this->redirection($this->redirect,$this->insert_qs,$this->newid);
-                }
-                $r->close();
+				$this->newid = intval($r->fetch_row()[0]);
+				if (($this->newid !== 0) && ($this->show || !is_null($this->redirect))) {
+					$this->show = false;
+					$this->redirection($this->redirect,$this->insert_qs,$this->newid);
+				}
+				$r->close();
 			}
 			$retval = true;
 		} else {
@@ -733,33 +733,33 @@ trait Form {
 	}
 
 	public function redirection($redirect=NULL,$insert_qs=NULL,$newid=0) {
-        if ($newid != 0) {
-            if (!is_null($redirect)) {
-                $new_url = $redirect;
-            } else {
-                $new_url = Settings::$url;
-            }
-            if (mb_strpos($new_url,"?") === false) {
-              $new_url .= "?";
-            }
-            if (is_null($insert_qs)) {
-                $new_url .= "[[ID]]";
-            } else {
-                $new_url .= $insert_qs;
-            }
-            $new_url = str_replace("[[ID]]",$newid,$new_url);
-            if($this->debug) {
-                print('<br />DEBUG: Redirect set to =' . $new_url);
-            } else {
-                header("Location: " . $new_url );
-            }
-	    }
+		if ($newid != 0) {
+			if (!is_null($redirect)) {
+				$new_url = $redirect;
+			} else {
+				$new_url = Settings::$url;
+			}
+			if (mb_strpos($new_url,"?") === false) {
+			  $new_url .= "?";
+			}
+			if (is_null($insert_qs)) {
+				$new_url .= "[[ID]]";
+			} else {
+				$new_url .= $insert_qs;
+			}
+			$new_url = str_replace("[[ID]]",$newid,$new_url);
+			if($this->debug) {
+				print('<br />DEBUG: Redirect set to =' . $new_url);
+			} else {
+				header("Location: " . $new_url );
+			}
+		}
 	}
 
 /**
  * validation functions
  */
- 	public function valMacro($name='',$msg="Invalid Macrotext") {
+	public function valMacro($name='',$msg="Invalid Macrotext") {
 		$this->valid = true;
 		if (isset($this->fields[$name][0])) {
 			if (empty($this->fields[$name][0]) || !is_string($this->fields[$name][0])) {
@@ -817,11 +817,11 @@ trait Form {
 	}
 	public function valNotZero($name='',$msg=" This must be filled correctly.") {
 		if (isset($this->fields[$name][0])) {
-		    $val=intval($this->fields[$name][0]);
-            if ( $val === 0 ) {
-                $this->valid = false;
-                $this->seterr($name,$msg);
-            }
+			$val=intval($this->fields[$name][0]);
+			if ( $val === 0 ) {
+				$this->valid = false;
+				$this->seterr($name,$msg);
+			}
 		}
 	}
 	public function valNoWhitespace($name='',$msg=" This must contain no whitespace.") {
@@ -857,5 +857,54 @@ trait Form {
 			}
 		}
 	}
+
+	public function valMinLength($name='',$min,$error = NULL)
+	{
+		if (isset($this->fields[$name][0])) {
+		  if(mb_strlen($this->fields[$name][0]) < $min)
+		  {
+			  $this->valid = false;
+			  if(!isset($error))
+			  {$msg = "$name must be at least $min characters long.";}
+			  else{
+			   $msg = $error;
+			  }
+			  $this->seterr($name,$msg);
+		  }
+		}
+	}
+	public function valMaxLength($name='',$max,$error = NULL)
+	{
+		if (isset($this->fields[$name][0])) {
+			if(mb_strlen($this->fields[$name][0]) > $max)
+			{
+				$this->valid = false;
+				if(!isset($error)){
+				$msg = "$name cannot be more than $max characters long.";
+				}
+				else{
+					$msg = $error;
+				}
+				$this->seterr($name,$msg);
+			}
+		}
+	}
+	public function valExactLength($name='',$length,$error = NULL)
+	{
+		if (isset($this->fields[$name][0])) {
+			if(mb_strlen($this->fields[$name][0]) != $length)
+			{
+				$this->valid = false;
+				if(!isset($error)){
+					$msg = "$name must be exactly $length characters long.";
+				}
+				else{
+					$msg = $error;
+				}
+				$this->seterr($name,$msg);
+			}
+		}
+	}
+
 
 }
