@@ -23,10 +23,10 @@ class SIOSetEmail {
 
 	public function prefilter() {
 		if (isset($this->fields['emailp'][0])) {
-			$this->fields['emailp'][0]=mb_strtolower($this->fields['emailp'][0]); 
+			$this->fields['emailp'][0]=mb_strtolower($this->fields['emailp'][0]);
 		}
 		if (isset($this->fields['emailb'][0])) {
-			$this->fields['emailb'][0]=mb_strtolower($this->fields['emailb'][0]); 
+			$this->fields['emailb'][0]=mb_strtolower($this->fields['emailb'][0]);
 		}
 	}
 
@@ -52,9 +52,32 @@ class SIOSetEmail {
 			$this->seterr("emailp",Dict::get(static::SIG .'errors_emails_empty'));
 		}
 		$this->valEmail('emailp',Dict::get(static::SIG .'errors_email_badformat'));
-		if ($this->valid) {
-			$this->valid = $retval;
+		$pwdval = false;
+		if (isset($this->fields['password'][0])) {
+            if(static::$use_un) {
+                $unm = self::$usr['username'];
+                $field="username";
+            } else {
+                $unm = self::$usr['email'];
+                $field="email";
+            }
+			$ph=SIOSetPW::enhash($unm,$this->fields['password'][0]);
+			Settings::esc($unm);
+			$qry="select count(id) as ok from " . $this->table . " where active='on' and ".$field."='" .$unm. "' and password='" . $ph . "'";
+			if ($rx = Settings::$sql->query($qry)) {
+				if (strcmp($rx->fetch_row()[0],"1") === 0) {
+					$pwdval=true;
+				} else {
+					$this->seterr("password",Dict::get(static::SIG.'errors_password_bad'));
+				}
+				$rx->close();
+			} else {
+			    $this->seterr("password","Unexpected Query Error.");
+			}
+		} else { //set empty error.
+			$this->seterr("password",Dict::get(static::SIG.'errors_password_empty'));
 		}
+		$this->valid = ($this->valid && $retval && $pwdval);
 	}
 
 	protected function commit() {
@@ -72,6 +95,7 @@ class SIOSetEmail {
 				Settings::$sql->query("update ".$this->table." set ts=null,emailp='".$em."' where id='".Settings::$usr['ID']."'");
 				$qry="select username,".static::$munge." as munge from " . $this->table . " where id='" .Settings::$usr['ID']. "' and active='on'";
 				if ($rx = Settings::$sql->query($qry)) {
+//					require_once("PHPMailer/PHPMailerAutoload.php");
 					while ($f = $rx->fetch_assoc()) {
 						$mail_v=new NView(@static::$v[static::SIG."email_body"]);
 						$mail = new PHPMailer();
@@ -88,10 +112,15 @@ class SIOSetEmail {
 						$mail->isHTML(true);
 						$url=$_SERVER["SCRIPT_URI"];
 						if (strpos($url, '?') !== false) {
-							$url .= '&amp;siof=' . $f['munge'];
+						    $url .= "&amp;";
 						} else {
-							$url .= '?siof=' . $f['munge'];
+						    $url .= "?";
 						}
+                        if(static::$use_un) {
+                            $url .= 'siof=' . $f['munge'];
+                        } else {
+                            $url .= 'siof=' . $f['munge'] . '&amp;sioh=' . SIOSetPW::enhash($this->fields['emailp'][0],$this->fields['password'][0]);
+                        }
 						$mail_v->set("//*[@data-xp='ha']/@href",$url);
 						$mail->Body = $mail_v->show(false);
 						$mail->AltBody=Dict::get(static::SIG .'note_email_see_html_alt');
@@ -119,14 +148,26 @@ class SIOSetEmail {
 		return $retval;
 	}
 
-	public static function pushit($hat=NULL) {
-		if (is_null($hat)) { //check email
+	public static function pushit($ha=NULL) {
+		if (is_null($ha)) { //check email
 			$nv = new NView(@static::$v[static::SIG."check_mail"]);
 		} else { 			 //set success..
-			$ha=Settings::esc($hat);
-			$query= "update sio_user set email=emailp where id='" .Settings::$usr['ID']. "' and ".static::$munge."='".$ha."'";
-			Settings::$sql->query($query);
-			$nv = new NView(@static::$v[static::SIG."success"]);
+			Settings::esc($ha);
+			if(static::$use_un) {
+                $query= "update sio_user set email=emailp where id='" .Settings::$usr['ID']. "' and ".static::$munge."='".$ha."'";
+  			    Settings::$sql->query($query);
+			    $nv = new NView(@static::$v[static::SIG."success"]);
+           } else {
+                $sioh=@Settings::$qst['sioh'];
+		        if (!is_null($sioh)) {
+                    Settings::esc($sioh);
+                    $query= "update sio_user set email=emailp,password='".$sioh."' where id='" .Settings::$usr['ID']. "' and ".static::$munge."='".$ha."'";
+                    Settings::$sql->query($query);
+                    $nv = new NView(@static::$v[static::SIG."success"]);
+                } else {
+                    $nv = new NView(@static::$v[static::SIG."failure"]);
+                }
+            }
 		}
 		return $nv;
 	}
@@ -139,6 +180,7 @@ class SIOSetEmail {
 			static::SIG."email_body"=>static::SIG."mv.ixml",
 			static::SIG."check_mail"=>static::SIG."pv.ixml",
 			static::SIG."success"=>static::SIG."sv.ixml"
+			static::SIG."failure"=>static::SIG."fv.ixml"
 		);
 		static::$v = array_replace(static::$v,$custom_views);
 //Now do translations.
@@ -152,6 +194,7 @@ class SIOSetEmail {
 			static::SIG .'errors_emails_unmatched'=>" Both emails must be the same.",
 			static::SIG .'errors_email_badformat'=>" The email format is not recognised.",
 			static::SIG .'errors_emails_empty'=>" The email must have a value.",
+			static::SIG .'errors_password_bad'=>" The password is not recognised.",
 			static::SIG .'note_email_change_title'=>"Email Change Request",
 			static::SIG .'note_email_change_message'=>"It appears that you have chosen to change your e-mail to the one that you received this message on.",
 			static::SIG .'note_email_change_action_link'=>"PLEASE CONTINUE HERE",
@@ -167,6 +210,7 @@ class SIOSetEmail {
 			static::SIG .'errors_emails_unmatched'=>" Beide E-Mail-Adressen müssen übereinstimmen.",
 			static::SIG .'errors_email_badformat'=>" Das E-Mail-Format kann nicht erkannt werden.",
 			static::SIG .'errors_emails_empty'=>" Sie müssen Ihre E-Mail-Adresse eingeben.",
+			static::SIG .'errors_password_bad'=>" Das passwort kann nicht erkannt werden.",
 			static::SIG .'note_email_change_title'=>"E-Mail-Adresse ändern",
 			static::SIG .'note_email_change_message'=>"Sie möchten die E-Mail-Adresse, an die diese E-Mail geschickt wurde, verwenden.",
 			static::SIG .'note_email_change_action_link'=>"Bitte hier fortfahren",
