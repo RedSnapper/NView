@@ -12,38 +12,56 @@
  */
 
 class DTable {
+
+    static $defaults = array(
+        'csvFileName'=>"report.csv",
+        'view'=> "dtable_v.ixml",
+        'ajax'=> NULL,
+        'formatter'=> array()
+    );
+
     /**
      * Initalise Dtable based on SQL query 
      * the table based on SQL query.
      * @param  srting $query SQL query
      * @param  srting $where SQL condition
-     * @param  NView $v Optional view for datatable
+     * @param  array $options Options for dtables
      * @return NView the current view
      */
-    public static function init($query = null,$where=null,$v=null) {
+    public static function init($query = null,$where=null,$options = array()) {
+        
+        $settings = self::getSettings($options);
+
         if (isset(Settings::$qst['type']) && Settings::$qst['type'] === 'json') {
-            $data = self::json($query, $where);
+            $data = self::json($query, $where,$settings);
             header('Content-Type: application/json');
             echo json_encode($data);
             exit;
-        } else {
-            return DTable::setView($query,$v);
+        }elseif(isset(Settings::$qst['type']) && Settings::$qst['type'] === 'csv'){
+            self::csv($query,$where,$settings);
+            exit;
+        } 
+        else {
+            return self::setView($query,$settings);
         }
     }
+
+    public static function getSettings($options){
+        return $settings = (object) array_merge((array) self::$defaults,(array) $options);
+    }
+
     /**
      * Initialise the view for datatable generating the columns for 
      * the table based on SQL query.
      * @param  srting $query SQL query
-     * @param  NView $v Optional view for datatable
-     * @param  str $url Optional string for url to get the JSON 
-     * (default is the current page with query string of type=json)
+     * @param  array $settings Settings for dtables
      * @return NView the current view
      */
-	public static function setView($query = null,$v=null,$url=null) {
+	public static function setView($query = null,$settings=array()) {
         $statement = Settings::$sql->prepare("$query LIMIT 1");
         if($statement){
-            $v = is_null($v) ? new NView('dtable_v.ixml') : $v;
-            $url = is_null($url) ? $_SERVER['PHP_SELF'] : $url;
+            $v = new NView($settings->view);
+            $url = is_null($settings->ajax) ? $_SERVER['PHP_SELF'] : $settings->$ajax;
             $v->set("//h:table/@data-ajax/child-gap()","{$url}?type=json");
             $template = $v->consume("//*[@data-xp='heading']");
     		$statement->execute();
@@ -69,11 +87,10 @@ class DTable {
      * @param  string $query       SQL query without the where clause
      * @param  string $whereResult Optional where clause without the word where
      * in the clause
-     * @param  array  $formatter   Formatter functions for columns to alter data
-     * from the query
+     * @param  array $settings Settings for dtables
      * @return array Server-side processing response array
      */
-    public static function json($query = null,$whereResult=null,$formatter=array()) {
+    public static function json($query = null,$whereResult=null,$settings=array()) {
         $bindings = array();
         $request = $_GET;
         $where = self::getWhere('',$whereResult);
@@ -95,19 +112,36 @@ class DTable {
             "draw"              => intval( $request['draw'] ),
             "recordsTotal"      => intval( $recordsTotal ),
             "recordsFiltered"   => intval( $recordsFiltered ),
-            "data"              => self::data_output($result,$columns,$formatter)
+            "data"              => self::data_output($result,$columns,$settings)
         );
     }
+
+    public static function csv($query = null,$whereResult=null,$settings=array()){
+        $bindings = array();
+        $request = $_GET;
+        $where = self::getWhere('',$whereResult);
+        $result = self::sql_exec("{$query} {$where}"); // Get total amount of records before limit
+        $recordsTotal= $result->num_rows;
+        $columns = array_map(function($field){return "{$field->table}.{$field->orgname}";},$result->fetch_fields());
+
+        $limit = self::limit( $request);
+        $order = self::order( $request,$columns);
+        $filter = self::filter( $request, $columns, $bindings );
+        $where = self::getWhere($filter,$whereResult);
+        $query = "$query $where $order"; // Get total number of filterd records without the limit
+        Export::csv($settings->csvFileName,true,$query);
+    }
+
     /**
      * Create the data output array for the DataTables rows
      * 
      *  @param  mysqli_result $result Result object
      *  @param  array $columns Columns array
-     *  @param  array $formatter array of functions to act on data
+     *  @param  array $settings Settings for dtables
      *  @return array Formatted data in a row based format
      */
-    private static function data_output($result,$columns,$formatter=array()){
-        if(count($formatter) == 0){
+    private static function data_output($result,$columns,$settings=array()){
+        if(count($settings->formatter) == 0){
             return $result->fetch_all();
         }
     }
