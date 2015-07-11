@@ -13,6 +13,24 @@
 
 class DTable {
     /**
+     * Initalise Dtable based on SQL query 
+     * the table based on SQL query.
+     * @param  srting $query SQL query
+     * @param  srting $where SQL condition
+     * @param  NView $v Optional view for datatable
+     * @return NView the current view
+     */
+    public static function init($query = null,$where=null,$v=null) {
+        if (isset(Settings::$qst['type']) && Settings::$qst['type'] === 'json') {
+            $data = self::json($query, $where);
+            header('Content-Type: application/json');
+            echo json_encode($data);
+            exit;
+        } else {
+            return DTable::setView($query,$v);
+        }
+    }
+    /**
      * Initialise the view for datatable generating the columns for 
      * the table based on SQL query.
      * @param  srting $query SQL query
@@ -21,7 +39,7 @@ class DTable {
      * (default is the current page with query string of type=json)
      * @return NView the current view
      */
-	public static function init($query = null,$v=null,$url=null) {
+	public static function setView($query = null,$v=null,$url=null) {
         $statement = Settings::$sql->prepare("$query LIMIT 1");
         if($statement){
             $v = is_null($v) ? new NView('dtable_v.ixml') : $v;
