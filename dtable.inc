@@ -141,8 +141,29 @@ class DTable {
      *  @return array Formatted data in a row based format
      */
     private static function data_output($result,$columns,$settings=array()){
+        $data=$result->fetch_all();
+
         if(count($settings->formatter) == 0){
-            return $result->fetch_all();
+            return $data;
+        }else{
+            $out = array();
+            
+            for ( $i=0, $ien=count($data) ; $i<$ien ; $i++ ) {
+
+                $row = array();
+                for ( $j=0, $jen=count($columns) ; $j<$jen ; $j++ ) {
+                    $column = $columns[$j];
+                    // Is there a formatter?
+                    if ( isset( $settings->formatter[$column] ) ) {
+                        $row[$j] = $settings->formatter[$column]( $data[$i][$j], $data[$i] );
+                    }
+                    else {
+                        $row[$j] = $data[$i][$j];
+                    }
+                }
+                $out[] = $row;
+            }
+            return $out;
         }
     }
 
