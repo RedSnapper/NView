@@ -99,55 +99,12 @@ class SioReg {
 	}
 
 	public function commit() {
-		$em=$this->fields['emailp'][0];
-		$id_for_hash=$em;	//unescaped used for munge case when registering via email..
-		Settings::esc($em); //escaped.
-		if(static::$use_un) {
-			if (isset($this->fields['username'][0])) {
-				$uname=$this->fields['username'][0];
-				$id_for_hash=$uname;	//use username.
-				Settings::esc($uname);
-				$extra="username='".$uname."',";
-				$qry="select ".static::$munge." as munge,emailp from " . $this->table . " where username='" .$uname. "' and active='xx'";
-			}
-		} else { //using email
-			$extra="username='".mb_strtolower(uniqid("u",true))."',";
-			$qry="select ".static::$munge." as munge,emailp from " . $this->table . " where emailp='" .$em . "' and active='xx'";
-		}
-		$ph=SIOSetPW::enhash($id_for_hash,$this->fields['passwordn'][0]);
-		$insql="insert into ".$this->table." set ts=null,".$extra."emailp='".$em."',password='".$ph."',active='xx'";
-		Settings::$sql->query($insql);
-		if ($r=Settings::$sql->query("select last_insert_id()")) {
-			$this->newid = intval($r->fetch_row()[0]);
-			if ($this->newid !== 0) {
-				Settings::$sql->query("insert into sio_userprofile set user=".$this->newid);
-			}
-		}
-		if ($rx = Settings::$sql->query($qry)) {
-			while ($f = $rx->fetch_assoc()) {
-				$mail_v=new NView(@static::$v[static::SIG."email_body"]);
-				$mail_v->set("//*[@data-tr]/@data-tr/preceding-gap()",static::SIG);
-				$mail = new PHPMailer();
-				$mail->isSendmail();
-				$mail->CharSet='utf-8';
-				$mail->Encoding='base64';
-				$mail->setFrom('no_reply@redsnapper.net', Dict::get(static::SIG .'note_register_title'));
-				$mail->addAddress($em,$f['emailp']);
-				$mail->Subject = Dict::get(static::SIG.'note_register_title');
-				$mail->isHTML(true);
-				$url=$_SERVER["SCRIPT_URI"];
-				if (strpos($url, '?') !== false) {
-					$url .= '&siof=' . $f['munge'];
-				} else {
-					$url .= '?siof=' . $f['munge'];
-				}
-				$mail_v->set("//*[@data-xp='ha']/@href",$url);
-				$mail->Body = $mail_v->show(false);
-				$mail->AltBody=Dict::get(static::SIG.'mesg_see_html_alt');
-				$mail->send();
-			}
-			$rx->close();
-		}
+		static::createuser(
+			@$this->fields['username'][0],
+			@$this->fields['emailp'][0],
+			@$this->fields['passwordn'][0],
+			static::$use_un,true
+		);
 		return true;
 	}
 
@@ -176,6 +133,68 @@ class SioReg {
 			$nv->set("//*[@data-tr]/@data-tr/preceding-gap()",static::SIG);
 		}
 		return $nv;
+	}
+
+	public static function createuser($un=null,$em=null,$pw=null,$use_un=false,$pending=false) {
+		$retval = NULL;
+		$id_for_hash=$em;	//unescaped used for munge case when registering via email..
+		Settings::esc($em); //escaped.
+		if($use_un) {
+			$id_for_hash=$un;	//use username.
+			Settings::esc($un);
+			$extra="username='{$un}'";
+		} else { //using email
+			$extra="username='".mb_strtolower(uniqid("u",true))."'";
+		}
+		if ($pending) {
+			$em_field = "emailp";
+			$active_val= "xx";
+			if ($use_un) {
+				$email_qry="select ".static::$munge." as munge,emailp from sio_user where username='" .$un. "' and active='xx'";
+			} else { //using email
+				$email_qry="select ".static::$munge." as munge,emailp from sio_user where emailp='" .$em . "' and active='xx'";
+			}
+		} else {
+			$em_field = "email";
+			$active_val= "on";
+		}
+		$ph=SIOSetPW::enhash($id_for_hash,$pw);
+		$insql="insert into sio_user set ts=null,{$extra},{$em_field}='{$em}',password='{$ph}',active='{$active_val}'";
+		Settings::$sql->query($insql);
+		if ($r=Settings::$sql->query("select last_insert_id()")) {
+			$retval = intval($r->fetch_row()[0]);
+			if ($retval !== 0) {
+				Settings::$sql->query("insert into sio_userprofile set user=".$retval);
+			}
+		}
+		if ($pending) {
+			if ($rx = Settings::$sql->query($email_qry)) {
+				while ($f = $rx->fetch_assoc()) {
+					$mail_v=new NView(@static::$v[static::SIG."email_body"]);
+					$mail_v->set("//*[@data-tr]/@data-tr/preceding-gap()",static::SIG);
+					$mail = new PHPMailer();
+					$mail->isSendmail();
+					$mail->CharSet='utf-8';
+					$mail->Encoding='base64';
+					$mail->setFrom('no_reply@redsnapper.net', Dict::get(static::SIG .'note_register_title'));
+					$mail->addAddress($em,$f['emailp']);
+					$mail->Subject = Dict::get(static::SIG.'note_register_title');
+					$mail->isHTML(true);
+					$url=$_SERVER["SCRIPT_URI"];
+					if (strpos($url, '?') !== false) {
+						$url .= '&amp;siof=' . $f['munge'];
+					} else {
+						$url .= '?siof=' . $f['munge'];
+					}
+					$mail_v->set("//*[@data-xp='ha']/@href",$url);
+					$mail->Body = $mail_v->show(false);
+					$mail->AltBody=Dict::get(static::SIG.'mesg_see_html_alt');
+					$mail->send();
+				}
+				$rx->close();
+			}
+		}
+		return $retval;
 	}
 
 	public static function initialise($use_un=true,$custom_views=array()) {
