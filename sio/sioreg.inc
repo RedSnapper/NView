@@ -8,6 +8,7 @@ class SioReg {
 	private static $munge="sha2(concat(ifnull(username,id),'_',ifnull(password,id),'_',ifnull(email,id),'_',ifnull(ts,id)),256)";
 	private static $v=array();
 	private static $use_un=true;
+    private static $initialised=false;
 
 	function __construct($key=NULL) {
 		$this->iniForm($key,@static::$v[static::SIG]);
@@ -135,11 +136,11 @@ class SioReg {
 		return $nv;
 	}
 
-	public static function createuser($un=null,$em=null,$pw=null,$use_un=false,$pending=false) {
+	public static function createuser($un=null,$em=null,$pw=null,$pending=false) {
 		$retval = NULL;
 		$id_for_hash=$em;	//unescaped used for munge case when registering via email..
 		Settings::esc($em); //escaped.
-		if($use_un) {
+		if(static::$use_un) {
 			$id_for_hash=$un;	//use username.
 			Settings::esc($un);
 			$extra="username='{$un}'";
@@ -149,7 +150,7 @@ class SioReg {
 		if ($pending) {
 			$em_field = "emailp";
 			$active_val= "xx";
-			if ($use_un) {
+			if (static::$use_un) {
 				$email_qry="select ".static::$munge." as munge,emailp from sio_user where username='" .$un. "' and active='xx'";
 			} else { //using email
 				$email_qry="select ".static::$munge." as munge,emailp from sio_user where emailp='" .$em . "' and active='xx'";
@@ -198,73 +199,76 @@ class SioReg {
 	}
 
 	public static function initialise($use_un=true,$custom_views=array()) {
-		static::$use_un=$use_un;
+        if (! static::$initialised) {
+        	static::$initialised = true;
+			static::$use_un=$use_un;
 //views array
-		static::$v=array(
-			static::SIG."email_body"=>static::SIG."mb.ixml",
-			static::SIG."success"=>static::SIG."sv.ixml",
-			static::SIG."check_mail"=>static::SIG."pv.ixml"
-		);
+			static::$v=array(
+				static::SIG."email_body"=>static::SIG."mb.ixml",
+				static::SIG."success"=>static::SIG."sv.ixml",
+				static::SIG."check_mail"=>static::SIG."pv.ixml"
+			);
 
 //translations
-		$en = array(
-			static::SIG ."prompt_email"=>"Email",
-			static::SIG ."prompt_password"=>"Password",
-			static::SIG ."prompt_retype_password"=>"Retype Password",
-			static::SIG ."button_register"=>"Register",
-			static::SIG ."note_register_title"=>"Registration Request",
-			static::SIG ."note_register_message"=>" It appears that you have chosen to register on the website.",
-			static::SIG ."note_register_action_link"=>" Please click here to confirm your registration.",
-			static::SIG ."errors_email_badformat"=>" The email format is not recognised.",
-			static::SIG ."errors_email_exists"=>" A user with this email already exists on the system. Please use another email.",
-			static::SIG ."errors_no_email"=>" You must enter an email address.",
-			static::SIG ."errors_no_password"=>" You must enter a password.",
-			static::SIG ."errors_new_pw_different"=>" Both passwords must be the same.",
-			static::SIG ."mesg_register_check_email"=>"Thank you for registering.  A confirmation email has been sent to your email address for verification.",
-			static::SIG ."mesg_see_html_alt"=>"Please see the html alternative of this email.",
-			static::SIG ."mesg_success"=>"You have successfully registered."
-		);
+			$en = array(
+				static::SIG ."prompt_email"=>"Email",
+				static::SIG ."prompt_password"=>"Password",
+				static::SIG ."prompt_retype_password"=>"Retype Password",
+				static::SIG ."button_register"=>"Register",
+				static::SIG ."note_register_title"=>"Registration Request",
+				static::SIG ."note_register_message"=>" It appears that you have chosen to register on the website.",
+				static::SIG ."note_register_action_link"=>" Please click here to confirm your registration.",
+				static::SIG ."errors_email_badformat"=>" The email format is not recognised.",
+				static::SIG ."errors_email_exists"=>" A user with this email already exists on the system. Please use another email.",
+				static::SIG ."errors_no_email"=>" You must enter an email address.",
+				static::SIG ."errors_no_password"=>" You must enter a password.",
+				static::SIG ."errors_new_pw_different"=>" Both passwords must be the same.",
+				static::SIG ."mesg_register_check_email"=>"Thank you for registering.  A confirmation email has been sent to your email address for verification.",
+				static::SIG ."mesg_see_html_alt"=>"Please see the html alternative of this email.",
+				static::SIG ."mesg_success"=>"You have successfully registered."
+			);
 
-		$de = array(
-			static::SIG .'prompt_email'=> 'E-Mail-Adresse',
-			static::SIG .'prompt_password'=> 'Passwort',
-			static::SIG .'prompt_retype_password'=> 'Passwort wiederholen',
-			static::SIG .'button_register'=> 'Registrieren',
-			static::SIG .'note_register_title'=> 'Registrierung',
-			static::SIG .'note_register_message'=> 'Sie möchten sich auf unserer Website registrieren.',
-			static::SIG .'note_register_action_link'=> 'Bitte bestätigen Sie Ihre Registrierung.',
-			static::SIG .'errors_email_badformat'=> 'Das E-Mail-Format kann nicht erkannt werden.',
-			static::SIG ."errors_email_exists"=>" Diese  E-Mail-Adresse wird bereits verwendet. Bitte wählen Sie eine andere E-Mail-Adresse.",
-			static::SIG .'errors_no_password'=> "Bitte geben Sie Ihr Passwort ein.",
-			static::SIG .'errors_new_pw_different'=> "Die beiden Passwörter müssen übereinstimmen.",
-			static::SIG .'mesg_register_check_email'=> "Um Ihre Registrierung zu bestätigen, lesen Sie bitte die E-Mail, die Ihnen gerade zugeschickt wurde.",
-			static::SIG .'mesg_see_html_alt'=> "Sollte die E-Mail nicht korrekt dargestellt werden, wechseln Sie bitte in das HTML-Format.",
-			static::SIG .'mesg_success'=> "Sie wurden erfolgreich registriert."
-		);
+			$de = array(
+				static::SIG .'prompt_email'=> 'E-Mail-Adresse',
+				static::SIG .'prompt_password'=> 'Passwort',
+				static::SIG .'prompt_retype_password'=> 'Passwort wiederholen',
+				static::SIG .'button_register'=> 'Registrieren',
+				static::SIG .'note_register_title'=> 'Registrierung',
+				static::SIG .'note_register_message'=> 'Sie möchten sich auf unserer Website registrieren.',
+				static::SIG .'note_register_action_link'=> 'Bitte bestätigen Sie Ihre Registrierung.',
+				static::SIG .'errors_email_badformat'=> 'Das E-Mail-Format kann nicht erkannt werden.',
+				static::SIG ."errors_email_exists"=>" Diese  E-Mail-Adresse wird bereits verwendet. Bitte wählen Sie eine andere E-Mail-Adresse.",
+				static::SIG .'errors_no_password'=> "Bitte geben Sie Ihr Passwort ein.",
+				static::SIG .'errors_new_pw_different'=> "Die beiden Passwörter müssen übereinstimmen.",
+				static::SIG .'mesg_register_check_email'=> "Um Ihre Registrierung zu bestätigen, lesen Sie bitte die E-Mail, die Ihnen gerade zugeschickt wurde.",
+				static::SIG .'mesg_see_html_alt'=> "Sollte die E-Mail nicht korrekt dargestellt werden, wechseln Sie bitte in das HTML-Format.",
+				static::SIG .'mesg_success'=> "Sie wurden erfolgreich registriert."
+			);
 
-		if(static::$use_un) {
-			static::$v[static::SIG]=static::SIG."uv.ixml";
-			$en[static::SIG ."prompt_username"]="Username";
-			$de[static::SIG ."prompt_username"]="Benutzername";
+			if(static::$use_un) {
+				static::$v[static::SIG]=static::SIG."uv.ixml";
+				$en[static::SIG ."prompt_username"]="Username";
+				$de[static::SIG ."prompt_username"]="Benutzername";
 
-			$en[static::SIG ."errors_username_exists"]="This username already exists on the system. Please choose another.";
-			$de[static::SIG ."errors_username_exists"]="Dieser Benutzername wird bereits verwendet. Bitte wählen Sie einen anderen Benutzernamen.";
+				$en[static::SIG ."errors_username_exists"]="This username already exists on the system. Please choose another.";
+				$de[static::SIG ."errors_username_exists"]="Dieser Benutzername wird bereits verwendet. Bitte wählen Sie einen anderen Benutzernamen.";
 
-			$en[static::SIG ."errors_no_username"]="You need to enter a username.";
-			$de[static::SIG ."errors_no_username"]="Bitte geben Sie Ihren Benutzernamen ein.";
+				$en[static::SIG ."errors_no_username"]="You need to enter a username.";
+				$de[static::SIG ."errors_no_username"]="Bitte geben Sie Ihren Benutzernamen ein.";
 
-			$en[static::SIG ."errors_new_pw_too_un_simple"]=" Passwords must be different from your username!";
-			$de[static::SIG ."errors_new_pw_too_un_simple"]=" Passwort und Benutzername dürfen nicht übereinstimmen.";
-		} else {
-			static::$v[static::SIG]=static::SIG."mv.ixml";
-			$en[static::SIG ."errors_new_pw_too_em_simple"]=" Passwords must be different from your email!";
-			$de[static::SIG ."errors_new_pw_too_em_simple"]=" Passwort und E-Mail-Adresse dürfen nicht übereinstimmen.";
-		}
-		//set these after any contextual changes;
-		static::$v = array_replace(static::$v,$custom_views);
-
-		Dict::set($en,'en');
-		Dict::set($de,'de');
+				$en[static::SIG ."errors_new_pw_too_un_simple"]=" Passwords must be different from your username!";
+				$de[static::SIG ."errors_new_pw_too_un_simple"]=" Passwort und Benutzername dürfen nicht übereinstimmen.";
+			} else {
+				static::$v[static::SIG]=static::SIG."mv.ixml";
+				$en[static::SIG ."errors_new_pw_too_em_simple"]=" Passwords must be different from your email!";
+				$de[static::SIG ."errors_new_pw_too_em_simple"]=" Passwort und E-Mail-Adresse dürfen nicht übereinstimmen.";
+			}
+			//set these after any contextual changes;
+			static::$v = array_replace(static::$v,$custom_views);
+			Dict::set($en,'en');
+			Dict::set($de,'de');
+        }
+	
 	}
 
 }
