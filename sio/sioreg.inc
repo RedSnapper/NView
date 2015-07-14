@@ -147,52 +147,62 @@ class SioReg {
 		} else { //using email
 			$extra="username='".mb_strtolower(uniqid("u",true))."'";
 		}
-		if ($pending) {
-			$em_field = "emailp";
-			$active_val= "xx";
-			if (static::$use_un) {
-				$email_qry="select ".static::$munge." as munge,emailp from sio_user where username='" .$un. "' and active='xx'";
-			} else { //using email
-				$email_qry="select ".static::$munge." as munge,emailp from sio_user where emailp='" .$em . "' and active='xx'";
+		$unique=false;
+		$qve="select count(id) as ok from sio_user where email='{$em}' or emailp='{$em}'";
+		if ($rx = Settings::$sql->query($qve)) {
+			if (strcmp($rx->fetch_row()[0],"0") === 0) {
+				$unique=true;
 			}
-		} else {
-			$em_field = "email";
-			$active_val= "on";
+			$rx->close();
 		}
-		$ph=SIOSetPW::enhash($id_for_hash,$pw);
-		$insql="insert into sio_user set ts=null,{$extra},{$em_field}='{$em}',password='{$ph}',active='{$active_val}'";
-		Settings::$sql->query($insql);
-		if ($r=Settings::$sql->query("select last_insert_id()")) {
-			$retval = intval($r->fetch_row()[0]);
-			if ($retval !== 0) {
-				Settings::$sql->query("insert into sio_userprofile set user=".$retval);
-			}
-		}
-		if ($pending) {
-			if ($rx = Settings::$sql->query($email_qry)) {
-				while ($f = $rx->fetch_assoc()) {
-					$mail_v=new NView(@static::$v[static::SIG."email_body"]);
-					$mail_v->set("//*[@data-tr]/@data-tr/preceding-gap()",static::SIG);
-					$mail = new PHPMailer();
-					$mail->isSendmail();
-					$mail->CharSet='utf-8';
-					$mail->Encoding='base64';
-					$mail->setFrom('no_reply@redsnapper.net', Dict::get(static::SIG .'note_register_title'));
-					$mail->addAddress($em,$f['emailp']);
-					$mail->Subject = Dict::get(static::SIG.'note_register_title');
-					$mail->isHTML(true);
-					$url=$_SERVER["SCRIPT_URI"];
-					if (strpos($url, '?') !== false) {
-						$url .= '&amp;siof=' . $f['munge'];
-					} else {
-						$url .= '?siof=' . $f['munge'];
-					}
-					$mail_v->set("//*[@data-xp='ha']/@href",$url);
-					$mail->Body = $mail_v->show(false);
-					$mail->AltBody=Dict::get(static::SIG.'mesg_see_html_alt');
-					$mail->send();
+		if ($unique) {
+			if ($pending) {
+				$em_field = "emailp";
+				$active_val= "xx";
+				if (static::$use_un) {
+					$email_qry="select ".static::$munge." as munge,emailp from sio_user where username='" .$un. "' and active='xx'";
+				} else { //using email
+					$email_qry="select ".static::$munge." as munge,emailp from sio_user where emailp='" .$em . "' and active='xx'";
 				}
-				$rx->close();
+			} else {
+				$em_field = "email";
+				$active_val= "on";
+			}
+			$ph=SIOSetPW::enhash($id_for_hash,$pw);
+			$insql="insert into sio_user set ts=null,{$extra},{$em_field}='{$em}',password='{$ph}',active='{$active_val}'";
+			Settings::$sql->query($insql);
+			if ($r=Settings::$sql->query("select last_insert_id()")) {
+				$retval = intval($r->fetch_row()[0]);
+				if ($retval !== 0) {
+					Settings::$sql->query("insert into sio_userprofile set user=".$retval);
+				}
+			}
+			if ($pending) {
+				if ($rx = Settings::$sql->query($email_qry)) {
+					while ($f = $rx->fetch_assoc()) {
+						$mail_v=new NView(@static::$v[static::SIG."email_body"]);
+						$mail_v->set("//*[@data-tr]/@data-tr/preceding-gap()",static::SIG);
+						$mail = new PHPMailer();
+						$mail->isSendmail();
+						$mail->CharSet='utf-8';
+						$mail->Encoding='base64';
+						$mail->setFrom('no_reply@redsnapper.net', Dict::get(static::SIG .'note_register_title'));
+						$mail->addAddress($em,$f['emailp']);
+						$mail->Subject = Dict::get(static::SIG.'note_register_title');
+						$mail->isHTML(true);
+						$url=$_SERVER["SCRIPT_URI"];
+						if (strpos($url, '?') !== false) {
+							$url .= '&amp;siof=' . $f['munge'];
+						} else {
+							$url .= '?siof=' . $f['munge'];
+						}
+						$mail_v->set("//*[@data-xp='ha']/@href",$url);
+						$mail->Body = $mail_v->show(false);
+						$mail->AltBody=Dict::get(static::SIG.'mesg_see_html_alt');
+						$mail->send();
+					}
+					$rx->close();
+				}
 			}
 		}
 		return $retval;
