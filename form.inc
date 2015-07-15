@@ -869,10 +869,10 @@ trait Form {
 				$sql="select str_to_date('".$value."','".$format."') as valid_date";
 				if ($rx = Settings::$sql->query($sql)) {
 					while ($f = $rx->fetch_assoc()) {
-						if(is_null($f['valid_date'])) {
+						if(is_null($f['valid_date']) || (substr($f['valid_date'],0,7) == '0000-00')) {
 			  				$this->valid = false;
 			  				$this->seterr($name,$msg);
-						}
+						} 
 					}
 					$rx->close();
 				}
