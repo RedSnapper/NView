@@ -860,7 +860,7 @@ trait Form {
 	
 	
 //If the date, time, or datetime value extracted from str is illegal,  returns NULL and produces a warning.
-	public function valDateTime($name='',$format='%Y-%m-%d %H:%i:%s',$msg="Illegal date format. ") {
+	public function valDate($name='',$format='%Y-%m-%d',$msg="Illegal date format. ") {
 		if (isset($this->fields[$name][0])) {
 			if (!empty($this->fields[$name][0]) && is_string($this->fields[$name][0])) {
 				$value=$this->fields[$name][0];
@@ -868,11 +868,9 @@ trait Form {
 				Settings::esc($value);
 				$sql="select str_to_date('".$value."','".$format."') as valid_date";
 				if ($rx = Settings::$sql->query($sql)) {
-					while ($f = $rx->fetch_assoc()) {
-						if(is_null($f['valid_date']) || (substr($f['valid_date'],0,7) == '0000-00')) {
-			  				$this->valid = false;
-			  				$this->seterr($name,$msg);
-						} 
+					if (Settings::$sql->warning_count > 0) {
+						$this->valid = false;
+						$this->seterr($name,$msg);
 					}
 					$rx->close();
 				}
