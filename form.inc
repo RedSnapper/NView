@@ -857,6 +857,28 @@ trait Form {
 			}
 		}
 	}
+	
+	
+//If the date, time, or datetime value extracted from str is illegal,  returns NULL and produces a warning.
+	public function valDateTime($name='',$format='%Y-%m-%d %H:%i:%s',$msg="Illegal date format. ") {
+		if (isset($this->fields[$name][0])) {
+			if (!empty($this->fields[$name][0]) && is_string($this->fields[$name][0])) {
+				$value=$this->fields[$name][0];
+				Settings::esc($format);
+				Settings::esc($value);
+				$sql="select str_to_date('".$value."','".$format."') as valid_date";
+				if ($rx = Settings::$sql->query($sql)) {
+					while ($f = $rx->fetch_assoc()) {
+						if($f['valid_date']==='NULL') {
+			  				$this->valid = false;
+			  				$this->seterr($name,$msg);
+						}
+					}
+					$rx->close();
+				}
+			}
+		}
+	}
 
 	public function valMinLength($name='',$min,$error = NULL)
 	{
