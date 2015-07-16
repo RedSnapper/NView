@@ -30,7 +30,7 @@ class SIOSetPW {
 		$retval = true;
 		if (isset($this->fields['password'][0])) {
 			if(static::$use_un) {
-				$unm=$Settings::$usr['username'];
+				$unm=Settings::$usr['username'];
 			} else { //using email
 				$unm=Settings::$usr['email'];
 			}
@@ -77,7 +77,7 @@ class SIOSetPW {
 
 	protected function commit() {
 		if(static::$use_un) {
-			$unm=$Settings::$usr['username'];
+			$unm=Settings::$usr['username'];
 		} else { //using email
 			$unm=Settings::$usr['email'];
 		}
