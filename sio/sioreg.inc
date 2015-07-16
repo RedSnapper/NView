@@ -104,7 +104,7 @@ class SioReg {
 			@$this->fields['username'][0],
 			@$this->fields['emailp'][0],
 			@$this->fields['passwordn'][0],
-			static::$use_un,true
+			true
 		);
 		return true;
 	}
