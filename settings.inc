@@ -15,6 +15,16 @@ class Settings extends Singleton {
 	public static $qst=array();	//associational querystring - for named parameters.
 	private static $sqls=array();
 	public static $website=null;
+	private static $sql_types=null;
+
+	public static function sql_types() { 
+	    if (is_null(static::$sql_types)) {
+	        static::$sql_types = array();
+	        $constants = get_defined_constants(true);
+	        foreach ($constants['mysqli'] as $c => $n) if (preg_match('/^MYSQLI_TYPE_(.*)/', $c, $m)) static::$sql_types[$n] = $m[1];
+	    }
+	    return static::$sql_types;
+	}
 
 /**
  * '__construct'
