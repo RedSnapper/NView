@@ -100,7 +100,7 @@ class SioReg {
 	}
 
 	public function commit() {
-		static::createuser(
+		$this->newid = static::createuser(
 			@$this->fields['username'][0],
 			@$this->fields['emailp'][0],
 			@$this->fields['passwordn'][0],
@@ -135,7 +135,7 @@ class SioReg {
 		}
 		return $nv;
 	}
-
+	
 	public static function createuser($un=null,$em=null,$pw=null,$pending=false) {
 		$retval = NULL;
 		$id_for_hash=$em;	//unescaped used for munge case when registering via email..
