@@ -305,21 +305,21 @@ class NView {
 						if ($entries) {
 							if ($entries->length == 0 ) { //maybe this is a new attribute!? [&& $gap == self::GAP_NONE]
 								$spoint = mb_strrpos($xpath,'/');
-								$apoint = mb_strrpos($xpath,'@');
+								$apoint = mb_strrpos($xpath,'@');  
 								if ($apoint == $spoint+1) {
 									$aname= mb_substr($xpath,$apoint+1); //grab the attribute name.
 									$xpath= mb_substr($xpath,0,$spoint); //resize the xpath.
 									$gap=self::GAP_NATTR;
-								} 
-								if ($gap==self::GAP_NONE || $gap==self::GAP_NATTR) {
-									if (is_null($ref)) {
-										$entries = $this->xp->query($xpath);
+									if (is_null($ref)) { //re-evaluate the xpath without the attribute component.
+										$entries = $this->xp->query($xpath); 
 									} else {
 										$entries = $this->xp->query($xpath,$ref);
 									}
 									if (!$entries) {
 										$this->doMsg('NView::set() ' . $xpath . ' failed.');
 									}
+								} else {
+									$this->doMsg('NView::set() ' . $xpath . ' failed.');
 								}
 							}
 							if ($value instanceof NView) {
