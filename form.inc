@@ -638,13 +638,13 @@ trait Form {
 					}
 				}
 				if ($rx->num_rows > 0) {
+					print('got here (BG)' . $rx->num_rows);
 					while ($f = $rx->fetch_assoc()) {
 						foreach ($this->names as $n) {
 							$this->fields[$n]=array($f[$n]);
 						}
 					}
 				} else {
-					print('got here (BG)');
 					foreach ($this->names as $n) {
 						$this->fields[$n]=array($this->dflds[$n]);
 					}
