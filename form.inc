@@ -644,6 +644,7 @@ trait Form {
 						}
 					}
 				} else {
+					print('got here (BG)');
 					foreach ($this->names as $n) {
 						$this->fields[$n]=array($this->dflds[$n]);
 					}
