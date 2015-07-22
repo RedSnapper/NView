@@ -554,6 +554,7 @@ trait Form {
 			$this->view->set("//*[@data-xp='_ident']/@name",static::sig()."[]"); //we have to force this to be an array.
 			$this->view->set("//*[@data-xp='_ident']/@value",$this->ident());
 			$this->view->set("//*[@name][@name!='" . static::sig() . "[]']/@name/preceding-gap()",$this->idprefix);
+			$this->view->set("//*[@name][@name!='" . static::sig() . "[]']/@name/following-gap()","[]");
 			return $this->view;
 		} else {
 			return null;
