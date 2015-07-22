@@ -356,7 +356,6 @@ trait Form {
 				if (isset($this->fields[$input])) {
 					$val=$this->fields[$input][0];
 				} else {
-					print("[Got Here (BG) $input]");
 					$val=$this->dflds[$input];
 				}
 			}
@@ -645,15 +644,12 @@ trait Form {
 						$this->subsvalue="false";
 					}
 				}
-				print("<br />BG: {$rx->num_rows}");
 				while ($f = $rx->fetch_assoc()) {
 					foreach ($this->names as $n) {
 						$this->fields[$n]=array($f[$n]);
 					}
 				}
 				$rx->close();
-			} else {
-				print("<br />BG: Eeek.");
 			}
 		}
 	}
