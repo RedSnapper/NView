@@ -651,6 +651,8 @@ trait Form {
 					}
 				}
 				$rx->close();
+			} else {
+				print("rx returned false.");
 			}
 		}
 	}
