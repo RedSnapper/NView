@@ -327,6 +327,11 @@ trait Form {
 					foreach ($this->fields[$input] as $val) {
 						$this->view->set("//h:select[@name='$input']/h:option[@value='" . $val . "']/@selected","selected");
 					}
+					
+				} else {
+					foreach ($this->dflds[$input] as $val) {
+						$this->view->set("//h:select[@name='$input']/h:option[@value='" . $val . "']/@selected","selected");
+					}
 				}
 				$err = $v->messages();
 				if (!empty($err)) {
@@ -351,6 +356,7 @@ trait Form {
 				if (isset($this->fields[$input])) {
 					$val=$this->fields[$input][0];
 				} else {
+					print("[Got Here (BG) $input]");
 					$val=$this->dflds[$input];
 				}
 			}
