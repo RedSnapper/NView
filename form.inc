@@ -329,7 +329,12 @@ trait Form {
 					}
 					
 				} else {
-					foreach ($this->dflds[$input] as $val) {
+					if(is_array($this->dflds[$input])) {
+						foreach ($this->dflds[$input] as $val) {
+							$this->view->set("//h:select[@name='$input']/h:option[@value='" . $val . "']/@selected","selected");
+						}
+					} else {
+						$val=$this->dflds[$input];
 						$this->view->set("//h:select[@name='$input']/h:option[@value='" . $val . "']/@selected","selected");
 					}
 				}
