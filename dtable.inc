@@ -17,7 +17,7 @@ class DTable {
         'csvFileName'=>"report.csv",
         'view'=> "dtable_v.ixml",
         'ajax'=> NULL,
-        'formatter'=> array()
+        'columns'=> array()
     );
 
     /**
@@ -64,6 +64,7 @@ class DTable {
             $url = is_null($settings->ajax) ? $_SERVER['PHP_SELF'] : $settings->$ajax;
             $v->set("//h:table/@data-ajax/child-gap()","{$url}?type=json");
             $template = $v->consume("//*[@data-xp='heading']");
+            self::setFilterView($v,$settings);
     		$statement->execute();
     		$result = $statement->get_result();
     		$finfo = $result->fetch_fields();
@@ -72,6 +73,7 @@ class DTable {
                 $th->set("//*[@data-xp='heading']/child-gap()", $field->name);
     			$v->set("//*[@data-xp='row']/child-gap()",$th);
     		}
+
             $statement->free_result();
         }else{
             print(__METHOD__ . " " . Settings::$sql->error);
@@ -142,29 +144,22 @@ class DTable {
      */
     private static function data_output($result,$columns,$settings=array()){
         $data=$result->fetch_all();
-
-        if(count($settings->formatter) == 0){
-            return $data;
-        }else{
-            $out = array();
-            
-            for ( $i=0, $ien=count($data) ; $i<$ien ; $i++ ) {
-
-                $row = array();
-                for ( $j=0, $jen=count($columns) ; $j<$jen ; $j++ ) {
-                    $column = $columns[$j];
-                    // Is there a formatter?
-                    if ( isset( $settings->formatter[$column] ) ) {
-                        $row[$j] = $settings->formatter[$column]( $data[$i][$j], $data[$i] );
-                    }
-                    else {
-                        $row[$j] = $data[$i][$j];
-                    }
+        $out = array();
+        for ( $i=0, $ien=count($data) ; $i<$ien ; $i++ ) {
+            $row = array();
+            for ( $j=0, $jen=count($columns) ; $j<$jen ; $j++ ) {
+                $column = $columns[$j];
+                // Is there a formatter?
+                if ( isset( $settings->columns[$column]['formatter'] ) ) {
+                    $row[$j] = $settings->columns[$column]['formatter']( $data[$i][$j], $data[$i] );
                 }
-                $out[] = $row;
+                else {
+                    $row[$j] = $data[$i][$j];
+                }
             }
-            return $out;
+            $out[] = $row;
         }
+        return $out;
     }
 
     /**
@@ -279,6 +274,38 @@ class DTable {
         }
         return $where;
     }
+
+    private static function setFilterView($v,$settings){
+        $mt = $v->consume("//*[@data-xp='multi']");
+        $ot = new NView('option_v.ixml');
+        $columns = $settings->columns;
+        $filters= array();
+        foreach ($columns as $key => $value) {
+            if(isset($value['filter'])){
+                $filters[$key] = $value['filter'];
+            }
+        }
+
+
+        foreach ($filters as $filter) {
+            if($filter['type'] = 'mutli'){
+                $multi = new NView($mt);
+                if($result = self::sql_exec($filter['query'])){
+                    while ($f =$result->fetch_assoc()){
+                        $o = new NView($ot);
+                        $o->set("//h:option/@value",$f['value']);
+                        $o->set("//h:option/child-gap()",$f['prompt']);
+                        $multi->set("//h:select/child-gap()",$o);
+                    }
+                    $multi->set('//*[@data-xp="label"]/child-gap()',$filter['label']);
+                    $v->set('//*[@data-xp="filters"]/child-gap()',$multi);
+                }
+
+            }
+        }
+
+    }
+
     /**
      * Execute an SQL query on the database
      * @param  string   $sql SQL query to execute.
@@ -344,5 +371,8 @@ class DTable {
         exit(0);
     }
 
+}
 
+function debug($content){
+    print("<pre>" . print_r($content,true) . "</pre>");
 }

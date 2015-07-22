@@ -1,9 +1,20 @@
-<!DOCTYPE table>
-<table class="js-dtable stripe" xmlns="http://www.w3.org/1999/xhtml" data-ajax="" >
-	<thead>
-		<tr data-xp="row"><th data-xp="heading"></th></tr>
-	</thead>
-	<tfoot>
-		<tr data-xp="row"></tr>
-	</tfoot>
-</table>
+<!DOCTYPE div>
+<div xmlns="http://www.w3.org/1999/xhtml">
+	<ul data-xp="filters">
+		<li data-xp="multi">
+			<div class="form-group">
+				<label class="form__label" data-xp='label'></label>
+				<select class="form-control" multiple=""></select>
+			</div>
+		</li>
+	</ul>
+
+	<table class="js-dtable table table-striped" data-ajax="" >
+		<thead>
+			<tr data-xp="row"><th data-xp="heading"></th></tr>
+		</thead>
+		<tfoot>
+			<tr data-xp="row"></tr>
+		</tfoot>
+	</table>
+</div>
