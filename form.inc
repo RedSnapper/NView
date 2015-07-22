@@ -451,8 +451,10 @@ trait Form {
 				} else {
 					if (isset($this->fields[$key])) {
 						if (is_array($v) ) {
+						print("$k - v is an array");
 							$this->fields[$key] = $v;
 						} else {
+						print("$k - $v is not an array");
 							$this->fields[$key][]= $v;
 						}
 					} else {
