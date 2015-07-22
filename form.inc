@@ -446,15 +446,16 @@ trait Form {
 		foreach ($_POST as $k => $v) {
 			if (strpos($k,$this->idprefix) === 0) {
 				$key = mb_substr($k,$this->idprefixlen);
+				print("found $key;");
 				if ($key === $this->subsfield) {
 					$this->subspostv = $v;
 				} else {
 					if (isset($this->fields[$key])) {
 						if (is_array($v) ) {
-						print("$k - v is an array");
+							print("$k - v is an array");
 							$this->fields[$key] = $v;
 						} else {
-						print("$k - $v is not an array");
+							print("$k - $v is not an array");
 							$this->fields[$key][]= $v;
 						}
 					} else {
