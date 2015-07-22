@@ -645,15 +645,14 @@ trait Form {
 						$this->subsvalue="false";
 					}
 				}
+				print("BG: $rx->num_rows");
 				while ($f = $rx->fetch_assoc()) {
 					foreach ($this->names as $n) {
 						$this->fields[$n]=array($f[$n]);
 					}
 				}
 				$rx->close();
-			} else {
-				print("rx returned false.");
-			}
+			} 
 		}
 	}
 
