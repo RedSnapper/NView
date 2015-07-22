@@ -22,6 +22,7 @@ trait Form {
 	protected $table;   	//name of table to be used in sql
 	protected $bflds;		//array of sql boolean fields
 	protected $gflds;		//array of sql fields that will be used to get.
+	protected $dflds;		//array of default values on a null/new record.
 	protected $cflds;		//array of sql values that will be used during a commit.
 	protected $names;		//array of input names
 	protected $view;		//the formlet view (instance of an NView)
@@ -201,6 +202,7 @@ trait Form {
 		//initialise other members.
 		$this->bflds = array(); //array of boolean fields
 		$this->gflds = array(); //array of sql fields that will be used to get.
+		$this->dflds = array(); //array of sql fields that will be used to get.
 		$this->cflds = array(); //array of sql fields that will be used in commit.
 		$this->names = array(); //array of input names.
 		$this->committed = false;
@@ -238,7 +240,7 @@ trait Form {
 /**
  * 'setfld'
  */
-	public function setfld($name=NULL,$gsql=NULL,$csql=NULL) {
+	public function setfld($name=NULL,$gsql=NULL,$csql=NULL,$default=NULL) {
 		if (! is_null($name) ) {
 				array_push($this->names,$name);
 			if (!is_null($gsql)) {
@@ -247,16 +249,18 @@ trait Form {
 				array_push($this->gflds,$name);
 			}
 			$this->cflds[$name] = $csql;
+			$this->dflds[$name] = $default;
 		}
 	}
 
 /**
  * 'setboolfld'
  */
-	public function setboolfld($name=NULL,$gsql=NULL,$csql=NULL) {
+	public function setboolfld($name=NULL,$gsql=NULL,$csql=NULL,$default=false) {
 		if (! is_null($name) ) {
 			$this->bflds[$name]=true;
 			$this->setfld($name,$gsql,$csql);
+			$this->dflds[$name] = (boolean) $default;
 		}
 	}
 
@@ -633,9 +637,15 @@ trait Form {
 						$this->subsvalue="false";
 					}
 				}
-				while ($f = $rx->fetch_assoc()) {
+				if ($rx->num_rows > 0) {
+					while ($f = $rx->fetch_assoc()) {
+						foreach ($this->names as $n) {
+							$this->fields[$n]=array($f[$n]);
+						}
+					}
+				} else {
 					foreach ($this->names as $n) {
-						$this->fields[$n]=array($f[$n]);
+						$this->fields[$n]=array($this->dflds[$n]);
 					}
 				}
 				$rx->close();
