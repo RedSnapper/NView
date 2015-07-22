@@ -450,7 +450,11 @@ trait Form {
 					$this->subspostv = $v;
 				} else {
 					if (isset($this->fields[$key])) {
-						$this->fields[$key][]= $v;
+						if (is_array($v) ) {
+							$this->fields[$key] = $v;
+						} else {
+							$this->fields[$key][]= $v;
+						}
 					} else {
 						$this->fields[$key]= array($v);
 					}
