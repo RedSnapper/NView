@@ -636,9 +636,19 @@ trait Form {
 			$flds = "";
 			foreach ($getf as $i => $k) {
 				if (strcmp($i, $k) === 0) {
-					$flds .= $i . ',';
+					if (mb_strpos($i,";") !== false) {
+						$fld_composite="concat(";
+						$n_arr = explode(";",$i);
+						$fsize = count($n_arr);
+						for($j=0; $j<$fsize; $j++) {
+							$fld_composite .= $n_arr[$j] . ',';
+						}
+						$fld_composite = rtrim($fld_composite,",") . ") as {$k},";
+					} else {
+						$flds .= "$i,";
+					}					
 				} else {
-					$flds .= $i . ' as ' . $k . ',';
+					$flds .= $i . " as {$k},";
 				}
 			}
 			$flds = rtrim($flds,",");
@@ -700,6 +710,7 @@ trait Form {
 			print("<br />fields<pre>".print_r($this->fields,true)."</pre>");
 		}
 		foreach ($this->names as $n) {
+			$skip = false;
 			if ($this->cflds[$n] != '!skip') {
 				if (is_null($this->cflds[$n])) {
 					if(array_key_exists($n,$this->fields)) {
@@ -707,8 +718,26 @@ trait Form {
 							$val="true";
 						} else {
 							$vv=$this->fields[$n][0];
-							Settings::esc($vv);
-							$val = "'".$vv."'";
+							if (mb_strpos($n,";") !== false) {
+								$skip = true;
+								$n_arr = explode(";",$n);
+								$v_arr = explode(";",$vv);
+								$fsize = count($n_arr);
+								if ($fsize === count($v_arr)) {
+									for($i=0; $i<$fsize; $i++) {
+										$n_i = $n_arr[$i];
+										$v_i = $v_arr[$i];
+										Settings::esc($n_i);
+										Settings::esc($v_i);
+										$flist .= $n_i . ",";
+										$vlist .= "'$v_i',";
+										$ulist .= $n_i . "=values(" . $n_i . "),";
+									}
+								}
+							} else {
+								Settings::esc($vv);
+								$val = "'".$vv."'";
+							}
 						}
 					} else {
 						if (isset($this->bflds[$n])) {
@@ -720,9 +749,11 @@ trait Form {
 				} else {
 					$val = $this->cflds[$n];
 				}
-				$flist .= $n . ",";
-				$ulist .= $n . "=values(" . $n . "),";
-				$vlist .= $val . ",";
+				if (!$skip) {
+					$flist .= $n . ",";
+					$ulist .= $n . "=values(" . $n . "),";
+					$vlist .= $val . ",";
+				}
 			}
 		}
 		$flist = rtrim($flist,",");
