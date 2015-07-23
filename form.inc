@@ -637,7 +637,6 @@ trait Form {
 			foreach ($getf as $i => $k) {
 				if (strcmp($i, $k) === 0) {
 					if (mb_strpos($i,";") !== false) {
-						print("found composite field $i");
 						$fld_composite="concat(";
 						$n_arr = explode(";",$i);
 						$fsize = count($n_arr);
