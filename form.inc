@@ -642,9 +642,9 @@ trait Form {
 						$n_arr = explode(";",$i);
 						$fsize = count($n_arr);
 						for($j=0; $j<$fsize; $j++) {
-							$fld_composite .= $n_arr[$j] . ',';
+							$fld_composite .= $n_arr[$j] . ",';',";
 						}
-						$flds .= rtrim($fld_composite,",") . ") as `{$k}`,";
+						$flds .= substr($fld_composite,0, -5) . ") as `{$k}`,";
 					} else {
 						$flds .= "$i,";
 					}					
