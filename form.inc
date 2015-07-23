@@ -644,7 +644,7 @@ trait Form {
 						for($j=0; $j<$fsize; $j++) {
 							$fld_composite .= $n_arr[$j] . ',';
 						}
-						$fld_composite = rtrim($fld_composite,",") . ") as {$k},";
+						$flds .= rtrim($fld_composite,",") . ") as {$k},";
 					} else {
 						$flds .= "$i,";
 					}					
