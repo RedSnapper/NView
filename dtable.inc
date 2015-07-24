@@ -63,16 +63,37 @@ class DTable {
             $v = new NView($settings->view);
             $url = is_null($settings->ajax) ? $_SERVER['PHP_SELF'] : $settings->$ajax;
             $v->set("//h:table/@data-ajax/child-gap()","{$url}?type=json");
+            
+            
+
             $template = $v->consume("//*[@data-xp='heading']");
             //self::setFilterView($v,$settings);
     		$statement->execute();
             $md = $statement->result_metadata();
     		$finfo = mysqli_fetch_fields($md);
+            $cols = array();
     		foreach ($finfo as $field) {
+                $name = $field->name;
                 $th = new NView($template);
-                $th->set("//*[@data-xp='heading']/child-gap()", $field->name);
+                $th->set("//*[@data-xp='heading']/child-gap()", $name);
     			$v->set("//*[@data-xp='row']/child-gap()",$th);
+                $cols[] = $name;
     		}
+
+
+            if(!is_null($settings->table)){
+                foreach ($settings->table as $key => $value) {
+                    if($key =='order'){
+                        $count = count($value);
+                        for ($i=0; $i < $count; $i++) { 
+                            $value[$i][0] = array_search($value[$i][0],$cols);
+                        }
+                    }
+                    $v->set("//h:table/@data-$key",json_encode($value));
+                }
+            }
+
+
 
             $statement->free_result();
         }else{
@@ -99,7 +120,7 @@ class DTable {
         $stmt = self::sql_exec("{$query} {$where}"); // Get total amount of records before limit
         $md = $stmt->result_metadata();
         $recordsTotal= $stmt->num_rows;
-        $columns = array_map(function($field){return "{$field->table}.{$field->orgname}";},mysqli_fetch_fields($md));
+        $columns = array_map(function($field){return "{$field->name}";},mysqli_fetch_fields($md));
         $limit = self::limit( $request);
         $order = self::order( $request,$columns);
         $filter = self::filter( $request, $columns, $bindings );
@@ -125,7 +146,7 @@ class DTable {
         $stmt = self::sql_exec("{$query} {$where}"); // Get total amount of records before limit
         //$stmt->execute();
         $md = $stmt->result_metadata();
-        $columns = array_map(function($field){return "{$field->table}.{$field->orgname}";},mysqli_fetch_fields($md));
+        $columns = array_map(function($field){return "{$field->name}";},mysqli_fetch_fields($md));
 
         $limit = self::limit( $request);
         $order = self::order( $request,$columns);
