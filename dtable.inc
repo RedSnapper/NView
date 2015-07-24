@@ -64,10 +64,10 @@ class DTable {
             $url = is_null($settings->ajax) ? $_SERVER['PHP_SELF'] : $settings->$ajax;
             $v->set("//h:table/@data-ajax/child-gap()","{$url}?type=json");
             $template = $v->consume("//*[@data-xp='heading']");
-            self::setFilterView($v,$settings);
+            //self::setFilterView($v,$settings);
     		$statement->execute();
-    		$result = $statement->get_result();
-    		$finfo = $result->fetch_fields();
+            $md = $statement->result_metadata();
+    		$finfo = mysqli_fetch_fields($md);
     		foreach ($finfo as $field) {
                 $th = new NView($template);
                 $th->set("//*[@data-xp='heading']/child-gap()", $field->name);
@@ -96,25 +96,25 @@ class DTable {
         $bindings = array();
         $request = $_GET;
         $where = self::getWhere('',$whereResult);
-        $result = self::sql_exec("{$query} {$where}"); // Get total amount of records before limit
-        $recordsTotal= $result->num_rows;
-        $columns = array_map(function($field){return "{$field->table}.{$field->orgname}";},$result->fetch_fields());
-
+        $stmt = self::sql_exec("{$query} {$where}"); // Get total amount of records before limit
+        $md = $stmt->result_metadata();
+        $recordsTotal= $stmt->num_rows;
+        $columns = array_map(function($field){return "{$field->table}.{$field->orgname}";},mysqli_fetch_fields($md));
         $limit = self::limit( $request);
         $order = self::order( $request,$columns);
         $filter = self::filter( $request, $columns, $bindings );
         $where = self::getWhere($filter,$whereResult);
         $sql = "$query $where $order"; // Get total number of filterd records without the limit
-        $result = self::sql_exec($sql,$bindings);
-        $recordsFiltered= $result->num_rows;
+        $stmt = self::sql_exec($sql,$bindings);
+        $recordsFiltered= $stmt->num_rows;
         $sql = "$query $where $order $limit"; // Get total number of filterd records with the limit
-        $result = self::sql_exec($sql,$bindings);
+        $stmt = self::sql_exec($sql,$bindings);
 
         return array(
             "draw"              => intval( $request['draw'] ),
             "recordsTotal"      => intval( $recordsTotal ),
             "recordsFiltered"   => intval( $recordsFiltered ),
-            "data"              => self::data_output($result,$columns,$settings)
+            "data"              => self::data_output($stmt,$columns,$settings)
         );
     }
 
@@ -122,9 +122,10 @@ class DTable {
         $bindings = array();
         $request = $_GET;
         $where = self::getWhere('',$whereResult);
-        $result = self::sql_exec("{$query} {$where}"); // Get total amount of records before limit
-        $recordsTotal= $result->num_rows;
-        $columns = array_map(function($field){return "{$field->table}.{$field->orgname}";},$result->fetch_fields());
+        $stmt = self::sql_exec("{$query} {$where}"); // Get total amount of records before limit
+        //$stmt->execute();
+        $md = $stmt->result_metadata();
+        $columns = array_map(function($field){return "{$field->table}.{$field->orgname}";},mysqli_fetch_fields($md));
 
         $limit = self::limit( $request);
         $order = self::order( $request,$columns);
@@ -142,22 +143,34 @@ class DTable {
      *  @param  array $settings Settings for dtables
      *  @return array Formatted data in a row based format
      */
-    private static function data_output($result,$columns,$settings=array()){
-        $data=$result->fetch_all();
+    private static function data_output($stmt,$columns,$settings=array()){
+
+        $variables = array();
+        $data = array();
+        $meta = $stmt->result_metadata();
         $out = array();
-        for ( $i=0, $ien=count($data) ; $i<$ien ; $i++ ) {
+        
+        while($field = $meta->fetch_field())
+            $variables[] = &$data[$field->name]; // pass by reference
+        
+        call_user_func_array(array($stmt, 'bind_result'), $variables);
+
+        $rowNum = 1;
+        while ($stmt->fetch()) {
+            $i = 0;
             $row = array();
-            for ( $j=0, $jen=count($columns) ; $j<$jen ; $j++ ) {
-                $column = $columns[$j];
-                // Is there a formatter?
+            foreach($data as $k=>$v){
+                $column = $columns[$i];
                 if ( isset( $settings->columns[$column]['formatter'] ) ) {
-                    $row[$j] = $settings->columns[$column]['formatter']( $data[$i][$j], $data[$i] );
+                    $row[] = $settings->columns[$column]['formatter']( $v,$rowNum);
                 }
                 else {
-                    $row[$j] = $data[$i][$j];
+                    $row[] = $v;
                 }
+                $i++;
             }
             $out[] = $row;
+            $rowNum++;
         }
         return $out;
     }
@@ -333,8 +346,10 @@ class DTable {
 
         if(!$stmt->execute()){
             self::fatal(Settings::$sql->error);
+        }else{
+            $stmt->store_result();
         }
-        return $stmt->get_result();
+        return $stmt;
     }
 
     /**

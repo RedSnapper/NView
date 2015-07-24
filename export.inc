@@ -24,6 +24,8 @@ class Export {
 			$csv = ob_get_clean();
 			$csv = mb_convert_encoding($csv,'UTF-16LE','UTF-8');
 			echo chr(255) . chr(254) . $csv; // adding BOM 
+		}else{
+			echo Settings::$sql->error;
 		}
 	}
 }
