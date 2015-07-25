@@ -17,7 +17,8 @@ class DTable {
         'csvFileName'=>"report.csv",
         'view'=> "dtable_v.ixml",
         'ajax'=> NULL,
-        'columns'=> array()
+        'columns'=> array(),
+        'table'=> NULL
     );
 
     /**
@@ -262,7 +263,7 @@ class DTable {
                     $dir = $request['order'][$i]['dir'] === 'asc' ?
                         'ASC' :
                         'DESC';
-                    $orderBy[] = $column.' '.$dir;
+                    $orderBy[] = "`$column` $dir";
                 }
             }
             $order = 'ORDER BY '.implode(', ', $orderBy);
