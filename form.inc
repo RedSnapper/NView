@@ -85,11 +85,13 @@ trait Form {
  * This is typically called via a func() 'delete' being implemented.
  */
 	public function delete() {
-		$q="delete from ".$this->table." where " . $this->pkeysql();
-		if($this->debug) {
-			print('<br />DEBUG: Delete SQL=' . $q);
-		} else {
-			Settings::$sql->query($q);
+		if(isset($this->table)) {
+			$q="delete from ".$this->table." where " . $this->pkeysql();
+			if($this->debug) {
+				print('<br />DEBUG: Delete SQL=' . $q);
+			} else {
+				Settings::$sql->query($q);
+			}
 		}
 	}
 
@@ -607,22 +609,26 @@ trait Form {
 	}
 
 	private function setsubsvalue() {
-		if ($this->pksimple) {
-			$field = $this->pkey;
-		} else {
-			$field = array_keys($this->pkey)[0];
-		}
-		$query="select " . $field . " from " . $this->table . " where " . $this->pkeysql();
-		if($this->debug) {
-			print("<p>setsubsvalue() sql:".$query."</p>");
-		}
-		if ($rx = Settings::$sql->query($query)) {
-			if ($rx->num_rows > 0) {
-				$this->subsvalue="true";
+		if(isset($this->table)) {
+			if ($this->pksimple) {
+				$field = $this->pkey;
 			} else {
-				$this->subsvalue="false";
+				$field = array_keys($this->pkey)[0];
 			}
-			$rx->close();
+			$query="select " . $field . " from " . $this->table . " where " . $this->pkeysql();
+			if($this->debug) {
+				print("<p>setsubsvalue() sql:".$query."</p>");
+			}
+			if ($rx = Settings::$sql->query($query)) {
+				if ($rx->num_rows > 0) {
+					$this->subsvalue="true";
+				} else {
+					$this->subsvalue="false";
+				}
+				$rx->close();
+			}
+		} else {
+			$this->subsvalue="false";
 		}
 	}
 
@@ -632,48 +638,54 @@ trait Form {
  */
 	public function setfields($inpost=false) {
 		if (!$inpost) {
-			$getf = array_combine($this->gflds,$this->names);
-			$flds = "";
-			foreach ($getf as $i => $k) {
-				if (strcmp($i, $k) === 0) {
-					if (mb_strpos($i,";") !== false) {
-						$fld_composite="concat(";
-						$n_arr = explode(";",$i);
-						$fsize = count($n_arr);
-						for($j=0; $j<$fsize; $j++) {
-							$fld_composite .= $n_arr[$j] . ",';',";
-						}
-						$flds .= substr($fld_composite,0, -5) . ") as `{$k}`,";
+			if ((count($this->gflds) > 0) || isset($this->table)) {
+				$getf = array_combine($this->gflds,$this->names);
+				$flds = "";
+				foreach ($getf as $i => $k) {
+					if (strcmp($i, $k) === 0) {
+						if (mb_strpos($i,";") !== false) {
+							$fld_composite="concat(";
+							$n_arr = explode(";",$i);
+							$fsize = count($n_arr);
+							for($j=0; $j<$fsize; $j++) {
+								$fld_composite .= $n_arr[$j] . ",';',";
+							}
+							$flds .= substr($fld_composite,0, -5) . ") as `{$k}`,";
+						} else {
+							$flds .= "$i,";
+						}					
 					} else {
-						$flds .= "$i,";
-					}					
+						$flds .= $i . " as {$k},";
+					}
+				}
+				$flds = rtrim($flds,",");
+				if (isset($this->table)) {
+					$condition=$this->pkeysql();
+					if(empty($flds)) {
+						$flds = "true";
+					}
+					$query="select " . $flds . " from " . $this->table . " where " . $condition;
 				} else {
-					$flds .= $i . " as {$k},";
+					$query="select " . $flds;
 				}
-			}
-			$flds = rtrim($flds,",");
-			$condition=$this->pkeysql();
-			if(empty($flds)) {
-				$flds = "true";
-			}
-			$query="select " . $flds . " from " . $this->table . " where " . $condition;
-			if($this->debug) {
-				print('<br />DEBUG: Set fields SQL=' . $query);
-			}
-			if ($rx = Settings::$sql->query($query)) {
-				if (!is_null($this->subsfield)) { //need this for gets.
-					if ($rx->num_rows > 0) {
-						$this->subsvalue="true";
-					} else {
-						$this->subsvalue="false";
+				if($this->debug) {
+					print('<br />DEBUG: Set fields SQL=' . $query);
+				}
+				if ($rx = Settings::$sql->query($query)) {
+					if (!is_null($this->subsfield)) { //need this for gets.
+						if ($rx->num_rows > 0) {
+							$this->subsvalue="true";
+						} else {
+							$this->subsvalue="false";
+						}
 					}
-				}
-				while ($f = $rx->fetch_assoc()) {
-					foreach ($this->names as $n) {
-						$this->fields[$n]=array($f[$n]);
+					while ($f = $rx->fetch_assoc()) {
+						foreach ($this->names as $n) {
+							$this->fields[$n]=array($f[$n]);
+						}
 					}
+					$rx->close();
 				}
-				$rx->close();
 			}
 		}
 	}
@@ -682,108 +694,112 @@ trait Form {
  * 'commit'
  */
 	public function commit() {
-		if($this->debug) {
-			print("<br />DEBUG:Processing commit.");
-		}
-		$retval = false;
-		$klist=""; $ulist = ""; $flist=""; $vlist = "";
+		if (isset($this->table)) {
+			if($this->debug) {
+				print("<br />DEBUG:Processing commit.");
+			}
+			$retval = false;
+			$klist=""; $ulist = ""; $flist=""; $vlist = "";
 
-		//This sets the primary key values.
-		if ($this->pksimple) {
-			$vlist = is_null($this->key)? "NULL," : "'". $this->key . "',";
-			$klist = $this->pkey.",";
-		} else {
-			foreach ($this->pkey as $k => $v) {
-				Settings::esc($k);
-				$klist.=$k.",";
-				if (is_null($v)) {
-					$vlist.="NULL,";
-				} else {
-					Settings::esc($v);
-					$vlist.="'".$v . "',";
+			//This sets the primary key values.
+			if ($this->pksimple) {
+				$vlist = is_null($this->key)? "NULL," : "'". $this->key . "',";
+				$klist = $this->pkey.",";
+			} else {
+				foreach ($this->pkey as $k => $v) {
+					Settings::esc($k);
+					$klist.=$k.",";
+					if (is_null($v)) {
+						$vlist.="NULL,";
+					} else {
+						Settings::esc($v);
+						$vlist.="'".$v . "',";
+					}
 				}
 			}
-		}
-		if($this->debug) {
-			print("<br />Names<pre>".print_r($this->names,true)."</pre>");
-			print("<br />cflds<pre>".print_r($this->cflds,true)."</pre>");
-			print("<br />fields<pre>".print_r($this->fields,true)."</pre>");
-		}
-		foreach ($this->names as $n) {
-			$skip = false;
-			if ($this->cflds[$n] != '!skip') {
-				if (is_null($this->cflds[$n])) {
-					if(array_key_exists($n,$this->fields)) {
-						if (isset($this->bflds[$n])) {
-							$val="true";
-						} else {
-							$vv=$this->fields[$n][0];
-							if (mb_strpos($n,";") !== false) {
-								$skip = true;
-								$n_arr = explode(";",$n);
-								$v_arr = explode(";",$vv);
-								$fsize = count($n_arr);
-								if ($fsize === count($v_arr)) {
-									for($i=0; $i<$fsize; $i++) {
-										$n_i = $n_arr[$i];
-										$v_i = $v_arr[$i];
-										Settings::esc($n_i);
-										Settings::esc($v_i);
-										$flist .= $n_i . ",";
-										$vlist .= "'$v_i',";
-										$ulist .= $n_i . "=values(" . $n_i . "),";
-									}
-								}
+			if($this->debug) {
+				print("<br />Names<pre>".print_r($this->names,true)."</pre>");
+				print("<br />cflds<pre>".print_r($this->cflds,true)."</pre>");
+				print("<br />fields<pre>".print_r($this->fields,true)."</pre>");
+			}
+			foreach ($this->names as $n) {
+				$skip = false;
+				if ($this->cflds[$n] != '!skip') {
+					if (is_null($this->cflds[$n])) {
+						if(array_key_exists($n,$this->fields)) {
+							if (isset($this->bflds[$n])) {
+								$val="true";
 							} else {
-								Settings::esc($vv);
-								$val = "'".$vv."'";
+								$vv=$this->fields[$n][0];
+								if (mb_strpos($n,";") !== false) {
+									$skip = true;
+									$n_arr = explode(";",$n);
+									$v_arr = explode(";",$vv);
+									$fsize = count($n_arr);
+									if ($fsize === count($v_arr)) {
+										for($i=0; $i<$fsize; $i++) {
+											$n_i = $n_arr[$i];
+											$v_i = $v_arr[$i];
+											Settings::esc($n_i);
+											Settings::esc($v_i);
+											$flist .= $n_i . ",";
+											$vlist .= "'$v_i',";
+											$ulist .= $n_i . "=values(" . $n_i . "),";
+										}
+									}
+								} else {
+									Settings::esc($vv);
+									$val = "'".$vv."'";
+								}
+							}
+						} else {
+							if (isset($this->bflds[$n])) {
+								$val="false";
+							} else {
+								$val="default";
 							}
 						}
 					} else {
-						if (isset($this->bflds[$n])) {
-							$val="false";
-						} else {
-							$val="default";
-						}
+						$val = $this->cflds[$n];
 					}
-				} else {
-					$val = $this->cflds[$n];
-				}
-				if (!$skip) {
-					$flist .= $n . ",";
-					$ulist .= $n . "=values(" . $n . "),";
-					$vlist .= $val . ",";
+					if (!$skip) {
+						$flist .= $n . ",";
+						$ulist .= $n . "=values(" . $n . "),";
+						$vlist .= $val . ",";
+					}
 				}
 			}
-		}
-		$flist = rtrim($flist,",");
-		$ulist = rtrim($ulist,",");
-		$vlist = rtrim($vlist,",");
-		$ignore = "";
-		$dupekey = "";
-		if (empty($flist)) {
-			$ignore = " ignore ";
-			$klist = rtrim($klist,","); //we need to get rid of this one also..
-		}
-		if (!empty($ulist)) {
-			$dupekey = " on duplicate key update ";
-		}
-		$query="insert " .$ignore. "into "  . $this->table . "(" . $klist . $flist . ") values(" . $vlist . ")".$dupekey.$ulist;
-		if($this->debug) {
-			print('<br />DEBUG: Commit SQL=' . $query);
-		}
-		if (Settings::$sql->query($query)) {
-			if ($r=Settings::$sql->query("select last_insert_id()")) {
-				$this->newid = intval($r->fetch_row()[0]);
-				if (($this->newid !== 0) && ($this->show || !is_null($this->redirect))) {
-					$this->show = false;
-					$this->redirection($this->redirect,$this->insert_qs,$this->newid);
-				}
-				$r->close();
+			$flist = rtrim($flist,",");
+			$ulist = rtrim($ulist,",");
+			$vlist = rtrim($vlist,",");
+			$ignore = "";
+			$dupekey = "";
+			if (empty($flist)) {
+				$ignore = " ignore ";
+				$klist = rtrim($klist,","); //we need to get rid of this one also..
 			}
-			$retval = true;
+			if (!empty($ulist)) {
+				$dupekey = " on duplicate key update ";
+			}
+			$query="insert " .$ignore. "into "  . $this->table . "(" . $klist . $flist . ") values(" . $vlist . ")".$dupekey.$ulist;
+			if($this->debug) {
+				print('<br />DEBUG: Commit SQL=' . $query);
+			}
+			if (Settings::$sql->query($query)) {
+				if ($r=Settings::$sql->query("select last_insert_id()")) {
+					$this->newid = intval($r->fetch_row()[0]);
+					if (($this->newid !== 0) && ($this->show || !is_null($this->redirect))) {
+						$this->show = false;
+						$this->redirection($this->redirect,$this->insert_qs,$this->newid);
+					}
+					$r->close();
+				}
+				$retval = true;
+			} else {
+				$retval = false;
+			}
 		} else {
-			$retval = false;
+			$retval = true; //no table? nothing to do on commit.
 		}
 		return $retval;
 	}
@@ -898,20 +914,22 @@ trait Form {
 	}
 
 	public function valUnique($name='',$msg="This must be unique") {
-		if (isset($this->fields[$name][0])) {
-			if (!empty($this->fields[$name][0]) && is_string($this->fields[$name][0])) {
-				$value=$this->fields[$name][0];
-				Settings::esc($value);
-				$sql="select " . $name . " from " . $this->table . " where " . $name . "='" . $value . "' and not(" . $this->pkeysql() . ")";
-				if ($rx = Settings::$sql->query($sql)) {
-					if ($rx->num_rows > 0) {
-						$this->valid = false;
-						$this->seterr($name,$msg);
+		if (isset($this->table)) {
+			if (isset($this->fields[$name][0])) {
+				if (!empty($this->fields[$name][0]) && is_string($this->fields[$name][0])) {
+					$value=$this->fields[$name][0];
+					Settings::esc($value);
+					$sql="select " . $name . " from " . $this->table . " where " . $name . "='" . $value . "' and not(" . $this->pkeysql() . ")";
+					if ($rx = Settings::$sql->query($sql)) {
+						if ($rx->num_rows > 0) {
+							$this->valid = false;
+							$this->seterr($name,$msg);
+						}
+						$rx->close();
 					}
-					$rx->close();
 				}
 			}
-		}
+		} 
 	}
 	
 	
