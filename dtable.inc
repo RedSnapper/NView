@@ -121,7 +121,7 @@ class DTable {
         $stmt = self::sql_exec("{$query} {$where}"); // Get total amount of records before limit
         $md = $stmt->result_metadata();
         $recordsTotal= $stmt->num_rows;
-        $columns = array_map(function($field){return "{$field->name}";},mysqli_fetch_fields($md));
+        $columns = mysqli_fetch_fields($md);
         $limit = self::limit( $request);
         $order = self::order( $request,$columns);
         $filter = self::filter( $request, $columns, $bindings );
@@ -147,15 +147,17 @@ class DTable {
         $stmt = self::sql_exec("{$query} {$where}"); // Get total amount of records before limit
         //$stmt->execute();
         $md = $stmt->result_metadata();
-        $columns = array_map(function($field){return "{$field->name}";},mysqli_fetch_fields($md));
-
+        $columns = mysqli_fetch_fields($md);
         $limit = self::limit( $request);
         $order = self::order( $request,$columns);
-        $filter = self::filter( $request, $columns, $bindings );
+        $filter = self::filter( $request, $columns, $bindings,true );
         $where = self::getWhere($filter,$whereResult);
         $query = "$query $where $order"; // Get total number of filterd records without the limit
+        
         Export::csv($settings->csvFileName,true,$query);
     }
+
+    
 
     /**
      * Create the data output array for the DataTables rows
@@ -182,7 +184,7 @@ class DTable {
             $i = 0;
             $row = array();
             foreach($data as $k=>$v){
-                $column = $columns[$i];
+                $column = $columns[$i]->name;
                 if ( isset( $settings->columns[$column]['formatter'] ) ) {
                     $row[] = $settings->columns[$column]['formatter']( $v,$rowNum);
                 }
@@ -258,12 +260,12 @@ class DTable {
             for ( $i=0, $ien=count($request['order']) ; $i<$ien ; $i++ ) {
                 $columnIdx = intval($request['order'][$i]['column']);
                 $requestColumn = $request['columns'][$columnIdx];
-                $column = $columns[ $columnIdx ];
+                $column ="{$columns[ $columnIdx ]->table}.{$columns[ $columnIdx ]->orgname}";
                 if ( $requestColumn['orderable'] == 'true' ) {
                     $dir = $request['order'][$i]['dir'] === 'asc' ?
                         'ASC' :
                         'DESC';
-                    $orderBy[] = "`$column` $dir";
+                    $orderBy[] = "$column $dir";
                 }
             }
             $order = 'ORDER BY '.implode(', ', $orderBy);
@@ -286,7 +288,7 @@ class DTable {
      *    sql_exec() function
      *  @return string SQL where clause
      */
-    private static function filter ( $request, $columns, &$bindings )
+    private static function filter ( $request, $columns, &$bindings, $qs = false )
     {
         $globalSearch = array();
         $columnSearch = array();
@@ -294,11 +296,16 @@ class DTable {
             $str = $request['search']['value'];
             for ( $i=0, $ien=count($request['columns']) ; $i<$ien ; $i++ ) {
                 $requestColumn = $request['columns'][$i];
-                $column = $columns[ $i ];
+                $column = "{$columns[ $i ]->table}.{$columns[ $i ]->orgname}";
                 if ( $requestColumn['searchable'] == 'true' ) {
                     $val = "%{$str}%";
                     self::bind( $bindings,$val, 's');
-                    $globalSearch[] = $column." LIKE ?";
+                    if($qs){
+                        $globalSearch[] = $column." LIKE '$val'";
+                    }else{
+                        $globalSearch[] = $column." LIKE ?";
+                    }
+                    
                 }
             }
         }
