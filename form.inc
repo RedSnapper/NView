@@ -416,7 +416,7 @@ trait Form {
 				case "label": {
 						$this->view->set("//*[@data-xp='$input']//*[@data-xp='label']/text()",$val);
 				} break;
-				case "option": { //used for non-generated selects
+				case "select": { //used for non-generated selects
 						$this->view->set("//h:select[@name='$input']/h:option[@value='$val']/@selected","selected");
 				} break;
 				case "radio": { //used for non-generated radios.
