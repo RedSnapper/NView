@@ -45,7 +45,7 @@ trait Form {
 /**
  * Wrapper to the $committed variable.
  * Used to set the formlet as if it were committed. This is typically used via a func() operator overload.
- * @param bool $state (optional, defaults to true).  
+ * @param bool $state (optional, defaults to true).
  */
 	public function setcommit($state = true) {
 		$this->committed = $state;
@@ -62,7 +62,7 @@ trait Form {
 
 /**
  * Wrapper to the $valid variable.
- * Indicates if the formlet was found to be valid. 
+ * Indicates if the formlet was found to be valid.
  * When validation is out of scope, a formlet is always valid.
  * @return bool
  */
@@ -128,7 +128,7 @@ trait Form {
  * This code block is responsible for handling submits which are special.
  * Sometimes a formlet may have additional functions (such as 'dependencies','delete', etc).
  * Each button may use the name='_fn' and then value which will be used here.
- * The default value for a button (normal submit) is 'save', which func() does NOT support 
+ * The default value for a button (normal submit) is 'save', which func() does NOT support
  * as the normal formlet processor will handle the 'save' function.
  */
 	public function func() {
@@ -305,6 +305,36 @@ trait Form {
 		return $condition;
 	}
 
+	protected function vsetrads($input='_unused',$qvp='select 0 as prompt,0 as value',$v=NULL) {
+		if (is_null($v)) {
+			$v = new NView('radio_v.ixml');
+		}
+		$v->set("//h:input/@name",$input);
+		if ($rx = Settings::$sql->query($qvp)) {
+			while ($f = $rx->fetch_assoc()) {
+				$o = new NView($v);
+				$o->set("/*/h:input/@value",$f['value']);
+				$o->set("/*/h:span/child-gap()",$f['prompt']);
+				$this->view->set("//*[@data-xp='$input']/*[@data-xp='radiogroup']/child-gap()",$o);
+			}
+			$rx->close();
+		}
+		if (isset($this->fields[$input])) {
+			foreach ($this->fields[$input] as $val) {
+				$this->view->set("//h:input[@type='radio'][@name='$input']/@checked","checked");
+			}
+		} else {
+			if(is_array($this->dflds[$input])) {
+				foreach ($this->dflds[$input] as $val) {
+					$this->view->set("//h:input[@type='radio'][@name='$input']/@checked","checked");
+				}
+			} else {
+				$val=$this->dflds[$input];
+				$this->view->set("//h:input[@type='radio'][@name='$input']/@checked","checked");
+			}
+		}
+	}
+
 /**
  * 'vsetopts'
  */
@@ -329,7 +359,7 @@ trait Form {
 					foreach ($this->fields[$input] as $val) {
 						$this->view->set("//h:select[@name='$input']/h:option[@value='" . $val . "']/@selected","selected");
 					}
-					
+
 				} else {
 					if(is_array($this->dflds[$input])) {
 						foreach ($this->dflds[$input] as $val) {
@@ -373,30 +403,36 @@ trait Form {
 			switch($kind) {
 				case "cb": {
 					if (($val == '1' && isset($this->bflds[$input])) || ($val == 'on') || ($val == 'true') || ($val == 'checked') ) {
-						$this->view->set("//*[@name='" . $input . "']/@value",$val);
-						$this->view->set("//*[@name='" . $input . "']/@checked",'checked');
+						$this->view->set("//*[@name='$input']/@value",$val);
+						$this->view->set("//*[@name='$input']/@checked",'checked');
 					}
 				} break;
 				case "ta": {
-						$this->view->set("//*[@name='" . $input . "']/child-gap()",$val);
+						$this->view->set("//*[@name='$input']/child-gap()",$val);
 				} break;
 				case "xp": {
-						$this->view->set("//*[@data-xp='" .$input . "']/child-gap()",$val);
+						$this->view->set("//*[@data-xp='$input']/child-gap()",$val);
 				} break;
 				case "label": {
-						$this->view->set("//*[@data-xp='" .$input . "']//*[@data-xp='label']/text()",$val);
+						$this->view->set("//*[@data-xp='$input']//*[@data-xp='label']/text()",$val);
+				} break;
+				case "option": { //used for non-generated selects
+						$this->view->set("//h:select[@name='$input']/h:option[@value='$val']/@selected","selected");
+				} break;
+				case "radio": { //used for non-generated radios.
+						$this->view->set("//h:input[@type='radio'][@name='$input'][@value='$val']/@checked",'checked');
 				} break;
 				default: {
-						$this->view->set("//*[@name='" . $input . "']/@value",$val);
+						$this->view->set("//*[@name='$input']/@value",$val);
 				} break;
 			}
-		} 
+		}
 		switch($kind) {
 			case "hide": {
-					$this->view->set("//*[@data-xp='" .$input . "']/@class/child-gap()"," hide");
+					$this->view->set("//*[@data-xp='$input']/@class/child-gap()"," hide");
 			} break;
 			case "delete": {
-					$this->view->set("//*[@data-xp='" .$input . "']");
+					$this->view->set("//*[@data-xp='$input']");
 			} break;
 		}
 	}
@@ -653,7 +689,7 @@ trait Form {
 							$flds .= substr($fld_composite,0, -5) . ") as `{$k}`,";
 						} else {
 							$flds .= "$i,";
-						}					
+						}
 					} else {
 						$flds .= $i . " as {$k},";
 					}
@@ -929,10 +965,10 @@ trait Form {
 					}
 				}
 			}
-		} 
+		}
 	}
-	
-	
+
+
 //If the date, time, or datetime value extracted from str is illegal,  returns NULL and produces a warning.
 	public function valDate($name='',$format='%Y-%m-%d',$msg="Illegal date format. ") {
 		if (isset($this->fields[$name][0])) {
