@@ -1,0 +1,10 @@
+<!DOCTYPE li>
+<li data-xp="multi" xmlns="http://www.w3.org/1999/xhtml">
+    <div class="form-group">
+        <label class="form__label" data-xp='label'></label>
+        <select class="form-control" multiple="">
+        	<option value=""></option>
+        </select>
+    </div>
+</li>
+

@@ -16,6 +16,8 @@ class DTable {
     static $defaults = array(
         'csvFileName'=>"report.csv",
         'view'=> "dtable_v.ixml",
+        'filterview'=> "dtable_f.ixml",
+        'multi'=> "dtable_multi.ixml",
         'ajax'=> NULL,
         'columns'=> array(),
         'table'=> NULL
@@ -25,6 +27,7 @@ class DTable {
     private $query;
     private $where;
     private $columns;
+    private $filterv;
     private $istatement;  // Statement returned by intial query
 
 
@@ -66,6 +69,10 @@ class DTable {
         return $this->settings();
     }
 
+    public function getFilters(){
+        return $this->filterv;
+    }
+
     private function getIntialQuery(){
         $where = self::getWhere('',$this->where);
         $this->istatement = self::sql_exec("{$this->query} {$where}");
@@ -79,30 +86,37 @@ class DTable {
     /**
      * Initialise the view for datatable generating the columns for 
      * the table based on SQL query.
-     * @param  srting $query SQL query
-     * @param  array $settings Settings for dtables
      * @return NView the current view
      */
 	private function setView() {
     
         $v = new NView($this->settings->view);
         $url = is_null($this->settings->ajax) ? $_SERVER['PHP_SELF'] : $this->settings->$ajax;
-        $v->set("//h:table/@data-ajax/child-gap()","{$url}?type=json");
+        $v->set("//h:table/@data-ajaxurl/child-gap()","{$url}?type=json");
 
         $template = $v->consume("//*[@data-xp='heading']");
-        //self::setFilterView($v,$settings);
+        $this->setFilterView();
 		
         $md = $this->istatement->result_metadata();
 		$finfo = mysqli_fetch_fields($md);
         $cols = array();
 		foreach ($finfo as $field) {
             $name = $field->name;
-            if(!$this->settings->columns[$name]['hidden']){
-                 $th = new NView($template);
-                $th->set("//*[@data-xp='heading']/child-gap()", $name);
-                $v->set("//*[@data-xp='row']/child-gap()",$th);
-                $cols[] = $name;
+            
+            $th = new NView($template);
+            $th->set("//*[@data-xp='heading']/child-gap()", $name);
+            $th->set("//*[@data-xp='heading']/@data-name", $name);
+
+            if(isset($this->settings->columns[$name]['column'])){
+                foreach ($this->settings->columns[$name]['column'] as $key => $value) {
+                    $th->set("//*[@data-xp='heading']/@data-$key",json_encode($value));
+                }
             }
+            
+
+            $v->set("//*[@data-xp='row']/child-gap()",$th);
+            $cols[] = $name;
+            
 		}
 
         if(!is_null($this->settings->table)){
@@ -126,10 +140,6 @@ class DTable {
      * filter() among others. The returned array is ready to be encoded as JSON
      * in response to a request, or can be modified if needed before
      * sending back to the client.
-     * @param  string $query       SQL query without the where clause
-     * @param  string $whereResult Optional where clause without the word where
-     * in the clause
-     * @param  array $settings Settings for dtables
      * @return array Server-side processing response array
      */
     public function json() {
@@ -173,9 +183,7 @@ class DTable {
     /**
      * Create the data output array for the DataTables rows
      * 
-     *  @param  mysqli_result $result Result object
-     *  @param  array $columns Columns array
-     *  @param  array $settings Settings for dtables
+     *  @param  mysqli_statement $stmt Statement object
      *  @return array Formatted data in a row based format
      */
     private function data_output($stmt){
@@ -197,13 +205,11 @@ class DTable {
             $row = array();
             foreach($data as $k=>$v){
                 $column = $columns[$i]->name;
-                if(!$this->settings->columns[$column]['hidden']){
-                    if ( isset( $this->settings->columns[$column]['formatter'] ) ) {
-                        $row[] = $this->settings->columns[$column]['formatter']( $v,$rowNum);
-                    }
-                    else {
-                        $row[] = $v;
-                    }
+                if ( isset( $this->settings->columns[$column]['formatter'] ) ) {
+                    $row[] = $this->settings->columns[$column]['formatter']( $v,$rowNum);
+                }
+                else {
+                    $row[] = $v;
                 }
                 $i++;
             }
@@ -306,23 +312,39 @@ class DTable {
     {
         $globalSearch = array();
         $columnSearch = array();
-        if ( isset($request['search']) && $request['search']['value'] != '' ) {
-            $str = $request['search']['value'];
-            for ( $i=0, $ien=count($request['columns']) ; $i<$ien ; $i++ ) {
-                $requestColumn = $request['columns'][$i];
-                $column = "{$columns[ $i ]->table}.{$columns[ $i ]->orgname}";
-                if ( $requestColumn['searchable'] == 'true' ) {
-                    $val = "%{$str}%";
-                    self::bind( $bindings,$val, 's');
+       
+        for ( $i=0, $ien=count($request['columns']) ; $i<$ien ; $i++ ) {
+            $requestColumn = $request['columns'][$i];
+            $column = "{$columns[ $i ]->table}.{$columns[ $i ]->orgname}";
+
+            if ( $requestColumn['searchable'] == 'true' && 
+                isset($request['search']) && 
+                $request['search']['value'] != '') {
+                $str = $request['search']['value'];
+                $val = "%{$str}%";
+                self::bind( $bindings,$val, 's');
+                if($qs){
+                    $globalSearch[] = $column." LIKE '$val'";
+                }else{
+                    $globalSearch[] = $column." LIKE ?";
+                }
+            }
+
+            if ( isset($requestColumn['multi']) ) {
+
+                foreach ($requestColumn['multi'] as $value) {
+                    self::bind( $bindings,$value, 's');
                     if($qs){
                         $globalSearch[] = $column." LIKE '$val'";
                     }else{
                         $globalSearch[] = $column." LIKE ?";
                     }
-                    
                 }
             }
+
         }
+
+
         // Combine the filters into a single string
         $where = '';
         if ( count( $globalSearch ) ) {
@@ -331,34 +353,48 @@ class DTable {
         return $where;
     }
 
-    private function setFilterView($v){
-        $mt = $v->consume("//*[@data-xp='multi']");
-        $ot = new NView('option_v.ixml');
+    private function setFilterView(){
+
+        $v = new NView($this->settings->filterview);
         $columns = $this->settings->columns;
         $filters= array();
-        foreach ($columns as $key => $value) {
-            if(isset($value['filter'])){
-                $filters[$key] = $value['filter'];
+        $index = 0;
+        foreach ($this->columns as $key => $value) {
+
+            if(isset($columns[$value->name]['filter'])){
+                $filters[] = array(
+                    "label"=>$value->name,
+                    "value"=>$columns[$value->name]['filter'],
+                    "index"=>$key
+                );
             }
+            $index++;
         }
 
 
         foreach ($filters as $filter) {
-            if($filter['type'] = 'mutli'){
-                $multi = new NView($mt);
-                if($result = self::sql_exec($filter['query'])){
-                    while ($f =$result->fetch_assoc()){
-                        $o = new NView($ot);
-                        $o->set("//h:option/@value",$f['value']);
-                        $o->set("//h:option/child-gap()",$f['prompt']);
-                        $multi->set("//h:select/child-gap()",$o);
-                    }
-                    $multi->set('//*[@data-xp="label"]/child-gap()',$filter['label']);
-                    $v->set('//*[@data-xp="filters"]/child-gap()',$multi);
-                }
 
+            $stmt = Settings::$sql->prepare($filter['value']['query']);
+            $stmt->execute();
+
+            if($filter['value']['type'] = 'mutli'){
+                $multi = new NView($this->settings->multi);
+                $ot = $multi->consume('//h:option');
+                $stmt->bind_result($prompt,$value);
+
+                while ($stmt->fetch()) {
+                    $o = new NView($ot);
+                    $o->set("//h:option/@value",$value);
+                    $o->set("//h:option/child-gap()",$prompt);
+                    $multi->set("//h:select/child-gap()",$o);
+                }
+                $multi->set('//*[@data-xp="label"]/child-gap()',$filter['label']);
+                $multi->set('//h:select/@name',"multi:{$filter['index']}");
+                $v->set('//*[@data-xp="filters"]/child-gap()',$multi);
             }
         }
+
+        $this->filterv = $v;
 
     }
 

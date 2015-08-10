@@ -1,5 +1,5 @@
 <!DOCTYPE table>
-<table class="js-dtable table table-striped" data-ajax="" xmlns="http://www.w3.org/1999/xhtml">
+<table class="js-dtable table table-striped" data-ajaxurl="" xmlns="http://www.w3.org/1999/xhtml">
 	<thead>
 		<tr data-xp="row"><th data-xp="heading"></th></tr>
 	</thead>
