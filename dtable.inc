@@ -21,6 +21,19 @@ class DTable {
         'table'=> NULL
     );
 
+    private $options;
+    private $query;
+    private $where;
+    private $columns;
+    private $istatement;  // Statement returned by intial query
+
+
+    public function __construct($query = null,$where=null,$options = array()){
+        $this->query = $query;
+        $this->where = $where;
+        $this->settings = (object) array_merge((array) self::$defaults,(array) $options);
+    }
+
     /**
      * Initalise Dtable based on SQL query 
      * the table based on SQL query.
@@ -29,26 +42,38 @@ class DTable {
      * @param  array $options Options for dtables
      * @return NView the current view
      */
-    public static function init($query = null,$where=null,$options = array()) {
+    public function init() {
         
-        $settings = self::getSettings($options);
+        $this->getIntialQuery();
+        $this->setColumns();
 
         if (isset(Settings::$qst['type']) && Settings::$qst['type'] === 'json') {
-            $data = self::json($query, $where,$settings);
+            $data = $this->json();
             header('Content-Type: application/json');
             echo json_encode($data);
             exit;
         }elseif(isset(Settings::$qst['type']) && Settings::$qst['type'] === 'csv'){
-            self::csv($query,$where,$settings);
+            $this->csv();
             exit;
         } 
         else {
-            return self::setView($query,$settings);
+            return $this->setView();
         }
     }
 
-    public static function getSettings($options){
-        return $settings = (object) array_merge((array) self::$defaults,(array) $options);
+
+    public function getSettings($options){
+        return $this->settings();
+    }
+
+    private function getIntialQuery(){
+        $where = self::getWhere('',$this->where);
+        $this->istatement = self::sql_exec("{$this->query} {$where}");
+    }
+
+    private function setColumns(){
+        $md = $this->istatement->result_metadata();
+        $this->columns = mysqli_fetch_fields($md);
     }
 
     /**
@@ -58,48 +83,41 @@ class DTable {
      * @param  array $settings Settings for dtables
      * @return NView the current view
      */
-	public static function setView($query = null,$settings=array()) {
-        $statement = Settings::$sql->prepare("$query LIMIT 1");
-        if($statement){
-            $v = new NView($settings->view);
-            $url = is_null($settings->ajax) ? $_SERVER['PHP_SELF'] : $settings->$ajax;
-            $v->set("//h:table/@data-ajax/child-gap()","{$url}?type=json");
-            
-            
+	private function setView() {
+    
+        $v = new NView($this->settings->view);
+        $url = is_null($this->settings->ajax) ? $_SERVER['PHP_SELF'] : $this->settings->$ajax;
+        $v->set("//h:table/@data-ajax/child-gap()","{$url}?type=json");
 
-            $template = $v->consume("//*[@data-xp='heading']");
-            //self::setFilterView($v,$settings);
-    		$statement->execute();
-            $md = $statement->result_metadata();
-    		$finfo = mysqli_fetch_fields($md);
-            $cols = array();
-    		foreach ($finfo as $field) {
-                $name = $field->name;
-                $th = new NView($template);
+        $template = $v->consume("//*[@data-xp='heading']");
+        //self::setFilterView($v,$settings);
+		
+        $md = $this->istatement->result_metadata();
+		$finfo = mysqli_fetch_fields($md);
+        $cols = array();
+		foreach ($finfo as $field) {
+            $name = $field->name;
+            if(!$this->settings->columns[$name]['hidden']){
+                 $th = new NView($template);
                 $th->set("//*[@data-xp='heading']/child-gap()", $name);
-    			$v->set("//*[@data-xp='row']/child-gap()",$th);
+                $v->set("//*[@data-xp='row']/child-gap()",$th);
                 $cols[] = $name;
-    		}
-
-
-            if(!is_null($settings->table)){
-                foreach ($settings->table as $key => $value) {
-                    if($key =='order'){
-                        $count = count($value);
-                        for ($i=0; $i < $count; $i++) { 
-                            $value[$i][0] = array_search($value[$i][0],$cols);
-                        }
-                    }
-                    $v->set("//h:table/@data-$key",json_encode($value));
-                }
             }
+		}
 
-
-
-            $statement->free_result();
-        }else{
-            print(__METHOD__ . " " . Settings::$sql->error);
+        if(!is_null($this->settings->table)){
+            foreach ($this->settings->table as $key => $value) {
+                if($key =='order'){
+                    $count = count($value);
+                    for ($i=0; $i < $count; $i++) { 
+                        $value[$i][0] = array_search($value[$i][0],$cols);
+                    }
+                }
+                $v->set("//h:table/@data-$key",json_encode($value));
+            }
         }
+
+        
 		return $v;
 	}
     /**
@@ -114,45 +132,38 @@ class DTable {
      * @param  array $settings Settings for dtables
      * @return array Server-side processing response array
      */
-    public static function json($query = null,$whereResult=null,$settings=array()) {
+    public function json() {
         $bindings = array();
         $request = $_GET;
-        $where = self::getWhere('',$whereResult);
-        $stmt = self::sql_exec("{$query} {$where}"); // Get total amount of records before limit
-        $md = $stmt->result_metadata();
-        $recordsTotal= $stmt->num_rows;
-        $columns = mysqli_fetch_fields($md);
+
+        $recordsTotal= $this->istatement->num_rows;
         $limit = self::limit( $request);
-        $order = self::order( $request,$columns);
-        $filter = self::filter( $request, $columns, $bindings );
-        $where = self::getWhere($filter,$whereResult);
-        $sql = "$query $where $order"; // Get total number of filterd records without the limit
+        $order = self::order( $request,$this->columns);
+        $filter = self::filter( $request, $this->columns, $bindings );
+        $where = self::getWhere($filter,$this->where);
+        $sql = "{$this->query} $where $order"; // Get total number of filterd records without the limit
         $stmt = self::sql_exec($sql,$bindings);
         $recordsFiltered= $stmt->num_rows;
-        $sql = "$query $where $order $limit"; // Get total number of filterd records with the limit
+        $sql = "{$this->query} $where $order $limit"; // Get total number of filterd records with the limit
         $stmt = self::sql_exec($sql,$bindings);
 
         return array(
             "draw"              => intval( $request['draw'] ),
             "recordsTotal"      => intval( $recordsTotal ),
             "recordsFiltered"   => intval( $recordsFiltered ),
-            "data"              => self::data_output($stmt,$columns,$settings)
+            "data"              => $this->data_output($stmt)
         );
     }
 
-    public static function csv($query = null,$whereResult=null,$settings=array()){
+    public function csv(){
         $bindings = array();
         $request = $_GET;
-        $where = self::getWhere('',$whereResult);
-        $stmt = self::sql_exec("{$query} {$where}"); // Get total amount of records before limit
-        //$stmt->execute();
-        $md = $stmt->result_metadata();
-        $columns = mysqli_fetch_fields($md);
+       
         $limit = self::limit( $request);
-        $order = self::order( $request,$columns);
-        $filter = self::filter( $request, $columns, $bindings,true );
-        $where = self::getWhere($filter,$whereResult);
-        $query = "$query $where $order"; // Get total number of filterd records without the limit
+        $order = self::order( $request,$this->columns);
+        $filter = self::filter( $request, $this->columns, $bindings,true );
+        $where = self::getWhere($filter,$this->where);
+        $query = "{$this->query} $where $order"; // Get total number of filterd records without the limit
         
         Export::csv($settings->csvFileName,true,$query);
     }
@@ -167,12 +178,13 @@ class DTable {
      *  @param  array $settings Settings for dtables
      *  @return array Formatted data in a row based format
      */
-    private static function data_output($stmt,$columns,$settings=array()){
+    private function data_output($stmt){
 
         $variables = array();
         $data = array();
         $meta = $stmt->result_metadata();
         $out = array();
+        $columns = $this->columns;
         
         while($field = $meta->fetch_field())
             $variables[] = &$data[$field->name]; // pass by reference
@@ -185,11 +197,13 @@ class DTable {
             $row = array();
             foreach($data as $k=>$v){
                 $column = $columns[$i]->name;
-                if ( isset( $settings->columns[$column]['formatter'] ) ) {
-                    $row[] = $settings->columns[$column]['formatter']( $v,$rowNum);
-                }
-                else {
-                    $row[] = $v;
+                if(!$this->settings->columns[$column]['hidden']){
+                    if ( isset( $this->settings->columns[$column]['formatter'] ) ) {
+                        $row[] = $this->settings->columns[$column]['formatter']( $v,$rowNum);
+                    }
+                    else {
+                        $row[] = $v;
+                    }
                 }
                 $i++;
             }
@@ -317,10 +331,10 @@ class DTable {
         return $where;
     }
 
-    private static function setFilterView($v,$settings){
+    private function setFilterView($v){
         $mt = $v->consume("//*[@data-xp='multi']");
         $ot = new NView('option_v.ixml');
-        $columns = $settings->columns;
+        $columns = $this->settings->columns;
         $filters= array();
         foreach ($columns as $key => $value) {
             if(isset($value['filter'])){
@@ -355,7 +369,7 @@ class DTable {
      *   used for safely escaping strings.
      * @return mysqli_result  Result object
      */
-    public static function sql_exec ($sql=NULL ,$bindings=NULL)
+    private static function sql_exec ($sql=NULL ,$bindings=NULL)
     {
         $stmt = Settings::$sql->prepare($sql);
         if($stmt){
