@@ -768,7 +768,7 @@ trait Form {
 								if ($this->bflds[$n]) {
 									$val="true";
 								} else {
-									$val='on';
+									$val="'on'";
 								}
 							} else {
 								$vv=$this->fields[$n][0];
