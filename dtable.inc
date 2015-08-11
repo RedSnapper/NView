@@ -175,7 +175,7 @@ class DTable {
         $where = self::getWhere($filter,$this->where);
         $query = "{$this->query} $where $order"; // Get total number of filterd records without the limit
         
-        Export::csv($settings->csvFileName,true,$query);
+        Export::csv($this->settings->csvFileName,true,$query);
     }
 
     
