@@ -257,10 +257,11 @@ trait Form {
 
 /**
  * 'setboolfld'
+ * modern uses 'true/false' whereas !modern uses 'on'/''
  */
-	public function setboolfld($name=NULL,$gsql=NULL,$csql=NULL,$default=false) {
+	public function setboolfld($name=NULL,$gsql=NULL,$csql=NULL,$default=false,$modern=true) {
 		if (! is_null($name) ) {
-			$this->bflds[$name]=true;
+			$this->bflds[$name]=$modern;
 			$this->setfld($name,$gsql,$csql);
 			$this->dflds[$name] = (boolean) $default;
 		}
@@ -402,7 +403,7 @@ trait Form {
 		if (!is_null($val)) {
 			switch($kind) {
 				case "cb": {
-					if (($val == '1' && isset($this->bflds[$input])) || ($val == 'on') || ($val == 'true') || ($val == 'checked') ) {
+					if (($val == '1' && isset($this->bflds[$input]))  || ($val == 'on') || ($val == 'true') || ($val == 'checked') ) {
 						$this->view->set("//*[@name='$input']/@value",$val);
 						$this->view->set("//*[@name='$input']/@checked",'checked');
 					}
@@ -764,7 +765,11 @@ trait Form {
 					if (is_null($this->cflds[$n])) {
 						if(array_key_exists($n,$this->fields)) {
 							if (isset($this->bflds[$n])) {
-								$val="true";
+								if ($this->bflds[$n]) {
+									$val="true";
+								} else {
+									$val='on';
+								}
 							} else {
 								$vv=$this->fields[$n][0];
 								if (mb_strpos($n,";") !== false) {
@@ -790,7 +795,11 @@ trait Form {
 							}
 						} else {
 							if (isset($this->bflds[$n])) {
-								$val="false";
+								if ($this->bflds[$n]) {
+									$val="false";
+								} else {
+									$val="''";
+								}
 							} else {
 								$val="default";
 							}
