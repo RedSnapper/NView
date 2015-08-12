@@ -91,7 +91,7 @@ class DTable {
 	private function setView() {
     
         $v = new NView($this->settings->view);
-        $url = is_null($this->settings->ajax) ? $_SERVER['PHP_SELF'] : $this->settings->$ajax;
+        $url = is_null($this->settings->ajax) ? $_SERVER['PHP_SELF'] : $this->settings->ajax;
         $v->set("//h:table/@data-ajaxurl/child-gap()","{$url}?type=json");
 
         $template = $v->consume("//*[@data-xp='heading']");
