@@ -311,6 +311,7 @@ class DTable {
     private static function filter ( $request, $columns, &$bindings, $qs = false )
     {
         $globalSearch = array();
+        $filters = array();
         $columnSearch = array();
        
         for ( $i=0, $ien=count($request['columns']) ; $i<$ien ; $i++ ) {
@@ -331,17 +332,19 @@ class DTable {
             }
 
             if ( isset($requestColumn['multi']) ) {
-
+                $filter = array();
                 foreach ($requestColumn['multi'] as $value) {
                     self::bind( $bindings,$value, 's');
                     if($qs){
-                        $globalSearch[] = $column." = '$val'";
+                        $filter[] = $column." = '$val'";
                     }else{
-                        $globalSearch[] = $column." = ?";
+                        $filter[] = $column." = ?";
                     }
                 }
+                if ( count( $filter ) ) {
+                    $filters[]= '('.implode(' OR ', $filter).')';
+                }
             }
-
         }
 
 
@@ -350,6 +353,11 @@ class DTable {
         if ( count( $globalSearch ) ) {
             $where = '('.implode(' OR ', $globalSearch).')';
         }
+
+        if ( count( $filters ) ) {
+            $where .= '('.implode(' AND ', $filters).')';
+        }
+
         return $where;
     }
 
