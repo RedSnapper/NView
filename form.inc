@@ -957,7 +957,22 @@ trait Form {
 			}
 		}
 	}
-
+	public function valAlnum($name='',$msg="This must be alphanumeric only.") {
+		if (isset($this->fields[$name][0])) {
+			if (!empty($this->fields[$name][0]) && !ctype_alnum($this->fields[$name][0])) {
+				$this->valid = false;
+				$this->seterr($name,$msg);
+			}
+		}
+	}
+	public function valRegex($name='',$msg="This must meet a pattern",$regex="/^.*$/") {
+		if (isset($this->fields[$name][0])) {
+			if (!filter_var($this->fields[$name][0],FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>$regex)))) {
+				$this->valid = false;
+				$this->seterr($name,$msg);
+			}
+		}
+	}
 	public function valUnique($name='',$msg="This must be unique") {
 		if (isset($this->table)) {
 			if (isset($this->fields[$name][0])) {
