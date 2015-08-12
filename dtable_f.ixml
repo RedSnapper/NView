@@ -1,5 +1,4 @@
 <!DOCTYPE form>
 <form xmlns="http://www.w3.org/1999/xhtml" class="js-dtablefilters">
 	<ul data-xp="filters" ></ul>
-	<button class="btn--primary">Submit</button>
 </form>
