@@ -380,11 +380,11 @@ class DTable {
 
                     while ($f = $rx->fetch_assoc()){
                         $o = new NView($ot);
-                        $o->set("//h:option/@value",$f['value']);
-                        $o->set("//h:option/child-gap()",$f['prompt']);
+                        $o->set("//h:option/@value",htmlspecialchars($f['value']));
+                        $o->set("//h:option/child-gap()",htmlspecialchars($f['prompt']));
                         $multi->set("//h:select/child-gap()",$o);
                     }
-                    $multi->set('//*[@data-xp="label"]/child-gap()',$filter['label']);
+                    $multi->set('//*[@data-xp="label"]/child-gap()',htmlspecialchars($filter['label']));
                     $multi->set('//h:select/@name',"multi:{$filter['index']}");
                     $v->set('//*[@data-xp="filters"]/child-gap()',$multi);
                 }
