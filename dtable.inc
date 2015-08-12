@@ -335,9 +335,9 @@ class DTable {
                 foreach ($requestColumn['multi'] as $value) {
                     self::bind( $bindings,$value, 's');
                     if($qs){
-                        $globalSearch[] = $column." LIKE '$val'";
+                        $globalSearch[] = $column." = '$val'";
                     }else{
-                        $globalSearch[] = $column." LIKE ?";
+                        $globalSearch[] = $column." = ?";
                     }
                 }
             }
@@ -373,24 +373,23 @@ class DTable {
 
 
         foreach ($filters as $filter) {
+            if($rx = Settings::$sql->query($filter['value']['query'])){
+                if($filter['value']['type'] = 'mutli'){
+                    $multi = new NView($this->settings->multi);
+                    $ot = $multi->consume('//h:option');
 
-            $stmt = Settings::$sql->prepare($filter['value']['query']);
-            $stmt->execute();
-
-            if($filter['value']['type'] = 'mutli'){
-                $multi = new NView($this->settings->multi);
-                $ot = $multi->consume('//h:option');
-                $stmt->bind_result($prompt,$value);
-
-                while ($stmt->fetch()) {
-                    $o = new NView($ot);
-                    $o->set("//h:option/@value",$value);
-                    $o->set("//h:option/child-gap()",$prompt);
-                    $multi->set("//h:select/child-gap()",$o);
+                    while ($f = $rx->fetch_assoc()){
+                        $o = new NView($ot);
+                        $o->set("//h:option/@value",$f['value']);
+                        $o->set("//h:option/child-gap()",$f['prompt']);
+                        $multi->set("//h:select/child-gap()",$o);
+                    }
+                    $multi->set('//*[@data-xp="label"]/child-gap()',$filter['label']);
+                    $multi->set('//h:select/@name',"multi:{$filter['index']}");
+                    $v->set('//*[@data-xp="filters"]/child-gap()',$multi);
                 }
-                $multi->set('//*[@data-xp="label"]/child-gap()',$filter['label']);
-                $multi->set('//h:select/@name',"multi:{$filter['index']}");
-                $v->set('//*[@data-xp="filters"]/child-gap()',$multi);
+            }else{
+                echo Settings::$sql->error;
             }
         }
 
