@@ -330,7 +330,10 @@ class DTable {
                     $globalSearch[] = $column." LIKE ?";
                 }
             }
-
+        }
+        for ( $i=0, $ien=count($request['columns']) ; $i<$ien ; $i++ ) {
+            $requestColumn = $request['columns'][$i];
+            $column = "{$columns[ $i ]->table}.{$columns[ $i ]->orgname}";
             if ( isset($requestColumn['multi']) ) {
                 $filter = array();
                 foreach ($requestColumn['multi'] as $val) {
@@ -347,7 +350,6 @@ class DTable {
             }
         }
 
-
         // Combine the filters into a single string
         $where = '';
         if ( count( $globalSearch ) ) {
@@ -355,8 +357,12 @@ class DTable {
         }
 
         if ( count( $filters ) ) {
+            if ( count( $globalSearch ) ) {
+                $where .= ' AND ';
+            }
             $where .= '('.implode(' AND ', $filters).')';
         }
+
 
         return $where;
     }
