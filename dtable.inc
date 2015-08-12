@@ -334,7 +334,7 @@ class DTable {
             if ( isset($requestColumn['multi']) ) {
                 $filter = array();
                 foreach ($requestColumn['multi'] as $val) {
-                    self::bind( $bindings,$value, 's');
+                    self::bind( $bindings,$val, 's');
                     if($qs){
                         $filter[] = $column." = '$val'";
                     }else{
