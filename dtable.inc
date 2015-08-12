@@ -339,13 +339,13 @@ class DTable {
                 foreach ($requestColumn['multi'] as $val) {
                     self::bind( $bindings,$val, 's');
                     if($qs){
-                        $filter[] = $column." = '$val'";
+                        $filter[] = $val;
                     }else{
-                        $filter[] = $column." = ?";
+                        $filter[] = "?";
                     }
                 }
                 if ( count( $filter ) ) {
-                    $filters[]= '('.implode(' OR ', $filter).')';
+                    $filters[]= $column . ' in('.implode(',', $filter).')';
                 }
             }
         }
