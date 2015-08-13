@@ -391,10 +391,11 @@ class DTable {
                 }else{
                     $name = $key;
                 }
+                $label = isset($value['filter']['label']) ? $value['filter']['label'] : $key;
 
                 $filters[] = array(
                     "name"=>$name,
-                    "label"=>$key,
+                    "label"=>$label,
                     "value"=>$value['filter']
                 );
             }
