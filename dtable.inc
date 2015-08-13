@@ -209,8 +209,30 @@ class DTable {
         $order = self::order( $request,$this->columns);
         $filter = self::filter( $request, $this->columns, $bindings,true );
         $restrict = self::getRestriction($filter,$this->restrict);
-        $query = "select {$this->fields} from {$this->tables} $restrict {$this->groupby} $order"; // Get total number of filterd records without the limit
-        
+        $fields = array();
+
+        foreach ($this->columns as $key => $value) {
+
+            $field = $value->table . "." . $value->orgname . " as '" . $value->name . "'"; 
+
+            if(isset($this->settings->columns)){
+                $name = NULL;
+                if(isset($this->settings->columns[$value->orgname])){
+                    $name = $value->orgname;
+                }
+                if(isset($this->settings->columns[$value->name])){
+                    $name = $value->name;
+                }
+                if(!is_null($name) && isset($this->settings->columns[$name]['csvhide']) ){
+                    $field=NULL;
+                }
+            }   
+            if(!is_null($field)){$fields[] = $field;}
+        }
+
+        $fields = implode(',',$fields);
+
+        $query = "select {$fields} from {$this->tables} $restrict {$this->groupby} $order"; // Get total number of filterd records without the limit
         Export::csv($this->settings->csvFileName,true,$query);
     }
 
