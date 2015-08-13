@@ -76,8 +76,8 @@ class DTable {
 
     private function getIntialQuery(){
         $where = self::getWhere('',$this->where);
-        $groupby = is_null($this->settings->groupby) ? '' : "group by {$this->settings->groupby}";
-        $this->istatement = self::sql_exec("{$this->query} {$where} {$groupby}");
+        $this->groupby = is_null($this->settings->groupby) ? '' : "group by {$this->settings->groupby}";
+        $this->istatement = self::sql_exec("{$this->query} {$where} {$this->groupby}");
     }
 
     private function setColumns(){
@@ -151,13 +151,12 @@ class DTable {
         $recordsTotal= $this->istatement->num_rows;
         $limit = self::limit( $request);
         $order = self::order( $request,$this->columns);
-        $groupby = is_null($this->settings->groupby) ? '' : "group by {$this->settings->groupby}";
         $filter = self::filter( $request, $this->columns, $bindings );
         $where = self::getWhere($filter,$this->where);
-        $sql = "{$this->query} $where $groupby $order"; // Get total number of filterd records without the limit
+        $sql = "{$this->query} $where {$this->groupby} $order"; // Get total number of filterd records without the limit
         $stmt = self::sql_exec($sql,$bindings);
         $recordsFiltered= $stmt->num_rows;
-        $sql = "{$this->query} $where $groupby $order $limit "; // Get total number of filterd records with the limit
+        $sql = "{$this->query} $where {$this->groupby} $order $limit "; // Get total number of filterd records with the limit
         $stmt = self::sql_exec($sql,$bindings);
 
         return array(
@@ -171,12 +170,11 @@ class DTable {
     public function csv(){
         $bindings = array();
         $request = $_GET;
-        $groupby = is_null($this->settings->groupby) ? '' : "group by {$this->settings->groupby}";
         $limit = self::limit( $request);
         $order = self::order( $request,$this->columns);
         $filter = self::filter( $request, $this->columns, $bindings,true );
         $where = self::getWhere($filter,$this->where);
-        $query = "{$this->query} $where $groupby $order"; // Get total number of filterd records without the limit
+        $query = "{$this->query} $where {$this->groupby} $order"; // Get total number of filterd records without the limit
         
         Export::csv($this->settings->csvFileName,true,$query);
     }
@@ -334,25 +332,26 @@ class DTable {
                 }
             }
         }
-        for ( $i=0, $ien=count($request['columns']) ; $i<$ien ; $i++ ) {
-            $requestColumn = $request['columns'][$i];
-            $column = "{$columns[ $i ]->table}.{$columns[ $i ]->orgname}";
-            if ( isset($requestColumn['multi']) ) {
-                $filter = array();
-                foreach ($requestColumn['multi'] as $val) {
-                    self::bind( $bindings,$val, 's');
-                    if($qs){
-                        $filter[] = $val;
-                    }else{
-                        $filter[] = "?";
+        
+        if(isset($request['filters'])){
+            foreach ($request['filters'] as $key => $value) {
+                if ( isset($value['multi']) ) {
+                    $filter = array();
+                    foreach ($value['multi'] as $val) {
+                        self::bind( $bindings,$val, 's');
+                        if($qs){
+                            $filter[] = $val;
+                        }else{
+                            $filter[] = "?";
+                        }
                     }
-                }
-                if ( count( $filter ) ) {
-                    $filters[]= $column . ' in('.implode(',', $filter).')';
+                    if ( count( $filter ) ) {
+                        $filters[]= $key . ' in('.implode(',', $filter).')';
+                    }
                 }
             }
         }
-
+        
         // Combine the filters into a single string
         $where = '';
         if ( count( $globalSearch ) ) {
@@ -375,17 +374,30 @@ class DTable {
         $v = new NView($this->settings->filterview);
         $columns = $this->settings->columns;
         $filters= array();
-        $index = 0;
-        foreach ($this->columns as $key => $value) {
 
-            if(isset($columns[$value->name]['filter'])){
+        $colnames = array();
+        foreach ($this->columns as $key => $value) {
+            $colnames[] = $value->name;
+        }
+ 
+
+        foreach ($columns as $key => $value) {
+
+            if(isset($value['filter'])){
+
+                $index = array_search($key,$colnames);
+                if(is_int($index)){
+                    $name = "{$this->columns[ $index ]->table}.{$this->columns[ $index ]->orgname}";
+                }else{
+                    $name = $key;
+                }
+
                 $filters[] = array(
-                    "label"=>$value->name,
-                    "value"=>$columns[$value->name]['filter'],
-                    "index"=>$key
+                    "name"=>$name,
+                    "label"=>$key,
+                    "value"=>$value['filter']
                 );
             }
-            $index++;
         }
 
 
@@ -402,7 +414,7 @@ class DTable {
                         $multi->set("//h:select/child-gap()",$o);
                     }
                     $multi->set('//*[@data-xp="label"]/child-gap()',htmlspecialchars($filter['label']));
-                    $multi->set('//h:select/@name',"multi:{$filter['index']}");
+                    $multi->set('//h:select/@name',"multi:{$filter['name']}");
                     $v->set('//*[@data-xp="filters"]/child-gap()',$multi);
                 }
             }else{
