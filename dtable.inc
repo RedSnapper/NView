@@ -21,36 +21,53 @@ class DTable {
         'ajax'=> NULL,
         'columns'=> array(),
         'table'=> NULL,
-        'groupby'=> NULL
+        'pkey'=> NULL
     );
 
     private $options;
-    private $query;
-    private $where;
+    private $fields;
+    private $tables;
+    private $restrict;
     private $columns;
     private $filterv;
+    private $pkey = NULL;
+    private $pksimple= true;
     private $istatement;  // Statement returned by intial query
 
 
-    public function __construct($query = null,$where=null,$options = array()){
-        $this->query = $query;
-        $this->where = $where;
+    public function __construct($fields = null,$tables=null,$restrict=null,$options = array()){
+        $this->fields = $fields;
+        $this->tables = $tables;
+        $this->restrict = $restrict;
         $this->settings = (object) array_merge((array) self::$defaults,(array) $options);
+        $this->groupby = '';
+        
+
+        if(!is_null($this->settings->pkey)){
+            $this->pkey = $this->settings->pkey;
+            if(is_array($this->settings->pkey)){
+                $groupby = implode(',',$this->settings->pkey);
+                $this->groupby = "group by {$groupby}";
+                $this->$pksimple = false;
+            }else{
+                $this->groupby = "group by {$this->settings->pkey}";
+            }
+        }
+
+        $restrict = self::getRestriction('',$this->restrict);
+        $this->istatement = self::sql_exec("select {$this->fields} from {$this->tables} {$restrict} {$this->groupby}");
+
+        $md = $this->istatement->result_metadata();
+        $this->columns = mysqli_fetch_fields($md);
     }
 
     /**
      * Initalise Dtable based on SQL query 
      * the table based on SQL query.
-     * @param  srting $query SQL query
-     * @param  srting $where SQL condition
-     * @param  array $options Options for dtables
      * @return NView the current view
      */
     public function init() {
         
-        $this->getIntialQuery();
-        $this->setColumns();
-
         if (isset(Settings::$qst['type']) && Settings::$qst['type'] === 'json') {
             $data = $this->json();
             header('Content-Type: application/json');
@@ -74,16 +91,6 @@ class DTable {
         return $this->filterv;
     }
 
-    private function getIntialQuery(){
-        $where = self::getWhere('',$this->where);
-        $this->groupby = is_null($this->settings->groupby) ? '' : "group by {$this->settings->groupby}";
-        $this->istatement = self::sql_exec("{$this->query} {$where} {$this->groupby}");
-    }
-
-    private function setColumns(){
-        $md = $this->istatement->result_metadata();
-        $this->columns = mysqli_fetch_fields($md);
-    }
 
     /**
      * Initialise the view for datatable generating the columns for 
@@ -152,11 +159,11 @@ class DTable {
         $limit = self::limit( $request);
         $order = self::order( $request,$this->columns);
         $filter = self::filter( $request, $this->columns, $bindings );
-        $where = self::getWhere($filter,$this->where);
-        $sql = "{$this->query} $where {$this->groupby} $order"; // Get total number of filterd records without the limit
+        $restrict = self::getRestriction($filter,$this->restrict);
+        $sql = "select {$this->fields} from {$this->tables} $restrict {$this->groupby} $order"; // Get total number of filterd records without the limit
         $stmt = self::sql_exec($sql,$bindings);
         $recordsFiltered= $stmt->num_rows;
-        $sql = "{$this->query} $where {$this->groupby} $order $limit "; // Get total number of filterd records with the limit
+        $sql = "select {$this->fields} from {$this->tables} $restrict {$this->groupby} $order $limit "; // Get total number of filterd records with the limit
         $stmt = self::sql_exec($sql,$bindings);
 
         return array(
@@ -173,8 +180,8 @@ class DTable {
         $limit = self::limit( $request);
         $order = self::order( $request,$this->columns);
         $filter = self::filter( $request, $this->columns, $bindings,true );
-        $where = self::getWhere($filter,$this->where);
-        $query = "{$this->query} $where {$this->groupby} $order"; // Get total number of filterd records without the limit
+        $restrict = self::getRestriction($filter,$this->restrict);
+        $query = "select {$this->fields} from {$this->tables} $restrict {$this->groupby} $order"; // Get total number of filterd records without the limit
         
         Export::csv($this->settings->csvFileName,true,$query);
     }
@@ -229,22 +236,22 @@ class DTable {
      * @param  string $whereResult  User where clause
      * @return string SQL where clause
      */
-    private static function getWhere($filters='',$whereResult=null){
-        $where = '';
+    private static function getRestriction($filters='',$whereResult=null){
+        $restrict = '';
         if(!is_null($whereResult)){
-            $where.=$whereResult;
+            $restrict.=$whereResult;
         }
         if($filters !== ''){
-            if($where !== ''){
-                $where.= " AND {$filters}";
+            if($restrict !== ''){
+                $restrict.= " AND {$filters}";
             }else{
-                $where.=" {$filters}";
+                $restrict.=" {$filters}";
             }
         }
-        if ( $where !== '' ) {
-            $where = 'WHERE '.$where;
+        if ( $restrict !== '' ) {
+            $restrict = 'WHERE '.$restrict;
         }
-        return $where;
+        return $restrict;
     }
 
     /**
@@ -353,20 +360,20 @@ class DTable {
         }
         
         // Combine the filters into a single string
-        $where = '';
+        $restrict = '';
         if ( count( $globalSearch ) ) {
-            $where = '('.implode(' OR ', $globalSearch).')';
+            $restrict = '('.implode(' OR ', $globalSearch).')';
         }
 
         if ( count( $filters ) ) {
             if ( count( $globalSearch ) ) {
-                $where .= ' AND ';
+                $restrict .= ' AND ';
             }
-            $where .= '('.implode(' AND ', $filters).')';
+            $restrict .= '('.implode(' AND ', $filters).')';
         }
 
 
-        return $where;
+        return $restrict;
     }
 
     private function setFilterView(){
