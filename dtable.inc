@@ -31,7 +31,6 @@ class DTable {
     private $columns;
     private $filterv;
     private $pkey = NULL;
-    private $pksimple= true;
     private $istatement;  // Statement returned by intial query
 
 
@@ -48,14 +47,13 @@ class DTable {
             if(is_array($this->settings->pkey)){
                 $groupby = implode(',',$this->settings->pkey);
                 $this->groupby = "group by {$groupby}";
-                $this->$pksimple = false;
             }else{
                 $this->groupby = "group by {$this->settings->pkey}";
             }
         }
 
-        $restrict = self::getRestriction('',$this->restrict);
-        $this->istatement = self::sql_exec("select {$this->fields} from {$this->tables} {$restrict} {$this->groupby}");
+        $restriction = self::getRestriction('',$this->restrict);
+        $this->istatement = self::sql_exec("select {$this->fields} from {$this->tables} {$restriction} {$this->groupby}");
 
         $md = $this->istatement->result_metadata();
         $this->columns = mysqli_fetch_fields($md);
@@ -76,12 +74,42 @@ class DTable {
         }elseif(isset(Settings::$qst['type']) && Settings::$qst['type'] === 'csv'){
             $this->csv();
             exit;
+        }elseif(isset(Settings::$qst['type']) && Settings::$qst['type'] === 'jsonids'){
+            $data = $this->getPrimaryData();
+            header('Content-Type: application/json');
+            echo json_encode($data);
+            exit;
         } 
         else {
             return $this->setView();
         }
     }
 
+    public function getPrimaryData(){
+        $stmt = NULL;
+        if(!is_null($this->pkey)){
+            $request = $_GET;
+            $bindings = array();
+            $order = self::order( $request,$this->columns);
+            $filter = self::filter( $request, $this->columns, $bindings );
+            $restrict = self::getRestriction($filter,$this->restrict);
+
+            if(is_array($this->pkey)){
+                $fields = implode(',',$this->pkey);
+            }else{
+                $fields = $this->pkey;
+            }
+            $sql = "select {$fields} from {$this->tables} $restrict {$this->groupby} $order";
+            $stmt = self::sql_exec($sql,$bindings);
+        }
+        $it = new RecursiveIteratorIterator(new RecursiveArrayIterator($this->data_output($stmt)));
+        $ids = array();
+        foreach($it as $v) {
+            $ids[]=$v;
+        }
+        return !is_null($stmt) ? $ids : NULL;
+
+    }
 
     public function getSettings($options){
         return $this->settings();
