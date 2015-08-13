@@ -375,7 +375,7 @@ class DTable {
                     foreach ($value['multi'] as $val) {
                         self::bind( $bindings,$val, 's');
                         if($qs){
-                            $filter[] = $val;
+                            $filter[] = "'$val'";
                         }else{
                             $filter[] = "?";
                         }
