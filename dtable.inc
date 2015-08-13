@@ -20,7 +20,8 @@ class DTable {
         'multi'=> "dtable_multi.ixml",
         'ajax'=> NULL,
         'columns'=> array(),
-        'table'=> NULL
+        'table'=> NULL,
+        'groupby'=> NULL
     );
 
     private $options;
@@ -75,7 +76,8 @@ class DTable {
 
     private function getIntialQuery(){
         $where = self::getWhere('',$this->where);
-        $this->istatement = self::sql_exec("{$this->query} {$where}");
+        $groupby = is_null($this->settings->groupby) ? '' : "group by {$this->settings->groupby}";
+        $this->istatement = self::sql_exec("{$this->query} {$where} {$groupby}");
     }
 
     private function setColumns(){
@@ -149,12 +151,13 @@ class DTable {
         $recordsTotal= $this->istatement->num_rows;
         $limit = self::limit( $request);
         $order = self::order( $request,$this->columns);
+        $groupby = is_null($this->settings->groupby) ? '' : "group by {$this->settings->groupby}";
         $filter = self::filter( $request, $this->columns, $bindings );
         $where = self::getWhere($filter,$this->where);
-        $sql = "{$this->query} $where $order"; // Get total number of filterd records without the limit
+        $sql = "{$this->query} $where $groupby $order"; // Get total number of filterd records without the limit
         $stmt = self::sql_exec($sql,$bindings);
         $recordsFiltered= $stmt->num_rows;
-        $sql = "{$this->query} $where $order $limit"; // Get total number of filterd records with the limit
+        $sql = "{$this->query} $where $groupby $order $limit "; // Get total number of filterd records with the limit
         $stmt = self::sql_exec($sql,$bindings);
 
         return array(
@@ -168,12 +171,12 @@ class DTable {
     public function csv(){
         $bindings = array();
         $request = $_GET;
-       
+        $groupby = is_null($this->settings->groupby) ? '' : "group by {$this->settings->groupby}";
         $limit = self::limit( $request);
         $order = self::order( $request,$this->columns);
         $filter = self::filter( $request, $this->columns, $bindings,true );
         $where = self::getWhere($filter,$this->where);
-        $query = "{$this->query} $where $order"; // Get total number of filterd records without the limit
+        $query = "{$this->query} $where $groupby $order"; // Get total number of filterd records without the limit
         
         Export::csv($this->settings->csvFileName,true,$query);
     }
