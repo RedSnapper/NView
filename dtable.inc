@@ -102,7 +102,7 @@ class DTable {
             $sql = "select {$fields} from {$this->tables} $restrict {$this->groupby} $order";
             $stmt = self::sql_exec($sql,$bindings);
         }
-        $it = new RecursiveIteratorIterator(new RecursiveArrayIterator($this->data_output($stmt)));
+        $it = new RecursiveIteratorIterator(new RecursiveArrayIterator($this->data_output($stmt,false)));
         $ids = array();
         foreach($it as $v) {
             $ids[]=$v;
@@ -244,7 +244,7 @@ class DTable {
      *  @param  mysqli_statement $stmt Statement object
      *  @return array Formatted data in a row based format
      */
-    private function data_output($stmt){
+    private function data_output($stmt,$format=true){
 
         $variables = array();
         $data = array();
@@ -263,7 +263,7 @@ class DTable {
             $row = array();
             foreach($data as $k=>$v){
                 $column = $columns[$i]->name;
-                if ( isset( $this->settings->columns[$column]['formatter'] ) ) {
+                if ( $format && isset( $this->settings->columns[$column]['formatter'] ) ) {
                     $row[] = $this->settings->columns[$column]['formatter']( $v,$rowNum);
                 }
                 else {
@@ -553,6 +553,3 @@ class DTable {
 
 }
 
-function debug($content){
-    print("<pre>" . print_r($content,true) . "</pre>");
-}
