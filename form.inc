@@ -26,6 +26,7 @@ trait Form {
 	protected $cflds;		//array of sql values that will be used during a commit.
 	protected $names;		//array of input names
 	protected $view;		//the formlet view (instance of an NView)
+	private $record_found;	//boolean value representing whether or not (during a get) a record was found.
 	private $subsfield; 	//subscriber field-name  for indicating presence/absence.
 	private $subsvalue; 	//subscriber field-value based on sql.
 	private $subspostv; 	//subscriber field-value based on post.
@@ -208,6 +209,7 @@ trait Form {
 		$this->cflds = array(); //array of sql fields that will be used in commit.
 		$this->names = array(); //array of input names.
 		$this->committed = false;
+		$this->record_found = false;
 		$this->valid = true;
 		$this->show = true;
 		$this->insert_qs=NULL;
@@ -394,7 +396,12 @@ trait Form {
 				if (isset($this->fields[$input])) {
 					$val=$this->fields[$input][0];
 				} else {
-					$val=$this->dflds[$input];
+				// There is a special case with checkboxes/boolean fields - where we do NOT want to 
+				// set the default based on the absence of a value, unless the record is a new one.
+				// so we need to check the absence of $this->bflds[$input] or $this->record_found  for that.
+					if (!isset($this->bflds[$input]) || !$this->record_found ) { 
+						$val=$this->dflds[$input];
+					}
 				}
 			}
 		} else {
@@ -403,7 +410,7 @@ trait Form {
 		if (!is_null($val)) {
 			switch($kind) {
 				case "cb": {
-					if (($val == '1' && isset($this->bflds[$input]))  || ($val == 'on') || ($val == 'true') || ($val == 'checked') ) {
+					if (($val == '1' && isset($this->bflds[$input])) || ($val == 'on') || ($val == 'true') || ($val == 'checked') ) {
 						$this->view->set("//*[@name='$input']/@value",$val);
 						$this->view->set("//*[@name='$input']/@checked",'checked');
 					}
@@ -546,6 +553,7 @@ trait Form {
 		}
 		if($this->isMe()) {
 			$this->show=$show;
+			$this->record_found=true;	//The one that was posted..
 			$this->setfrompost();
 			if (!empty($this->fields['_fn'][0]) && strcmp($this->fields['_fn'][0],"save") !== 0 ) {
 				if($this->debug) {
@@ -708,7 +716,8 @@ trait Form {
 				if($this->debug) {
 					print('<br />DEBUG: Set fields SQL=' . $query);
 				}
-				if ($rx = Settings::$sql->query($query)) {
+				if ($rx = Settings::$sql->query($query)) {						
+					$this->record_found = ($rx->num_rows !== 0);
 					if (!is_null($this->subsfield)) { //need this for gets.
 						if ($rx->num_rows > 0) {
 							$this->subsvalue="true";
