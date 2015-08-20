@@ -169,7 +169,7 @@ class SioReg {
 		if ($rx = Settings::$sql->query($qry)) {
 			while ($f = $rx->fetch_assoc()) {
 				$email_qry="select ".static::$munge." as munge,emailp from sio_user where id=" . $f['id'];
-				mail_pending($f['emailp'],$email_qry,$url);
+				static::mail_pending($f['emailp'],$email_qry,$url);
 			}
 			$rx->close();
 		}
