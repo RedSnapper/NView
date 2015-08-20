@@ -165,7 +165,7 @@ class SioReg {
 	}
 
 	public static function remindusers($date="1 year",$url=NULL) {	//date is time before now().
-		$qry="select id from sio_user where active='xx' and ts < date_sub(now(),interval $date)";
+		$qry="select id,emailp from sio_user where active='xx' and ts < date_sub(now(),interval $date)";
 		if ($rx = Settings::$sql->query($qry)) {
 			while ($f = $rx->fetch_assoc()) {
 				$email_qry="select ".static::$munge." as munge,emailp from sio_user where id=" . $f['id'];
