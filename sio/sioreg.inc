@@ -136,6 +136,45 @@ class SioReg {
 		return $nv;
 	}
 	
+	public static function mail_pending($em,$email_qry,$url=NULL) {
+		$url = is_null($url) ? $_SERVER["SCRIPT_URI"] : $url;
+		if ($rx = Settings::$sql->query($email_qry)) {
+			while ($f = $rx->fetch_assoc()) {
+				$mail_v=new NView(@static::$v[static::SIG."email_body"]);
+				$mail_v->set("//*[@data-tr]/@data-tr/preceding-gap()",static::SIG);
+				$mail = new PHPMailer();
+				$mail->isSendmail();
+				$mail->CharSet='utf-8';
+				$mail->Encoding='base64';
+				$mail->setFrom('no_reply@redsnapper.net', Dict::get(static::SIG .'note_register_title'));
+				$mail->addAddress($em,$f['emailp']);
+				$mail->Subject = Dict::get(static::SIG.'note_register_title');
+				$mail->isHTML(true);
+				if (strpos($url, '?') !== false) {
+					$url .= '&amp;siof=' . $f['munge'];
+				} else {
+					$url .= '?siof=' . $f['munge'];
+				}
+				$mail_v->set("//*[@data-xp='ha']/@href",$url);
+				$mail->Body = $mail_v->show(false);
+				$mail->AltBody=Dict::get(static::SIG.'mesg_see_html_alt');
+				$mail->send();
+			}
+			$rx->close();
+		}
+	}
+
+	public static function remindusers($date="1 year",$url=NULL) {	//date is time before now().
+		$qry="select id from sio_user where active='xx' and ts < date_sub(now(),interval $date)";
+		if ($rx = Settings::$sql->query($qve)) {
+			while ($f = $rx->fetch_assoc()) {
+				$email_qry="select ".static::$munge." as munge,emailp from sio_user where id=" . $f['id'];
+				mail_pending($f['emailp'],$email_qry,$url);
+			}
+			$rx->close();
+		}
+	}
+	
 	public static function createuser($un=null,$em=null,$pw=null,$pending=false) {
 		$retval = NULL;
 		$id_for_hash=$em;	//unescaped used for munge case when registering via email..
@@ -178,31 +217,7 @@ class SioReg {
 				}
 			}
 			if ($pending) {
-				if ($rx = Settings::$sql->query($email_qry)) {
-					while ($f = $rx->fetch_assoc()) {
-						$mail_v=new NView(@static::$v[static::SIG."email_body"]);
-						$mail_v->set("//*[@data-tr]/@data-tr/preceding-gap()",static::SIG);
-						$mail = new PHPMailer();
-						$mail->isSendmail();
-						$mail->CharSet='utf-8';
-						$mail->Encoding='base64';
-						$mail->setFrom('no_reply@redsnapper.net', Dict::get(static::SIG .'note_register_title'));
-						$mail->addAddress($em,$f['emailp']);
-						$mail->Subject = Dict::get(static::SIG.'note_register_title');
-						$mail->isHTML(true);
-						$url=$_SERVER["SCRIPT_URI"];
-						if (strpos($url, '?') !== false) {
-							$url .= '&amp;siof=' . $f['munge'];
-						} else {
-							$url .= '?siof=' . $f['munge'];
-						}
-						$mail_v->set("//*[@data-xp='ha']/@href",$url);
-						$mail->Body = $mail_v->show(false);
-						$mail->AltBody=Dict::get(static::SIG.'mesg_see_html_alt');
-						$mail->send();
-					}
-					$rx->close();
-				}
+				static::mail_pending($em,$email_qry);
 			}
 		}
 		return $retval;
