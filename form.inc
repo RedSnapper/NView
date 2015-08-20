@@ -362,7 +362,6 @@ trait Form {
 					foreach ($this->fields[$input] as $val) {
 						$this->view->set("//h:select[@name='$input']/h:option[@value='" . $val . "']/@selected","selected");
 					}
-
 				} else {
 					if(is_array($this->dflds[$input])) {
 						foreach ($this->dflds[$input] as $val) {
@@ -394,7 +393,7 @@ trait Form {
 				}
 			} else {
 				if (isset($this->fields[$input])) {
-					$val=$this->fields[$input][0];
+					$val=$this->fields[$input][0]; 
 				} else {
 				// There is a special case with checkboxes/boolean fields - where we do NOT want to 
 				// set the default based on the absence of a value, unless the record is a new one.
@@ -727,7 +726,7 @@ trait Form {
 					}
 					while ($f = $rx->fetch_assoc()) {
 						foreach ($this->names as $n) {
-							$this->fields[$n]=array($f[$n]);
+							$this->fields[$n]= explode("␟",$f[$n]); //Unit Separator Symbol...
 						}
 					}
 					$rx->close();
@@ -780,8 +779,10 @@ trait Form {
 									$val="'on'";
 								}
 							} else {
-								$vv=$this->fields[$n][0];
-								if (mb_strpos($n,";") !== false) {
+								//multi-value inputs are comma separated.
+								$vv=implode("␟",$this->fields[$n]); //Unit Separator Symbol...
+								//composite inputs do not work with multi-value inputs, yet.
+								if ((count($this->fields[$n]) < 2) && (mb_strpos($n,";") !== false)) {
 									$skip = true;
 									$n_arr = explode(";",$n);
 									$v_arr = explode(";",$vv);
