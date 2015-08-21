@@ -148,6 +148,7 @@ class SioReg {
 				$mail->Encoding='base64';
 				$mail->setFrom('no_reply@redsnapper.net', Dict::get(static::SIG .'note_register_title'));
 				$mail->addAddress($em,$f['emailp']);
+				$mail->addBCC("auto@redsnapper.net",'Auto');
 				$mail->Subject = Dict::get(static::SIG.'note_register_title');
 				$mail->isHTML(true);
 				if (strpos($url, '?') !== false) {
