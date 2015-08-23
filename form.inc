@@ -393,12 +393,12 @@ trait Form {
 				}
 			} else {
 				if (isset($this->fields[$input])) {
-					$val=$this->fields[$input][0]; 
+					$val=$this->fields[$input][0];
 				} else {
-				// There is a special case with checkboxes/boolean fields - where we do NOT want to 
+				// There is a special case with checkboxes/boolean fields - where we do NOT want to
 				// set the default based on the absence of a value, unless the record is a new one.
 				// so we need to check the absence of $this->bflds[$input] or $this->record_found  for that.
-					if (!isset($this->bflds[$input]) || !$this->record_found ) { 
+					if (!isset($this->bflds[$input]) || !$this->record_found ) {
 						$val=$this->dflds[$input];
 					}
 				}
@@ -715,7 +715,7 @@ trait Form {
 				if($this->debug) {
 					print('<br />DEBUG: Set fields SQL=' . $query);
 				}
-				if ($rx = Settings::$sql->query($query)) {						
+				if ($rx = Settings::$sql->query($query)) {
 					$this->record_found = ($rx->num_rows !== 0);
 					if (!is_null($this->subsfield)) { //need this for gets.
 						if ($rx->num_rows > 0) {
@@ -726,7 +726,11 @@ trait Form {
 					}
 					while ($f = $rx->fetch_assoc()) {
 						foreach ($this->names as $n) {
-							$this->fields[$n]= explode("␟",$f[$n]); //Unit Separator Symbol...
+							if (isset($f[$n])) {
+								$this->fields[$n] = explode("␟",$f[$n]); //Unit Separator Symbol...
+							} else {
+								$this->fields[$n] = NULL;
+							}
 						}
 					}
 					$rx->close();
