@@ -163,6 +163,7 @@ class SioReg {
 					$url .= '?siof=' . $f['munge'];
 				}
 				$mail_v->set("//*[@data-xp='ha']/@href",$url);
+				$mail_v->set("//*[@data-xp='hl']/child-gap()",$url);
 				$mail->Body = $mail_v->show(false);
 				$mail->AltBody=$mail_v->doc()->textContent;;
 				$mail->send();
