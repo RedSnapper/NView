@@ -124,8 +124,7 @@ class SioSignIn {
 							if ($rp = Settings::$sql->query($qry)) {
 								while ($rf = $rp->fetch_assoc()) {
 									$email_qry="select '[MUNGE]',emailp from sio_user where id=" . $rf['id'];
-									print(Settings::$url);
-									SioReg::mail_pending($rf['emailp'],$email_qry,Settings::$url);
+									SioReg::mail_pending($rf['emailp'],$email_qry,Settings::$website . Settings::$url);
 								}
 								$rp->close();
 							}
