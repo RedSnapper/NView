@@ -142,9 +142,9 @@ class SioReg {
 		$url = is_null($url) ? $_SERVER["SCRIPT_URI"] : $url;
 		$email_qry = str_replace("'[MUNGE]'",static::$munge." as munge",$email_qry);
 		if ($rx = Settings::$sql->query($email_qry)) {
-			print("Not quite working - check soon please!<!-- " . $email_qry . " -->");
 			while ($f = $rx->fetch_assoc()) {
 			    $hostname=@$_SERVER['HTTP_HOST'];
+				print("Not quite working - check soon please!<!-- " . $hostname . " -->");
 				$mail_v=new NView(@static::$v[static::SIG."email_body"]);
 				$mail_v->set("//*[@data-tr]/@data-tr/preceding-gap()",static::SIG);
 				$mail = new PHPMailer();
