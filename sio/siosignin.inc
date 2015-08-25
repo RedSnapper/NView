@@ -215,7 +215,7 @@ class SioSignIn {
 			$de[static::SIG .'errors_email_empty']=" Bitte geben Sie Ihr Passwort ein.";
 
 		}
-		$en[static::SIG .'errors_user_pending_validation']=" You are registered, but we are waiting for you to validate your email. A new validation email has just been sent.";
+		$en[static::SIG .'errors_user_pending_validation']=" You are registered, but we are waiting for you to validate your email.<br />A new validation email has just been sent.";
 		$en[static::SIG ."errors_password_empty"]= "You need to enter your email address and password!";
 
 		//set the views after all the above.
