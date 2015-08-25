@@ -108,9 +108,34 @@ class SioSignIn {
 					$retval=true;
 				} else {
 					if(static::$use_un) {
-						$this->seterr("username",Dict::get(static::SIG.'errors_username_unmatched'));
+						$pfield="username";
 					} else {
-						$this->seterr("email",Dict::get(static::SIG.'errors_email_unmatched'));
+						$pfield="emailp";
+					}
+					$qry="select count(id) as ok from " . $this->table . " where active='xx' and ".$field."='" .$unm. "' and password='" . $ph . "'";
+					if ($rx = Settings::$sql->query($qry)) {
+						if (strcmp($rx->fetch_row()[0],"1") === 0) {
+							if(static::$use_un) {
+								$this->seterr("username",Dict::get(static::SIG.'errors_user_pending_validation'));
+							} else {
+								$this->seterr("email",Dict::get(static::SIG.'errors_user_pending_validation'));
+							}
+							$qry="select id,emailp from sio_user where active='xx' and ".$field."='" .$unm. "' and password='" . $ph . "'";
+							if ($rx = Settings::$sql->query($qry)) {
+								while ($f = $rx->fetch_assoc()) {
+									static::mail_pending($f['emailp'],$email_qry,Settings::$url);
+								}
+								$rx->close();
+							}
+							
+						} else {
+							if(static::$use_un) {
+								$this->seterr("username",Dict::get(static::SIG.'errors_username_unmatched'));
+							} else {
+								$this->seterr("email",Dict::get(static::SIG.'errors_email_unmatched'));
+							}
+						}
+						$rx->close();
 					}
 				}
 				$rx->close();
@@ -189,6 +214,7 @@ class SioSignIn {
 			$de[static::SIG .'errors_email_empty']=" Bitte geben Sie Ihr Passwort ein.";
 
 		}
+		$en[static::SIG .'errors_user_pending_validation']=" You are registered, but we are waiting for you to validate your email. A new validation email has just been sent.";
 		$en[static::SIG ."errors_password_empty"]= "You need to enter your email address and password!";
 
 		//set the views after all the above.

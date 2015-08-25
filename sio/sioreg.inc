@@ -136,19 +136,23 @@ class SioReg {
 		return $nv;
 	}
 	
-	public static function mail_pending($em,$email_qry,$url=NULL) {
+	//mail_qry must include '[MUNGE]' or field as munge, and emailp in it's result.
+	//eg mail_pending(
+	public static function mail_pending($destination,$email_qry,$url=NULL) {
 		$url = is_null($url) ? $_SERVER["SCRIPT_URI"] : $url;
+		$email_qry = str_replace("'[MUNGE]'",static::$munge." as munge",$email_qry)
 		if ($rx = Settings::$sql->query($email_qry)) {
 			while ($f = $rx->fetch_assoc()) {
+			    $hostname=@$_SERVER['HTTP_HOST'];
 				$mail_v=new NView(@static::$v[static::SIG."email_body"]);
 				$mail_v->set("//*[@data-tr]/@data-tr/preceding-gap()",static::SIG);
 				$mail = new PHPMailer();
 				$mail->isSendmail();
 				$mail->CharSet='utf-8';
 				$mail->Encoding='base64';
-				$mail->setFrom('no_reply@redsnapper.net', Dict::get(static::SIG .'note_register_title'));
-				$mail->addAddress($em,$f['emailp']);
-				$mail->addBCC("auto@redsnapper.net",'Auto');
+				$mail->setFrom("no_reply@" . $hostname, Dict::get(static::SIG .'note_register_title'));
+				$mail->addAddress($destination,$f['emailp']);
+				$mail->addBCC("auto@" . $hostname,'Auto');
 				$mail->Subject = Dict::get(static::SIG.'note_register_title');
 				$mail->isHTML(true);
 				if (strpos($url, '?') !== false) {
