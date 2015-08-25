@@ -121,12 +121,12 @@ class SioSignIn {
 								$this->seterr("email",Dict::get(static::SIG.'errors_user_pending_validation'));
 							}
 							$qry="select id,emailp from sio_user where active='xx' and ".$field."='" .$unm. "' and password='" . $ph . "'";
-							if ($rx = Settings::$sql->query($qry)) {
-								while ($f = $rx->fetch_assoc()) {
-									$email_qry="select '[MUNGE]',emailp from sio_user where id=" . $f['id'];
-									SioReg::mail_pending($f['emailp'],$email_qry,Settings::$url);
+							if ($rp = Settings::$sql->query($qry)) {
+								while ($rf = $rp->fetch_assoc()) {
+									$email_qry="select '[MUNGE]',emailp from sio_user where id=" . $rf['id'];
+									SioReg::mail_pending($rf['emailp'],$email_qry,Settings::$url);
 								}
-								$rx->close();
+								$rp->close();
 							}
 							
 						} else {
