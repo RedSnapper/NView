@@ -113,8 +113,8 @@ class SioSignIn {
 						$pfield="emailp";
 					}
 					$qry="select count(id) as ok from " . $this->table . " where active='xx' and ".$field."='" .$unm. "' and password='" . $ph . "'";
-					if ($rx = Settings::$sql->query($qry)) {
-						if (strcmp($rx->fetch_row()[0],"1") === 0) {
+					if ($ry = Settings::$sql->query($qry)) {
+						if (strcmp($ry->fetch_row()[0],"1") === 0) {
 							if(static::$use_un) {
 								$this->seterr("username",Dict::get(static::SIG.'errors_user_pending_validation'));
 							} else {
@@ -136,7 +136,7 @@ class SioSignIn {
 								$this->seterr("email",Dict::get(static::SIG.'errors_email_unmatched'));
 							}
 						}
-						$rx->close();
+						$ry->close();
 					}
 				}
 				$rx->close();
