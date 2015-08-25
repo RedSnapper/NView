@@ -164,7 +164,7 @@ class SioReg {
 				}
 				$mail_v->set("//*[@data-xp='ha']/@href",$url);
 				$mail->Body = $mail_v->show(false);
-				$mail->AltBody=$mail_v->get("//text()");
+				$mail->AltBody=$mail_v->doc()->textContent;;
 				$mail->send();
 			}
 			$rx->close();
