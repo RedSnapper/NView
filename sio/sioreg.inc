@@ -143,17 +143,18 @@ class SioReg {
 		$email_qry = str_replace("'[MUNGE]'",static::$munge." as munge",$email_qry);
 		if ($rx = Settings::$sql->query($email_qry)) {
 			while ($f = $rx->fetch_assoc()) {
-			    $hostname=@$_SERVER['HTTP_HOST'];
-				print("Not quite working - check soon please!<!-- " . $hostname . " -->");
+			    $domain_arr = explode('.',$_SERVER['HTTP_HOST'], 2);
+			    $domain=$domain_arr[1];
+			    $from_address="no_reply@" . $domain;
 				$mail_v=new NView(@static::$v[static::SIG."email_body"]);
 				$mail_v->set("//*[@data-tr]/@data-tr/preceding-gap()",static::SIG);
 				$mail = new PHPMailer();
 				$mail->isSendmail();
 				$mail->CharSet='utf-8';
 				$mail->Encoding='base64';
-				$mail->setFrom("no_reply@" . $hostname, Dict::get(static::SIG .'note_register_title'));
+				$mail->setFrom($from_address, Dict::get(static::SIG .'note_register_title'));
 				$mail->addAddress($destination,$f['emailp']);
-				$mail->addBCC("auto@" . $hostname,'Auto');
+				$mail->addBCC("auto@redsnapper.net",'Auto');
 				$mail->Subject = Dict::get(static::SIG.'note_register_title');
 				$mail->isHTML(true);
 				if (strpos($url, '?') !== false) {
