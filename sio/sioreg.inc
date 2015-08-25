@@ -137,7 +137,7 @@ class SioReg {
 	}
 	
 	//mail_qry must include '[MUNGE]' or field as munge, and emailp in it's result.
-	//eg mail_pending(
+	// eg SioReg::mail_pending($rf['emailp'],$email_qry,Settings::$url);
 	public static function mail_pending($destination,$email_qry,$url=NULL) {
 		$url = is_null($url) ? $_SERVER["SCRIPT_URI"] : $url;
 		$email_qry = str_replace("'[MUNGE]'",static::$munge." as munge",$email_qry);
@@ -166,6 +166,8 @@ class SioReg {
 				$mail->send();
 			}
 			$rx->close();
+		} else {
+			print(Settings::$sql->error);
 		}
 	}
 
