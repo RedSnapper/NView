@@ -140,7 +140,7 @@ class SioReg {
 	//eg mail_pending(
 	public static function mail_pending($destination,$email_qry,$url=NULL) {
 		$url = is_null($url) ? $_SERVER["SCRIPT_URI"] : $url;
-		$email_qry = str_replace("'[MUNGE]'",static::$munge." as munge",$email_qry)
+		$email_qry = str_replace("'[MUNGE]'",static::$munge." as munge",$email_qry);
 		if ($rx = Settings::$sql->query($email_qry)) {
 			while ($f = $rx->fetch_assoc()) {
 			    $hostname=@$_SERVER['HTTP_HOST'];

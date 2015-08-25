@@ -47,6 +47,7 @@ class Settings extends Singleton {
 		}
 		self::$usr['uid']=0;
 		self::$usr['ID']=0;
+		
 		if(isset($_SERVER["RS_SQLCONFIG_FILE"])) { //the path to the my.cnf for this connection.
 			self::$sql = mysqli_init();
 			self::$sqls = parse_ini_file($_SERVER["RS_SQLCONFIG_FILE"]);
