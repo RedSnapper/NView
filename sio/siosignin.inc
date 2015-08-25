@@ -123,6 +123,7 @@ class SioSignIn {
 							$qry="select id,emailp from sio_user where active='xx' and ".$field."='" .$unm. "' and password='" . $ph . "'";
 							if ($rx = Settings::$sql->query($qry)) {
 								while ($f = $rx->fetch_assoc()) {
+									$email_qry="select '[MUNGE]',emailp from sio_user where id=" . $f['id'];
 									SioReg::mail_pending($f['emailp'],$email_qry,Settings::$url);
 								}
 								$rx->close();
