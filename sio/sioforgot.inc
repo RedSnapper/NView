@@ -58,7 +58,7 @@ class SioForgot {
 		$this->show=false;
 		$em=$this->fields['email'][0];
 		Settings::esc($em);
-		$qry="select username,".self::$munge." as munge from " . $this->table . " where active='on' and email='" . $em . "'";
+		$qry="select username,".self::$munge." as munge from " . $this->table . " where (active='on' and email='$em') or (active='xx' and emailp='$em')";
 		if ($rx = Settings::$sql->query($qry)) {
 			while ($f = $rx->fetch_assoc()) {
 			    $domain_arr = explode('.',$_SERVER['HTTP_HOST'], 2);
