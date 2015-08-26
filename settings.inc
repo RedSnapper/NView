@@ -103,9 +103,8 @@ class Settings extends Singleton {
 		if(!empty($_SERVER['HTTPS']) && $_SERVER["HTTPS"]=='on') { self::$website.='s'; }
 		self::$website.='://' . $_SERVER["HTTP_HOST"];
 		
-//		$domain_arr = explode('.',$_SERVER['HTTP_HOST'], 2);
-//		self::$domain=$domain_arr[1];
-		self::$domain="redsnapper.net";
+		$domain_arr = explode('.',$_SERVER['HTTP_HOST'], 2);
+		self::$domain=$domain_arr[1];
 		
 	}
 
