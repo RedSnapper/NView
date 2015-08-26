@@ -56,7 +56,6 @@ class SIO {
 					}
 				} else {
 					if (SioReg::inScope() || isset(Settings::$qst[SioReg::SIG]) ) {
-					//need to do 'waiting for validation' line here.
 						$stt=0; $sio=new SioReg($key); $formlet=$sio->form(false);
 						if ($sio->success()) {
 							$formlet=$sio->pushit();

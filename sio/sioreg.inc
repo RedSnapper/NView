@@ -250,6 +250,7 @@ class SioReg {
 				static::SIG ."prompt_password"=>"Password",
 				static::SIG ."prompt_retype_password"=>"Retype Password",
 				static::SIG ."button_register"=>"Register",
+				static::SIG ."button_signin"=>"Sign In",
 				static::SIG ."note_register_title"=>"Registration Verification Request For: " . $_SERVER['HTTP_HOST'],
 				static::SIG ."note_register_message"=>" Someone with this email address has registered for " . $_SERVER['HTTP_HOST'] .". If this was not you you may safely ignore this, otherwise ",
 				static::SIG ."note_register_action_link"=>"please click here to confirm your registration.",
@@ -260,7 +261,7 @@ class SioReg {
 				static::SIG ."errors_new_pw_different"=>" Both passwords must be the same.",
 				static::SIG ."mesg_register_check_email"=>"Thank you for registering.  A confirmation email has been sent to your email address for verification.",
 				static::SIG ."mesg_see_html_alt"=>"Please see the html alternative of this email.",
-				static::SIG ."mesg_success"=>"You have successfully registered."
+				static::SIG ."mesg_success"=>"You have successfully validated your registration."
 			);
 
 			$de = array(
@@ -268,6 +269,7 @@ class SioReg {
 				static::SIG .'prompt_password'=> 'Passwort',
 				static::SIG .'prompt_retype_password'=> 'Passwort wiederholen',
 				static::SIG .'button_register'=> 'Registrieren',
+				static::SIG ."button_signin"=>"Anmelden",
 				static::SIG .'note_register_title'=> 'Registrierung: ' . $_SERVER['HTTP_HOST'],
 				static::SIG .'note_register_message'=> 'Sie möchten sich auf unserer Website registrieren.',
 				static::SIG .'note_register_action_link'=> 'Bitte bestätigen Sie Ihre Registrierung.',

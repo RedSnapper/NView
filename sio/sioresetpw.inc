@@ -6,7 +6,7 @@ class SIOResetPW {
 	use Form;
 	const SIG = "sioresetpw_";
 	public static function sig() { return static::SIG; }
-	//this munge must be the same as the one in sioforgot_
+	//The following munge must be the same as the one in sioforgot_
 	private static $munge="sha2(concat(ifnull(username,id),'-',ifnull(password,id),'-',ifnull(email,id),'-',ifnull(ts,id)),256)";
 	private static $v=array();
 	private static $use_un=true;
@@ -29,7 +29,7 @@ class SIOResetPW {
 		$retval = $this->valid;
 		$the_username="[[broken username]]";
 		$the_email="[[broken email]]";
-		$query= "select username,email from ".$this->table." where ".self::$munge."='".$this->key."'";
+		$query= "select username,if(active='xx',emailp,email) as email from ".$this->table." where ".self::$munge."='".$this->key."'";
 		if ($rs = Settings::$sql->query($query)) {
 			while ($f = $rs->fetch_assoc()) {
 				$the_username=$f['username'];
@@ -69,7 +69,7 @@ class SIOResetPW {
 
 	protected function commit() {
 		$ha=Settings::esc($this->key); //this comes via the url...
-		$query= "select username,email from ".$this->table." where ".self::$munge."='".$ha."'";
+		$query= "select username,if(active='xx',emailp,email) as email,active from ".$this->table." where ".self::$munge."='".$ha."'";
 		if ($rs = Settings::$sql->query($query)) {
 			while ($f = $rs->fetch_assoc()) {
 				if(static::$use_un) {
@@ -79,7 +79,12 @@ class SIOResetPW {
 				}
 				$ph=SIOSetPW::enhash($unm,$this->fields['password'][0]);
 				$cond=" and ".self::$munge."='".$ha."'";
-				$qry="update " . $this->table . " set password='".$ph."',ts=current_timestamp where active='on' ".$cond ;
+				if ($f['active']=='on') {
+					$qry="update " . $this->table . " set password='".$ph."',ts=current_timestamp where active='on' ".$cond ;
+				} else {
+					//password reset has also confirmed the email..
+					$qry="update " . $this->table . " set password='".$ph."',active='on',email=emailp,ts=ts where active='xx' ".$cond ;
+				}
 				Settings::$sql->query($qry);
 			}
 			$rs->close();

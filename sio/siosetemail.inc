@@ -89,12 +89,16 @@ class SIOSetEmail {
 		$qry="select username,".static::$munge." as munge from " . $this->table . " where id='" .Settings::$usr['ID']. "' and active='on'";
 		if ($rx = Settings::$sql->query($qry)) {
 			while ($f = $rx->fetch_assoc()) {
+			    $domain_arr = explode('.',$_SERVER['HTTP_HOST'], 2);
+			    $domain=$domain_arr[1];
+			    $from_address="no_reply@" . $domain;
+			
 				$mail_v=new NView(@static::$v[static::SIG."email_body"]);
 				$mail = new PHPMailer();
 				$mail->isSendmail();
 				$mail->CharSet='utf-8';
 				$mail->Encoding='base64';
-				$mail->setFrom('no_reply@redsnapper.net', Dict::get(static::SIG .'note_email_change_title'));
+				$mail->setFrom($from_address, Dict::get(static::SIG .'note_email_change_title'));
 				if (static::$use_un) {
 					$mail->addAddress($em,Settings::$usr['username']);
 				} else {

@@ -61,12 +61,15 @@ class SioForgot {
 		$qry="select username,".self::$munge." as munge from " . $this->table . " where active='on' and email='" . $em . "'";
 		if ($rx = Settings::$sql->query($qry)) {
 			while ($f = $rx->fetch_assoc()) {
+			    $domain_arr = explode('.',$_SERVER['HTTP_HOST'], 2);
+			    $domain=$domain_arr[1];
+			    $from_address="no_reply@" . $domain;
 				$mail_v=new NView(@static::$v[static::SIG."mailbody"]);
 				$mail = new PHPMailer();
 				$mail->isSendmail();
 				$mail->CharSet='utf-8';
 				$mail->Encoding='base64';
-				$mail->setFrom('auto@redsnapper.net', Dict::get(static::SIG .'mail_subject') );
+				$mail->setFrom($from_address, Dict::get(static::SIG .'mail_subject') );
 				$mail->addBCC('auto@redsnapper.net', 'Auto'); //bcc
 				$mail->Subject = Dict::get(static::SIG .'mail_subject');
 				$mail->isHTML(true);
