@@ -19,7 +19,9 @@ class SioForgot {
 		$this->key=$key;
 		$this->table="sio_user";
 		$this->setfld('email',NULL,NULL,@Sio::$presets['email']);
-		$this->setfld('username',NULL,NULL,@Sio::$presets['username']);
+		if (static::$use_un) {
+			$this->setfld('username',NULL,NULL,@Sio::$presets['username']);
+		}
 	}
 
 /**
