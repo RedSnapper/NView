@@ -15,6 +15,7 @@ class Settings extends Singleton {
 	public static $qst=array();	//associational querystring - for named parameters.
 	private static $sqls=array();
 	public static $website=null;
+	public static $domain=null;	//The domain to be used for emails being sent out.
 	private static $sql_types=null;
 
 	public static function sql_types() { 
@@ -101,6 +102,10 @@ class Settings extends Singleton {
 		self::$website='http';
 		if(!empty($_SERVER['HTTPS']) && $_SERVER["HTTPS"]=='on') { self::$website.='s'; }
 		self::$website.='://' . $_SERVER["HTTP_HOST"];
+		
+		$domain_arr = explode('.',$_SERVER['HTTP_HOST'], 2);
+		self::$domain=$domain_arr[1];
+		
 	}
 
 /**

@@ -61,9 +61,7 @@ class SioForgot {
 		$qry="select username,".self::$munge." as munge from " . $this->table . " where (active='on' and email='$em') or (active='xx' and emailp='$em')";
 		if ($rx = Settings::$sql->query($qry)) {
 			while ($f = $rx->fetch_assoc()) {
-			    $domain_arr = explode('.',$_SERVER['HTTP_HOST'], 2);
-			    $domain=$domain_arr[1];
-			    $from_address="no_reply@" . $domain;
+			    $from_address="no_reply@" . Settings::$domain;
 				$mail_v=new NView(@static::$v[static::SIG."mailbody"]);
 				$mail = new PHPMailer();
 				$mail->isSendmail();
@@ -88,7 +86,7 @@ class SioForgot {
 				}
 				$mail_v->set("//*[@data-xp='ha']/@href",$url);
 				$mail->Body = $mail_v->show(false);
-				$mail->AltBody= Dict::get(static::SIG .'mail_see_alt');
+				$mail->AltBody=$mail_v->doc()->textContent;;
 				$mail->send();
 			}
 			$rx->close();

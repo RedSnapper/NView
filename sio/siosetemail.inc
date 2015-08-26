@@ -89,10 +89,7 @@ class SIOSetEmail {
 		$qry="select username,".static::$munge." as munge from " . $this->table . " where id='" .Settings::$usr['ID']. "' and active='on'";
 		if ($rx = Settings::$sql->query($qry)) {
 			while ($f = $rx->fetch_assoc()) {
-			    $domain_arr = explode('.',$_SERVER['HTTP_HOST'], 2);
-			    $domain=$domain_arr[1];
-			    $from_address="no_reply@" . $domain;
-			
+			    $from_address="no_reply@" . Settings::$domain;
 				$mail_v=new NView(@static::$v[static::SIG."email_body"]);
 				$mail = new PHPMailer();
 				$mail->isSendmail();
@@ -117,7 +114,7 @@ class SIOSetEmail {
 				}
 				$mail_v->set("//*[@data-xp='ha']/@href",$url);
 				$mail->Body = $mail_v->show(false);
-				$mail->AltBody=Dict::get(static::SIG .'note_email_see_html_alt');
+				$mail->AltBody=$mail_v->doc()->textContent;;
 				$mail->send();
 			}
 			$rx->close();
