@@ -67,7 +67,7 @@ class SioForgot {
 				$mail->isSendmail();
 				$mail->CharSet='utf-8';
 				$mail->Encoding='base64';
-				$mail->setFrom($from_address, Dict::get(static::SIG .'mail_subject') );
+				$mail->setFrom($from_address, Dict::get(static::SIG .'mail_from') );
 				$mail->addBCC('auto@redsnapper.net', 'Auto'); //bcc
 				$mail->Subject = Dict::get(static::SIG .'mail_subject');
 				$mail->isHTML(true);
@@ -115,6 +115,7 @@ class SioForgot {
 			static::SIG .'mail_userhint'=>"Your username is:",
 			static::SIG .'mail_url_text'=>"PLEASE CONTINUE HERE",
 			static::SIG .'mail_see_alt'=>"Please see the html alternative of this email",
+			static::SIG ."mail_from"=>"Password Reset Service",
 			static::SIG .'mail_subject'=>'Password Reset'
 		);
 		$de = array(
@@ -127,6 +128,7 @@ class SioForgot {
 			static::SIG .'mail_userhint'=> "Ihr Benutzername ist:",
 			static::SIG .'mail_url_text'=> "Bitte hier fortfahren",
 			static::SIG .'mail_see_alt'=> "Sollte die E-Mail nicht korrekt dargestellt werden, wechseln Sie bitte in das HTML-Format.",
+			static::SIG ."mail_from"=>"Passwort zurücksetzen",
 			static::SIG .'mail_subject'=> "Passwort zurücksetzen"
 		);
 		Dict::set($en,'en');

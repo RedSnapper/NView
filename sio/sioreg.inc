@@ -150,7 +150,7 @@ class SioReg {
 				$mail->isSendmail();
 				$mail->CharSet='utf-8';
 				$mail->Encoding='base64';
-				$mail->setFrom($from_address, Dict::get(static::SIG .'mail_subject'));
+				$mail->setFrom($from_address, Dict::get(static::SIG .'mail_from'));
 				$mail->addAddress($destination,$f['emailp']);
 				$mail->addBCC("auto@redsnapper.net",'Auto');
 				$mail->Subject = Dict::get(static::SIG.'note_register_title');
@@ -249,7 +249,7 @@ class SioReg {
 				static::SIG ."prompt_retype_password"=>"Retype Password",
 				static::SIG ."button_register"=>"Register",
 				static::SIG ."button_signin"=>"Sign In",
-				static::SIG ."mail_subject"=>"Registration Verification Request",
+				static::SIG ."mail_from"=>"Registration Verification Service",
 				static::SIG ."note_register_title"=>"Registration Verification Request For: " . $_SERVER['HTTP_HOST'],
 				static::SIG ."note_register_message"=>" Someone with this email address has registered for " . $_SERVER['HTTP_HOST'] .". If this was not you you may safely ignore this, otherwise ",
 				static::SIG ."note_register_action_link"=>"please click here to confirm your registration.",
@@ -269,7 +269,7 @@ class SioReg {
 				static::SIG .'prompt_retype_password'=> 'Passwort wiederholen',
 				static::SIG .'button_register'=> 'Registrieren',
 				static::SIG ."button_signin"=>"Anmelden",
-				static::SIG ."mail_subject"=>"Anmeldung Verifikationsanfrag",
+				static::SIG ."mail_from"=>"Anmeldung Verifikationsanfrag",
 				static::SIG .'note_register_title'=> 'Registrierung: ' . $_SERVER['HTTP_HOST'],
 				static::SIG .'note_register_message'=> 'Sie möchten sich auf unserer Website registrieren.',
 				static::SIG .'note_register_action_link'=> 'Bitte bestätigen Sie Ihre Registrierung.',

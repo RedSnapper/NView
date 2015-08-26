@@ -95,7 +95,7 @@ class SIOSetEmail {
 				$mail->isSendmail();
 				$mail->CharSet='utf-8';
 				$mail->Encoding='base64';
-				$mail->setFrom($from_address, Dict::get(static::SIG .'note_email_change_title'));
+				$mail->setFrom($from_address, Dict::get(static::SIG .'mail_from'));
 				if (static::$use_un) {
 					$mail->addAddress($em,Settings::$usr['username']);
 				} else {
@@ -186,6 +186,7 @@ class SIOSetEmail {
 			static::SIG .'errors_email_badformat'=>" The email format is not recognised.",
 			static::SIG .'errors_emails_empty'=>" The email must have a value.",
 			static::SIG .'errors_password_bad'=>" The password is not recognised.",
+			static::SIG ."mail_from"=>"Email Change Service",
 			static::SIG .'note_email_change_title'=>"Email Change Request",
 			static::SIG .'note_email_change_message'=>"It appears that you have chosen to change your e-mail to the one that you received this message on.",
 			static::SIG .'note_email_change_action_link'=>"PLEASE CONTINUE HERE",
@@ -202,6 +203,7 @@ class SIOSetEmail {
 			static::SIG .'errors_email_badformat'=>" Das E-Mail-Format kann nicht erkannt werden.",
 			static::SIG .'errors_emails_empty'=>" Sie müssen Ihre E-Mail-Adresse eingeben.",
 			static::SIG .'errors_password_bad'=>" Das passwort kann nicht erkannt werden.",
+			static::SIG ."mail_from"=>"E-Mail-Adresse ändern",
 			static::SIG .'note_email_change_title'=>"E-Mail-Adresse ändern",
 			static::SIG .'note_email_change_message'=>"Sie möchten die E-Mail-Adresse, an die diese E-Mail geschickt wurde, verwenden.",
 			static::SIG .'note_email_change_action_link'=>"Bitte hier fortfahren",
