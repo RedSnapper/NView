@@ -17,7 +17,7 @@ class SIOSetEmail {
 		$this->key=$key;
 		$this->table="sio_user";
 		$this->setfld('password','','!skip');
-		$this->setfld('emailp');
+		$this->setfld('emailp',NULL,NULL,@Sio::$presets['email']);
 		$this->setfld('emailb','','!skip');
 	}
 

@@ -18,8 +18,8 @@ class SioForgot {
 		$this->iniForm($key,@static::$v[static::SIG]);
 		$this->key=$key;
 		$this->table="sio_user";
-		$this->setfld('username');
-		$this->setfld('email');
+		$this->setfld('email',NULL,NULL,@Sio::$presets['email']);
+		$this->setfld('username',NULL,NULL,@Sio::$presets['username']);
 	}
 
 /**
@@ -29,7 +29,6 @@ class SioForgot {
 		$cv=new NView(@static::$v[static::SIG."success"]);
 		return $cv;
 	}
-
 
 	public function prefilter() {
 		if (isset($this->fields['username'][0])) {

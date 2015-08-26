@@ -15,9 +15,9 @@ class SioReg {
 		$this->key=$key;
 		$this->table="sio_user";
 		if(static::$use_un) {
-			$this->setfld('username');
+			$this->setfld('username',NULL,NULL,@Sio::$presets['username']);
 		}
-		$this->setfld('emailp');
+		$this->setfld('emailp',NULL,NULL,@Sio::$presets['email']);
 		$this->setfld('passwordn','','!skip');
 		$this->setfld('passwordb','','!skip');
 	}

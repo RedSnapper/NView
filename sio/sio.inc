@@ -5,6 +5,7 @@ class SIO {
 	private static $v=array();
 	private static $use_un=true;
 	public static $utility = NULL;
+	public static $presets = array(); //only good for email/username presets.
 
 	public static function run($key=NULL) {
 		$v = new NView(@static::$v[static::SIG]);
@@ -90,8 +91,9 @@ class SIO {
 	}
 
 //This must be run to overload views and translations.
-	public static function initialise($use_un=true,$custom_views=array(),$translations=NULL) {
+	public static function initialise($use_un=true,$custom_views=array(),$translations=NULL,$presets=array()) {
 		static::$use_un=$use_un;
+		static::$presets=$presets; //prefill username/email if required
 		static::$v=array(
 			static::SIG => static::SIG."v.ixml"
 		);

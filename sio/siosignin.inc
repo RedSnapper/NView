@@ -19,9 +19,9 @@ class SioSignIn {
 		$this->key=$key;
 		$this->table="sio_user";
 		if(static::$use_un) {
-			$this->setfld('username');
+			$this->setfld('username',NULL,NULL,@Sio::$presets['username']);
 		} else {
-			$this->setfld('email');
+			$this->setfld('email',NULL,NULL,@Sio::$presets['email']);
 		}
 		$this->setfld('password');
 	}
