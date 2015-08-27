@@ -128,8 +128,8 @@ class DTable {
 	private function setView() {
     
         $v = new NView($this->settings->view);
-        $url = is_null($this->settings->ajax) ? $_SERVER['PHP_SELF'] : $this->settings->ajax;
-        $v->set("//h:table/@data-ajaxurl/child-gap()","{$url}?type=json");
+        $url = is_null($this->settings->ajax) ? $_SERVER['PHP_SELF'] . "?type=json" : $this->settings->ajax;
+        $v->set("//h:table/@data-ajaxurl/child-gap()",$url);
 
         $template = $v->consume("//*[@data-xp='heading']");
         $this->setFilterView();
