@@ -398,7 +398,7 @@ trait Form {
 				// There is a special case with checkboxes/boolean fields - where we do NOT want to
 				// set the default based on the absence of a value, unless the record is a new one.
 				// so we need to check the absence of $this->bflds[$input] or $this->record_found  for that.
-					if (!isset($this->bflds[$input]) || !$this->record_found ) {
+					if ((!isset($this->bflds[$input]) || !$this->record_found) && isset($this->dflds[$input])) {
 						$val=$this->dflds[$input];
 					}
 				}
