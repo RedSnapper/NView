@@ -89,6 +89,7 @@ class SioReg {
 			$this->seterr("passwordn",Dict::get(static::SIG.'errors_no_password'));
 			$retval = false;
 		}
+		$this->valSignificant('emailp',Dict::get(static::SIG .'errors_email_badformat'));
 		$this->valEmail('emailp',Dict::get(static::SIG .'errors_email_badformat'));
 		if ($this->valid) {
 			$this->valid = $retval;

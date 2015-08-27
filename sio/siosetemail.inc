@@ -51,6 +51,7 @@ class SIOSetEmail {
 			$retval = false;
 			$this->seterr("emailp",Dict::get(static::SIG .'errors_emails_empty'));
 		}
+		$this->valSignificant('emailp',Dict::get(static::SIG .'errors_email_badformat'));
 		$this->valEmail('emailp',Dict::get(static::SIG .'errors_email_badformat'));
 		$pwdval = false;
 		if (isset($this->fields['password'][0])) {

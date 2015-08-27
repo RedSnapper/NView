@@ -911,14 +911,17 @@ trait Form {
 			}
 		}
 	}
+
 	public function valEmail($name='',$msg="This must be a valid email address") {
-		if (isset($this->fields[$name][0])) {
-			if (!filter_var($this->fields[$name][0], FILTER_VALIDATE_EMAIL)) {
-				$this->valid = false;
-				$this->seterr($name,$msg);
+		if (isset($this->fields[$name][0] && !empty($this->fields[$name][0])) {
+				if (!filter_var($this->fields[$name][0], FILTER_VALIDATE_EMAIL)) {
+					$this->valid = false;
+					$this->seterr($name,$msg);
+				}
 			}
 		}
 	}
+
 	public function valSignificant($name='',$msg="This must have a value") {
 		if (isset($this->fields[$name][0])) {
 			if (empty($this->fields[$name][0])) {

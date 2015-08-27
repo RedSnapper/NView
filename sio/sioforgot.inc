@@ -48,6 +48,7 @@ class SioForgot {
  * errors are placed into the this->view.
  */
 	protected function validate() {
+		$this->valSignificant('email',Dict::get(static::SIG .'errors_bad_email'));
 		$this->valEmail('email',Dict::get(static::SIG .'errors_bad_email'));
 	}
 
