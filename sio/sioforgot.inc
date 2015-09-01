@@ -60,11 +60,20 @@ class SioForgot {
 		$this->show=false;
 		$em=$this->fields['email'][0];
 		Settings::esc($em);
-		$qry="select username,".self::$munge." as munge from " . $this->table . " where (active='on' and email='$em') or (active='xx' and emailp='$em')";
-		if ($rx = Settings::$sql->query($qry)) {
+		$qry="select username,'$em' as email,'[MUNGE]' from " . $this->table . " where (active='on' and email='$em') or (active='xx' and emailp='$em')";
+		static::mail_forgot($em,$qry);
+		return true;
+	}
+	
+	//mail_qry must include '[MUNGE]' or field as munge, and emailp in it's result.
+	// eg SioForgot::mail_forgot($rf['emailp'],$email_qry,Settings::$url);
+	public static function mail_forgot($destination,$email_qry,$url=NULL) {
+		$url = is_null($url) ? $_SERVER["SCRIPT_URI"] : $url;
+		$email_qry = str_replace("'[MUNGE]'",static::$munge." as munge",$email_qry);
+		if ($rx = Settings::$sql->query($email_qry)) {
 			while ($f = $rx->fetch_assoc()) {
 			    $from_address="no_reply@" . Settings::$domain;
-				$mail_v=new NView(@static::$v[static::SIG."mailbody"]);
+				$mail_v=new NView(@static::$v[static::SIG."email_body"]);
 				$mail = new PHPMailer();
 				$mail->isSendmail();
 				$mail->CharSet='utf-8';
@@ -87,21 +96,25 @@ class SioForgot {
 					$mail_v->set("//*[@data-xp='un']");
 				}
 				$mail_v->set("//*[@data-xp='ha']/@href",$url);
+				$mail_v->set("//*[@data-xp='hl']/child-gap()",$url);
 				$mail->Body = $mail_v->show(false);
-				$mail->AltBody=$mail_v->doc()->textContent;;
+				$mail->AltBody=$mail_v->doc()->textContent;
 				$mail->send();
 			}
 			$rx->close();
+		} else {
+			print(Settings::$sql->error);
 		}
-		return true;
 	}
+
+	
 
 	public static function initialise($use_un=true,$custom_views=array()) {
 		static::$use_un=$use_un;
 //views array
 		static::$v=array(
 			static::SIG=>static::SIG."v.ixml",
-			static::SIG."mailbody"=>static::SIG."mv.ixml",
+			static::SIG."email_body"=>static::SIG."mv.ixml",
 			static::SIG."success"=>static::SIG."sv.ixml"
 		);
 		static::$v = array_replace(static::$v,$custom_views);
