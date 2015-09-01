@@ -121,14 +121,15 @@ class SioForgot {
 
 //translations
 		$en = array(
+		
 			static::SIG .'prompt_emailaddress' => "Email",
 			static::SIG .'button_resetpassword'=>"Reset Password",
 			static::SIG .'errors_bad_email'=>"The email address appears to be wrong",
 			static::SIG .'commit_msg'=>"You should shortly receive an email with instructions for resetting your password.",
-			static::SIG .'mail_head'=>"Password Reset Request",
-			static::SIG .'mail_body'=>"It appears that you have posted a password reset request.",
+			static::SIG .'mail_head'=>"Password Reset Request For: " . $_SERVER['HTTP_HOST'],
+			static::SIG ."mail_body"=>" Someone with this email address has requested a password reset for " . $_SERVER['HTTP_HOST'] .". If this was not you you may safely ignore this, otherwise ",
 			static::SIG .'mail_userhint'=>"Your username is:",
-			static::SIG .'mail_url_text'=>"PLEASE CONTINUE HERE",
+			static::SIG .'mail_url_text'=>"please click here to reset your password.",
 			static::SIG .'mail_see_alt'=>"Please see the html alternative of this email",
 			static::SIG ."mail_from"=>"Password Reset Service",
 			static::SIG .'mail_subject'=>'Password Reset'

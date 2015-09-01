@@ -4,4 +4,5 @@
 	<p data-tr="sioforgot_mail_body" />
 	<p data-xp="un"><span data-tr="sioforgot_mail_userhint" /></p>
 	<p><a data-xp="ha" data-tr="sioforgot_mail_url_text" /></p>
+	<p data-xp="hl"></p>
 </div>
