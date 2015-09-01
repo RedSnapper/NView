@@ -13,6 +13,7 @@ class Settings extends Singleton {
 	public static $usr=array();	//current user details
 	public static $req=array();	//querystring for unnamed parameters.
 	public static $qst=array();	//associational querystring - for named parameters.
+	public static $pag=array();	//current page details (set by websites)..
 	private static $sqls=array();
 	public static $website=null;
 	public static $domain=null;	//The domain to be used for emails being sent out.
