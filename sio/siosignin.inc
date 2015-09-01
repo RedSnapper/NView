@@ -153,28 +153,26 @@ class SioSignIn {
  */
 	protected function commit() {
 		if(static::$use_un) {
-			$username=$this->fields['username'][0];
-			Session::set('username',$username);
-			Settings::esc($username);
-			$query= "select email from ".$this->table." where username='".$username."'";
+			$f_uname=$this->fields['username'][0];
+			$user_sql=$f_uname; Settings::esc($user_sql);
+			$query= "select email from sio_user where active='on' and username='$user_sql'";
 			if ($rs = Settings::$sql->query($query)) {
-				Session::set('email',$rs->fetch_row()[0]);
+				$f_email = $rs->fetch_row()[0];
 				$rs->close();
 			}
 		} else {
-			$email=$this->fields['email'][0];
-			Session::set('email',$email);
-			Settings::esc($email);
-			$query= "select username from ".$this->table." where email='".$email."'";
+			$f_email=$this->fields['email'][0];
+			$email_sql=$f_email; Settings::esc($email_sql);
+			$query= "select username from sio_user where active='on' and email='$email_sql'";
 			if ($rs = Settings::$sql->query($query)) {
-				Session::set('username',$rs->fetch_row()[0]);
+				$f_uname = $rs->fetch_row()[0];
 				$rs->close();
 			}
 		}
-		Settings::usr();
+		Sio::signin($f_uname,$f_email,true); //signin regardless of if you are already signed in.
 		return true;
 	}
-
+	
 	public static function initialise($use_un=true,$custom_views=array()) {
 		static::$use_un=$use_un;
 //translations

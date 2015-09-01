@@ -114,6 +114,7 @@ class Settings extends Singleton {
  */
 	public static function usr($construct = true) {
 		if($construct) {
+			self::$usr = array();	//need to reset all values.
 			if (Session::has('username')) {
 				$name=Session::get('username');
 				if (empty($name)) {

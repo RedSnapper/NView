@@ -113,6 +113,17 @@ class SIO {
 			}
 		}
 	}
+	
+	public static function signin($username = null,$email=null,$override=false) {
+		if($override || !Session::has('username')) {
+			if ($username && $email) {
+				Session::set('username',$username);
+				Session::set('email',$email);
+				Settings::usr();
+				$this->signin_fns();
+			}
+		}
+	}
 
 	public static function signout(){
 		Settings::$usr['ID']=NULL;

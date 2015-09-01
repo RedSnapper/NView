@@ -72,10 +72,10 @@ class SIOResetPW {
 		$query= "select username,if(active='xx',emailp,email) as email,active from ".$this->table." where ".self::$munge."='".$ha."'";
 		if ($rs = Settings::$sql->query($query)) {
 			while ($f = $rs->fetch_assoc()) {
-				$f_username=$f['username'];
+				$f_uname=$f['username'];
 				$f_email=$f['email'];
 				if(static::$use_un) {
-					$unm=$f_username;
+					$unm=$f_uname;
 				} else { //using email
 					$unm=$f_email;
 				}
@@ -85,16 +85,12 @@ class SIOResetPW {
 					$qry="update " . $this->table . " set password='".$ph."',ts=current_timestamp where active='on' ".$cond ;
 				} else {
 					//password reset has also confirmed the email..
-					$qry="update " . $this->table . " set password='".$ph."',active='on',email=emailp,ts=ts where active='xx' ".$cond ;
+					$qry="update " . $this->table . " set password='".$ph."',active='on',email=emailp,ts=current_timestamp where active='xx' ".$cond ;
 				}
 				Settings::$sql->query($qry);
 			}
 			$rs->close();
-			if (!Session::has('username')) { //not signed in. We can sign in right now..
-				Session::set('email',$f_email);
-				Session::set('username',$f_username);
-				Settings::usr(); //do remainder of auto-signin here.		
-			}
+			Sio::signin($f_uname,$f_email);
 		}
 		$this->show = false;
 		return true;

@@ -143,11 +143,7 @@ class SioReg {
 			Settings::$sql->query($query);
 			$nv = new NView(@static::$v[static::SIG."success"]);
 			$nv->set("//*[@data-tr]/@data-tr/preceding-gap()",static::SIG);
-			if(!Session::has('username')) {
-				Session::set('email',$f_email);
-				Session::set('username',$f_uname);
-				Settings::usr(); //do remainder of auto-signin here.
-			}
+			Sio::signin($f_uname,$f_email);
 		}
 		return $nv;
 	}
