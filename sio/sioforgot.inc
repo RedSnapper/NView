@@ -89,10 +89,10 @@ class SioForgot {
 					$url .= '?siof=' . $f['munge'];
 				}
 				if (static::$use_un) {
-					$mail->addAddress($em,$f['username']);
+					$mail->addAddress($destination,$f['username']);
 					$mail_v->set("//*[@data-xp='un']/child-gap()",$f['username']);
 				} else {
-					$mail->addAddress($em,$em);
+					$mail->addAddress($destination,$destination);
 					$mail_v->set("//*[@data-xp='un']");
 				}
 				$mail_v->set("//*[@data-xp='ha']/@href",$url);
