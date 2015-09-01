@@ -65,7 +65,7 @@ class SioForgot {
 		return true;
 	}
 	
-	//mail_qry must include '[MUNGE]' or field as munge, and emailp in it's result.
+	//mail_qry must include '[MUNGE]' or field as munge, and username(if $use_un) in it's result.
 	// eg SioForgot::mail_forgot($rf['emailp'],$email_qry,Settings::$url);
 	public static function mail_forgot($destination,$email_qry,$url=NULL) {
 		$url = is_null($url) ? $_SERVER["SCRIPT_URI"] : $url;
@@ -82,7 +82,6 @@ class SioForgot {
 				$mail->addBCC('auto@redsnapper.net', 'Auto'); //bcc
 				$mail->Subject = Dict::get(static::SIG .'mail_subject');
 				$mail->isHTML(true);
-				$url=$_SERVER["SCRIPT_URI"];
 				if (strpos($url, '?') !== false) {
 					$url .= '&siof=' . $f['munge'];
 				} else {
