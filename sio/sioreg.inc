@@ -10,9 +10,10 @@ class SioReg {
 	private static $use_un=true;
     private static $initialised=false;
 
-	function __construct($key=NULL) {
+	function __construct($key=NULL,$receiver_url=NULL) {
 		$this->iniForm($key,@static::$v[static::SIG]);
 		$this->key=$key;
+		$this->receiver_url=$receiver_url; //used in the confirmation email.
 		$this->table="sio_user";
 		if(static::$use_un) {
 			$this->setfld('username',NULL,NULL,@Sio::$presets['username']);
@@ -105,7 +106,8 @@ class SioReg {
 			@$this->fields['username'][0],
 			@$this->fields['emailp'][0],
 			@$this->fields['passwordn'][0],
-			true
+			true,
+			$this->receiver_url
 		);
 		return true;
 	}
@@ -133,6 +135,7 @@ class SioReg {
 			Settings::$sql->query($query);
 			$nv = new NView(@static::$v[static::SIG."success"]);
 			$nv->set("//*[@data-tr]/@data-tr/preceding-gap()",static::SIG);
+			//auto-signin here.
 		}
 		return $nv;
 	}
@@ -184,7 +187,8 @@ class SioReg {
 		}
 	}
 	
-	public static function createuser($un=null,$em=null,$pw=null,$pending=false) {
+	//Receiver url is the url that is posted in the email sent for confirmation.
+	public static function createuser($un=null,$em=null,$pw=null,$pending=false,$receiver_url=null) {
 		$retval = NULL;
 		$id_for_hash=$em;	//unescaped used for munge case when registering via email..
 		Settings::esc($em); //escaped.
@@ -226,7 +230,7 @@ class SioReg {
 				}
 			}
 			if ($pending) {
-				static::mail_pending($em,$email_qry);
+				static::mail_pending($em,$email_qry,$url);
 			}
 		}
 		return $retval;
