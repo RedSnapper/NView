@@ -120,7 +120,6 @@ class SIO {
 				Session::set('username',$username);
 				Session::set('email',$email);
 				Settings::usr();
-				$this->signin_fns();
 			}
 		}
 	}
