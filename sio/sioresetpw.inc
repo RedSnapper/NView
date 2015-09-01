@@ -90,7 +90,6 @@ class SIOResetPW {
 				Settings::$sql->query($qry);
 			}
 			$rs->close();
-			//May auto-signin here..
 			if (!Session::has('username')) { //not signed in. We can sign in right now..
 				Session::set('email',$f_email);
 				Session::set('username',$f_username);

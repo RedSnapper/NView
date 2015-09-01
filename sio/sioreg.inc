@@ -130,12 +130,12 @@ class SioReg {
 			$nv=new NView(@static::$v[static::SIG."check_mail"]);
 			$nv->set("//*[@data-tr]/@data-tr/preceding-gap()",static::SIG);
 		} else {
-			$ha=Settings::esc($hat); //Auto-signin.
+			$ha=Settings::esc($hat); //Prepare for auto-signin.
 			$query= "select emailp,username from sio_user where active='xx' and ".static::$munge."='".$ha."'";
 			if ($rs = Settings::$sql->query($query)) {
 				$fields=$rs->fetch_row();
-				Session::set('email',$fields[0]);
-				Session::set('username',$fields[1]);
+				$f_email=$fields[0];
+				$f_uname=$fields[1];
 				$rs->close();
 			}
 			//Actual push..			
@@ -143,7 +143,11 @@ class SioReg {
 			Settings::$sql->query($query);
 			$nv = new NView(@static::$v[static::SIG."success"]);
 			$nv->set("//*[@data-tr]/@data-tr/preceding-gap()",static::SIG);
-			Settings::usr(); //do remainder of auto-signin here.
+			if(!Session::has('username')) {
+				Session::set('email',$f_email);
+				Session::set('username',$f_uname);
+				Settings::usr(); //do remainder of auto-signin here.
+			}
 		}
 		return $nv;
 	}
