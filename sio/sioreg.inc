@@ -238,7 +238,7 @@ class SioReg {
 				}
 			}
 			if ($pending) {
-				static::mail_pending($em,$email_qry,$url);
+				static::mail_pending($em,$email_qry,$receiver_url);
 			}
 		}
 		return $retval;
