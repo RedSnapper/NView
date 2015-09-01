@@ -154,8 +154,8 @@ class SioSignIn {
 	protected function commit() {
 		if(static::$use_un) {
 			$username=$this->fields['username'][0];
-			Settings::esc($username);
 			Session::set('username',$username);
+			Settings::esc($username);
 			$query= "select email from ".$this->table." where username='".$username."'";
 			if ($rs = Settings::$sql->query($query)) {
 				Session::set('email',$rs->fetch_row()[0]);
@@ -163,8 +163,8 @@ class SioSignIn {
 			}
 		} else {
 			$email=$this->fields['email'][0];
-			Settings::esc($email);
 			Session::set('email',$email);
+			Settings::esc($email);
 			$query= "select username from ".$this->table." where email='".$email."'";
 			if ($rs = Settings::$sql->query($query)) {
 				Session::set('username',$rs->fetch_row()[0]);

@@ -72,10 +72,12 @@ class SIOResetPW {
 		$query= "select username,if(active='xx',emailp,email) as email,active from ".$this->table." where ".self::$munge."='".$ha."'";
 		if ($rs = Settings::$sql->query($query)) {
 			while ($f = $rs->fetch_assoc()) {
+				$f_username=$f['username'];
+				$f_email=$f['email'];
 				if(static::$use_un) {
-					$unm=$f['username'];
+					$unm=$f_username;
 				} else { //using email
-					$unm=$f['email'];
+					$unm=$f_email;
 				}
 				$ph=SIOSetPW::enhash($unm,$this->fields['password'][0]);
 				$cond=" and ".self::$munge."='".$ha."'";
@@ -88,6 +90,12 @@ class SIOResetPW {
 				Settings::$sql->query($qry);
 			}
 			$rs->close();
+			//May auto-signin here..
+			if (!Session::has('username')) { //not signed in. We can sign in right now..
+				Session::set('email',$f_email);
+				Session::set('username',$f_username);
+				Settings::usr(); //do remainder of auto-signin here.		
+			}
 		}
 		$this->show = false;
 		return true;

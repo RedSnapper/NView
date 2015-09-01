@@ -146,18 +146,17 @@ class SIOSetEmail {
 				$query= "update sio_user set email=emailp where id='" .Settings::$usr['ID']. "' and ".static::$munge."='".$ha."'";
 				Settings::$sql->query($query);
 				$nv = new NView(@static::$v[static::SIG."success"]);
-		   } else {
-				if(!static::$use_un) {
-					if (Session::has(static::SIG)) {
-						$pw_hash=Session::get(static::SIG);
-						$query= "update sio_user set email=emailp,password='".$pw_hash."' where id='" .Settings::$usr['ID']. "' and ".static::$munge."='".$ha."'";
-						Settings::$sql->query($query);
-						Session::del(static::SIG);
-						$nv = new NView(@static::$v[static::SIG."success"]);
-						SIO::signout();
-					} else {
-						$nv = new NView(@static::$v[static::SIG."failure"]);
-					}
+			} else { // ! $use_un
+				if (Session::has(static::SIG)) {
+					$pw_hash=Session::get(static::SIG);
+					$query= "update sio_user set email=emailp,password='".$pw_hash."' where id='" .Settings::$usr['ID']. "' and ".static::$munge."='".$ha."'";
+					Settings::$sql->query($query);
+					Session::del(static::SIG);
+					$nv = new NView(@static::$v[static::SIG."success"]);
+					Session::set('email',$email);
+					Settings::usr();
+				} else {
+					$nv = new NView(@static::$v[static::SIG."failure"]);
 				}
 			}
 		}
@@ -178,6 +177,7 @@ class SIOSetEmail {
 //Now do translations.
 		$en = array(
 			static::SIG ."mesg_success"=>"You have successfully changed your email.",
+			static::SIG ."mesg_failure"=>"A problem occured while attempting to change your email. Please sign-in with your old e-mail and try again.",
 			static::SIG ."mesg_checkem"=>"To set your email address, confirm the change via the email just sent to you.",
 			static::SIG .'prompt_new_email'=>"New Email",
 			static::SIG .'prompt_retype_new_email'=>"Retype New Email",
@@ -195,6 +195,7 @@ class SIOSetEmail {
 		);
 		$de = array(
 			static::SIG ."mesg_success"=>"Sie haben Ihre E-Mail-Adresse erfolgreich geändert.",
+			static::SIG ."mesg_failure"=>"Ein Problem beim Versuch, Ihre E-Mail-Adresse zu ändern. Bitte loggen Sie sich mit Ihrer alten E-Mail-Adresse und versuchen Sie es erneut.",
 			static::SIG ."mesg_checkem"=>"Um Ihre E-Mail-Adresse zu bestätigen, lesen Sie bitte die E-Mail, die Ihnen gerade zugeschickt wurde.",
 			static::SIG .'prompt_new_email'=>"Neue E-Mail-Adresse",
 			static::SIG .'prompt_retype_new_email'=>"Neue E-Mail-Adresse wiederholen.",
