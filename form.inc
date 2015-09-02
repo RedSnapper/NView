@@ -544,7 +544,7 @@ trait Form {
 					print(" ... and isMe() FAILS to agree!!<br />");
 				}
 			} else {
-				print("and the post failed to match because (post)".$_POST[static::sig()]."!=(ident)".$this->ident()."<br />");
+				print("and the post failed to match because (post)".print_r($_POST[static::sig()],true)."!=(ident)".$this->ident()."<br />");
 			}
 		} else {
 			print("<p>This form has not been posted.</p>");
