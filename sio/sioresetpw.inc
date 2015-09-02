@@ -102,19 +102,18 @@ class SIOResetPW {
 		return $nv;
 	}
 
-	public static function conforms($hat=NULL) {
-		$retval=false;
+	public static function conforms($hat=NULL,$return_id=false) {
+		$retval=0;
 		$ha=Settings::esc($hat);
 		$query= "select id from sio_user where ".self::$munge."='".$ha."'";
 		if ($rs = Settings::$sql->query($query)) {
-			if (Settings::rows($rs) == 1) {
-				$retval=true;
-			}
+			$retval= (int) $rs->fetch_row()[0];
 			$rs->close();
 		}
+		$retval = $return_id ? $retval : $retval!==0 ;
 		return $retval;
 	}
-
+	
 	public static function initialise($use_un=true,$custom_views=array()) {
 		static::$use_un=$use_un;
 //views arrays
