@@ -198,8 +198,8 @@ class SioReg {
 	//Receiver url is the url that is posted in the email sent for confirmation.
 	public static function createuser($un=null,$em=null,$pw=null,$pending=false,$receiver_url=null) {
 		$retval = NULL;
-		$id_for_hash=$em;	//unescaped used for munge case when registering via email..
-		Settings::esc($em); //escaped.
+		$id_for_hash=$em;	//Unescaped used for munge case when registering via email..
+		Settings::esc($em); //Escaped.
 		if(static::$use_un) {
 			$id_for_hash=$un;	//use username.
 			Settings::esc($un);
@@ -219,10 +219,10 @@ class SioReg {
 			if ($pending) {
 				$em_field = "emailp";
 				$active_val= "xx";
-				if (static::$use_un) {
-					$email_qry="select ".static::$munge." as munge,emailp from sio_user where username='" .$un. "' and active='xx'";
+				if (static::$use_un) { //sio_forgot needs username in query when use_un is set.
+					$email_qry="select '[MUNGE]',emailp,username from sio_user where username='" .$un. "' and active='xx'";
 				} else { //using email
-					$email_qry="select ".static::$munge." as munge,emailp from sio_user where emailp='" .$em . "' and active='xx'";
+					$email_qry="select '[MUNGE]',emailp from sio_user where emailp='" .$em . "' and active='xx'";
 				}
 			} else {
 				$em_field = "email";
@@ -238,8 +238,12 @@ class SioReg {
 					Settings::$sql->query("insert into sio_userprofile set user=".$retval);
 				}
 			}
-			if ($pending) {
-				static::mail_pending($em,$email_qry,$receiver_url);
+			if ($pending) { //either of these work for auto-signin.
+				if(!is_null($pw)) {
+					static::mail_pending($em,$email_qry,$receiver_url);
+				} else {
+					SioForgot::mail_forgot($em,$email_qry,$receiver_url);
+				}
 			}
 		}
 		return $retval;
