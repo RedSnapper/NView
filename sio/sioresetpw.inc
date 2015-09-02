@@ -25,7 +25,7 @@ class SIOResetPW {
  * validate all fields in this->fields.
  * errors are placed into the this->view.
  */
-	protected function validate() {
+	public function validate() {
 		$retval = $this->valid;
 		$the_username="[[broken username]]";
 		$the_email="[[broken email]]";
@@ -67,7 +67,7 @@ class SIOResetPW {
 		$this->valid = $retval;
 	}
 
-	protected function commit() {
+	public function commit() {
 		$ha=Settings::esc($this->key); //this comes via the url...
 		$query= "select username,if(active='xx',emailp,email) as email,active from ".$this->table." where ".self::$munge."='".$ha."'";
 		if ($rs = Settings::$sql->query($query)) {
