@@ -229,7 +229,8 @@ class SioReg {
 				$active_val= "on";
 			}
 			$ph=SIOSetPW::enhash($id_for_hash,$pw);
-			$insql="insert into sio_user set ts=null,{$extra},{$em_field}='{$em}',password='{$ph}',active='{$active_val}'";
+			$ph = is_null($ph) ? "NULL" : "'$ph'";
+			$insql="insert into sio_user set ts=null,{$extra},{$em_field}='{$em}',password={$ph},active='{$active_val}'";
 			Settings::$sql->query($insql);
 			if ($r=Settings::$sql->query("select last_insert_id()")) {
 				$retval = intval($r->fetch_row()[0]);

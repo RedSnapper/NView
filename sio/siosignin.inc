@@ -99,8 +99,9 @@ class SioSignIn {
 				$this->seterr("email",Dict::get(static::SIG.'errors_email_empty'));
 			}
 		}
-		if (!is_null($unm) && isset($this->fields['password'][0])) {
-			$ph=SIOSetPW::enhash($unm,$this->fields['password'][0]);
+		$pw = @$this->fields['password'][0];
+		if (!is_null($unm) && !is_null($pw)) {
+			$ph=SIOSetPW::enhash($unm,$pw);
 			Settings::esc($unm);
 			$qry="select count(id) as ok from " . $this->table . " where active='on' and ".$field."='" .$unm. "' and password='" . $ph . "'";
 			if ($rx = Settings::$sql->query($qry)) {
