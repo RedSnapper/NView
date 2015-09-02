@@ -471,7 +471,7 @@ trait Form {
 				$fm->prefilter();
 				$fm->validate();
 				$valid = $valid && $fm->valid();
-				if($debug) { print("<p>{$fm->signature}: Validate returned {$fm->valid}</p>"); }
+				if($debug) { print("<p>{$fm->sig()}: Validate returned {$fm->valid}</p>"); }
 			}
 			if (!is_null($valfn)) {
 				$valid = $valid && $valfn();
@@ -482,13 +482,13 @@ trait Form {
 						$fm->setcommit($fm->commit());
 						if($debug) { 
 							$succ = $fm->success() ? "true" : "false"; 
-							print("<p>{$fm->signature}: success was $succ</p>"); 
+							print("<p>{$fm->sig()}: success was $succ</p>"); 
 						}
 						if ( $fm->show || !($fm->success()) ) { //do not repop if !show and com.
 							$fm->setfields(true); //we can repopulate the fields if we want.
 						}
 					} else {
-						if($debug) { print("<p>{$fm->signature}: preset to successful</p>"); }
+						if($debug) { print("<p>{$fm->sig()}: preset to successful</p>"); }
 					}
 				}
 			}
