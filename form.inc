@@ -470,7 +470,7 @@ trait Form {
 			foreach($fms as $fm) {
 				$fm->prefilter();
 				$fm->validate();
-				$fmval = $fm->valid()
+				$fmval = $fm->valid();
 				$valid = $valid && $fmval;
 				if($debug) { $vtxt= $fmval? "true":"false";print("<p>{$fm->sig()}: Validate returned $vtxt</p>"); }
 			}
