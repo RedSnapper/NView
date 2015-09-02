@@ -452,6 +452,7 @@ trait Form {
  * Call reveal() for each fm after this.
  * LIMITATIONS: currently this does not support subscribers (which should be orthogonal) or functions.
  */
+
 	public static function formlets($fms=array(),$valfn=NULL,$show=true) {
 		$us=true; $debug=false;
 		foreach($fms as $fm) {
@@ -470,6 +471,7 @@ trait Form {
 				$fm->prefilter();
 				$fm->validate();
 				$valid = $valid && $fm->valid();
+				if($debug) { print("<p>{$fm->signature}: Validate returned {$fm->valid}</p>"); }
 			}
 			if (!is_null($valfn)) {
 				$valid = $valid && $valfn();
@@ -478,9 +480,12 @@ trait Form {
 				foreach($fms as $fm) {
 					if (!$fm->success()) {
 						$fm->setcommit($fm->commit());
+						if($debug) { $succ = $fm->success() ? "true" | "false"; print("<p>{$fm->signature}: success was $succ</p>"); }
 						if ( $fm->show || !($fm->success()) ) { //do not repop if !show and com.
 							$fm->setfields(true); //we can repopulate the fields if we want.
 						}
+					} else {
+						if($debug) { print("<p>{$fm->signature}: preset to successful</p>"); }
 					}
 				}
 			}
