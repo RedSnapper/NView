@@ -471,7 +471,7 @@ trait Form {
 				$fm->prefilter();
 				$fm->validate();
 				$valid = $valid && $fm->valid();
-				if($debug) { print("<p>{$fm->sig()}: Validate returned {$fm->valid}</p>"); }
+				if($debug) { print("<p>{$fm->sig()}: Validate returned {$fm->valid()}</p>"); }
 			}
 			if (!is_null($valfn)) {
 				$valid = $valid && $valfn();
