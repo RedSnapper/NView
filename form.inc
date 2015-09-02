@@ -480,7 +480,10 @@ trait Form {
 				foreach($fms as $fm) {
 					if (!$fm->success()) {
 						$fm->setcommit($fm->commit());
-						if($debug) { $succ = $fm->success() ? "true" | "false"; print("<p>{$fm->signature}: success was $succ</p>"); }
+						if($debug) { 
+							$succ = $fm->success() ? "true" : "false"; 
+							print("<p>{$fm->signature}: success was $succ</p>"); 
+						}
 						if ( $fm->show || !($fm->success()) ) { //do not repop if !show and com.
 							$fm->setfields(true); //we can repopulate the fields if we want.
 						}
