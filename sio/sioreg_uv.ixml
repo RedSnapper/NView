@@ -29,6 +29,12 @@
 				<div class="siso__flex"><input class="siso__input" type="password" name="passwordb" /></div>
 			</label>
 		</li>
+		<li data-xp="commentary">
+			<label class="siso__control" data-semantic="field" data-xp="comment">
+				<span class="siso__label" data-xp="label" data-tr="prompt_retype_commentary" />
+				<div class="siso__flex"><input class="siso__input" type="text" name="commentary" /></div>
+			</label>
+		</li>
 	</ul>
 	<ul class="siso__btns">
 		<li>

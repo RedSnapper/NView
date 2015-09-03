@@ -21,6 +21,7 @@ class SioReg {
 		$this->setfld('emailp',NULL,NULL,@Sio::$presets['email']);
 		$this->setfld('passwordn','','!skip');
 		$this->setfld('passwordb','','!skip');
+ 		$this->setfld('commentary','','!skip'); //honeypot.
 	}
 
 	public function prefilter() {
@@ -99,16 +100,20 @@ class SioReg {
 
 	public function populate() {
 		$this->vset('emailp');
+		$this->vset('commentary','hide'); //it's a honeypot.
 	}
 
 	public function commit() {
-		$this->newid = static::createuser(
-			@$this->fields['username'][0],
-			@$this->fields['emailp'][0],
-			@$this->fields['passwordn'][0],
-			true,
-			$this->receiver_url
-		);
+		$honeypot = @$this->fields['commentary'][0];
+		if (empty($honeypot)) { 
+			$this->newid = static::createuser(
+				@$this->fields['username'][0],
+				@$this->fields['emailp'][0],
+				@$this->fields['passwordn'][0],
+				true,
+				$this->receiver_url
+			);
+		}
 		return true;
 	}
 
