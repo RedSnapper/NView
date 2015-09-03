@@ -113,6 +113,28 @@ class SIO {
 			}
 		}
 	}
+
+	public static function userid($identifier=null,$pending=true) {
+		$retval = null;
+		if($identifier)  {
+			Settings::esc($identifier);
+			if(static::$use_un) {
+				$qry="select id from sio_user where username='$identifier' and active !=''";
+			} else {
+				if ( (bool) $pending) {
+					$qry="select id from sio_user where (email='$identifier' and active='on') or (emailp'=$identifier' and active='xx')";
+				} else {
+					$qry="select id from sio_user where email='$identifier' and active !=''";
+				}
+			}
+			if ($rx = Settings::$sql->query($qry)) {
+				while ($row = $rx->fetch_row()) {
+					$retval = $row[0];
+				}
+			}
+		}
+		return $retval;
+	}
 	
 	public static function signin($username = null,$email=null,$override=false) {
 		if($override || !Session::has('username')) {
