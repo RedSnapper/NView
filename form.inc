@@ -7,14 +7,14 @@ mb_internal_encoding('UTF-8');
 trait Form {
 	public $debug;
 	public $show;			//whether or not to show the form.
-	private $signature; 	//unique signature for identifying this post.
-	private $committed; 	//bool flag for identifying if we committed.
-	private $valid;			//bool flag for identifying if we validated.
-	private $newid;			//set if there is an insertion involving an auto_increment;
-	private $id;			//unique prefix for identifying form fields in the post.
-	private $idprefix;		//other bit for this.
-	private $idprefixlen;	//length of value.
-	private $pksimple;		//bool for pk is array / single value.
+	protected $signature; 	//unique signature for identifying this post.
+	protected $committed; 	//bool flag for identifying if we committed.
+	protected $valid;		//bool flag for identifying if we validated.
+	protected $newid;		//set if there is an insertion involving an auto_increment;
+	protected $id;			//unique prefix for identifying form fields in the post.
+	protected $idprefix;	//other bit for this.
+	protected $idprefixlen;	//length of value.
+	protected $pksimple;	//bool for pk is array / single value.
 	protected $fields;		//array of fields.
 	protected $messages;	//array of messages.. not sure this is being used.
 	protected $pkey;		//[array/string] name(s) of primary key in sql.
@@ -26,12 +26,12 @@ trait Form {
 	protected $cflds;		//array of sql values that will be used during a commit.
 	protected $names;		//array of input names
 	protected $view;		//the formlet view (instance of an NView)
-	private $record_found;	//boolean value representing whether or not (during a get) a record was found.
-	private $subsfield; 	//subscriber field-name  for indicating presence/absence.
-	private $subsvalue; 	//subscriber field-value based on sql.
-	private $subspostv; 	//subscriber field-value based on post.
-	private $subsdshow; 	//subscriber (defaults to true) show empty field if deleted..
-	private $subfn; 		//subscriber CNUD function that happened - one of create/null/update/delete
+	protected $record_found;//boolean value representing whether or not (during a get) a record was found.
+	protected $subsfield; 	//subscriber field-name  for indicating presence/absence.
+	protected $subsvalue; 	//subscriber field-value based on sql.
+	protected $subspostv; 	//subscriber field-value based on post.
+	protected $subsdshow; 	//subscriber (defaults to true) show empty field if deleted..
+	protected $subfn; 		//subscriber CNUD function that happened - one of create/null/update/delete
 	public $redirect;	    //where to go on insert.
 	public $insert_qs; 	    //query string for new records. id placeholder = [[ID]]
 
