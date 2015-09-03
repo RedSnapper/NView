@@ -5,10 +5,10 @@ class SioReg {
 	use Form;
 	const SIG="sioreg_";
 	public static function sig() { return static::SIG; }
-	private static $munge="sha2(concat(ifnull(username,id),'_',ifnull(password,id),'_',ifnull(email,id),'_',ifnull(ts,id)),256)";
-	private static $v=array();
-	private static $use_un=true;
-    private static $initialised=false;
+	protected static $munge="sha2(concat(ifnull(username,id),'_',ifnull(password,id),'_',ifnull(email,id),'_',ifnull(ts,id)),256)";
+	protected static $v=array();
+	protected static $use_un=true;
+    protected static $initialised=false;
 
 	function __construct($key=NULL,$receiver_url=NULL) {
 		$this->iniForm($key,@static::$v[static::SIG]);
