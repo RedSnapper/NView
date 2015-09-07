@@ -238,7 +238,7 @@ class DTable {
 
             foreach ($csvhide as $csv) {
                $pos = array_search($csv,$headings);
-               if($pos){array_splice($headings,$pos,1);} 
+               if(is_int($pos)){array_splice($headings,$pos,1);} 
             }
         }
 
