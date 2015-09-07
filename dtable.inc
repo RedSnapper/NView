@@ -273,7 +273,7 @@ class DTable {
             foreach($data as $k=>$v){
                 $column = $columns[$i]->name;
                 if ( $format && isset( $this->settings->columns[$column]['formatter'] ) ) {
-                    $row[] = $this->settings->columns[$column]['formatter']( $v,$rowNum);
+                    $row[] = $this->settings->columns[$column]['formatter']( $v,$rowNum,$data);
                 }
                 else {
                     $row[] = $v;
