@@ -99,7 +99,7 @@ class DTable {
             }else{
                 $fields = $this->pkey;
             }
-            $sql = "select {$fields} from {$this->tables} $restrict {$this->groupby} $order";
+            $sql = "select {$fields} from {$this->tables} $restrict {$this->groupby}";
             $stmt = self::sql_exec($sql,$bindings);
         }
         $it = new RecursiveIteratorIterator(new RecursiveArrayIterator($this->data_output($stmt,false)));
