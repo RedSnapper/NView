@@ -209,31 +209,40 @@ class DTable {
         $order = self::order( $request,$this->columns);
         $filter = self::filter( $request, $this->columns, $bindings,true );
         $restrict = self::getRestriction($filter,$this->restrict);
-        $fields = array();
-
-        foreach ($this->columns as $key => $value) {
-
-            $field = $value->table . "." . $value->orgname . " as '" . $value->name . "'"; 
-
-            if(isset($this->settings->columns)){
-                $name = NULL;
-                if(isset($this->settings->columns[$value->orgname])){
-                    $name = $value->orgname;
-                }
-                if(isset($this->settings->columns[$value->name])){
-                    $name = $value->name;
-                }
-                if(!is_null($name) && isset($this->settings->columns[$name]['csvhide']) ){
-                    $field=NULL;
-                }
-            }   
-            if(!is_null($field)){$fields[] = $field;}
-        }
-
-        $fields = implode(',',$fields);
+        $fields = $this->fields;
 
         $query = "select {$fields} from {$this->tables} $restrict {$this->groupby} $order"; // Get total number of filterd records without the limit
-        Export::csv($this->settings->csvFileName,true,$query);
+
+        $headings = array();
+        $data = array();
+        Export::getCSVData($query,$headings,$data);
+        $csvhide = array();
+
+        //Get all the hidden csv fields
+        if(isset($this->settings->columns)){
+            foreach ($this->settings->columns as $key=>$value) {
+                if($value['csvhide']){
+                   $csvhide[]=$key; 
+                }
+            }
+        }
+
+        // Remove hidden csv fields from the data
+        if(count($csvhide) > 0){
+            foreach ($data as &$value) {
+                foreach ($csvhide as $csv) {
+                   unset($value[$csv]);
+                }
+            }
+            // Remove hidden csv fields from the headings
+
+            foreach ($csvhide as $csv) {
+               $pos = array_search($csv,$headings);
+               if($pos){array_splice($headings,$pos,1);} 
+            }
+        }
+
+        Export::csvOutput($this->settings->csvFileName,true,$headings,$data);
     }
 
     
@@ -338,7 +347,13 @@ class DTable {
             for ( $i=0, $ien=count($request['order']) ; $i<$ien ; $i++ ) {
                 $columnIdx = intval($request['order'][$i]['column']);
                 $requestColumn = $request['columns'][$columnIdx];
-                $column ="{$columns[ $columnIdx ]->table}.{$columns[ $columnIdx ]->orgname}";
+
+                if($columns[ $columnIdx ]->orgname){
+                    $column ="{$columns[ $columnIdx ]->table}.{$columns[ $columnIdx ]->orgname}";
+                }else{
+                    $column ="`{$columns[ $columnIdx ]->name}`";
+                }
+
                 if ( $requestColumn['orderable'] == 'true' ) {
                     $dir = $request['order'][$i]['dir'] === 'asc' ?
                         'ASC' :
