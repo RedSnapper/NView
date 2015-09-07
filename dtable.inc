@@ -221,7 +221,7 @@ class DTable {
         //Get all the hidden csv fields
         if(isset($this->settings->columns)){
             foreach ($this->settings->columns as $key=>$value) {
-                if($value['csvhide']){
+                if(isset($value['csvhide']) && $value['csvhide']){
                    $csvhide[]=$key; 
                 }
             }
