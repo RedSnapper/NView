@@ -203,6 +203,7 @@ class SioReg {
 	//Receiver url is the url that is posted in the email sent for confirmation.
 	public static function createuser($un=null,$em=null,$pw=null,$pending=false,$receiver_url=null) {
 		$retval = NULL;
+		$pwd = $pw;
 		$id_for_hash=$em;	//Unescaped used for munge case when registering via email..
 		Settings::esc($em); //Escaped.
 		if(static::$use_un) {
@@ -233,7 +234,7 @@ class SioReg {
 				$em_field = "email";
 				$active_val= "on";
 			}
-			$ph=SIOSetPW::enhash($id_for_hash,$pw);
+			$ph=SIOSetPW::enhash($id_for_hash,$pw); // $pw is being set to null here
 			$ph = is_null($ph) ? "NULL" : "'$ph'";
 			$insql="insert into sio_user set ts=null,{$extra},{$em_field}='{$em}',password={$ph},active='{$active_val}'";
 			Settings::$sql->query($insql);
@@ -244,7 +245,7 @@ class SioReg {
 				}
 			}
 			if ($pending) { //either of these work for auto-signin.
-				if(!is_null($pw)) {
+				if(!is_null($pwd)) {
 					static::mail_pending($em,$email_qry,$receiver_url);
 				} else {
 					SioForgot::mail_forgot($em,$email_qry,$receiver_url);
