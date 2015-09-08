@@ -407,20 +407,29 @@ class DTable {
         
         if(isset($request['filters'])){
             foreach ($request['filters'] as $key => $value) {
-                if ( isset($value['multi']) ) {
-                    $filter = array();
-                    foreach ($value['multi'] as $val) {
-                        self::bind( $bindings,$val, 's');
-                        if($qs){
-                            $filter[] = "'$val'";
-                        }else{
-                            $filter[] = "?";
+                
+                $keys = explode(',',$key);
+
+                $filterOr = array();
+
+                foreach ($keys as $name) {
+                    
+                    if ( isset($value['multi']) ) {
+                        $filter = array();
+                        foreach ($value['multi'] as $val) {
+                            self::bind( $bindings,$val, 's');
+                            if($qs){
+                                $filter[] = "'$val'";
+                            }else{
+                                $filter[] = "?";
+                            }
+                        }
+                        if ( count( $filter ) ) {
+                            $filterOr[]= $name . ' in('.implode(',', $filter).')';
                         }
                     }
-                    if ( count( $filter ) ) {
-                        $filters[]= $key . ' in('.implode(',', $filter).')';
-                    }
                 }
+                $filters[] = "(" . implode(' OR ', $filterOr) . ")";
             }
         }
         
@@ -463,6 +472,11 @@ class DTable {
                 }else{
                     $name = $key;
                 }
+
+                if(isset($value['filter']['fields'])){
+                    $name = implode(",",$value['filter']['fields']);
+                }
+
                 $label = isset($value['filter']['label']) ? $value['filter']['label'] : $key;
 
                 $filters[] = array(
