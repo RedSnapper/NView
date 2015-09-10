@@ -104,13 +104,16 @@ class Settings extends Singleton {
 		if(!empty($_SERVER['HTTPS']) && $_SERVER["HTTPS"]=='on') { self::$website.='s'; }
 		$host=$_SERVER["HTTP_HOST"]; //client used this to get here..
 		self::$website.='://' . $host;
-		$domain_arr = explode('.',$host, 2);
-		if($domain_arr[0]=='www') {
-			self::$domain=$domain_arr[1];
+		if (!empty($_SERVER["HTTP_DOMAIN"])) {	//allow for domain to be passed over.
+			self::$domain=$_SERVER["HTTP_DOMAIN"];
 		} else {
-			self::$domain=$host;
+			$domain_arr = explode('.',$host, 2);	//[xxx][yy.coo.bbb]
+			if($domain_arr[0]=='www') { //[WWW.jinarc.co.uk]/[WWW.domain]  [jinarc-preview.redsnapper.net]
+				self::$domain=$domain_arr[1];
+			} else {
+				self::$domain=$host;
+			}
 		}
-		
 	}
 
 /**
