@@ -458,7 +458,7 @@ class NView {
 			}
 			$result .= "<pre>"; // . print_r($this->doc,true);
 			if (!empty($this->fname)) {
-				 $result .= "Document loaded at :" . $this->fname . " failed to load";
+				 $result .= "Document loaded at :" . $this->fname;
 			 }
 			ob_start();
 			debug_print_backtrace();
