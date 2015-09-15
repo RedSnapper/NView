@@ -420,7 +420,7 @@ class NView {
 								}
 							} else {
 								if ($show_err_on_missing) {
-									$this->doMsg('NView::set() ' . $xpath . ' failed.');
+									$this->doMsg('NView::set() ' . $xpath . ' failed to find the xpath in the document.');
 								}
 							}
 						} else {
