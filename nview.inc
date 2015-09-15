@@ -303,7 +303,7 @@ class NView {
 							$entries = $this->xp->query($xpath,$ref);
 						}
 						if ($entries) {
-							if ($entries->length == 0 ) { //maybe this is a new attribute!? [&& $gap == self::GAP_NONE]
+							if ($entries->length === 0 ) { //maybe this is a new attribute!? [&& $gap == self::GAP_NONE]
 								$spoint = mb_strrpos($xpath,'/');
 								$apoint = mb_strrpos($xpath,'@');  
 								if ($apoint == $spoint+1) {
@@ -315,116 +315,116 @@ class NView {
 									} else {
 										$entries = $this->xp->query($xpath,$ref);
 									}
-									if (!$entries && $show_err_on_missing) {
-										$this->doMsg('NView::set() ' . $xpath . ' failed.');
-									}
-								} else {
-									if ($show_err_on_missing) {
+									if (!$entries) {
 										$this->doMsg('NView::set() ' . $xpath . ' failed.');
 									}
 								}
 							}
-							if ($value instanceof NView) {
-								$value = $value->doc->documentElement;
-							}
-							foreach($entries as $entry) {
-								if ($gap == self::GAP_NATTR && $entry->nodeType==XML_ELEMENT_NODE && isset($aname)) {
-									$entry->setAttribute($aname,strval($value));
-								} else {
-									if (($entry->nodeType == XML_ATTRIBUTE_NODE) && (gettype($value) != "object")) {
-										switch ($gap) {
-											case self::GAP_NONE: {
-												$entry->value = strval($value);
-											} break;
-											case self::GAP_PRECEDING: {
-												$entry->value = strval($value) . $entry->value ;
-											} break;
-											case self::GAP_FOLLOWING:
-											case self::GAP_CHILD: {
-												$entry->value .= strval($value);
-											} break;
-										}
-									} elseif (($entry->nodeType == XML_CDATA_SECTION_NODE) && (gettype($value) != "object")) {
-										switch ($gap) {
-											case self::GAP_NONE: {
-												$entry->data = strval($value);
-											} break;
-											case self::GAP_PRECEDING: {
-												$entry->insertData(0,strval($value));
-											} break;
-											case self::GAP_FOLLOWING:
-											case self::GAP_CHILD: {
-												$entry->appendData(strval($value));
-											} break;
-										}
+							if ($entries->length !== 0 ) {
+								if ($value instanceof NView) {
+									$value = $value->doc->documentElement;
+								}
+								foreach($entries as $entry) {
+									if ($gap == self::GAP_NATTR && $entry->nodeType==XML_ELEMENT_NODE && isset($aname)) {
+										$entry->setAttribute($aname,strval($value));
 									} else {
-										if ($value instanceof DOMNodeList) {
-											foreach($value as $nodi) {
-												$nodc = $nodi->cloneNode(true);
-												$node = $this->doc->importNode($nodc, true);
-												switch ($gap) {
-													case self::GAP_NONE: {
-														$entry->parentNode->replaceChild($node, $entry);
-													} break;
-													case self::GAP_PRECEDING: {
-														$entry->parentNode->insertBefore($node, $entry);
-													} break;
-													case self::GAP_FOLLOWING: {
-														if (is_null($entry->nextSibling)) {
-															$entry->parentNode->appendChild($node);
-														} else {
-															$entry->parentNode->insertBefore($node,$entry->nextSibling);
-														}
-													} break;
-													case self::GAP_CHILD: {
-														$entry->appendChild($node);
-													} break;
-												}
+										if (($entry->nodeType == XML_ATTRIBUTE_NODE) && (gettype($value) != "object")) {
+											switch ($gap) {
+												case self::GAP_NONE: {
+													$entry->value = strval($value);
+												} break;
+												case self::GAP_PRECEDING: {
+													$entry->value = strval($value) . $entry->value ;
+												} break;
+												case self::GAP_FOLLOWING:
+												case self::GAP_CHILD: {
+													$entry->value .= strval($value);
+												} break;
+											}
+										} elseif (($entry->nodeType == XML_CDATA_SECTION_NODE) && (gettype($value) != "object")) {
+											switch ($gap) {
+												case self::GAP_NONE: {
+													$entry->data = strval($value);
+												} break;
+												case self::GAP_PRECEDING: {
+													$entry->insertData(0,strval($value));
+												} break;
+												case self::GAP_FOLLOWING:
+												case self::GAP_CHILD: {
+													$entry->appendData(strval($value));
+												} break;
 											}
 										} else {
-											if (gettype($value) != "object") {
-												$node = $this->strToNode(strval($value));
-											} else {
-												$nodc = $value->cloneNode(true);
-												$node = $this->doc->importNode($nodc, true);
-											}
-											if (!is_null($node->firstChild) || $node->nodeType == XML_TEXT_NODE )
-											{
-												switch ($gap) {
-													case self::GAP_NONE: {
-														$entry->parentNode->replaceChild($node, $entry);
-													} break;
-													case self::GAP_PRECEDING: {
-														$entry->parentNode->insertBefore($node, $entry);
-													} break;
-													case self::GAP_FOLLOWING: {
-														if (is_null($entry->nextSibling)) {
-															$entry->parentNode->appendChild($node);
-														} else {
-															$entry->parentNode->insertBefore($node,$entry->nextSibling);
-														}
-													} break;
-													case self::GAP_CHILD: {
-														$entry->appendChild($node);
-													} break;
+											if ($value instanceof DOMNodeList) {
+												foreach($value as $nodi) {
+													$nodc = $nodi->cloneNode(true);
+													$node = $this->doc->importNode($nodc, true);
+													switch ($gap) {
+														case self::GAP_NONE: {
+															$entry->parentNode->replaceChild($node, $entry);
+														} break;
+														case self::GAP_PRECEDING: {
+															$entry->parentNode->insertBefore($node, $entry);
+														} break;
+														case self::GAP_FOLLOWING: {
+															if (is_null($entry->nextSibling)) {
+																$entry->parentNode->appendChild($node);
+															} else {
+																$entry->parentNode->insertBefore($node,$entry->nextSibling);
+															}
+														} break;
+														case self::GAP_CHILD: {
+															$entry->appendChild($node);
+														} break;
+													}
 												}
 											} else {
-											/*
-											print('<br />$node->firstChild is null with '.$node->nodeType.'<br />');
-											This happens when a DOMDocumentFragment is empty.
-											*/
+												if (gettype($value) != "object") {
+													$node = $this->strToNode(strval($value));
+												} else {
+													$nodc = $value->cloneNode(true);
+													$node = $this->doc->importNode($nodc, true);
+												}
+												if (!is_null($node->firstChild) || $node->nodeType == XML_TEXT_NODE )
+												{
+													switch ($gap) {
+														case self::GAP_NONE: {
+															$entry->parentNode->replaceChild($node, $entry);
+														} break;
+														case self::GAP_PRECEDING: {
+															$entry->parentNode->insertBefore($node, $entry);
+														} break;
+														case self::GAP_FOLLOWING: {
+															if (is_null($entry->nextSibling)) {
+																$entry->parentNode->appendChild($node);
+															} else {
+																$entry->parentNode->insertBefore($node,$entry->nextSibling);
+															}
+														} break;
+														case self::GAP_CHILD: {
+															$entry->appendChild($node);
+														} break;
+													}
+												} else {
+												/*
+												print('<br />$node->firstChild is null with '.$node->nodeType.'<br />');
+												This happens when a DOMDocumentFragment is empty.
+												*/
+												}
 											}
 										}
 									}
 								}
-							}
-							if (gettype($value) != "object" || $value->nodeType == XML_TEXT_NODE && $gap != self::GAP_NONE) {
-								$this->doc->normalizeDocument();
+								if (gettype($value) != "object" || $value->nodeType == XML_TEXT_NODE && $gap != self::GAP_NONE) {
+									$this->doc->normalizeDocument();
+								}
+							} else {
+								if ($show_err_on_missing) {
+									$this->doMsg('NView::set() ' . $xpath . ' failed.');
+								}
 							}
 						} else {
-							if ($show_err_on_missing) {
-								$this->doMsg('NView::set() ' . $xpath . ' failed.');
-							}
+							$this->doMsg('NView::set() ' . $xpath . ' failed.');
 						}
 					} else {
 						$this->doMsg("NView: Unknown value type of object ". gettype($value) ." found");
