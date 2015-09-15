@@ -247,7 +247,7 @@ class NView {
 /**
  * 'set'
  */
-	public function set($xpath,$value=null,$ref=null) {
+	public function set($xpath,$value=null,$ref=null,$show_err_on_missing=true) {
 		//replace node at string xpath with node 'value'.
 		set_error_handler(array($this,'doMsg'), E_ALL | E_STRICT);
 		if (!is_null($this->doc) && !is_null($this->xp)) {
@@ -315,11 +315,13 @@ class NView {
 									} else {
 										$entries = $this->xp->query($xpath,$ref);
 									}
-									if (!$entries) {
+									if (!$entries && $show_err_on_missing) {
 										$this->doMsg('NView::set() ' . $xpath . ' failed.');
 									}
 								} else {
-									$this->doMsg('NView::set() ' . $xpath . ' failed.');
+									if ($show_show_err_on_missing) {
+										$this->doMsg('NView::set() ' . $xpath . ' failed.');
+									};
 								}
 							}
 							if ($value instanceof NView) {
@@ -420,7 +422,9 @@ class NView {
 								$this->doc->normalizeDocument();
 							}
 						} else {
-							$this->doMsg('NView::set() ' . $xpath . ' failed.');
+							if ($show_err_on_missing) {
+								$this->doMsg('NView::set() ' . $xpath . ' failed.');
+							}
 						}
 					} else {
 						$this->doMsg("NView: Unknown value type of object ". gettype($value) ." found");

@@ -15,6 +15,12 @@
 		<h3 data-xp="title" />
         <article data-xp="main" class="editorial clearfix" />
        </div>
+      <div data-xp="moan">
+		<h3 data-xp="title" />
+        <article data-xp="moan" class="editorial clearfix" >
+			<span data-xp="moan">eeep</span>
+        </article>
+       </div>
     </main>
    <footer data-xp="footer" />
   </body>

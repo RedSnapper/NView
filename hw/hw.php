@@ -26,5 +26,7 @@ $t->set("//*[@data-xp='c']/child-gap()",time());
 //Now insert the fragment $t into the main view.
 $v->set("//*[@data-xp='main']/child-gap()",$t);
 
+$v->set("//*[@data-xp='moan']","Argh!");
+
 //now display the view for this file, with xml prefix etc.
 echo $v->show(true);
