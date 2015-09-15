@@ -319,9 +319,9 @@ class NView {
 										$this->doMsg('NView::set() ' . $xpath . ' failed.');
 									}
 								} else {
-									if ($show_show_err_on_missing) {
+									if ($show_err_on_missing) {
 										$this->doMsg('NView::set() ' . $xpath . ' failed.');
-									};
+									}
 								}
 							}
 							if ($value instanceof NView) {
