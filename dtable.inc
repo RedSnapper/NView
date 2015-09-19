@@ -21,7 +21,8 @@ class DTable {
         'ajax'=> NULL,
         'columns'=> array(),
         'table'=> NULL,
-        'pkey'=> NULL
+        'pkey'=> NULL,
+        'groupby'=> true
     );
 
     private $options;
@@ -52,8 +53,10 @@ class DTable {
             }
         }
 
+        $groupby = $this->settings->groupby ? $this->groupby : "";
+
         $restriction = self::getRestriction('',$this->restrict);
-        $this->istatement = self::sql_exec("select {$this->fields} from {$this->tables} {$restriction} {$this->groupby}");
+        $this->istatement = self::sql_exec("select {$this->fields} from {$this->tables} {$restriction} {$groupby}");
 
         $md = $this->istatement->result_metadata();
         $this->columns = mysqli_fetch_fields($md);
@@ -99,6 +102,7 @@ class DTable {
             }else{
                 $fields = $this->pkey;
             }
+
             $sql = "select {$fields} from {$this->tables} $restrict {$this->groupby}";
             $stmt = self::sql_exec($sql,$bindings);
         }
@@ -182,16 +186,17 @@ class DTable {
     public function json() {
         $bindings = array();
         $request = $_GET;
+        $groupby = $this->settings->groupby ? $this->groupby : "";
 
         $recordsTotal= $this->istatement->num_rows;
         $limit = self::limit( $request);
         $order = self::order( $request,$this->columns);
         $filter = self::filter( $request, $this->columns, $bindings );
         $restrict = self::getRestriction($filter,$this->restrict);
-        $sql = "select {$this->fields} from {$this->tables} $restrict {$this->groupby} $order"; // Get total number of filterd records without the limit
+        $sql = "select {$this->fields} from {$this->tables} $restrict {$groupby} $order"; // Get total number of filterd records without the limit
         $stmt = self::sql_exec($sql,$bindings);
         $recordsFiltered= $stmt->num_rows;
-        $sql = "select {$this->fields} from {$this->tables} $restrict {$this->groupby} $order $limit "; // Get total number of filterd records with the limit
+        $sql = "select {$this->fields} from {$this->tables} $restrict {$groupby} $order $limit "; // Get total number of filterd records with the limit
         $stmt = self::sql_exec($sql,$bindings);
 
         return array(
@@ -210,8 +215,9 @@ class DTable {
         $filter = self::filter( $request, $this->columns, $bindings,true );
         $restrict = self::getRestriction($filter,$this->restrict);
         $fields = $this->fields;
+        $groupby = $this->settings->groupby ? $this->groupby : "";
 
-        $query = "select {$fields} from {$this->tables} $restrict {$this->groupby} $order"; // Get total number of filterd records without the limit
+        $query = "select {$fields} from {$this->tables} $restrict {$groupby} $order"; // Get total number of filterd records without the limit
 
         $headings = array();
         $data = array();
