@@ -342,6 +342,7 @@ class DTable {
         if ( isset($request['start']) && $request['length'] != -1 ) {
             $limit = "LIMIT ".intval($request['start']).", ".intval($request['length']);
         }
+        Settings::esc($limit);
         return $limit;
     }
 
@@ -378,6 +379,7 @@ class DTable {
             }
             $order = 'ORDER BY '.implode(', ', $orderBy);
         }
+        Settings::esc($order);
         return $order;
     }
 
@@ -390,7 +392,7 @@ class DTable {
         $globalSearchCSV = array();
         $filters = array();
         $filtersCSV = array();
-       
+
         for ( $i=0, $ien=count($request['columns']) ; $i<$ien ; $i++ ) {
             $requestColumn = $request['columns'][$i];
             $column = "{$columns[ $i ]->table}.{$columns[ $i ]->orgname}";
@@ -399,6 +401,7 @@ class DTable {
             if($column != '.'){
                 if ( $requestColumn['searchable'] == 'true' && isset($request['search']) && $request['search']['value'] != '') {
                     $str = $request['search']['value'];
+                    Settings::esc($str);
                     $val = "%{$str}%";
                     self::bind( $bindings,$val, 's');
                     $globalSearchCSV[] = $column." LIKE '$val'";
@@ -410,6 +413,9 @@ class DTable {
         }
         
         if(isset($request['filters'])){
+
+            $columnNames = array_map(function($i){return $i->name;}, $columns);
+
             foreach ($request['filters'] as $key => $value) {
                 
                 $keys = explode(',',$key);
@@ -419,15 +425,16 @@ class DTable {
 
                 foreach ($keys as $name) {
                     
+                    $derivedCol = in_array($name,$columnNames);
+
                     if ( isset($value['multi']) ) {
                         $filter = array();
                         $filterCSV = array();
                         foreach ($value['multi'] as $val) {
                             self::bind( $bindings,$val, 's');
-                            
+                            Settings::esc($val);
                             $filterCSV[] = "'$val'";
                             $filter[] = "?";
-                            
                         }
                         if ( count( $filter ) ) {
                             $filterOr[]= $name . ' in('.implode(',', $filter).')';
@@ -482,6 +489,7 @@ class DTable {
                 $index = array_search($key,$colnames);
                 if(is_int($index)){
                     $name = "{$this->columns[ $index ]->table}.{$this->columns[ $index ]->orgname}";
+                    if($name == "."){$name = $key;}
                 }else{
                     $name = $key;
                 }
