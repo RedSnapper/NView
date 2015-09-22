@@ -55,12 +55,13 @@ class DTable {
         }
 
         $groupby = $this->settings->groupby ? $this->groupby : "";
-
-        $restriction = self::getRestriction('',$this->restrict);
+        
+        $restriction = $this->getRestriction('nofilter');
         $this->istatement = self::sql_exec("select {$this->fields} from {$this->tables} {$restriction} {$groupby}");
 
         $md = $this->istatement->result_metadata();
         $this->columns = mysqli_fetch_fields($md);
+        $this->setFilters();
     }
 
     /**
@@ -93,10 +94,8 @@ class DTable {
         $stmt = NULL;
         if(!is_null($this->pkey)){
             $request = $_GET;
-            $bindings = array();
             $order = self::order( $request,$this->columns);
-            $filter = self::filter( $request, $this->columns, $bindings );
-            $restrict = self::getRestriction($filter,$this->restrict);
+            $restrict = $this->getRestriction();
 
             if(is_array($this->pkey)){
                 $fields = implode(',',$this->pkey);
@@ -105,7 +104,7 @@ class DTable {
             }
 
             $sql = "select {$fields} from {$this->tables} $restrict {$this->groupby}";
-            $stmt = self::sql_exec($sql,$bindings);
+            $stmt = self::sql_exec($sql,$this->bindings);
         }
         $it = new RecursiveIteratorIterator(new RecursiveArrayIterator($this->data_output($stmt,false)));
         $ids = array();
@@ -185,20 +184,19 @@ class DTable {
      * @return array Server-side processing response array
      */
     public function json() {
-        $bindings = array();
         $request = $_GET;
         $groupby = $this->settings->groupby ? $this->groupby : "";
 
         $recordsTotal= $this->istatement->num_rows;
         $limit = self::limit( $request);
         $order = self::order( $request,$this->columns);
-        $filter = self::filter( $request, $this->columns, $bindings );
-        $restrict = self::getRestriction($filter,$this->restrict);
+        $restrict = $this->getRestriction();
+
         $sql = "select {$this->fields} from {$this->tables} $restrict {$groupby} $order"; // Get total number of filterd records without the limit
-        $stmt = self::sql_exec($sql,$bindings);
+        $stmt = self::sql_exec($sql,$this->bindings);
         $recordsFiltered= $stmt->num_rows;
         $sql = "select {$this->fields} from {$this->tables} $restrict {$groupby} $order $limit "; // Get total number of filterd records with the limit
-        $stmt = self::sql_exec($sql,$bindings);
+        $stmt = self::sql_exec($sql,$this->bindings);
 
         return array(
             "draw"              => intval( $request['draw'] ),
@@ -209,12 +207,10 @@ class DTable {
     }
 
     public function csv(){
-        $bindings = array();
         $request = $_GET;
         $limit = self::limit( $request);
         $order = self::order( $request,$this->columns);
-        $filter = self::filter( $request, $this->columns, $bindings,true );
-        $restrict = self::getRestriction($filter,$this->restrict);
+        $restrict = $this->getRestriction('csv');
         $fields = $this->fields;
         $groupby = $this->settings->groupby ? $this->groupby : "";
         $csvfields = $this->settings->csvfields;
@@ -305,21 +301,30 @@ class DTable {
      * @param  string $whereResult  User where clause
      * @return string SQL where clause
      */
-    private static function getRestriction($filters='',$whereResult=null){
+    public function getRestriction($type='filter'){
+
         $restrict = '';
-        if(!is_null($whereResult)){
-            $restrict.=$whereResult;
+        if(!is_null($this->restrict)){
+            $restrict.=$this->restrict;
         }
-        if($filters !== ''){
-            if($restrict !== ''){
-                $restrict.= " AND {$filters}";
-            }else{
-                $restrict.=" {$filters}";
+
+        if($type != 'nofilter'){
+
+            $filters = $type == 'csv' ? $this->csvfilters : $this->filters;
+
+            if($filters !== ''){
+                if($restrict !== ''){
+                    $restrict.= " AND {$filters}";
+                }else{
+                    $restrict.=" {$filters}";
+                }
             }
         }
+
         if ( $restrict !== '' ) {
             $restrict = 'WHERE '.$restrict;
         }
+
         return $restrict;
     }
 
@@ -376,43 +381,32 @@ class DTable {
         return $order;
     }
 
-    /**
-     * Searching / Filtering
-     *
-     * Construct the WHERE clause for server-side processing SQL query.
-     *
-     * NOTE this does not match the built-in DataTables filtering which does it
-     * word by word on any field. It's possible to do here performance on large
-     * databases would be very poor
-     *
-     *  @param  array $request Data sent to server by DataTables
-     *  @param  array $columns Column names array
-     *  @param  array $bindings Array of values for bindings, used in the
-     *    sql_exec() function
-     *  @return string SQL where clause
-     */
-    private static function filter ( $request, $columns, &$bindings, $qs = false )
-    {
+    
+    public function setFilters (){
+        $request = $_GET;
+        $columns = $this->columns;
+        $bindings = array();
         $globalSearch = array();
+        $globalSearchCSV = array();
         $filters = array();
-        $columnSearch = array();
+        $filtersCSV = array();
        
         for ( $i=0, $ien=count($request['columns']) ; $i<$ien ; $i++ ) {
             $requestColumn = $request['columns'][$i];
             $column = "{$columns[ $i ]->table}.{$columns[ $i ]->orgname}";
 
-            if ( $requestColumn['searchable'] == 'true' && 
-                isset($request['search']) && 
-                $request['search']['value'] != '') {
-                $str = $request['search']['value'];
-                $val = "%{$str}%";
-                self::bind( $bindings,$val, 's');
-                if($qs){
-                    $globalSearch[] = $column." LIKE '$val'";
-                }else{
+            // Make sure we are not searching on a derived column
+            if($column != '.'){
+                if ( $requestColumn['searchable'] == 'true' && isset($request['search']) && $request['search']['value'] != '') {
+                    $str = $request['search']['value'];
+                    $val = "%{$str}%";
+                    self::bind( $bindings,$val, 's');
+                    $globalSearchCSV[] = $column." LIKE '$val'";
                     $globalSearch[] = $column." LIKE ?";
                 }
             }
+
+            
         }
         
         if(isset($request['filters'])){
@@ -421,41 +415,50 @@ class DTable {
                 $keys = explode(',',$key);
 
                 $filterOr = array();
+                $filterOrCSV = array();
 
                 foreach ($keys as $name) {
                     
                     if ( isset($value['multi']) ) {
                         $filter = array();
+                        $filterCSV = array();
                         foreach ($value['multi'] as $val) {
                             self::bind( $bindings,$val, 's');
-                            if($qs){
-                                $filter[] = "'$val'";
-                            }else{
-                                $filter[] = "?";
-                            }
+                            
+                            $filterCSV[] = "'$val'";
+                            $filter[] = "?";
+                            
                         }
                         if ( count( $filter ) ) {
                             $filterOr[]= $name . ' in('.implode(',', $filter).')';
+                            $filterOrCSV[]= $name . ' in('.implode(',', $filterCSV).')';
                         }
                     }
                 }
                 $filters[] = "(" . implode(' OR ', $filterOr) . ")";
+                $filtersCSV[] = "(" . implode(' OR ', $filterOrCSV) . ")";
             }
         }
-        
-        // Combine the filters into a single string
+
+        $this->bindings = $bindings;
+        $this->filters = self::composeFilters($globalSearch,$filters);
+        $this->csvfilters = self::composeFilters($globalSearchCSV,$filtersCSV);
+
+    }
+
+    private static function composeFilters($search=array(),$filters){
+         // Combine the filters into a single string
         $restrict = '';
-        if ( count( $globalSearch ) ) {
-            $restrict = '('.implode(' OR ', $globalSearch).')';
+        if ( count( $search ) ) {
+            $restrict = '('.implode(' OR ', $search).')';
         }
 
         if ( count( $filters ) ) {
-            if ( count( $globalSearch ) ) {
+            if ( count( $search ) ) {
                 $restrict .= ' AND ';
             }
             $restrict .= '('.implode(' AND ', $filters).')';
         }
-
 
         return $restrict;
     }
