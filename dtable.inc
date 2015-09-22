@@ -219,7 +219,9 @@ class DTable {
         $groupby = $this->settings->groupby ? $this->groupby : "";
         $csvfields = $this->settings->csvfields;
 
-        $query = "select {$fields},{$csvfields} from {$this->tables} $restrict {$groupby} $order"; // Get total number of filterd records without the limit
+        $csvfields = $csvfields == '' ? $csvfields : ",$csvfields";
+
+        $query = "select {$fields}{$csvfields} from {$this->tables} $restrict {$groupby} $order"; // Get total number of filterd records without the limit
 
         $headings = array();
         $data = array();
