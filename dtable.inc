@@ -22,7 +22,8 @@ class DTable {
         'columns'=> array(),
         'table'=> NULL,
         'pkey'=> NULL,
-        'groupby'=> true
+        'groupby'=> true,
+        'csvfields'=>''
     );
 
     private $options;
@@ -216,8 +217,9 @@ class DTable {
         $restrict = self::getRestriction($filter,$this->restrict);
         $fields = $this->fields;
         $groupby = $this->settings->groupby ? $this->groupby : "";
+        $csvfields = $this->settings->csvfields;
 
-        $query = "select {$fields} from {$this->tables} $restrict {$groupby} $order"; // Get total number of filterd records without the limit
+        $query = "select {$fields},{$csvfields} from {$this->tables} $restrict {$groupby} $order"; // Get total number of filterd records without the limit
 
         $headings = array();
         $data = array();
