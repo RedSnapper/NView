@@ -17,7 +17,7 @@ class DTable {
         'csvFileName'=>"report.csv",
         'view'=> "dtable_v.ixml",
         'filterview'=> "dtable_f.ixml",
-        'multi'=> "dtable_multi.ixml",
+        'selectview'=> "dtable_select.ixml",
         'ajax'=> NULL,
         'columns'=> array(),
         'table'=> NULL,
@@ -390,8 +390,7 @@ class DTable {
         $bindings = array();
         $globalSearch = array();
         $globalSearchCSV = array();
-        $filters = array();
-        $filtersCSV = array();
+        $filterArray =array(); 
 
         for ( $i=0, $ien=count($request['columns']) ; $i<$ien ; $i++ ) {
             $requestColumn = $request['columns'][$i];
@@ -415,46 +414,79 @@ class DTable {
         if(isset($request['filters'])){
 
             $columnNames = array_map(function($i){return $i->name;}, $columns);
+            foreach ($request['filters'] as $key => $filterinfo) {
 
-            foreach ($request['filters'] as $key => $value) {
-                
+                $type = array_keys($filterinfo)[0];
+                $filter= array();
                 $keys = explode(',',$key);
 
-                $filterOr = array();
-                $filterOrCSV = array();
-
                 foreach ($keys as $name) {
-                    
-                    $derivedCol = in_array($name,$columnNames);
+                    $filter['type']=$type;
+                    $filter['names'][]=$name;
+                    $filter['range']=array();
+                    $filter['rangevalues']=array();
+                    $filter['derived'] = in_array($name,$columnNames);
+                    $filterValue = $filterinfo[$type];
 
-                    if ( isset($value['multi']) ) {
-                        $filter = array();
-                        $filterCSV = array();
-                        foreach ($value['multi'] as $val) {
+                    if ( $type == 'multi' ) {
+                        foreach ($filterValue as $val) {
                             self::bind( $bindings,$val, 's');
                             Settings::esc($val);
-                            $filterCSV[] = "'$val'";
-                            $filter[] = "?";
-                        }
-                        if ( count( $filter ) ) {
-                            $filterOr[]= $name . ' in('.implode(',', $filter).')';
-                            $filterOrCSV[]= $name . ' in('.implode(',', $filterCSV).')';
+                            $filter['range'][] ="?";
+                            $filter['rangevalues'][] ="'$val'";
                         }
                     }
+                    if ( $type == 'null' ) {
+                        $filter['value'] = $filterValue[0];
+                    }
                 }
-                $filters[] = "(" . implode(' OR ', $filterOr) . ")";
-                $filtersCSV[] = "(" . implode(' OR ', $filterOrCSV) . ")";
+                array_push($filterArray,$filter);
             }
         }
 
         $this->bindings = $bindings;
-        $this->filters = self::composeFilters($globalSearch,$filters);
-        $this->csvfilters = self::composeFilters($globalSearchCSV,$filtersCSV);
+        $this->filters = self::composeFilters($globalSearch,$filterArray);
+        $this->csvfilters = self::composeFilters($globalSearchCSV,$filterArray,true);
+        //$this->having = self::composeFilters($globalSearch,$filters);
+        //$this->havingvalues = self::composeFilters($globalSearchCSV,$filtersCSV);
+        
 
     }
 
-    private static function composeFilters($search=array(),$filters){
+    private static function composeFilters($search=array(),$filtersArray=array(),$values=false,$derived=false){
          // Combine the filters into a single string
+        $filters = array();
+        foreach ($filtersArray as $filterinfo) {
+            
+            $filterOr = array();
+
+            if($filterinfo['type'] == 'multi'){
+                $filter = $values ? $filterinfo['rangevalues'] : $filterinfo['range'];
+                foreach ($filterinfo['names'] as $name){
+                    $filterOr[]= $name . ' in('.implode(',', $filter).')';
+                }
+            }
+            if($filterinfo['type'] == 'null'){
+                $null =''; 
+                if($filterinfo['value'] == '1'){
+                    $null = 'is not null';
+                }
+                if($filterinfo['value'] == '0'){
+                    $null = 'is null';
+                }
+                if( $null != ''){
+                    foreach ($filterinfo['names'] as $name){
+                        $filterOr[]= "$name $null";
+                    }
+                }
+            }
+            if(count($filterOr) > 0){
+                $filters[] = "(" . implode(' OR ', $filterOr) . ")";
+            }
+            
+
+        } 
+
         $restrict = '';
         if ( count( $search ) ) {
             $restrict = '('.implode(' OR ', $search).')';
@@ -467,8 +499,10 @@ class DTable {
             $restrict .= '('.implode(' AND ', $filters).')';
         }
 
+
         return $restrict;
     }
+
 
     private function setFilterView(){
 
@@ -511,19 +545,10 @@ class DTable {
 
         foreach ($filters as $filter) {
             if($rx = Settings::$sql->query($filter['value']['query'])){
-                if($filter['value']['type'] = 'mutli'){
-                    $multi = new NView($this->settings->multi);
-                    $ot = $multi->consume('//h:option');
+                $type = $filter['value']['type'];
 
-                    while ($f = $rx->fetch_assoc()){
-                        $o = new NView($ot);
-                        $o->set("//h:option/@value",htmlspecialchars($f['value']));
-                        $o->set("//h:option/child-gap()",htmlspecialchars($f['prompt']));
-                        $multi->set("//h:select/child-gap()",$o);
-                    }
-                    $multi->set('//*[@data-xp="label"]/child-gap()',htmlspecialchars($filter['label']));
-                    $multi->set('//h:select/@name',"multi:{$filter['name']}");
-                    $v->set('//*[@data-xp="filters"]/child-gap()',$multi);
+                switch($type){
+                    default: $this->selectView($rx,$filter,$type,$v);
                 }
             }else{
                 echo Settings::$sql->error;
@@ -532,6 +557,30 @@ class DTable {
 
         $this->filterv = $v;
 
+    }
+
+    public function selectView($rx,$filter,$type,$v){
+        $select = new NView($this->settings->selectview);
+        $ot = $select->consume('//h:option');
+
+        if($type=='multi'){
+            $select->set('//h:select/@multiple',"true");
+        }else{
+            $o = new NView($ot);
+            $o->set("//h:option/child-gap()",' ');
+            $select->set("//h:select/child-gap()",$o);
+        }
+
+        while ($f = $rx->fetch_assoc()){
+            $o = new NView($ot);
+            $o->set("//h:option/@value",htmlspecialchars($f['value']));
+            $o->set("//h:option/child-gap()",htmlspecialchars($f['prompt']));
+            $select->set("//h:select/child-gap()",$o);
+        }
+        $select->set('//*[@data-xp="label"]/child-gap()',htmlspecialchars($filter['label']));
+        $select->set('//h:select/@name',"$type:{$filter['name']}");
+
+        $v->set('//*[@data-xp="filters"]/child-gap()',$select);
     }
 
     /**

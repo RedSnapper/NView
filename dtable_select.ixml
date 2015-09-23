@@ -1,0 +1,10 @@
+<!DOCTYPE li>
+<li data-xp="dselect" xmlns="http://www.w3.org/1999/xhtml">
+    <label class="form__control">
+        <span class="form__label" data-xp='label'></span>
+        <select class="form__select">
+        	<option value=""></option>
+        </select>
+    </label>
+</li>
+
