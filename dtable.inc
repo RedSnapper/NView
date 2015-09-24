@@ -27,12 +27,12 @@ class DTable {
     );
 
     private $options;
-    private $fields;
-    private $tables;
-    private $restrict;
-    private $columns;
+    public $fields;
+    public $tables;
+    public $restrict;
+    public $columns;
     private $filterv;
-    private $pkey = NULL;
+    public $pkey = NULL;
     private $istatement;  // Statement returned by intial query
 
 
