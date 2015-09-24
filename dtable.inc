@@ -138,8 +138,7 @@ class DTable {
         $template = $v->consume("//*[@data-xp='heading']");
         $this->setFilterView();
 		
-        $md = $this->istatement->result_metadata();
-		$finfo = mysqli_fetch_fields($md);
+		$finfo = $this->columns;
         $cols = array();
 		foreach ($finfo as $field) {
             $name = $field->name;
@@ -204,6 +203,14 @@ class DTable {
             "recordsFiltered"   => intval( $recordsFiltered ),
             "data"              => $this->data_output($stmt)
         );
+    }
+
+    public function getAllData(){
+        $groupby = $this->settings->groupby ? $this->groupby : "";
+        $restrict = $this->getRestriction();
+        $sql = "select {$this->fields} from {$this->tables} $restrict {$groupby}"; // Get total number of filterd records without the limit
+        $stmt = self::sql_exec($sql,$this->bindings);
+        return $this->data_output($stmt);
     }
 
     public function csv(){
@@ -504,7 +511,7 @@ class DTable {
     }
 
 
-    private function setFilterView(){
+    public function setFilterView(){
 
         $v = new NView($this->settings->filterview);
         $columns = $this->settings->columns;
