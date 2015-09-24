@@ -392,23 +392,23 @@ class DTable {
         $globalSearchCSV = array();
         $filterArray =array(); 
 
-        for ( $i=0, $ien=count($request['columns']) ; $i<$ien ; $i++ ) {
-            $requestColumn = $request['columns'][$i];
-            $column = "{$columns[ $i ]->table}.{$columns[ $i ]->orgname}";
+        if(isset($request['columns'])){
+            for ( $i=0, $ien=count($request['columns']) ; $i<$ien ; $i++ ) {
+                $requestColumn = $request['columns'][$i];
+                $column = "{$columns[ $i ]->table}.{$columns[ $i ]->orgname}";
 
-            // Make sure we are not searching on a derived column
-            if($column != '.'){
-                if ( $requestColumn['searchable'] == 'true' && isset($request['search']) && $request['search']['value'] != '') {
-                    $str = $request['search']['value'];
-                    Settings::esc($str);
-                    $val = "%{$str}%";
-                    self::bind( $bindings,$val, 's');
-                    $globalSearchCSV[] = $column." LIKE '$val'";
-                    $globalSearch[] = $column." LIKE ?";
+                // Make sure we are not searching on a derived column
+                if($column != '.'){
+                    if ( $requestColumn['searchable'] == 'true' && isset($request['search']) && $request['search']['value'] != '') {
+                        $str = $request['search']['value'];
+                        Settings::esc($str);
+                        $val = "%{$str}%";
+                        self::bind( $bindings,$val, 's');
+                        $globalSearchCSV[] = $column." LIKE '$val'";
+                        $globalSearch[] = $column." LIKE ?";
+                    }
                 }
             }
-
-            
         }
         
         if(isset($request['filters'])){
