@@ -33,7 +33,7 @@ class DTable {
     public $columns;
     private $filterv;
     public $pkey = NULL;
-    private $istatement;  // Statement returned by intial query
+    public $istatement;  // Statement returned by intial query
 
 
     public function __construct($fields = null,$tables=null,$restrict=null,$options = array()){
