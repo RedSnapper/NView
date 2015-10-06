@@ -268,7 +268,8 @@ class NView {
 					$gap=self::GAP_FOLLOWING;
 				}
 			} elseif (substr($xpath,-7)=="/data()") {
-					$gap=self::GAP_DATA;
+				$xpath = mb_substr($xpath,0,-7); //remove the func.;
+				$gap=self::GAP_DATA;
 			}
 			//now act according to value type.
 			switch (gettype($value)) {
