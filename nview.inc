@@ -88,8 +88,11 @@ class NView {
 		}
 	}
 	
+/**
+ * 'as_fragment'
+ */
 	public static function as_fragment($docstr) {
-		$s1='/<\?xml version="1.0"\?>/';
+		$s1='/<\?xml[^?]+\?>/';
 		$s2='/<!DOCTYPE \w+>/';
 		$s3='/\sxmlns="http:\/\/www.w3.org\/1999\/xhtml"/';
 		$ksub = array($s1, $s2, $s3);
