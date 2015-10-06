@@ -16,6 +16,7 @@ class NView {
 	const GAP_PRECEDING = 3;
 	const GAP_CHILD = 4;
 	const GAP_NATTR = 5;
+	const GAP_DATA = 6;
 
 	private $errs = '';
 	private $fname = null;
@@ -266,6 +267,8 @@ class NView {
 					$xpath = mb_substr($xpath,0,-10); //remove the child;
 					$gap=self::GAP_FOLLOWING;
 				}
+			} elseif (substr($xpath,-7)=="/data()") {
+					$gap=self::GAP_DATA;
 			}
 			//now act according to value type.
 			switch (gettype($value)) {
@@ -354,7 +357,7 @@ class NView {
 													$entry->appendData(strval($value));
 												} break;
 											}
-										} elseif (($entry->nodeType == XML_COMMENT_NODE) && ($gap == self::GAP_CHILD)) {
+										} elseif (($entry->nodeType == XML_COMMENT_NODE) && ($gap == self::GAP_DATA)) {
 											$entry->replaceData(0,$entry->length,strval($value)); 
 										} else {
 											if ($value instanceof DOMNodeList) {
