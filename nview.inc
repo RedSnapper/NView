@@ -387,9 +387,11 @@ class NView {
 														$this->doMsg("NView:  ". gettype($value). " not yet implemented for comment insertion.");
 													}											
 												}
+												$fvalue=preg_replace("/<!--[^\0]*?-->/",'',$fvalue));
 												$entry->replaceData(0,$entry->length,$fvalue);
 											} else {
-												$entry->replaceData(0,$entry->length,strval($value));
+												$fvalue=preg_replace("/<!--[^\0]*?-->/",'',strval($value)));
+												$entry->replaceData(0,$entry->length,$fvalue);
 											}
 										} else {
 											if ($value instanceof DOMNodeList) {
