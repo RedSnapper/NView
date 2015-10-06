@@ -387,7 +387,8 @@ class NView {
 														$this->doMsg("NView:  ". gettype($value). " not yet implemented for comment insertion.");
 													}											
 												}
-												$fvalue=str_replace(array("<!--","-->"),"", $fvalue);
+												$fvalue=str_replace("<!--","", $fvalue);
+												$fvalue=str_replace("-->","", $fvalue);
 												$entry->replaceData(0,$entry->length,$fvalue);
 											} else {
 												$fvalue=str_replace(array("<!--","-->"),"", $value);
