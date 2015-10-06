@@ -359,7 +359,7 @@ class NView {
 												} break;
 											}
 										} elseif (($entry->nodeType == XML_COMMENT_NODE) && ($gap == self::GAP_DATA)) {
-											if(gettype($value) == "object")) {
+											if(gettype($value) == "object") {
 												$txt = "";
 												if ($value instanceof DOMNodeList) {
 													foreach($value as $nodi) {
