@@ -83,18 +83,17 @@ class NView {
 				return $this->doc->saveXML();
 			} else {
 				$hs=$this->doc->saveXML();
-				static::as_fragment($hs);
-				return $hs;
+				return static::as_fragment($hs);
 			}
 		}
 	}
 	
-	public static function as_fragment(&$docstr) {
+	public static function as_fragment($docstr) {
 		$s1='/<\?xml version="1.0"\?>/';
 		$s2='/<!DOCTYPE \w+>/';
 		$s3='/\sxmlns="http:\/\/www.w3.org\/1999\/xhtml"/';
 		$ksub = array($s1, $s2, $s3);
-		$docstr = trim(preg_replace($ksub,'',$docstr));
+		return trim(preg_replace($ksub,'',$docstr));
 	}
 
 /**
@@ -372,8 +371,7 @@ class NView {
 														$node = $doc->importNode($nodi, true);
 														$doc->appendChild($node);
 														$txt = $doc->saveXML();
-														static::as_fragment($txt);
-														$fvalue .= $txt;
+														$fvalue .= static::as_fragment($txt);
 													}
 												} else {
 													if ($value instanceof DOMNode) {
@@ -381,8 +379,7 @@ class NView {
 														$node=$doc->importNode($value, true);
 														$doc->appendChild($node);
 														$txt = $doc->saveXML();
-														static::as_fragment($txt);
-														$fvalue .= $txt;
+														$fvalue = static::as_fragment($txt);
 													} else {
 														$this->doMsg("NView:  ". gettype($value). " not yet implemented for comment insertion.");
 													}											
