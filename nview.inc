@@ -359,7 +359,19 @@ class NView {
 												} break;
 											}
 										} elseif (($entry->nodeType == XML_COMMENT_NODE) && ($gap == self::GAP_DATA)) {
-											$entry->replaceData(0,$entry->length,strval($value)); 
+											if(gettype($value) == "object")) {
+												$txt = "";
+												if ($value instanceof DOMNodeList) {
+													foreach($value as $nodi) {
+														$txt .= $nodi->saveXML();
+													}
+												} else {
+													$txt = $value->saveXML();
+												}
+												$entry->replaceData(0,$entry->length,$txt);
+											} else {
+												$entry->replaceData(0,$entry->length,strval($value));
+											}
 										} else {
 											if ($value instanceof DOMNodeList) {
 												foreach($value as $nodi) {
