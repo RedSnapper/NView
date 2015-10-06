@@ -387,10 +387,10 @@ class NView {
 														$this->doMsg("NView:  ". gettype($value). " not yet implemented for comment insertion.");
 													}											
 												}
-												$fvalue=preg_replace("/<!--.*?-->/",'',$fvalue);
+												$fvalue=str_replace(array("<!--","-->"),"", $value)
 												$entry->replaceData(0,$entry->length,$fvalue);
 											} else {
-												$fvalue=preg_replace("/<!--.*?-->/",'',strval($value));
+												$fvalue=str_replace(array("<!--","-->"),"", $value)
 												$entry->replaceData(0,$entry->length,$fvalue);
 											}
 										} else {
