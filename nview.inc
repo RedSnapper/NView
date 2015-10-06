@@ -390,7 +390,7 @@ class NView {
 												$fvalue=str_replace(array("<!--","-->"),"", $fvalue);
 												$entry->replaceData(0,$entry->length,$fvalue);
 											} else {
-												$fvalue=str_replace(array("<!--","-->"),"", $fvalue);
+												$fvalue=str_replace(array("<!--","-->"),"", $value);
 												$entry->replaceData(0,$entry->length,$fvalue);
 											}
 										} else {
