@@ -74,22 +74,27 @@ class NView {
 /**
  * 'show'
  */
-	public function show($fragment = false) {
+	public function show($whole_doc = false) {
 		if (is_null($this->doc) || is_null($this->xp)) {
 			return "";
 		} else {
 			$this->tidyView();
-			if ($fragment) {
+			if ($whole_doc) {
 				return $this->doc->saveXML();
 			} else {
 				$hs=$this->doc->saveXML();
-				$s1='/<\?xml version="1.0"\?>/';
-				$s2='/<!DOCTYPE \w+>/';
-				$s3='/\sxmlns="http:\/\/www.w3.org\/1999\/xhtml"/';
-				$ksub = array($s1, $s2, $s3);
-				return trim(preg_replace($ksub,'',$hs));
+				static::as_fragment($hs);
+				return $hs;
 			}
 		}
+	}
+	
+	public static function as_fragment(&$docstr) {
+		$s1='/<\?xml version="1.0"\?>/';
+		$s2='/<!DOCTYPE \w+>/';
+		$s3='/\sxmlns="http:\/\/www.w3.org\/1999\/xhtml"/';
+		$ksub = array($s1, $s2, $s3);
+		$docstr = trim(preg_replace($ksub,'',$docstr));
 	}
 
 /**
@@ -360,13 +365,15 @@ class NView {
 											}
 										} elseif (($entry->nodeType == XML_COMMENT_NODE) && ($gap == self::GAP_DATA)) {
 											if(gettype($value) == "object") {
-												$txt = "";
+												$fvalue = "";
 												if ($value instanceof DOMNodeList) {
 													foreach($value as $nodi) {
 														$doc = new DOMDocument("1.0","utf-8");
 														$node = $doc->importNode($nodi, true);
 														$doc->appendChild($node);
-														$txt .= $doc->saveXML();
+														$txt = $doc->saveXML();
+														static::as_fragment($txt);
+														$fvalue .= $txt;
 													}
 												} else {
 													if ($value instanceof DOMNode) {
@@ -374,11 +381,13 @@ class NView {
 														$node=$doc->importNode($value, true);
 														$doc->appendChild($node);
 														$txt = $doc->saveXML();
+														static::as_fragment($txt);
+														$fvalue .= $txt;
 													} else {
 														$this->doMsg("NView:  ". gettype($value). " not yet implemented for comment insertion.");
 													}											
 												}
-												$entry->replaceData(0,$entry->length,$txt);
+												$entry->replaceData(0,$entry->length,$fvalue);
 											} else {
 												$entry->replaceData(0,$entry->length,strval($value));
 											}
