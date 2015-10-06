@@ -68,7 +68,7 @@ class SioForgot {
 	public static function munge($em=NULL) {
 		Settings::esc($em);
 		$munge=NULL;
-		$qry="select ".static::$munge." as munge from ".$this->table." where (active='on' and email='$em') or (active='xx' and emailp='$em')";
+		$qry="select ".static::$munge." as munge from sio_user where (active='on' and email='$em') or (active='xx' and emailp='$em')";
 		if ($rx = Settings::$sql->query($qry)) {
 			$munge = $rx->fetch_row()[0];
 			$rx->close();
