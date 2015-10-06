@@ -373,7 +373,7 @@ class NView {
 														$doc->importNode($value, true);
 														$txt = $doc->saveXML();
 													} else {
-														$this->doMsg("NView:  ". gettype($value) " not yet implemented for comment insertion.";);
+														$this->doMsg("NView:  ". gettype($value). " not yet implemented for comment insertion.");
 													}											
 												}
 												$entry->replaceData(0,$entry->length,$txt);
