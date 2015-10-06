@@ -65,6 +65,17 @@ class SioForgot {
 		return true;
 	}
 	
+	public static function munge($em=NULL) {
+		Settings::esc($em);
+		$munge=NULL;
+		$qry="select ".static::$munge." as munge from ".$this->table." where (active='on' and email='$em') or (active='xx' and emailp='$em')";
+		if ($rx = Settings::$sql->query($qry)) {
+			$munge = $rx->fetch_row()[0];
+			$rx->close();
+		}
+		return $munge;
+	}
+	
 	//mail_qry must include '[MUNGE]' or field as munge, and username(if $use_un) in it's result.
 	// eg SioForgot::mail_forgot($rf['emailp'],$email_qry,Settings::$url);
 	public static function mail_forgot($destination,$email_qry,$url=NULL) {
