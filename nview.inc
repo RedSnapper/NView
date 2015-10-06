@@ -364,13 +364,15 @@ class NView {
 												if ($value instanceof DOMNodeList) {
 													foreach($value as $nodi) {
 														$doc = new DOMDocument("1.0","utf-8");
-														$doc->importNode($nodi, true);
+														$node = $doc->importNode($nodi, true);
+														$doc->appendChild($node);
 														$txt .= $doc->saveXML();
 													}
 												} else {
 													if ($value instanceof DOMNode) {
 														$doc = new DOMDocument("1.0","utf-8");
-														$doc->importNode($value, true);
+														$node=$doc->importNode($value, true);
+														$doc->appendChild($node);
 														$txt = $doc->saveXML();
 													} else {
 														$this->doMsg("NView:  ". gettype($value). " not yet implemented for comment insertion.");
