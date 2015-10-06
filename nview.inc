@@ -363,10 +363,18 @@ class NView {
 												$txt = "";
 												if ($value instanceof DOMNodeList) {
 													foreach($value as $nodi) {
-														$txt .= $nodi->saveXML();
+														$doc = new DOMDocument("1.0","utf-8");
+														$doc->importNode($nodi, true);
+														$txt .= $doc->saveXML();
 													}
 												} else {
-													$txt = $value->saveXML();
+													if ($value instanceof DOMNode) {
+														$doc = new DOMDocument("1.0","utf-8");
+														$doc->importNode($value, true);
+														$txt = $doc->saveXML();
+													} else {
+														$this->doMsg("NView:  ". gettype($value) " not yet implemented for comment insertion.";);
+													}											
 												}
 												$entry->replaceData(0,$entry->length,$txt);
 											} else {
