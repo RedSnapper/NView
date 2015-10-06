@@ -333,7 +333,11 @@ class NView {
 							}
 							if ($entries->length !== 0 ) {
 								if ($value instanceof NView) {
-									$value = $value->doc->documentElement;
+									if ($gap !== self::GAP_DATA) {
+										$value = $value->doc->documentElement;
+									} else {
+										$value = $value->show(false);
+									}
 								}
 								foreach($entries as $entry) {
 									if ($gap == self::GAP_NATTR && $entry->nodeType==XML_ELEMENT_NODE && isset($aname)) {
@@ -387,8 +391,7 @@ class NView {
 														$this->doMsg("NView:  ". gettype($value). " not yet implemented for comment insertion.");
 													}											
 												}
-												$fvalue=str_replace("<!--","", $fvalue);
-												$fvalue=str_replace("-->","", $fvalue);
+												$fvalue=str_replace(array("<!--","-->"),"", $value);
 												$entry->replaceData(0,$entry->length,$fvalue);
 											} else {
 												$fvalue=str_replace(array("<!--","-->"),"", $value);
