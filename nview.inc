@@ -354,6 +354,8 @@ class NView {
 													$entry->appendData(strval($value));
 												} break;
 											}
+										} elseif (($entry->nodeType == XML_COMMENT_NODE) && ($gap == self::GAP_CHILD)) {
+											$entry->replaceData(0,$entry->length,strval($value)); 
 										} else {
 											if ($value instanceof DOMNodeList) {
 												foreach($value as $nodi) {
