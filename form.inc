@@ -80,6 +80,15 @@ trait Form {
 	public function getId() {
 		return $this->id;
 	}
+	public function getSubsField() {
+		return $this->subsfield; 	//subscriber field-name  for indicating presence/absence.
+	}
+	public function getSubsFieldValue() {
+		return $this->subsvalue; 	//subscriber field-value based on sql..
+	}
+	public function getSubsPostValue() {
+		return $this->subspostv; 	//subscriber field-value based on sql..
+	}
 
 /**
  * Simple delete function which may be over-ridden.
@@ -500,14 +509,16 @@ trait Form {
 			} else {  //do 'save'
 				//keep $validity across all formlets..
 				$valid = true;
-				foreach($fms as $fm) {
+				foreach($fms as $fm) { 
 					//The subsfield logic indicates that $fm is either non-existent or to be deleted. so skip validation.
-					if (!isset($fm->subsfield) || (!empty($fm->subspostv) && !($this->subspostv=="fm"))) {
+					if (!isset($fm->getSubsField()) || (!empty($fm->getSubsPostValue()) && !($fm->getSubsPostValue()=="fm"))) {
 						$fm->prefilter();
 						$fm->validate();
 						$fmval = $fm->valid();
 						$valid = $valid && $fmval;
 						if($debug) { $vtxt= $fmval? "true":"false";print("<p>{$fm->sig()}: Validate returned $vtxt</p>"); }
+					} else {
+						//print("got here:" . $fm->getSubsField());
 					}
 				}
 				//Now run a global val_fn over it.
@@ -517,9 +528,9 @@ trait Form {
 				if ($valid) {
 					foreach($fms as $fm) {
 						//we need to run subscribe only after everything (that needs to be) is validated.
-						if (isset($fm->subsfield)) {
+						if (isset($fm->getSubsField())) {
 							if($fm->debug) {
-								print("<p>{$fm->sig()} has a subscriber:".$fm->subsfield."</p>");
+								print("<p>{$fm->sig()} has a subscriber:".$fm->getSubsField()."</p>");
 							}
 							$fm->subscriber();
 						}
