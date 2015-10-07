@@ -96,6 +96,14 @@ trait Form {
 		}
 	}
 
+/**
+ * Wrapper to the $record_found variable.
+ * Used by formlets() to set record_found. 
+ * @param bool $state (optional, defaults to true).
+ */
+	public function setfound($state = true) {
+		$this->record_found = $state;
+	}
 
 /**
  * This allows for inputs to be filtered or amended before validation.
@@ -523,7 +531,7 @@ trait Form {
 			// Load the post stores. and mark the show / found variables for each formlet.
 			foreach($fms as $fm) {
 				$fm->show=$show;
-				$fm->record_found=true;
+				$fm->setfound(true);
 				$fm->setfrompost();
 				if (!empty($fm->fields['_fn'][0]) && strcmp($fm->fields['_fn'][0],"save") !== 0 ) {
 					if($debug) {
