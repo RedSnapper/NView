@@ -511,14 +511,13 @@ trait Form {
 				$valid = true;
 				foreach($fms as $fm) { 
 					//The subsfield logic indicates that $fm is either non-existent or to be deleted. so skip validation.
-					if (!isset($fm->getSubsField()) || (!empty($fm->getSubsPostValue()) && !($fm->getSubsPostValue()=="fm"))) {
+					$spv = @$fm->getSubsPostValue();
+					if (!isset($fm->getSubsField()) || (!empty($spv) && !($spv=="fm"))) {
 						$fm->prefilter();
 						$fm->validate();
 						$fmval = $fm->valid();
 						$valid = $valid && $fmval;
 						if($debug) { $vtxt= $fmval? "true":"false";print("<p>{$fm->sig()}: Validate returned $vtxt</p>"); }
-					} else {
-						//print("got here:" . $fm->getSubsField());
 					}
 				}
 				//Now run a global val_fn over it.
