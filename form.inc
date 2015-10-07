@@ -528,9 +528,10 @@ trait Form {
 				if ($valid) {
 					foreach($fms as $fm) {
 						//we need to run subscribe only after everything (that needs to be) is validated.
-						if (isset($fm->getSubsField())) {
+						$sfn = @$fm->getSubsField();
+						if (!is_null($sfn)) {
 							if($fm->debug) {
-								print("<p>{$fm->sig()} has a subscriber:".$fm->getSubsField()."</p>");
+								print("<p>{$fm->sig()} has a subscriber:$sfn</p>");
 							}
 							$fm->subscriber();
 						}
@@ -689,7 +690,7 @@ trait Form {
  * This is called only during a post. so we need to find out the current state of the sql.
  * $aggregate: A boolean used to identify if we are in a formlets mechanism.
  */
-	protected function subscriber($aggregate=false) {
+	public function subscriber($aggregate=false) {
 		$this->setsubsvalue();
 		if ( empty($this->subsvalue) || $this->subsvalue=="false") {
 			if ( empty($this->subspostv) || $this->subspostv=="false") { //wasn't set, won't be set - ignore.
