@@ -74,7 +74,7 @@ class NView {
 /**
  * 'show'
  */
-	public function show($whole_doc = true) {
+	public function show($whole_doc = false) {
 		if (is_null($this->doc) || is_null($this->xp)) {
 			return "";
 		} else {
