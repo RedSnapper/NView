@@ -500,6 +500,90 @@ trait Form {
 		}
 	}
 
+	public static function subformlets($fms=array(),$valfn=NULL,$show=true) {
+	 //	$us: All formlets in the array must be posted for this to consider itself posted. 
+		$us=true; 
+
+	 //	$debug: Any formlet in the array may be marked as debug for this to consider itself using debug. 
+		$debug=false;
+
+	 // Go through each form, and set $us and $debug accordingly.
+		foreach($fms as $fm) {
+			if(! $fm->isMe()) { $us=false; }
+			if($fm->debug) { 
+				$debug = true;
+				$fm->forminfo();
+			}
+		}
+	 // $us is the equivalent of $this->isMe() in a normal form process.
+		if ( $us ) {
+			 //	$func: Any formlet that has a _fn causes that _fn to be executed rather than 'save'. 
+			$func=NULL;
+			// Load the post stores. and mark the show / found variables for each formlet.
+			foreach($fms as $fm) {
+				$fm->show=$show;
+				$fm->record_found=true;
+				$fm->setfrompost();
+				if (!empty($fm->fields['_fn'][0]) && strcmp($fm->fields['_fn'][0],"save") !== 0 ) {
+					if($debug) {
+						print("<p>Non-save function:".$fm->fields['_fn'][0]."</p>");
+					}
+					if (!is_null($func)) {
+						if($debug) { print("<p>{$fm->sig()}:Use only one formlet with a func in formlets()</p>"); }
+					} else {
+						$func = $fm->func();
+					}
+				}	
+			}
+			if (!is_null($func)) { //do function other than save.
+				return $func;
+			} else {  //do 'save'
+				//keep $validity across all formlets..
+				$valid = true;
+				foreach($fms as $fm) {
+					if (!isset($fm->subsfield) || (!empty($fm->subspostv) && !($this->subspostv=="fm"))) {
+						$fm->prefilter();
+						$fm->validate();
+						$fmval = $fm->valid();
+						$valid = $valid && $fmval;
+						if($debug) { $vtxt= $fmval? "true":"false";print("<p>{$fm->sig()}: Validate returned $vtxt</p>"); }
+					}
+				}
+				//Now run a global val_fn over it.
+				if (!is_null($valfn)) {
+					$valid = $valid && $valfn();
+				}
+				if ($valid) {
+					foreach($fms as $fm) {
+						//we need to run subscribe only after everything (that needs to be) is validated.
+						if (isset($fm->subsfield)) {
+							if($fm->debug) {
+								print("<p>{$fm->sig()} has a subscriber:".$fm->subsfield."</p>");
+							}
+							$fm->subscriber();
+						}
+						if (!$fm->success()) {
+							$fm->setcommit($fm->commit());
+							if($debug) { 
+								$succ = $fm->success() ? "true" : "false"; 
+								print("<p>{$fm->sig()}: success was $succ</p>"); 
+							}
+							if ( $fm->show || !($fm->success()) ) { //do not repop if !show and com.
+								$fm->setfields(true); //we can repopulate the fields if we want.
+							}
+						} else {
+							if($debug) { print("<p>{$fm->sig()}: preset to successful</p>"); }
+						}
+					}
+				}
+			}
+		} else {
+			foreach($fms as $fm) {
+				$fm->setfields(false);
+			}
+		}
+	}
+
 	public function setfrompost() {
 		$this->fields = array();
 		foreach ($_POST as $k => $v) {
@@ -631,8 +715,9 @@ trait Form {
 /**
  * 'subscriber'
  * This is called only during a post. so we need to find out the current state of the sql.
+ * $aggregate: A boolean used to identify if we are in a formlets mechanism.
  */
-	protected function subscriber($name=NULL,$orig=NULL) {
+	protected function subscriber($aggregate=false) {
 		$this->setsubsvalue();
 		if ( empty($this->subsvalue) || $this->subsvalue=="false") {
 			if ( empty($this->subspostv) || $this->subspostv=="false") { //wasn't set, won't be set - ignore.
