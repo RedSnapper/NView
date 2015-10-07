@@ -458,57 +458,8 @@ trait Form {
  * Processes multiple interdependent formlets, preventing invalidity from commits.
  * All formlets must be processed for a commit.
  * Call reveal() for each fm after this.
- * LIMITATIONS: currently this does not support subscribers (which should be orthogonal) or functions.
- */
-
+  */
 	public static function formlets($fms=array(),$valfn=NULL,$show=true) {
-		$us=true; $debug=false;
-		foreach($fms as $fm) {
-			if(! $fm->isMe()) { $us=false; }
-			if($fm->debug) { $debug = true;
-				$fm->forminfo();
-			}
-		}
-		if ( $us ) {
-			foreach($fms as $fm) {
-				$fm->show=$show;
-				$fm->setfrompost();
-			}
-			$valid = true;
-			foreach($fms as $fm) {
-				$fm->prefilter();
-				$fm->validate();
-				$fmval = $fm->valid();
-				$valid = $valid && $fmval;
-				if($debug) { $vtxt= $fmval? "true":"false";print("<p>{$fm->sig()}: Validate returned $vtxt</p>"); }
-			}
-			if (!is_null($valfn)) {
-				$valid = $valid && $valfn();
-			}
-			if ($valid) {
-				foreach($fms as $fm) {
-					if (!$fm->success()) {
-						$fm->setcommit($fm->commit());
-						if($debug) { 
-							$succ = $fm->success() ? "true" : "false"; 
-							print("<p>{$fm->sig()}: success was $succ</p>"); 
-						}
-						if ( $fm->show || !($fm->success()) ) { //do not repop if !show and com.
-							$fm->setfields(true); //we can repopulate the fields if we want.
-						}
-					} else {
-						if($debug) { print("<p>{$fm->sig()}: preset to successful</p>"); }
-					}
-				}
-			}
-		} else {
-			foreach($fms as $fm) {
-				$fm->setfields(false);
-			}
-		}
-	}
-
-	public static function subformlets($fms=array(),$valfn=NULL,$show=true) {
 	 //	$us: All formlets in the array must be posted for this to consider itself posted. 
 		$us=true; 
 
