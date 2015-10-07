@@ -515,6 +515,7 @@ trait Form {
 				$fm->forminfo();
 			}
 		}
+		
 	 // $us is the equivalent of $this->isMe() in a normal form process.
 		if ( $us ) {
 			 //	$func: Any formlet that has a _fn causes that _fn to be executed rather than 'save'. 
@@ -541,6 +542,7 @@ trait Form {
 				//keep $validity across all formlets..
 				$valid = true;
 				foreach($fms as $fm) {
+					//The subsfield logic indicates that $fm is either non-existent or to be deleted. so skip validation.
 					if (!isset($fm->subsfield) || (!empty($fm->subspostv) && !($this->subspostv=="fm"))) {
 						$fm->prefilter();
 						$fm->validate();
