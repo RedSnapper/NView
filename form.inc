@@ -512,7 +512,8 @@ trait Form {
 				foreach($fms as $fm) { 
 					//The subsfield logic indicates that $fm is either non-existent or to be deleted. so skip validation.
 					$spv = @$fm->getSubsPostValue();
-					if (!isset($fm->getSubsField()) || (!empty($spv) && !($spv=="fm"))) {
+					$sfn = @$fm->getSubsField();
+					if (is_null($sfn) || ($spv!="fm")) {
 						$fm->prefilter();
 						$fm->validate();
 						$fmval = $fm->valid();
