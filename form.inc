@@ -474,6 +474,9 @@ trait Form {
 
 	 //	$debug: Any formlet in the array may be marked as debug for this to consider itself using debug. 
 		$debug=false;
+		
+	 //	$success: We wil return if all formlets were successfully committed. 
+		$success=false;
 
 	 // Go through each form, and set $us and $debug accordingly.
 		foreach($fms as $fm) {
@@ -526,6 +529,7 @@ trait Form {
 					$valid = $valid && $valfn();
 				}
 				if ($valid) {
+					$success = true;	//use logical and against every formlet..
 					foreach($fms as $fm) {
 						//we need to run subscribe only after everything (that needs to be) is validated.
 						$sfn = @$fm->getSubsField();
@@ -547,6 +551,7 @@ trait Form {
 						} else {
 							if($debug) { print("<p>{$fm->sig()}: preset to successful</p>"); }
 						}
+						$success &= $fm->success();
 					}
 				}
 			}
@@ -555,6 +560,7 @@ trait Form {
 				$fm->setfields(false);
 			}
 		}
+		return $success;
 	}
 
 	public function setfrompost() {
