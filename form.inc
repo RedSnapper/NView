@@ -557,6 +557,7 @@ trait Form {
 			}
 		} else {
 			foreach($fms as $fm) {
+				$fm->show=$show;
 				$fm->setfields(false);
 			}
 		}
