@@ -486,6 +486,10 @@ trait Form {
 				$fm->forminfo();
 			}
 		}
+		//Now set debug to all the formlets.
+		if ($debug) {
+			foreach($fms as $fm) { $fm->debug = true; } 
+		}
 		
 	 // $us is the equivalent of $this->isMe() in a normal form process.
 		if ( $us ) {
@@ -557,7 +561,6 @@ trait Form {
 			}
 		} else {
 			foreach($fms as $fm) {
-				$fm->show=$show;
 				$fm->setfields(false);
 			}
 		}
