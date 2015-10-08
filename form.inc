@@ -427,7 +427,7 @@ trait Form {
 			switch($kind) {
 				case "cb": {
 					if (($val == '1' && isset($this->bflds[$input])) || ($val == 'on') || ($val == 'true') || ($val == 'checked') ) {
-						$this->view->set("//*[@name='$input']/@value",$val);
+//						$this->view->set("//*[@name='$input']/@value",$val);
 						$this->view->set("//*[@name='$input']/@checked",'checked');
 					}
 				} break;
