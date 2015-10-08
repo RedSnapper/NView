@@ -34,6 +34,7 @@ trait Form {
 	protected $subfn; 		//subscriber CNUD function that happened - one of create/null/update/delete
 	public $redirect;	    //where to go on insert.
 	public $insert_qs; 	    //query string for new records. id placeholder = [[ID]]
+	public $in_composite;	//this formlet is being called via formlets();
 
 /**
  * Wrapper to the $committed variable.
@@ -229,6 +230,7 @@ trait Form {
 		$this->record_found = false;
 		$this->valid = true;
 		$this->show = true;
+		$this->in_composite = false;
 		$this->insert_qs=NULL;
 		$this->redirect = NULL;
 		$this->subsfield =NULL;
@@ -478,8 +480,9 @@ trait Form {
 	 //	$success: We wil return if all formlets were successfully committed. 
 		$success=false;
 
-	 // Go through each form, and set $us and $debug accordingly.
+	 // Go through each form, and set $us,$debug and $in_composite accordingly.
 		foreach($fms as $fm) {
+			$fm->in_composite = true;
 			if(! $fm->isMe()) { $us=false; }
 			if($fm->debug) { 
 				$debug = true;
@@ -924,7 +927,7 @@ trait Form {
 			if (Settings::$sql->query($query)) {
 				if ($r=Settings::$sql->query("select last_insert_id()")) {
 					$this->newid = intval($r->fetch_row()[0]);
-					if (($this->newid !== 0) && ($this->show || !is_null($this->redirect))) {
+					if (!$this->in_composite && (($this->newid !== 0) && ($this->show || !is_null($this->redirect)))) {
 						$this->show = false;
 						$this->redirection($this->redirect,$this->insert_qs,$this->newid);
 					}
