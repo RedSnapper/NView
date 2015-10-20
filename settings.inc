@@ -134,7 +134,7 @@ class Settings extends Singleton {
 			}
 //Now store user data.
 			if (self::table_exists("sio_user")) {
-				if ($rx = self::$sql->query("select id,username,email from sio_user where active='on' and username='". self::@$usr['RU'] ."'")) {
+				if ($rx = self::$sql->query("select id,username,email from sio_user where active='on' and username='". @self::$usr['RU'] ."'")) {
 					while ($row = $rx->fetch_assoc()) {
 						self::$usr['ID']=$row['id'];
 						self::$usr['username']=$row['username'];
@@ -145,7 +145,7 @@ class Settings extends Singleton {
 			}
 //Now store user-profile (app specific) data.
 			if (self::table_exists("sio_userprofile")) {
-				if ($rx = self::$sql->query("select * from sio_userprofile where user='". self::@$usr['ID'] ."'")) {
+				if ($rx = self::$sql->query("select * from sio_userprofile where user='". @self::$usr['ID'] ."'")) {
 					while ($row = $rx->fetch_assoc()) {
 					   foreach($row as $k => $v ) {
 							self::$usr[$k]=$v;
