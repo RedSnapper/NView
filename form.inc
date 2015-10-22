@@ -429,7 +429,6 @@ trait Form {
 			switch($kind) {
 				case "cb": {
 					if (($val == '1' && isset($this->bflds[$input])) || ($val == 'on') || ($val == 'true') || ($val == 'checked') ) {
-//						$this->view->set("//*[@name='$input']/@value",$val);
 						$this->view->set("//*[@name='$input']/@checked",'checked');
 					}
 				} break;
@@ -559,6 +558,10 @@ trait Form {
 							if($debug) { print("<p>{$fm->sig()}: preset to successful</p>"); }
 						}
 						$success &= $fm->success();
+					}
+				} else {
+					foreach($fms as $fm) {
+						$fm->setfields(true);
 					}
 				}
 			}
