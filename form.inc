@@ -559,9 +559,13 @@ trait Form {
 						}
 						$success &= $fm->success();
 					}
-				} else {
+				} else { //special case for subs..
 					foreach($fms as $fm) {
-						$fm->setfields(true);
+						$sfn = @$fm->getSubsField();
+						if (!is_null($sfn)) {
+//							$spv = @$fm->getSubsPostValue();
+							$fm->vset($sfn,'cb');
+						}
 					}
 				}
 			}
@@ -994,7 +998,6 @@ trait Form {
 			}
 		}
 	}
-
 	public function valEmail($name='',$msg="This must be a valid email address") {
 		if (isset($this->fields[$name][0]) && !empty($this->fields[$name][0])) {
 			if (!filter_var($this->fields[$name][0], FILTER_VALIDATE_EMAIL)) {
@@ -1003,7 +1006,6 @@ trait Form {
 			}
 		}
 	}
-
 	public function valSignificant($name='',$msg="This must have a value") {
 		if (isset($this->fields[$name][0])) {
 			if (empty($this->fields[$name][0])) {
@@ -1110,7 +1112,6 @@ trait Form {
 			}
 		}
 	}
-
 	public function valMinLength($name='',$min,$error = NULL)
 	{
 		if (isset($this->fields[$name][0])) {
