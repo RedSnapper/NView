@@ -563,7 +563,7 @@ trait Form {
 					foreach($fms as $fm) {
 						$sfn = @$fm->getSubsField();
 						if (!is_null($sfn)) {
-							$fm->vset($sfn,'cb');
+							$fm->vset($sfn,'cb',$fm->getSubsPostValue()[0]);
 						}
 					}
 				}
