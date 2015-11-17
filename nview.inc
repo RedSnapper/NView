@@ -75,17 +75,17 @@ class NView {
  * 'show'
  */
 	public function show($whole_doc = false) {
-		if (is_null($this->doc) || is_null($this->xp)) {
-			return "";
-		} else {
+		$retval="";
+		if (!is_null($this->doc) && !is_null($this->xp)) {
 			$this->tidyView();
-			if ($whole_doc) {
-				return $this->doc->saveXML();
-			} else {
-				$hs=$this->doc->saveXML();
-				return static::as_fragment($hs);
+            ob_start(); 
+            $this->doc->save('php://output'); 
+            $retval = ob_get_clean();
+			if (!$whole_doc) {
+				$retval = static::as_fragment($retval);
 			}
 		}
+		return $retval;
 	}
 	
 /**
