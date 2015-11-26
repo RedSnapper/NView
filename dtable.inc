@@ -20,6 +20,23 @@ class DTable {
         'selectview'=> "dtable_select.ixml",
         'ajax'=> NULL,
         'columns'=> array(), //each column is an array of information about specialised columns.
+/*
+DTable currently recognises the following values..
+	column_name => array ( //column name must match mysql result field.
+		'formatter' //(function) allows for modification of a field (eg, turn an id into a link).
+		'csvhide'   //(bool) (show/hide this column in the csv file output)
+		'json'		//array() //set javascript json values eg visible to false.
+		'many'  	//(bool) relationship to the primary object - needs a restricted list
+		'query'  	//(string) query used to generate restricted list values (multi-select etc).
+		'filter' => array {
+			'type' => //switch null/multi
+					'null'   //nulls represent something, not just a lack of data..
+					'multi'  // representing if multi-select is to be used.
+			'fields' //(array) filter the value on multiple fields, rather than just one.
+			'label'	 //allows to change the default column name label.
+		}
+	)
+*/        
         'table'=> NULL,
         'pkey'=> NULL,
         'groupby'=> true,
@@ -524,9 +541,7 @@ class DTable {
  
 
         foreach ($columns as $key => $value) {
-
             if(isset($value['filter'])){
-
                 $index = array_search($key,$colnames);
                 if(is_int($index)){
                     $name = "{$this->columns[ $index ]->table}.{$this->columns[ $index ]->orgname}";
@@ -544,14 +559,15 @@ class DTable {
                 $filters[] = array(
                     "name"=>$name,
                     "label"=>$label,
-                    "value"=>$value['filter']
+                    "value"=>$value['filter'],
+                    "query"=>@$value['query']
                 );
-            }
+            }            
         }
 
 
         foreach ($filters as $filter) {
-            if($rx = Settings::$sql->query($filter['value']['query'])){
+            if($rx = Settings::$sql->query($filter['query'])){
                 $type = $filter['value']['type'];
 
                 switch($type){
