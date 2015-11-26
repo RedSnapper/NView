@@ -19,7 +19,7 @@ class DTable {
         'filterview'=> "dtable_f.ixml",
         'selectview'=> "dtable_select.ixml",
         'ajax'=> NULL,
-        'columns'=> array(),
+        'columns'=> array(), //each column is an array of information about specialised columns.
         'table'=> NULL,
         'pkey'=> NULL,
         'groupby'=> true,
@@ -30,7 +30,7 @@ class DTable {
     public $fields;
     public $tables;
     public $restrict;
-    public $columns;
+    public $columns;	//the query return values
     private $filterv;
     public $pkey = NULL;
     public $istatement;  // Statement returned by intial query
@@ -147,8 +147,8 @@ class DTable {
             $th->set("//*[@data-xp='heading']/child-gap()", $name);
             $th->set("//*[@data-xp='heading']/@data-name", $name);
 
-            if(isset($this->settings->columns[$name]['column'])){
-                foreach ($this->settings->columns[$name]['column'] as $key => $value) {
+            if(isset($this->settings->columns[$name]['json'])){
+                foreach ($this->settings->columns[$name]['json'] as $key => $value) {
                     $th->set("//*[@data-xp='heading']/@data-$key",json_encode($value));
                 }
             }
