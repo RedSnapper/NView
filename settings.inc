@@ -2,6 +2,7 @@
 mb_internal_encoding('UTF-8');
 use Monolog\Logger;
 use Monolog\Handler;
+use Monolog\Formatter;
 use Monolog\Processor;
 
 /**
