@@ -22,6 +22,7 @@ class Settings extends Singleton {
 	public static $website=null;
 	public static $domain=null;	//The domain to be used for emails being sent out.
 	private static $sql_types=null;
+	private static $log_handler;
 
 	public static function sql_types() { 
 	    if (is_null(static::$sql_types)) {
@@ -38,10 +39,6 @@ class Settings extends Singleton {
 
  	protected function __construct() {
   		static::$log = new Logger('log');
- 		$log_stream = new Handler\StreamHandler("php://memory",Logger::WARNING);
- 		$log_handler = new Handler\BufferHandler($log_stream); //'DEBUG','INFO','NOTICE','WARNING','ERROR','CRITICAL','ALERT','EMERGENCY' 
-  		$log_handler->setFormatter(new Formatter\HtmlFormatter());
-		static::$log->pushHandler($log_handler);	
  		static::$log->pushProcessor(new Processor\PsrLogMessageProcessor());
  		if($_SERVER['QUERY_STRING']) {
 			parse_str($_SERVER['QUERY_STRING'],self::$qst);
@@ -224,6 +221,22 @@ class Settings extends Singleton {
 			}
 		}
 		return $retval;
+	}
+
+// 	static::$log = new Logger('log');
+	public static function startLog() {
+ 		$log_stream = new Handler\StreamHandler("php://memory",Logger::WARNING);
+ 		static::$log_handler = new Handler\BufferHandler($log_stream); //'DEBUG','INFO','NOTICE','WARNING','ERROR','CRITICAL','ALERT','EMERGENCY' 
+  		static::$log_handler->setFormatter(new Formatter\HtmlFormatter());
+		static::$log->pushHandler(static::$log_handler);	
+	}
+	
+	public static function flushLog() {
+		$handler = static::$log->popHandler();	
+		$handler->close();
+		$fp = fopen("php://memory", 'r+');
+		rewind($fp);
+		return stream_get_contents($fp);		
 	}
 
 	public static function sphinx_esc ( $s ) {
