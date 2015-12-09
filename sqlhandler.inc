@@ -24,8 +24,9 @@ class SQLHandler extends Handler\AbstractProcessingHandler
     protected function write(array $params)
     {
     	array_unshift($params,$this->bind_types);
-		call_user_func_array(array($this->prepared_stmt,'bind_param'),$params);
-		$this->prepared_stmt->execute();
+    	print_r($params);
+//		call_user_func_array(array($this->prepared_stmt,'bind_param'),$params);
+//		$this->prepared_stmt->execute();
     }
     /**
      * {@inheritDoc}
