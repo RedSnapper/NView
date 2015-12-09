@@ -226,7 +226,7 @@ class Settings extends Singleton {
 // 	static::$log = new Logger('log');
 	public static function startLog() { //returns a filehandle..
 		static::$logfile = fopen('php://temp', 'rw+');
- 		static::$log_handler = new Handler\StreamHandler($logfile,Logger::INFO);
+ 		static::$log_handler = new Handler\StreamHandler(static::$logfile,Logger::INFO);
   		static::$log_handler->setFormatter(new Formatter\HtmlFormatter());
 		static::$log->pushHandler(static::$log_handler);
 	}
