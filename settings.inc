@@ -225,8 +225,8 @@ class Settings extends Singleton {
 
 // 	static::$log = new Logger('log');
 	public static function startLog() {
- 		$log_stream = new Handler\StreamHandler("php://memory",Logger::WARNING);
- 		static::$log_handler = new Handler\BufferHandler($log_stream); //'DEBUG','INFO','NOTICE','WARNING','ERROR','CRITICAL','ALERT','EMERGENCY' 
+ 		$log_handler = new Handler\StreamHandler("php://memory",Logger::INFO);
+// 		static::$log_handler = new Handler\BufferHandler($log_stream); //'DEBUG','INFO','NOTICE','WARNING','ERROR','CRITICAL','ALERT','EMERGENCY' 
   		static::$log_handler->setFormatter(new Formatter\HtmlFormatter());
 		static::$log->pushHandler(static::$log_handler);	
 	}
