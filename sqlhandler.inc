@@ -27,7 +27,7 @@ class SQLHandler extends Handler\AbstractProcessingHandler
     	$sql_params = $params['context'];
 		$a_params[] = & $this->bind_types;
 		$n = count($sql_params);
-		for($i = 0; i < $n; $i++) {
+		for($i = 0; $i < $n; $i++) {
 		  $a_params[] = & $sql_params[$i];
 		}    
 		call_user_func_array(array($this->prepared_stmt,'bind_param'),$a_params);
