@@ -236,7 +236,7 @@ class Settings extends Singleton {
 		$result = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<!DOCTYPE div><div xmlns=\"http://www.w3.org/1999/xhtml\">" . stream_get_contents(static::$logfile) . "</div>";		
 		$handler = static::$log->popHandler();	
 		$handler->close();
-		return $result;
+		return new NView($result);
 	}
 
 	public static function sphinx_esc ( $s ) {
