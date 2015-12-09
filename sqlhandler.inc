@@ -23,9 +23,13 @@ class SQLHandler extends Handler\AbstractProcessingHandler
     
     protected function write(array $params)
     {
-    	array_unshift($params,$this->bind_types);
+	// with call_user_func_array, array params must be passed by reference..
     	$sql_params = $params['context'];
-		call_user_func_array(array($this->prepared_stmt,'bind_param'),$sql_params);
+		$a_params[] = & $this->bind_types;
+		foreach($sql_params as $param) {
+		  $a_params[] = & $param;
+		}    
+		call_user_func_array(array($this->prepared_stmt,'bind_param'),$a_params);
 		$this->prepared_stmt->execute();
     }
     /**
