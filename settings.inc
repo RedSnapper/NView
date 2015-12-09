@@ -36,8 +36,9 @@ class Settings extends Singleton {
  */
 
  	protected function __construct() {
- 		static::$log = new Logger('log');
- 		$log_handler = new Handler\BufferHandler(Logger::WARNING); //'DEBUG','INFO','NOTICE','WARNING','ERROR','CRITICAL','ALERT','EMERGENCY' 
+  		static::$log = new Logger('log');
+ 		$log_stream = new Handler\StreamHandler("php://memory",Logger::WARNING);
+ 		$log_handler = new Handler\BufferHandler($log_stream); //'DEBUG','INFO','NOTICE','WARNING','ERROR','CRITICAL','ALERT','EMERGENCY' 
   		$log_handler->setFormatter(new Formatter\HtmlFormatter());
 		static::$log->pushHandler($log_handler);	
  		static::$log->pushProcessor(new Processor\PsrLogMessageProcessor());
