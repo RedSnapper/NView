@@ -225,7 +225,7 @@ class Settings extends Singleton {
 
 // 	static::$log = new Logger('log');
 	public static function startLog() {
- 		static::$log_handler = new Handler\StreamHandler("php://memory",Logger::INFO);
+ 		static::$log_handler = new Handler\StreamHandler("file://tmp/wibble",Logger::INFO);
 // 		static::$log_handler = new Handler\BufferHandler($log_stream); //'DEBUG','INFO','NOTICE','WARNING','ERROR','CRITICAL','ALERT','EMERGENCY' 
   		static::$log_handler->setFormatter(new Formatter\HtmlFormatter());
 		static::$log->pushHandler(static::$log_handler);	
@@ -233,7 +233,7 @@ class Settings extends Singleton {
 	
 	public static function flushLog() {
 		$handler = static::$log->popHandler();	
-		$fp = fopen("php://memory", 'r+');
+		$fp = fopen("file://tmp/wibble", 'r+');
 		rewind($fp);
 		$result = stream_get_contents($fp);		
 		$handler->close();
