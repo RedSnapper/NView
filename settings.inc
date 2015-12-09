@@ -80,36 +80,6 @@ class Settings extends Singleton {
 		   self::$sphinx = null;
 		}
 		self::$sql->set_charset("utf8");
-/*		
-		if (!self::table_exists("sio_session")) {
-            self::$sql->query("CREATE TABLE sio_session(id varchar(255) NOT NULL,ts timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,PRIMARY KEY(id),KEY ts (ts)) ENGINE=InnoDB DEFAULT CHARSET=utf8");
-        }
-        //session field is the normal session cookie, not the xsession value. sid is the xsession key.
-		if (!self::table_exists("sio_sessiondata")) {
-			self::$sql->query("CREATE TABLE sio_sessiondata(sid varchar(200) NOT NULL,name varchar(128) NOT NULL,value longtext NOT NULL,session varchar(200) DEFAULT NULL,ts timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,PRIMARY KEY(sid,name)) ENGINE=InnoDB DEFAULT CHARSET=utf8");
-		}
-		if (!self::table_exists("sio_user")) {
-		    self::$sql->query("CREATE TABLE sio_user (id int(11) NOT NULL AUTO_INCREMENT,username varchar(68) NOT NULL DEFAULT '',password varchar(250) DEFAULT NULL, email text, emailp text,active char(2) DEFAULT 'on',ts timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,  PRIMARY KEY (id),  UNIQUE KEY username (username),  UNIQUE KEY ausername (username,active)) ENGINE=InnoDB DEFAULT CHARSET=utf8");
-		}
-		if (!self::table_exists("sio_userprofile")) {
-		    self::$sql->query("CREATE TABLE sio_userprofile (user int(11) NOT NULL AUTO_INCREMENT,ts timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,PRIMARY KEY (user)) ENGINE=InnoDB DEFAULT CHARSET=utf8");
-		}
-		if (!self::table_exists("sio_activity")) {
-		    self::$sql->query("CREATE TABLE sio_activity(id int(11) NOT NULL AUTO_INCREMENT, name varchar(120) NOT NULL DEFAULT 'unknown', active char(2) DEFAULT'on',PRIMARY KEY(id),UNIQUE KEY (name),KEY(active),KEY(name, active)) ENGINE=InnoDB DEFAULT CHARSET=utf8");
-		}
-		if (!self::table_exists("sio_role")) {
-		    self::$sql->query("CREATE TABLE sio_role(id int(11) NOT NULL AUTO_INCREMENT,cat int(11) NOT NULL DEFAULT '0',name varchar(68) NOT NULL DEFAULT 'None',comment text,active char(2) DEFAULT 'on',PRIMARY KEY(id),UNIQUE KEY (name),KEY (name,active)) ENGINE=InnoDB DEFAULT CHARSET=utf8");
-		}
-		if (!self::table_exists("sio_rolecat")) {
-		    self::$sql->query("CREATE TABLE sio_rolecat(id int(11) NOT NULL AUTO_INCREMENT,name varchar(68) NOT NULL DEFAULT 'None',active char(2) DEFAULT 'on',PRIMARY KEY(id),UNIQUE KEY(name),KEY(name,active)) ENGINE=InnoDB DEFAULT CHARSET=utf8");
-		}
-		if (!self::table_exists("sio_userroles")) {
-		    self::$sql->query("CREATE TABLE sio_userroles(user int(11) NOT NULL DEFAULT '0',role int(11) NOT NULL DEFAULT '0',PRIMARY KEY(user,role)) ENGINE=InnoDB DEFAULT CHARSET=utf8");
-		}
-		if (!self::table_exists("sio_roleactivities")) {
-		    self::$sql->query("CREATE TABLE sio_roleactivities(role int(11) NOT NULL DEFAULT '0',activity int(11) NOT NULL DEFAULT '0',PRIMARY KEY(role,activity)) ENGINE=InnoDB DEFAULT CHARSET=utf8");
-		}
-*/		
 		self::$website='http';
 		if(!empty($_SERVER['HTTPS']) && $_SERVER["HTTPS"]=='on') { self::$website.='s'; }
 		$host=$_SERVER["HTTP_HOST"]; //client used this to get here..
@@ -223,6 +193,7 @@ class Settings extends Singleton {
 		return $retval;
 	}
 
+//SQLHandler is used in the instance.
 // 	static::$log = new Logger('log');
 	public static function startLog() { //returns a filehandle..
 		static::$logfile = fopen('php://temp', 'rw+');
