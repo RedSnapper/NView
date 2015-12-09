@@ -2,6 +2,7 @@
 mb_internal_encoding('UTF-8');
 use Monolog\Logger;
 use Monolog\Handler;
+use Monolog\Formatter;
 
 class SQLHandler extends Handler\AbstractProcessingHandler
 {
@@ -33,7 +34,7 @@ class SQLHandler extends Handler\AbstractProcessingHandler
      */
     protected function getDefaultFormatter()
     {
-        return new NormalizerFormatter();
+        return new Formatter\NormalizerFormatter();
     }
 }
 
