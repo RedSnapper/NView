@@ -233,10 +233,11 @@ class Settings extends Singleton {
 	
 	public static function flushLog() {
 		$handler = static::$log->popHandler();	
-		$handler->close();
 		$fp = fopen("php://memory", 'r+');
 		rewind($fp);
-		return stream_get_contents($fp);		
+		$result = stream_get_contents($fp);		
+		$handler->close();
+		return $result;
 	}
 
 	public static function sphinx_esc ( $s ) {
