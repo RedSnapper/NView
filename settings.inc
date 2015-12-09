@@ -233,7 +233,7 @@ class Settings extends Singleton {
 	
 	public static function flushLog() {
 		rewind(static::$logfile);
-		$result = stream_get_contents(static::$logfile);		
+		$result = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<!DOCTYPE div><div xmlns=\"http://www.w3.org/1999/xhtml\">" . stream_get_contents(static::$logfile) . "</div>";		
 		$handler = static::$log->popHandler();	
 		$handler->close();
 		return $result;
