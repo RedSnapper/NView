@@ -1,11 +1,14 @@
 <?php
 mb_internal_encoding('UTF-8');
+use Monolog\Logger;
+use Monolog\Handler;
+use Monolog\Processor;
 
 /**
  * class 'Settings'
  */
 class Settings extends Singleton {
-
+	public static $log;		//PsrLogLoggerInterface instance
 	public static $sphinx=null;
 	public static $sql=null;
 	public static $url=null; //current url
@@ -33,7 +36,12 @@ class Settings extends Singleton {
  */
 
  	protected function __construct() {
-		if($_SERVER['QUERY_STRING']) {
+ 		static::$log = new Logger('log');
+ 		$log_handler = new Handler\BufferHandler(Logger::WARNING); //'DEBUG','INFO','NOTICE','WARNING','ERROR','CRITICAL','ALERT','EMERGENCY' 
+  		$log_handler->setFormatter(new Formatter\HtmlFormatter());
+		static::$log->pushHandler($log_handler);	
+ 		static::$log->pushProcessor(new Processor\PsrLogMessageProcessor());
+ 		if($_SERVER['QUERY_STRING']) {
 			parse_str($_SERVER['QUERY_STRING'],self::$qst);
 			self::$req=explode ('&',$_SERVER['QUERY_STRING']);
 		}
@@ -63,7 +71,8 @@ class Settings extends Singleton {
 			self::$sql = new mysqli(self::$sqls['host'],self::$sqls['user'],self::$sqls['password'],self::$sqls['database']);
 		}
 		if (self::$sql->connect_error) {
-			die('SQL Connection Error (' . self::$sql->connect_errno . ') ' . self::$sql->connect_error);
+			static::$log->fatal('SQL Connection Error (' . self::$sql->connect_errno . ') ' . self::$sql->connect_error);
+			die();
 		}
 		$srch=getenv('RS_SEARCH_HOST');
 		if (!empty($srch)) {
@@ -72,6 +81,7 @@ class Settings extends Singleton {
 		   self::$sphinx = null;
 		}
 		self::$sql->set_charset("utf8");
+/*		
 		if (!self::table_exists("sio_session")) {
             self::$sql->query("CREATE TABLE sio_session(id varchar(255) NOT NULL,ts timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,PRIMARY KEY(id),KEY ts (ts)) ENGINE=InnoDB DEFAULT CHARSET=utf8");
         }
@@ -100,6 +110,7 @@ class Settings extends Singleton {
 		if (!self::table_exists("sio_roleactivities")) {
 		    self::$sql->query("CREATE TABLE sio_roleactivities(role int(11) NOT NULL DEFAULT '0',activity int(11) NOT NULL DEFAULT '0',PRIMARY KEY(role,activity)) ENGINE=InnoDB DEFAULT CHARSET=utf8");
 		}
+*/		
 		self::$website='http';
 		if(!empty($_SERVER['HTTPS']) && $_SERVER["HTTPS"]=='on') { self::$website.='s'; }
 		$host=$_SERVER["HTTP_HOST"]; //client used this to get here..
@@ -108,7 +119,7 @@ class Settings extends Singleton {
 			self::$domain=$_SERVER["HTTP_DOMAIN"];
 		} else {
 			$domain_arr = explode('.',$host, 2);	//[xxx][yy.coo.bbb]
-			if($domain_arr[0]=='www') { //[WWW.jinarc.co.uk]/[WWW.domain]  [jinarc-preview.redsnapper.net]
+			if($domain_arr[0]=='www') { //[WWW.wibble.co.uk]/[WWW.domain]  [wibble-preview.redsnapper.net]
 				self::$domain=$domain_arr[1];
 			} else {
 				self::$domain=$host;
@@ -232,5 +243,4 @@ class Settings extends Singleton {
 			self::$sphinx->close();
 		}
 	}
-
 }
