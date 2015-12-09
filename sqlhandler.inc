@@ -26,8 +26,9 @@ class SQLHandler extends Handler\AbstractProcessingHandler
 	// with call_user_func_array, array params must be passed by reference..
     	$sql_params = $params['context'];
 		$a_params[] = & $this->bind_types;
-		foreach($sql_params as $param) {
-		  $a_params[] = & $param;
+		$n = count($sql_params);
+		for($i = 0; i < $n; $i++) {
+		  $a_params[] = & $sql_params[$i];
 		}    
 		call_user_func_array(array($this->prepared_stmt,'bind_param'),$a_params);
 		$this->prepared_stmt->execute();
