@@ -114,7 +114,7 @@ CREATE TABLE sio_log (
 		} else {
   			static::$log = $log_i;
 		}
-		if ($is_null($hndl_i)) {
+		if (is_null($hndl_i)) {
 			$log_sql = "insert low_priority into sio_log (l_channel,l_level,l_message,l_date) VALUES (?,?,?,?)";
 			$log_stm = static::$sql->prepare($log_sql);
  			static::$log->pushHandler(new SQLHandler($log_stm,"ssss"));
