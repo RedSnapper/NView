@@ -23,6 +23,7 @@ class Settings extends Singleton {
 	public static $domain=null;	//The domain to be used for emails being sent out.
 	private static $sql_types=null;
 	private $log_stack = array();
+	
 	public static function sql_types() { 
 	    if (is_null(static::$sql_types)) {
 	        static::$sql_types = array();
@@ -37,8 +38,6 @@ class Settings extends Singleton {
  */
 
  	protected function __construct() {
-  		static::$log = new NViewLogger('Log');
- 		static::$log->pushProcessor(new Processor\PsrLogMessageProcessor());
  		if($_SERVER['QUERY_STRING']) {
 			parse_str($_SERVER['QUERY_STRING'],self::$qst);
 			self::$req=explode ('&',$_SERVER['QUERY_STRING']);
@@ -94,6 +93,37 @@ class Settings extends Singleton {
 			}
 		}
 	}
+	
+/**
+ * 'setLogger' Set Logger. Should be done pretty much immediately after construct.
+ 
+CREATE TABLE sio_log (
+  id int(11) NOT NULL AUTO_INCREMENT,
+  l_channel char(64) NOT NULL DEFAULT '',
+  l_level char(8) NOT NULL DEFAULT '',
+  l_message text NOT NULL,
+  l_date char(32) NOT NULL DEFAULT '',
+  ts timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+ 
+ */
+	public function setLogger($log_i = NULL,$hndl_i = NULL) {
+		if (is_null($log_i) && is_null(static::$log) ) {
+  			static::$log = new NViewLogger('Log');
+		} else {
+  			static::$log = $log_i;
+		}
+		if ($is_null($hndl_i)) {
+			$log_sql = "insert low_priority into sio_log (l_channel,l_level,l_message,l_date) VALUES (?,?,?,?)";
+			$log_stm = static::$sql->prepare($log_sql);
+ 			static::$log->pushHandler(new SQLHandler($log_stm,"ssss"));
+		} else {
+ 			static::$log->pushHandler($hndl_i);
+		}
+		static::$log->pushProcessor(new Processor\PsrLogMessageProcessor());
+	}
+	
 
 /**
  * 'usr'  initialise session, and user id etc.
