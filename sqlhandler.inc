@@ -37,10 +37,10 @@ class SQLHandler extends Handler\AbstractProcessingHandler
 		for($i = 0; $i < $n; $i++) {
 		  $a_params[] = & $sql_params[$i];
 		}    
-		$a_params[] = & $params['channel'];
-		$a_params[] = & $params['level_name'];
-		$a_params[] = & $params['message'];
-		$a_params[] = & $params['datetime']['date'];
+		$a_params[] = & $params['formatted']['channel'];
+		$a_params[] = & $params['formatted']['level_name'];
+		$a_params[] = & $params['formatted']['message'];
+		$a_params[] = & $params['formatted']['datetime']; //Cannot use object of type DateTime as array in /websites/shared/dev/sqlhandler.inc on line 43
 		call_user_func_array(array($this->prepared_stmt,'bind_param'),$a_params);
 		$this->prepared_stmt->execute();
     }
