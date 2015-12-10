@@ -108,7 +108,7 @@ CREATE TABLE sio_log (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
  
  */
-	public function setLogger($log_i = NULL,$hndl_i = NULL) {
+	public static function setLogger($log_i = NULL,$hndl_i = NULL) {
 		if (is_null($log_i) && is_null(static::$log) ) {
   			static::$log = new NViewLogger('Log');
 		} else {
