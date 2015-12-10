@@ -4,10 +4,40 @@ use Monolog\Logger;
 use Monolog\Handler;
 use Monolog\Formatter;
 
+class NViewLogger extends Logger
+{
+	private $stack;
+	private $base_name;
+	public function __construct($name = "Log", array $handlers = array(), array $processors = array())
+    {
+        $this->base_name = $name;
+    	$this->stack = array($name);
+        parent::__construct($name,$handlers,$processors);
+    }
+    public function pushName($name = "Log") {
+    	$stack[] = $name;
+    	$this->name = $name;		//sets Logger channel;
+    }
+    public function popName() {
+    	$name = $this->base_name;
+    	if (count($this->stack) > 0) {
+			$name = array_pop($this->stack);
+		}
+		$this->name = $name; 		//resets Logger channel;
+    }
+}
+
 class SQLHandler extends Handler\AbstractProcessingHandler
 {
-	private $prepared_stmt;	//insert ignore into log_xx (a,b,c,d) values (?,?,?,?)'
-	private $bind_types;	//insert ignore into log_xx (a,b,c,d) values (?,?,?,?)'
+/*
+ * Example usage
+ * 		$log_sql = "insert low_priority into my_log (user,message,linkref,receiver,event,l_channel,l_level,l_message,l_date) VALUES (?,?,?,?,?,?,?,?,?)";
+ *  	$log_stm = Settings::$sql->prepare($log_sql);
+ * 		$log_handler = new SQLHandler($log_stm,"iisiissss");
+ * 		Settings::$log->pushHandler($log_handler);
+*/
+	private $prepared_stmt;
+	private $bind_types;
 
     public function setQuery($p_stmt = NULL,$b_types = NULL) {
     	$this->prepared_stmt = $p_stmt;
@@ -30,6 +60,10 @@ class SQLHandler extends Handler\AbstractProcessingHandler
 		for($i = 0; $i < $n; $i++) {
 		  $a_params[] = & $sql_params[$i];
 		}    
+		$a_params[] = & $params['channel'];
+		$a_params[] = & $params['level_name'];
+		$a_params[] = & $params['message'];
+		$a_params[] = & $params['datetime']['date'];
 		call_user_func_array(array($this->prepared_stmt,'bind_param'),$a_params);
 		$this->prepared_stmt->execute();
     }

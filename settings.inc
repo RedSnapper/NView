@@ -22,8 +22,7 @@ class Settings extends Singleton {
 	public static $website=null;
 	public static $domain=null;	//The domain to be used for emails being sent out.
 	private static $sql_types=null;
-	private static $log_handler;
-	private static $logfile;
+	private $log_stack = array();
 	public static function sql_types() { 
 	    if (is_null(static::$sql_types)) {
 	        static::$sql_types = array();
@@ -38,7 +37,7 @@ class Settings extends Singleton {
  */
 
  	protected function __construct() {
-  		static::$log = new Logger('log');
+  		static::$log = new NViewLogger('Log');
  		static::$log->pushProcessor(new Processor\PsrLogMessageProcessor());
  		if($_SERVER['QUERY_STRING']) {
 			parse_str($_SERVER['QUERY_STRING'],self::$qst);
@@ -193,24 +192,27 @@ class Settings extends Singleton {
 		return $retval;
 	}
 
-//SQLHandler is used in the instance.
-// 	static::$log = new Logger('log');
-	public static function startLog() { //returns a filehandle..
-		static::$logfile = fopen('php://temp', 'rw+');
- 		static::$log_handler = new Handler\StreamHandler(static::$logfile,Logger::INFO);
-  		static::$log_handler->setFormatter(new Formatter\HtmlFormatter());
-		static::$log->pushHandler(static::$log_handler);
+	public static function pushLog($name="Log",$level = Logger::DEBUG, $bubble = false) {
+		$logfile = fopen('php://temp', 'rw+');
+ 		$log_handler = new Handler\StreamHandler($logfile,$level,$bubble);
+  		$log_handler->setFormatter(new Formatter\HtmlFormatter());
+  		static::$log_stack[] = $logfile;
+		static::$log->pushHandler($log_handler);
+		static::$log->pushName($name);
 	}
 	
-	public static function flushLog() {
-		rewind(static::$logfile);
-		$result = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<!DOCTYPE div><div xmlns=\"http://www.w3.org/1999/xhtml\">" . stream_get_contents(static::$logfile) . "</div>";		
+	public static function popLog() {
+		if (count(static::$log_stack) > 0)
+		$logfile = array_pop(static::$log_stack);
+		rewind($logfile);
+		$result = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<!DOCTYPE div><div xmlns=\"http://www.w3.org/1999/xhtml\">" . stream_get_contents($logfile) . "</div>";		
 		$handler = static::$log->popHandler();	
 		$handler->close();
+		static::$log->popName();
 		return new NView($result);
 	}
 
-	public static function sphinx_esc ( $s ) {
+	public static function sphinx_esc( $s ) {
 		$retval="";
 		if (mb_check_encoding($s)) {
 			$from = array ( '\\', '(',')','|','-','!','@','~','"','&', '/', '^', '$', '=', "'", "\x00", "\n", "\r", "\x1a" );
