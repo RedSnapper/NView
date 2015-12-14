@@ -22,7 +22,7 @@ class Settings extends Singleton {
 	public static $website=null;
 	public static $domain=null;	//The domain to be used for emails being sent out.
 	private static $sql_types=null;
-	private $log_stack = array();
+	private static $log_stack = array();
 	
 	public static function sql_types() { 
 	    if (is_null(static::$sql_types)) {
