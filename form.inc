@@ -928,6 +928,8 @@ trait Form {
 			}
 			$query="insert " .$ignore. "into "  . $this->table . "(" . $klist . $flist . ") values(" . $vlist . ")".$dupekey.$ulist;
 			if($this->debug) {
+				print('<br />DEBUG: klist=' . $klist);
+				print('<br />DEBUG: flist=' . $flist);
 				print('<br />DEBUG: Commit SQL=' . $query);
 			}
 			if (Settings::$sql->query($query)) {
