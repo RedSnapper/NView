@@ -3,5 +3,6 @@
     "require": {
         "phpmailer/phpmailer": "~5.2.10",
         "monolog/monolog": "~1.17"
+       	"google/recaptcha": "~1.1",
     }
 }
