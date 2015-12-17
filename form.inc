@@ -924,7 +924,7 @@ trait Form {
 				$klist = rtrim($klist,","); //we need to get rid of this one also..
 			}
 			if (strcmp($klist, ",") == 0) {
-				$klist="";					//no primary key set here.
+				print("<br />ERROR: Primary key was not set");
 			}
 			if (!empty($ulist)) {
 				$dupekey = " on duplicate key update ";
