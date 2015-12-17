@@ -923,6 +923,9 @@ trait Form {
 				$ignore = " ignore ";
 				$klist = rtrim($klist,","); //we need to get rid of this one also..
 			}
+			if (strcmp($klist, ",") == 0) {
+				$klist="";					//no primary key set here.
+			}
 			if (!empty($ulist)) {
 				$dupekey = " on duplicate key update ";
 			}
