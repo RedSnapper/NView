@@ -256,7 +256,7 @@ trait Form {
  * 'seterr'
  */
 	function seterr($ident=NULL,$value=NULL) {
-		$this->view->set("//*[*[@data-msg='". $ident ."']]/@class/child-gap()","<span>invalid</span>");
+		$this->view->set("//*[*[@data-msg='". $ident ."']]/@class/child-gap()"," invalid");
 		$this->view->set("//*[@data-msg='". $ident ."']/child-gap()","<span>$value</span>");
 	}
 
