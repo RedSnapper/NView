@@ -332,6 +332,7 @@ trait Form {
 			$v = new NView('radio_v.ixml');
 		}
 		$v->set("//h:input/@name",$input);
+		//generate all the radio buttons
 		if ($rx = Settings::$sql->query($qvp)) {
 			while ($f = $rx->fetch_assoc()) {
 				$o = new NView($v);
@@ -341,18 +342,19 @@ trait Form {
 			}
 			$rx->close();
 		}
+		//set the selected radio button(s)		
 		if (isset($this->fields[$input])) {
 			foreach ($this->fields[$input] as $val) {
-				$this->view->set("//h:input[@type='radio'][@name='$input']/@checked","checked");
+				$this->view->set("//h:input[@type='radio'][@value='" . $val . "'][@name='$input']/@checked","checked");
 			}
 		} else {
 			if(is_array($this->dflds[$input])) {
 				foreach ($this->dflds[$input] as $val) {
-					$this->view->set("//h:input[@type='radio'][@name='$input']/@checked","checked");
+					$this->view->set("//h:input[@type='radio'][@value='" . $val . "'][@name='$input']/@checked","checked");
 				}
 			} else {
 				$val=$this->dflds[$input];
-				$this->view->set("//h:input[@type='radio'][@name='$input']/@checked","checked");
+				$this->view->set("//h:input[@type='radio'][@value='" . $val . "'][@name='$input']/@checked","checked");
 			}
 		}
 	}
