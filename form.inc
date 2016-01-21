@@ -337,7 +337,7 @@ trait Form {
 				$o = new NView($v);
 				$o->set("/*/h:input/@value",$f['value']);
 				$o->set("/*/h:span/child-gap()",$f['prompt']);
-				$this->view->set("//*[@data-xp='$input']/*[@data-xp='radiogroup']/child-gap()",$o);
+				$this->view->set("//*[@data-xp='$input']//*[@data-xp='radiogroup']/child-gap()",$o);
 			}
 			$rx->close();
 		}
