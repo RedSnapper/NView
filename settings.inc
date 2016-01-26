@@ -222,10 +222,14 @@ CREATE TABLE sio_log (
 		return $retval;
 	}
 
-	public static function pushLog($name="Log",$level = Logger::DEBUG, $bubble = false) {
+	public static function pushLog($name="Log",$level = Logger::DEBUG, $bubble = false, $formatter = NULL) {
 		$logfile = fopen('php://temp', 'rw+');
  		$log_handler = new Handler\StreamHandler($logfile,$level,$bubble);
-  		$log_handler->setFormatter(new Formatter\HtmlFormatter());
+ 		if (is_null($formatter)) {
+   			$log_handler->setFormatter(new Formatter\HtmlFormatter());
+		} else {
+   			$log_handler->setFormatter($formatter);
+		}
   		static::$log_stack[] = $logfile;
 		static::$log->pushHandler($log_handler);
 		static::$log->pushName($name);
