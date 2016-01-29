@@ -337,7 +337,7 @@ trait Form {
 			while ($f = $rx->fetch_assoc()) {
 				$o = new NView($v);
 				$o->set("/*/h:input/@value",$f['value']);
-				$o->set("/*/h:span/child-gap()",$f['prompt']);
+				$o->set("/*/*[@data-xp='label']/child-gap()",$f['prompt']);
 				$this->view->set("//*[@data-xp='$input']//*[@data-xp='radiogroup']/child-gap()",$o);
 			}
 			$rx->close();
