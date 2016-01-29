@@ -771,23 +771,24 @@ trait Form {
 	public function setfields($inpost=false) {
 		if (!$inpost) {
 			if ((count($this->gflds) > 0) || isset($this->table)) {
-				$getf = array_combine($this->gflds,$this->names);
+				$getf = array_combine($this->names,$this->gflds);
 				$flds = "";
-				foreach ($getf as $i => $k) {
-					if (strcmp($i, $k) === 0) {
-						if (mb_strpos($i,";") !== false) {
+
+				foreach ($getf as $key => $value) {
+					if (strcmp($key, $value) === 0) {
+						if (mb_strpos($key,";") !== false) {
 							$fld_composite="concat(";
-							$n_arr = explode(";",$i);
+							$n_arr = explode(";",$value);
 							$fsize = count($n_arr);
 							for($j=0; $j<$fsize; $j++) {
 								$fld_composite .= $n_arr[$j] . ",';',";
 							}
-							$flds .= substr($fld_composite,0, -5) . ") as `{$k}`,";
+							$flds .= substr($fld_composite,0, -5) . ") as `{$value}`,";
 						} else {
-							$flds .= "$i,";
+							$flds .= "$key,";
 						}
 					} else {
-						$flds .= $i . " as {$k},";
+						$flds .= $value . " as {$key},";
 					}
 				}
 				$flds = rtrim($flds,",");
