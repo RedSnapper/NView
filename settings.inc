@@ -181,6 +181,14 @@ CREATE TABLE sio_log (
 		}
 		return $result;
 	}
+	
+/**
+ * 'Settings::blank' returns what empty() should return
+ */
+	public static function blank($value) {
+		return empty($value) && !is_numeric(@$value);
+	}
+	
 
 /**
  * 'esc' mysql escape.
