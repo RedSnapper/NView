@@ -171,7 +171,7 @@ trait Form {
 
 	private function ident() { //ident includes userid and is used as a SCRF Token
 		$ident = '';
-		if(!Settings::blank(Settings::$usr['ID'])) {
+		if(isset(Settings::$usr['ID'])) {
 			$ident = hash('sha256',Settings::$usr['ID'] . '_' . $this->signature,false);
 		} else {
 			$ident = hash('sha256',Session::get() . '_' .$this->signature,false);
@@ -203,7 +203,7 @@ trait Form {
 			if (strpos($vp,'/') === false) {
 				$file_ar=pathinfo($bt[0]['file']); //want the file.
 				$file=$file_ar['dirname'].'/';
-				if(Settings::blank($vp)) { //need this b/c form is a trait.
+				if(is_null($vp)) { //need this b/c form is a trait.
 					$file .= $file_ar['filename'];
 				} else {
 					$file .= $vp;
@@ -213,7 +213,7 @@ trait Form {
 			}
 			$this->view = new NView($file);
 			$err = $this->view->messages(); //currently unused.
-			if (!Settings::blank($err)) {
+			if (mb_strlen($err) > 0) { 
 				print $err;
 			}
 		}
@@ -367,7 +367,7 @@ trait Form {
 				$v = new NView('option_v.ixml');
 				$err = $v->messages();
 			}
-			if (isset($err) && !Settings::blank($err)) {
+			if (isset($err) && (mb_strlen($err) > 0)) {
 				echo $err;
 			} else {
 				if ($rx = Settings::$sql->query($qvp)) {
@@ -394,7 +394,7 @@ trait Form {
 					}
 				}
 				$err = $v->messages();
-				if (!Settings::blank($err)) {
+				if (mb_strlen($err) > 0) {
 					$v->set("//*[@data-xp='debug']",$err);
 				}
 			}
@@ -504,7 +504,7 @@ trait Form {
 				$fm->show=$show;
 				$fm->setfound(true);
 				$fm->setfrompost();
-				if (!Settings::blank($fm->fields['_fn'][0]) && strcmp($fm->fields['_fn'][0],"save") !== 0 ) {
+				if (isset($fm->fields['_fn'][0]) && strcmp($fm->fields['_fn'][0],"save") !== 0 ) {
 					if($debug) {
 						print("<p>Non-save function:".$fm->fields['_fn'][0]."</p>");
 					}
@@ -641,7 +641,7 @@ trait Form {
 			$this->show=$show;
 			$this->record_found=true;	//The one that was posted..
 			$this->setfrompost();
-			if (!Settings::blank($this->fields['_fn'][0]) && strcmp($this->fields['_fn'][0],"save") !== 0 ) {
+			if (isset($this->fields['_fn'][0]) && strcmp($this->fields['_fn'][0],"save") !== 0 ) {
 				if($this->debug) {
 					print("<p>Non-save function:".$this->fields['_fn'][0]."</p>");
 				}
@@ -713,8 +713,8 @@ trait Form {
  */
 	public function subscriber($aggregate=false) {
 		$this->setsubsvalue();
-		if ( Settings::blank($this->subsvalue) || $this->subsvalue=="false") {
-			if ( Settings::blank($this->subspostv) || $this->subspostv=="false") { //wasn't set, won't be set - ignore.
+		if ( !isset($this->subsvalue) || $this->subsvalue=="false") {
+			if ( !isset($this->subspostv) || $this->subspostv=="false") { //wasn't set, won't be set - ignore.
 				$this->subfn='null';
 				$this->committed = true; //was empty, is empty no need to validate or commit.
 			} else { //was empty - now inserted.
@@ -723,7 +723,7 @@ trait Form {
 				$this->committed = false; //need to commit update.
 			}
 		} else { //subsvalue is true.
-			if ( Settings::blank($this->subspostv) || $this->subspostv=="false") { //was set, has been unset - a delete.
+			if ( !isset($this->subspostv) || $this->subspostv=="false") { //was set, has been unset - a delete.
 				$this->subsvalue="false";
 				$this->subfn='delete';
 				$this->delete();
@@ -794,7 +794,7 @@ trait Form {
 				$flds = rtrim($flds,",");
 				if (isset($this->table)) {
 					$condition=$this->pkeysql();
-					if(Settings::blank($flds)) {
+					if(mb_strlen($flds) == 0) {
 						$flds = "true";
 					}
 					$query="select " . $flds . " from " . $this->table . " where " . $condition;
@@ -922,14 +922,14 @@ trait Form {
 			$vlist = rtrim($vlist,",");
 			$ignore = "";
 			$dupekey = "";
-			if (Settings::blank($flist)) {
+			if (mb_strlen($flist) == 0) {
 				$ignore = " ignore ";
 				$klist = rtrim($klist,","); //we need to get rid of this one also..
 			}
 			if (strcmp($klist, ",") == 0) {
 				print("<br />ERROR: Primary key was not set");
 			}
-			if (!Settings::blank($ulist)) {
+			if (mb_strlen($ulist) > 0) {
 				$dupekey = " on duplicate key update ";
 			}
 			$query="insert " .$ignore. "into "  . $this->table . "(" . $klist . $flist . ") values(" . $vlist . ")".$dupekey.$ulist;
@@ -987,7 +987,7 @@ trait Form {
 	public function valMacro($name='',$msg="Invalid Macrotext") {
 		$this->valid = true;
 		if (isset($this->fields[$name][0])) {
-			if (Settings::blank($this->fields[$name][0]) || !is_string($this->fields[$name][0])) {
+			if ((mb_strlen($this->fields[$name][0]) == 0) || !is_string($this->fields[$name][0])) {
 				$this->valid = true;
 			} else {
 				$adv = mb_strpos($this->fields[$name][0],"⌽") === false ? 0:1;
@@ -1006,7 +1006,7 @@ trait Form {
 		}
 	}
 	public function valEmail($name='',$msg="This must be a valid email address") {
-		if (isset($this->fields[$name][0]) && !Settings::blank($this->fields[$name][0])) {
+		if (isset($this->fields[$name][0]) && (mb_strlen($this->fields[$name][0]) > 0)) {
 			if (!filter_var($this->fields[$name][0], FILTER_VALIDATE_EMAIL)) {
 				$this->valid = false;
 				$this->seterr($name,$msg);
@@ -1015,7 +1015,7 @@ trait Form {
 	}
 	public function valSignificant($name='',$msg="This must have a value") {
 		if (isset($this->fields[$name][0])) {
-			if (Settings::blank($this->fields[$name][0])) {
+			if (mb_strlen($this->fields[$name][0]) == 0) {
 				$this->valid = false;
 				$this->seterr($name,$msg);
 			}
@@ -1026,7 +1026,7 @@ trait Form {
 	}
 	public function valNumeric($name='',$msg=" This must be a number.") {
 		if (isset($this->fields[$name][0])) {
-			if (Settings::blank($this->fields[$name][0]) || !is_numeric($this->fields[$name][0])) {
+			if ((mb_strlen($this->fields[$name][0]) > 0) && !is_numeric($this->fields[$name][0])) {
 				$this->valid = false;
 				$this->seterr($name,$msg);
 			}
@@ -1034,7 +1034,7 @@ trait Form {
 	}
 	public function valInt($name='',$msg=" This must be a whole number.") {
 		if (isset($this->fields[$name][0])) {
-			if (Settings::blank($this->fields[$name][0]) || !is_int($this->fields[$name][0])) {
+			if ((mb_strlen($this->fields[$name][0]) > 0) && !is_int($this->fields[$name][0])) {
 				$this->valid = false;
 				$this->seterr($name,$msg);
 			}
@@ -1051,7 +1051,7 @@ trait Form {
 	}
 	public function valNoWhitespace($name='',$msg=" This must contain no whitespace.") {
 		if (isset($this->fields[$name][0])) {
-			if (Settings::blank($this->fields[$name][0]) || !is_string($this->fields[$name][0]) || preg_match('/\s/',$this->fields[$name][0])) {
+			if ((mb_strlen($this->fields[$name][0]) > 0)  && (!is_string($this->fields[$name][0]) || preg_match('/\s/',$this->fields[$name][0]))) {
 				$this->valid = false;
 				$this->seterr($name,$msg);
 			}
@@ -1059,7 +1059,7 @@ trait Form {
 	}
 	public function valString($name='',$msg="This must be a string") {
 		if (isset($this->fields[$name][0])) {
-			if (Settings::blank($this->fields[$name][0]) || !is_string($this->fields[$name][0])) {
+			if ((mb_strlen($this->fields[$name][0]) > 0)  && !is_string($this->fields[$name][0])) {
 				$this->valid = false;
 				$this->seterr($name,$msg);
 			}
@@ -1067,7 +1067,7 @@ trait Form {
 	}
 	public function valAlnum($name='',$msg="This must be alphanumeric only.") {
 		if (isset($this->fields[$name][0])) {
-			if (!Settings::blank($this->fields[$name][0]) && !ctype_alnum($this->fields[$name][0])) {
+			if ((mb_strlen($this->fields[$name][0]) > 0) && !ctype_alnum($this->fields[$name][0])) {
 				$this->valid = false;
 				$this->seterr($name,$msg);
 			}
@@ -1084,7 +1084,7 @@ trait Form {
 	public function valUnique($name='',$msg="This must be unique") {
 		if (isset($this->table)) {
 			if (isset($this->fields[$name][0])) {
-				if (!Settings::blank($this->fields[$name][0]) && is_string($this->fields[$name][0])) {
+				if ((mb_strlen($this->fields[$name][0]) > 0) && is_string($this->fields[$name][0])) {
 					$value=$this->fields[$name][0];
 					Settings::esc($value);
 					$sql="select " . $name . " from " . $this->table . " where " . $name . "='" . $value . "' and not(" . $this->pkeysql() . ")";
@@ -1104,7 +1104,7 @@ trait Form {
 //If the date, time, or datetime value extracted from str is illegal,  returns NULL and produces a warning.
 	public function valDate($name='',$format='%Y-%m-%d',$msg="Illegal date format. ") {
 		if (isset($this->fields[$name][0])) {
-			if (!Settings::blank($this->fields[$name][0]) && is_string($this->fields[$name][0])) {
+			if ((mb_strlen($this->fields[$name][0]) > 0) && is_string($this->fields[$name][0])) {
 				$value=$this->fields[$name][0];
 				Settings::esc($format);
 				Settings::esc($value);
@@ -1141,7 +1141,7 @@ trait Form {
 			{
 				$this->valid = false;
 				if(!isset($error)){
-				$msg = "$name cannot be more than $max characters long.";
+					$msg = "$name cannot be more than $max characters long.";
 				}
 				else{
 					$msg = $error;
