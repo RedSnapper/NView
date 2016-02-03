@@ -14,6 +14,7 @@
 class DTable {
 
     static $defaults = array(
+    	'debug'=>false,
         'csvFileName'=>"report.csv",
         'view'=> "dtable_v.ixml",
         'filterview'=> "dtable_f.ixml",
@@ -43,7 +44,7 @@ DTable currently recognises the following values..
         'csvfields'=>''
     );
 
-    private $options;
+    private $settings;
     public $fields;
     public $tables;
     public $restrict;
@@ -74,7 +75,7 @@ DTable currently recognises the following values..
         $groupby = $this->settings->groupby ? $this->groupby : "";
         
         $restriction = $this->getRestriction('nofilter');
-        $this->istatement = self::sql_exec("select {$this->fields} from {$this->tables} {$restriction} {$groupby}");
+        $this->istatement = $this->sql_exec("select {$this->fields} from {$this->tables} {$restriction} {$groupby}");
 
         $md = $this->istatement->result_metadata();
         $this->columns = mysqli_fetch_fields($md);
@@ -121,7 +122,7 @@ DTable currently recognises the following values..
             }
 
             $sql = "select {$fields} from {$this->tables} $restrict {$this->groupby}";
-            $stmt = self::sql_exec($sql,$this->bindings);
+            $stmt = $this->sql_exec($sql,$this->bindings);
         }
         $it = new RecursiveIteratorIterator(new RecursiveArrayIterator($this->data_output($stmt,false)));
         $ids = array();
@@ -209,10 +210,10 @@ DTable currently recognises the following values..
         $restrict = $this->getRestriction();
 
         $sql = "select {$this->fields} from {$this->tables} $restrict {$groupby} $order"; // Get total number of filterd records without the limit
-        $stmt = self::sql_exec($sql,$this->bindings);
+        $stmt = $this->sql_exec($sql,$this->bindings);
         $recordsFiltered= $stmt->num_rows;
         $sql = "select {$this->fields} from {$this->tables} $restrict {$groupby} $order $limit "; // Get total number of filterd records with the limit
-        $stmt = self::sql_exec($sql,$this->bindings);
+        $stmt = $this->sql_exec($sql,$this->bindings);
 
         return array(
             "draw"              => intval( $request['draw'] ),
@@ -226,7 +227,7 @@ DTable currently recognises the following values..
         $groupby = $this->settings->groupby ? $this->groupby : "";
         $restrict = $this->getRestriction();
         $sql = "select {$this->fields} from {$this->tables} $restrict {$groupby}"; // Get total number of filterd records without the limit
-        $stmt = self::sql_exec($sql,$this->bindings);
+        $stmt = $this->sql_exec($sql,$this->bindings);
         return $this->data_output($stmt);
     }
 
@@ -613,7 +614,7 @@ DTable currently recognises the following values..
      *   used for safely escaping strings.
      * @return mysqli_result  Result object
      */
-    private static function sql_exec ($sql=NULL ,$bindings=NULL)
+    private function sql_exec($sql=NULL ,$bindings=NULL)
     {
         $stmt = Settings::$sql->prepare($sql);
         if($stmt){
@@ -630,11 +631,14 @@ DTable currently recognises the following values..
         }else{
             self::fatal(Settings::$sql->error);
         }
-
-        if(!$stmt->execute()){
-            self::fatal(Settings::$sql->error);
-        }else{
-            $stmt->store_result();
+		if ($this->settings->debug) {
+			print_r($stmt);
+		} else {
+			if(!$stmt->execute()){
+				self::fatal(Settings::$sql->error);
+			}else{
+				$stmt->store_result();
+			}
         }
         return $stmt;
     }
