@@ -185,17 +185,17 @@ CREATE TABLE sio_log (
 /**
  * encode a string parameter for url inclusion.
  */
-function uencode($data,$pw="Never use the default password!") {
+public static function uencode($data,$pw="Never use the default password!") {
    return str_replace(array('+','/','='),array('-','_',''),openssl_encrypt(gzdeflate($data),"aes128",$pw,0,"Use-owt-but-this"));
 }
 
 /**
  * decode a string parameter for url inclusion.
  */
-function udecode($data,$pw="Never use the default password!") {
+public static function udecode($data,$pw="Never use the default password!") {
     $b64s = str_replace(array('-','_'),array('+','/'),$data);
     $m4 = strlen($b64s) % 4;
-    if ($m4 > 0) { $b64s .= substr('====', $mod4); }
+    if ($m4 > 0) { $b64s .= substr('====', $m4); }
     return gzinflate(openssl_decrypt($b64s,"aes128",$pw,0,"Use-owt-but-this"));
 }
 
