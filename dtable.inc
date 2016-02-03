@@ -626,13 +626,14 @@ DTable currently recognises the following values..
                   $a_params[] = & $bindings[$i];
                 }
                 // Need to pass as paramters to bind_param and needs to be by reference
-                call_user_func_array( array($stmt, 'bind_param'),$a_params); 
+                call_user_func_array( array($stmt,'bind_param'),$a_params); 
             }
         }else{
             self::fatal(Settings::$sql->error);
         }
 		if ($this->settings->debug) {
-			print_r($stmt);
+			$bnd = print_r($bindings,true);
+			print("\n==== SQL ====\n$sql\n\n==== Bindings ====\n$bnd\n\n");
 		} else {
 			if(!$stmt->execute()){
 				self::fatal(Settings::$sql->error);
