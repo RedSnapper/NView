@@ -108,7 +108,7 @@ trait Form {
 
 /**
  * Wrapper to the $record_found variable.
- * Used by formlets() to set record_found. 
+ * Used by formlets() to set record_found.
  * @param bool $state (optional, defaults to true).
  */
 	public function setfound($state = true) {
@@ -213,7 +213,7 @@ trait Form {
 			}
 			$this->view = new NView($file);
 			$err = $this->view->messages(); //currently unused.
-			if (mb_strlen($err) > 0) { 
+			if (mb_strlen($err) > 0) {
 				print $err;
 			}
 		}
@@ -342,7 +342,7 @@ trait Form {
 			}
 			$rx->close();
 		}
-		//set the selected radio button(s)		
+		//set the selected radio button(s)
 		if (isset($this->fields[$input])) {
 			foreach ($this->fields[$input] as $val) {
 				$this->view->set("//h:input[@type='radio'][@value='" . $val . "'][@name='$input']/@checked","checked");
@@ -472,32 +472,32 @@ trait Form {
  * Call reveal() for each fm after this.
   */
 	public static function formlets($fms=array(),$valfn=NULL,$show=true) {
-	 //	$us: All formlets in the array must be posted for this to consider itself posted. 
-		$us=true; 
+	 //	$us: All formlets in the array must be posted for this to consider itself posted.
+		$us=true;
 
-	 //	$debug: Any formlet in the array may be marked as debug for this to consider itself using debug. 
+	 //	$debug: Any formlet in the array may be marked as debug for this to consider itself using debug.
 		$debug=false;
-		
-	 //	$success: We wil return if all formlets were successfully committed. 
+
+	 //	$success: We wil return if all formlets were successfully committed.
 		$success=false;
 
 	 // Go through each form, and set $us,$debug and $in_composite accordingly.
 		foreach($fms as $fm) {
 			$fm->in_composite = true;
 			if(! $fm->isMe()) { $us=false; }
-			if($fm->debug) { 
+			if($fm->debug) {
 				$debug = true;
 				$fm->forminfo();
 			}
 		}
 		//Now set debug to all the formlets.
 		if ($debug) {
-			foreach($fms as $fm) { $fm->debug = true; } 
+			foreach($fms as $fm) { $fm->debug = true; }
 		}
-		
+
 	 // $us is the equivalent of $this->isMe() in a normal form process.
 		if ( $us ) {
-			 //	$func: Any formlet that has a _fn causes that _fn to be executed rather than 'save'. 
+			 //	$func: Any formlet that has a _fn causes that _fn to be executed rather than 'save'.
 			$func=NULL;
 			// Load the post stores. and mark the show / found variables for each formlet.
 			foreach($fms as $fm) {
@@ -513,14 +513,14 @@ trait Form {
 					} else {
 						$func = $fm->func();
 					}
-				}	
+				}
 			}
 			if (!is_null($func)) { //do function other than save.
 				return $func;
 			} else {  //do 'save'
 				//keep $validity across all formlets..
 				$valid = true;
-				foreach($fms as $fm) { 
+				foreach($fms as $fm) {
 					//The subsfield logic indicates that $fm is either non-existent or to be deleted. so skip validation.
 					$spv = @$fm->getSubsPostValue();
 					$sfn = @$fm->getSubsField();
@@ -549,9 +549,9 @@ trait Form {
 						}
 						if (!$fm->success()) {
 							$fm->setcommit($fm->commit());
-							if($debug) { 
-								$succ = $fm->success() ? "true" : "false"; 
-								print("<p>{$fm->sig()}: success was $succ</p>"); 
+							if($debug) {
+								$succ = $fm->success() ? "true" : "false";
+								print("<p>{$fm->sig()}: success was $succ</p>");
 							}
 							if ( $fm->show || !($fm->success()) ) { //do not repop if !show and com.
 								$fm->setfields(true); //we can repopulate the fields if we want.
@@ -641,7 +641,7 @@ trait Form {
 			$this->show=$show;
 			$this->record_found=true;	//The one that was posted..
 			$this->setfrompost();
-			if (isset($this->fields['_fn'][0]) && strcmp($this->fields['_fn'][0],"save") !== 0 ) {
+			if (isset($this->fields['_fn'][0]) && (mb_strlen($this->fields['_fn'][0]) > 0) && (strcmp($this->fields['_fn'][0],"save") !== 0) ) {
 				if($this->debug) {
 					print("<p>Non-save function:".$this->fields['_fn'][0]."</p>");
 				}
