@@ -939,7 +939,7 @@ trait Form {
 				print('<br />DEBUG: Commit SQL=' . $query);
 			}
 			if (Settings::$sql->query($query)) {
-				if ($r=Settings::$sql->query("select last_insert_id()")) {
+				if (Settings::$sql->affected_rows == 1 && $r=Settings::$sql->query("select last_insert_id()")) {
 					$this->newid = intval($r->fetch_row()[0]);
 					if (!$this->in_composite && (($this->newid !== 0) && ($this->show || !is_null($this->redirect)))) {
 						$this->show = false;
