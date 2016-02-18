@@ -14,7 +14,7 @@
 class DTable {
 
     static $defaults = array(
-    	'debug'=>false,
+        'debug'=>false,
         'csvFileName'=>"report.csv",
         'view'=> "dtable_v.ixml",
         'filterview'=> "dtable_f.ixml",
@@ -23,24 +23,24 @@ class DTable {
         'columns'=> array(), //each column is an array of information about specialised columns.
 /*
 DTable currently recognises the following values..
-	column_name => array ( //column name must match mysql result field.
-		'formatter' //(function) allows for modification of a field (eg, turn an id into a link).
-		'csvhide'   //(bool) (show/hide this column in the csv file output)
-		'json'		//array() //set javascript json values eg visible to false.
-		'many'  	//(bool) relationship to the primary object - needs a restricted list
-		'query'  	//(string) query used to generate restricted list values (multi-select etc).
-		'filter' => array {
-			'type' => //switch null/multi
-					'null'   //nulls represent something, not just a lack of data..
-					'multi'  // representing if multi-select is to be used.
-			'fields' //(array) filter the value on multiple fields, rather than just one.
-			'label'	 //allows to change the default column name label.
-		}
-	)
+    column_name => array ( //column name must match mysql result field.
+        'formatter' //(function) allows for modification of a field (eg, turn an id into a link).
+        'csvhide'   //(bool) (show/hide this column in the csv file output)
+        'json'      //array() //set javascript json values eg visible to false.
+        'many'      //(bool) relationship to the primary object - needs a restricted list
+        'query'     //(string) query used to generate restricted list values (multi-select etc).
+        'filter' => array {
+            'type' => //switch null/multi
+                    'null'   //nulls represent something, not just a lack of data..
+                    'multi'  // representing if multi-select is to be used.
+            'fields' //(array) filter the value on multiple fields, rather than just one.
+            'label'  //allows to change the default column name label.
+        }
+    )
 */        
         'table'=> NULL,
         'pkey'=> NULL,
-        'groupby'=> true,
+        'groupby'=> false,
         'csvfields'=>''
     );
 
@@ -48,7 +48,7 @@ DTable currently recognises the following values..
     public $fields;
     public $tables;
     public $restrict;
-    public $columns;	//the query return values
+    public $columns;    //the query return values
     private $filterv;
     public $pkey = NULL;
     public $istatement;  // Statement returned by intial query
@@ -62,7 +62,7 @@ DTable currently recognises the following values..
         $this->groupby = '';
         
 
-        if(!is_null($this->settings->pkey)){
+        if(!is_null($this->settings->pkey) && $this->settings->groupby){
             $this->pkey = $this->settings->pkey;
             if(is_array($this->settings->pkey)){
                 $groupby = implode(',',$this->settings->pkey);
@@ -72,11 +72,10 @@ DTable currently recognises the following values..
             }
         }
 
-        $groupby = $this->settings->groupby ? $this->groupby : "";
-        
+        $groupby =$this->groupby;
         $restriction = $this->getRestriction('nofilter');
-        $this->istatement = $this->sql_exec("select {$this->fields} from {$this->tables} {$restriction} {$groupby}");
-
+        $this->istatement = $this->sql_exec("select {$this->fields} from {$this->tables} {$restriction} {$groupby} limit 1");
+        
         $md = $this->istatement->result_metadata();
         $this->columns = mysqli_fetch_fields($md);
         $this->setFilters();
@@ -147,7 +146,7 @@ DTable currently recognises the following values..
      * the table based on SQL query.
      * @return NView the current view
      */
-	private function setView() {
+    private function setView() {
     
         $v = new NView($this->settings->view);
         $url = is_null($this->settings->ajax) ? $_SERVER['PHP_SELF'] . "?type=json" : $this->settings->ajax;
@@ -155,10 +154,10 @@ DTable currently recognises the following values..
 
         $template = $v->consume("//*[@data-xp='heading']");
         $this->setFilterView();
-		
-		$finfo = $this->columns;
+        
+        $finfo = $this->columns;
         $cols = array();
-		foreach ($finfo as $field) {
+        foreach ($finfo as $field) {
             $name = $field->name;
             
             $th = new NView($template);
@@ -175,7 +174,7 @@ DTable currently recognises the following values..
             $v->set("//*[@data-xp='row']/child-gap()",$th);
             $cols[] = $name;
             
-		}
+        }
 
         if(!is_null($this->settings->table)){
             foreach ($this->settings->table as $key => $value) {
@@ -190,8 +189,8 @@ DTable currently recognises the following values..
         }
 
         
-		return $v;
-	}
+        return $v;
+    }
     /**
      * Perform the SQL queries needed for an server-side processing requested,
      * utilising the helper functions limit(), order() and
@@ -202,29 +201,63 @@ DTable currently recognises the following values..
      */
     public function json() {
         $request = $_GET;
-        $groupby = $this->settings->groupby ? $this->groupby : "";
+        $groupby = $this->groupby;
 
-        $recordsTotal= $this->istatement->num_rows;
         $limit = self::limit( $request);
         $order = self::order( $request,$this->columns);
         $restrict = $this->getRestriction();
 
-        $sql = "select {$this->fields} from {$this->tables} $restrict {$groupby} $order"; // Get total number of filterd records without the limit
-        $stmt = $this->sql_exec($sql,$this->bindings);
-        $recordsFiltered= $stmt->num_rows;
         $sql = "select {$this->fields} from {$this->tables} $restrict {$groupby} $order $limit "; // Get total number of filterd records with the limit
         $stmt = $this->sql_exec($sql,$this->bindings);
 
+
+
         return array(
             "draw"              => intval( $request['draw'] ),
-            "recordsTotal"      => intval( $recordsTotal ),
-            "recordsFiltered"   => intval( $recordsFiltered ),
+            "recordsTotal"      => intval( $this->getTotalRecords()),
+            "recordsFiltered"   => intval( $this->getTotalFiltered() ),
             "data"              => $this->data_output($stmt)
         );
     }
 
+    public function getTotalRecords(){
+
+        $retVal = 0;
+        $restriction = $this->getRestriction('nofilter');
+
+        if($this->settings->groupby){
+            $stmt = $this->sql_exec("select count(*) as count from {$this->tables} {$restriction}");
+            $retVal =  $stmt->num_rows;
+        }else{
+            $stmt = $this->sql_exec("select count(*) as count from {$this->tables} {$restriction}");
+            $stmt->bind_result($count);
+            $stmt->fetch();
+            $retVal = $count;
+        }
+        return $retVal;
+    }
+
+    public function getTotalFiltered(){
+
+        $retVal = 0;
+        $restriction = $this->getRestriction();
+
+        if($this->settings->groupby){
+            $sql = "select {$this->fields} from {$this->tables} $restriction {$this->groupby}"; // Get total number of filterd records without the limit
+            $stmt = $this->sql_exec($sql,$this->bindings);
+            $retVal =  $stmt->num_rows;
+        }else{
+            $sql = "select count(*) from {$this->tables} $restriction"; // Get total number of filterd records without the limit
+            $stmt = $this->sql_exec($sql,$this->bindings);
+            $stmt->bind_result($count);
+            $stmt->fetch();
+            $retVal = $count;
+        }
+        return $retVal;
+    }
+
     public function getAllData(){
-        $groupby = $this->settings->groupby ? $this->groupby : "";
+        $groupby = $this->groupby;
         $restrict = $this->getRestriction();
         $sql = "select {$this->fields} from {$this->tables} $restrict {$groupby}"; // Get total number of filterd records without the limit
         $stmt = $this->sql_exec($sql,$this->bindings);
@@ -237,7 +270,7 @@ DTable currently recognises the following values..
         $order = self::order( $request,$this->columns);
         $restrict = $this->getRestriction('csv');
         $fields = $this->fields;
-        $groupby = $this->settings->groupby ? $this->groupby : "";
+        $groupby = $this->groupby;
         $csvfields = $this->settings->csvfields;
 
         $csvfields = $csvfields == '' ? $csvfields : ",$csvfields";
@@ -631,15 +664,15 @@ DTable currently recognises the following values..
         }else{
             self::fatal(Settings::$sql->error);
         }
-		if ($this->settings->debug) {
-			$bnd = print_r($bindings,true);
-			print("\n==== SQL ====\n$sql\n\n==== Bindings ====\n$bnd\n\n");
-		} else {
-			if(!$stmt->execute()){
-				self::fatal(Settings::$sql->error);
-			}else{
-				$stmt->store_result();
-			}
+        if ($this->settings->debug) {
+            $bnd = print_r($bindings,true);
+            print("\n==== SQL ====\n$sql\n\n==== Bindings ====\n$bnd\n\n");
+        } else {
+            if(!$stmt->execute()){
+                self::fatal(Settings::$sql->error);
+            }else{
+                $stmt->store_result();
+            }
         }
         return $stmt;
     }
