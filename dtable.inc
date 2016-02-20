@@ -61,9 +61,9 @@ DTable currently recognises the following values..
         $this->settings = (object) array_merge((array) self::$defaults,(array) $options);
         $this->groupby = '';
         
+        $this->pkey = @$this->settings->pkey;
 
         if(!is_null($this->settings->pkey) && $this->settings->groupby){
-            $this->pkey = $this->settings->pkey;
             if(is_array($this->settings->pkey)){
                 $groupby = implode(',',$this->settings->pkey);
                 $this->groupby = "group by {$groupby}";
@@ -110,6 +110,7 @@ DTable currently recognises the following values..
     public function getPrimaryData(){
         $stmt = NULL;
         if(!is_null($this->pkey)){
+
             $request = $_GET;
             $order = self::order( $request,$this->columns);
             $restrict = $this->getRestriction();
