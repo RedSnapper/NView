@@ -52,6 +52,7 @@ DTable currently recognises the following values..
     private $filterv;
     public $pkey = NULL;
     public $istatement;  // Statement returned by intial query
+    private $request;
 
 
     public function __construct($fields = null,$tables=null,$restrict=null,$options = array()){
@@ -62,6 +63,7 @@ DTable currently recognises the following values..
         $this->groupby = '';
         
         $this->pkey = @$this->settings->pkey;
+        $this->request = $_SERVER['REQUEST_METHOD'] === 'POST' ? json_decode($_POST['json'],true) : $_GET;
 
         if(!is_null($this->settings->pkey) && $this->settings->groupby){
             if(is_array($this->settings->pkey)){
@@ -111,7 +113,7 @@ DTable currently recognises the following values..
         $stmt = NULL;
         if(!is_null($this->pkey)){
 
-            $request = $_GET;
+            $request = $this->request;;
             $order = self::order( $request,$this->columns);
             $restrict = $this->getRestriction();
 
@@ -201,7 +203,7 @@ DTable currently recognises the following values..
      * @return array Server-side processing response array
      */
     public function json() {
-        $request = $_GET;
+        $request = $this->request;
         $groupby = $this->groupby;
 
         $limit = self::limit( $request);
@@ -266,8 +268,7 @@ DTable currently recognises the following values..
     }
 
     public function csv(){
-        $request = $_GET;
-        $limit = self::limit( $request);
+        $request = $this->request;
         $order = self::order( $request,$this->columns);
         $restrict = $this->getRestriction('csv');
         $fields = $this->fields;
@@ -444,7 +445,7 @@ DTable currently recognises the following values..
 
     
     public function setFilters (){
-        $request = $_GET;
+        $request = $this->request;
         $columns = $this->columns;
         $bindings = array();
         $globalSearch = array();
