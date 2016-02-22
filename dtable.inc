@@ -229,7 +229,7 @@ DTable currently recognises the following values..
         $restriction = $this->getRestriction('nofilter');
 
         if($this->settings->groupby){
-            $stmt = $this->sql_exec("select {$this->fields} from {$this->tables} {$restriction}");
+            $stmt = $this->sql_exec("select {$this->fields} from {$this->tables} {$restriction} {$this->groupby}");
             $retVal =  $stmt->num_rows;
         }else{
             $stmt = $this->sql_exec("select count(*) as count from {$this->tables} {$restriction}");
@@ -256,6 +256,7 @@ DTable currently recognises the following values..
             $stmt->fetch();
             $retVal = $count;
         }
+
         return $retVal;
     }
 
