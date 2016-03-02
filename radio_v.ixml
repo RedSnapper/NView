@@ -1,6 +1,6 @@
 <!DOCTYPE label>
 <label xmlns="http://www.w3.org/1999/xhtml" class="form__radio">
-	<span class="form__label" data-xp="label" />
-	<input class="form__input" type="radio" />
+	<span class="form__label--radio" data-xp="label" />
+	<input class="form__input--radio" type="radio" />
 </label>
 
