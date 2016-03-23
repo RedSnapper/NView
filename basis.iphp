@@ -1,10 +1,11 @@
 <?php
 mb_internal_encoding('UTF-8');
 //!The following line will do nothing if the apache file includes "php_admin_value include_path" directive.
-set_include_path( get_include_path() . PATH_SEPARATOR . __DIR__ . PATH_SEPARATOR . __DIR__ . '/sio' . PATH_SEPARATOR . $_SERVER['DOCUMENT_ROOT']);
-spl_autoload_extensions(".inc"); // comma-separated list
+//set_include_path( get_include_path() . PATH_SEPARATOR . __DIR__ . PATH_SEPARATOR . __DIR__ . '/sio' . PATH_SEPARATOR . $_SERVER['DOCUMENT_ROOT']);
+//spl_autoload_extensions(".inc"); // comma-separated list
 spl_autoload_register();
 require 'vendor/autoload.php';
+use RedSnapper\NView;
 Settings::getInstance(); //initialise settings..
 Session::getInstance();  //initialise session.
 Settings::usr();		 //maybe this should be set by sio.

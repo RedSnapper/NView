@@ -1,4 +1,4 @@
-![NView](logo.png)
+![NView](rsrc/logo.png)
 
 [Docs](http://redsnapper.github.io/NView)
 
@@ -118,4 +118,4 @@ There are three gap extensions: child-gap(), preceding-gap(), following-gap().
 
 The easiest way to see how they differ is to examine the following image
 
-![NView](gaps.gif)
+![NView](rsrc/gaps.gif)

@@ -1,4 +1,4 @@
-<?php
+<?php namespace RedSnapper\NView;
 /**
  * Created by PhpStorm.
  * User: akis

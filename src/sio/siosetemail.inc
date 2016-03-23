@@ -1,4 +1,4 @@
-<?php
+<?php namespace RedSnapper\NView;
 mb_internal_encoding('UTF-8');
 
 class SIOSetEmail {
