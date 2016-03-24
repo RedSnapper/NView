@@ -13,6 +13,15 @@ use redsnapper\nview\SQLHandler;
 use redsnapper\nview\Session;
 use redsnapper\nview\Settings;
 use redsnapper\nview\Singleton;
+use redsnapper\sio\Sio;
+use redsnapper\sio\SioForgot;
+use redsnapper\sio\SioReg;
+use redsnapper\sio\SioResetPW;
+use redsnapper\sio\SioSetEmail;
+use redsnapper\sio\SioSetPW;
+use redsnapper\sio\SioSignIn;
+use redsnapper\sio\SioSignOut;
+use redsnapper\sio\SioUtility;
 
 Settings::getInstance(); //initialise settings..
 Session::getInstance();  //initialise session.

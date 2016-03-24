@@ -1,4 +1,4 @@
-<?php namespace redsnapper\nview;
+<?php namespace redsnapper\sio;
 mb_internal_encoding('UTF-8');
 
 class SioReg {
@@ -105,7 +105,7 @@ class SioReg {
 
 	public function commit() {
 		$honeypot = @$this->fields['commentary'][0];
-		if (empty($honeypot)) { 
+		if (empty($honeypot)) {
 			$this->newid = static::createuser(
 				@$this->fields['username'][0],
 				@$this->fields['emailp'][0],
@@ -143,7 +143,7 @@ class SioReg {
 				$f_uname=$fields[1];
 				$rs->close();
 			}
-			//Actual push..			
+			//Actual push..
 			$query= "update sio_user set email=emailp,active='on' where active='xx' and ".static::$munge."='".$ha."'";
 			Settings::$sql->query($query);
 			$nv = new NView(@static::$v[static::SIG."success"]);
@@ -152,7 +152,7 @@ class SioReg {
 		}
 		return $nv;
 	}
-	
+
 	//mail_qry must include '[MUNGE]' or field as munge, and emailp in it's result.
 	// eg SioReg::mail_pending($rf['emailp'],$email_qry,Settings::$url);
 	public static function mail_pending($destination,$email_qry,$url=NULL) {
@@ -199,7 +199,7 @@ class SioReg {
 			$rx->close();
 		}
 	}
-	
+
 	//Receiver url is the url that is posted in the email sent for confirmation.
 	public static function createuser($un=null,$em=null,$pw=null,$pending=false,$receiver_url=null) {
 		$retval = NULL;
@@ -329,7 +329,7 @@ class SioReg {
 			Dict::set($en,'en');
 			Dict::set($de,'de');
         }
-	
+
 	}
 
 }

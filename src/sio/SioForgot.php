@@ -1,4 +1,4 @@
-<?php namespace redsnapper\nview;
+<?php namespace redsnapper\sio;
 mb_internal_encoding('UTF-8');
 
 //This is the 'sending end' of the paired Sioresetpw_ class

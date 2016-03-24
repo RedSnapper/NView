@@ -1,4 +1,4 @@
-<?php namespace redsnapper\nview;
+<?php namespace redsnapper\sio;
 /**
  * Created by PhpStorm.
  * User: akis
@@ -36,7 +36,7 @@ class SioUtility {
      * @var boolean Should contain both upper and lowercase
      */
     private $mixedCase;
-    
+
     /**
      * @var array pw_regex that contains the regular expression tests and the (default) error sigs.
      */
@@ -54,15 +54,15 @@ class SioUtility {
     }
 
 	/*pw settings functions */
-    public function pw_set_minLength($minLength=7) 
+    public function pw_set_minLength($minLength=7)
     {
         $this->minLength = (int) $minLength;
     }
-    public function pw_set_minScore($minScore=0) 
+    public function pw_set_minScore($minScore=0)
     {
         $this->minScore = (int) $minScore;
     }
-    public function pw_set_needsAlpha($alpha=true) 
+    public function pw_set_needsAlpha($alpha=true)
     {
         $this->alpha = (boolean) $alpha;
         if($this->alpha)
@@ -72,7 +72,7 @@ class SioUtility {
         	unset($this->pw_regex['pw_error_no_alpha']);
         }
     }
-    public function pw_set_needsNumeric($numeric=false) 
+    public function pw_set_needsNumeric($numeric=false)
     {
         $this->numeric = (boolean) $numeric;
         if($this->numeric)
@@ -82,7 +82,7 @@ class SioUtility {
         	unset($this->pw_regex['pw_error_no_number']);
         }
     }
-    public function pw_set_needsSymbols($symbols=false) 
+    public function pw_set_needsSymbols($symbols=false)
     {
         $this->symbols = (boolean) $symbols;
         if($this->symbols)
@@ -92,7 +92,7 @@ class SioUtility {
         	unset($this->pw_regex['pw_error_no_symbols']);
         }
     }
-    public function pw_set_needsMixedCase($mixedCase=false) 
+    public function pw_set_needsMixedCase($mixedCase=false)
     {
         $this->mixedCase = (boolean) $mixedCase;
         if($this->mixedCase)
@@ -122,16 +122,16 @@ class SioUtility {
 			//one score is set by considering the size of the unique by the size of the password.
 			//so, a single repeated character should have a low score, and every letter being different is high.
 			//therefore, where N is the number of chars in the password, and U being the number of unique letters,
-			//we are looking at a result of (U/N) 
+			//we are looking at a result of (U/N)
 			$score_a = $asize / $score_len; //the effect of duplicate characters should not be too high.
-	
+
 			$cc=preg_replace('/(.)./','\1',bin2hex($password)); //This is the character class string.
 			$cz=gzdeflate($cc,9,ZLIB_ENCODING_RAW);				//deflate of char. class string.
-			$score_b = max($min,min($score_len,strlen($cz)-5) / $score_len);	//5 is the minimum value of gzdeflate length.	
-			
+			$score_b = max($min,min($score_len,strlen($cz)-5) / $score_len);	//5 is the minimum value of gzdeflate length.
+
 			$pz=gzdeflate($password,9,ZLIB_ENCODING_RAW);			//deflate of password
 			$score_c = max($min,min($score_len,strlen($pz)-5) / $score_len);	//5 is the minimum value of gzdeflate length.
-				
+
 			$normal = 100 * sqrt($score_a * $score_b * $score_c);
 			$score = (int) max(0,min($normal,100));
 		}
@@ -156,15 +156,15 @@ class SioUtility {
     			$err_arr[]='pw_error_low_score';
     		}
     	}
-    	   	
+
  		foreach($this->pw_regex as $sig => $reg) {
  			if (!(boolean) preg_match($reg,$password)) {
     			$err_arr[]=$sig;
  			}
- 		}   
+ 		}
         return count($err_arr) == 0;
     }
-    
+
 	private function initialise() {
 //translations
 		$en = array(
@@ -183,6 +183,6 @@ class SioUtility {
 		Dict::set($en,'en');
 		Dict::set($de,'de');
 	}
-    
+
 
 }

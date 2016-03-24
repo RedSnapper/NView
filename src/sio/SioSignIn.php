@@ -1,4 +1,4 @@
-<?php namespace redsnapper\nview;
+<?php namespace redsnapper\sio;
 mb_internal_encoding('UTF-8');
 
 /**
@@ -38,7 +38,7 @@ class SioSignIn {
 /*
  * populate, by common demand...
 */
-	public function populate() { 
+	public function populate() {
 		if(static::$use_un) {
 			$this->vset('username');
 		} else { //using email
@@ -64,16 +64,16 @@ class SioSignIn {
 			} break;
 		}
 	}
-	
+
 	public function prefilter() {
 		if (isset($this->fields['username'][0])) {
-			$this->fields['username'][0]=mb_strtolower($this->fields['username'][0]); 
+			$this->fields['username'][0]=mb_strtolower($this->fields['username'][0]);
 		}
 		if (isset($this->fields['email'][0])) {
-			$this->fields['email'][0]=mb_strtolower($this->fields['email'][0]); 
+			$this->fields['email'][0]=mb_strtolower($this->fields['email'][0]);
 		}
 	}
-	
+
 /**
  * 'validate'
  * fn fulfilling abstract requirement of trait 'Form'.
@@ -129,7 +129,7 @@ class SioSignIn {
 								}
 								$rp->close();
 							}
-							
+
 						} else {
 							if(static::$use_un) {
 								$this->seterr("username",Dict::get(static::SIG.'errors_username_unmatched'));
@@ -173,7 +173,7 @@ class SioSignIn {
 		Sio::signin($f_uname,$f_email,true); //signin regardless of if you are already signed in.
 		return true;
 	}
-	
+
 	public static function initialise($use_un=true,$custom_views=array()) {
 		static::$use_un=$use_un;
 //translations

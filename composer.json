@@ -9,7 +9,9 @@
     },
     "autoload": {
         "psr-4": {
-            "redsnapper\\nview\\": "src"
+            "redsnapper\\nview\\": "src",
+            "redsnapper\\sio\\": "src/sio"
+
         }
     }
 }
