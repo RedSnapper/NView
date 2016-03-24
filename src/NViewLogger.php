@@ -1,8 +1,8 @@
-<?php namespace RedSnapper\NView;
+<?php namespace redsnapper\nview;
 mb_internal_encoding('UTF-8');
 use Monolog\Logger;
 
-class NViewLogger extends Logger
+class NViewLogger extends Monolog\Logger
 {
 	private $stack;
 	private $base_name;

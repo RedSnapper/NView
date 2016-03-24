@@ -1,9 +1,9 @@
-<?php namespace RedSnapper\NView;
+<?php namespace redsnapper\nview;
 mb_internal_encoding('UTF-8');
 
-class SIOSetEmail {
+class SioSetEmail {
 	use Form;
-	const SIG = "siosetem_";
+	const SIG = "Siosetem_";
 	public static function sig() { return static::SIG; }
 	private static $munge="sha2(concat(ifnull(username,id),'+',ifnull(password,id),'+',ifnull(email,id),'+',ifnull(ts,id)),256)";
 	private static $v=array();
@@ -63,7 +63,7 @@ class SIOSetEmail {
 				$x_fld="email";
 			}
 			$x_pass = $this->fields['password'][0];
-			$x_hsh=SIOSetPW::enhash($x_unm,$x_pass);
+			$x_hsh=SioSetPW::enhash($x_unm,$x_pass);
 			Settings::esc($x_unm);
 			$qry="select count(id) as ok from " . $this->table . " where active='on' and ".$x_fld."='" .$x_unm. "' and password='" . $x_hsh . "'";
 			if ($rx = Settings::$sql->query($qry)) {
@@ -111,7 +111,7 @@ class SIOSetEmail {
 					$url .= "?siof=" . $f['munge'];
 				}
 				if(!static::$use_un) {
-					Session::set(static::SIG,SIOSetPW::enhash($this->fields['emailp'][0],$this->fields['password'][0]));
+					Session::set(static::SIG,SioSetPW::enhash($this->fields['emailp'][0],$this->fields['password'][0]));
 				}
 				$mail_v->set("//*[@data-xp='ha']/@href",$url);
 				$mail->Body = $mail_v->show(false);

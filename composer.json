@@ -1,6 +1,7 @@
 {
-    "name": "RedSnapper/NView",
-    "license": "GNU v2",
+    "name": "redsnapper/nview",
+    "license": "GPL-2.0",
+    "description": "true control-view separation with sign-in sign-out",
     "require": {
         "phpmailer/phpmailer": "~5.2.10",
         "monolog/monolog": "~1.17",
@@ -8,7 +9,7 @@
     },
     "autoload": {
         "psr-4": {
-            "RedSnapper\\NView\\": "src"
+            "redsnapper\\nview\\": "src"
         }
     }
 }

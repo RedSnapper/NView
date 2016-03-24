@@ -265,14 +265,14 @@ a:hover {
     .content-wrapper {
       padding: 0 0.21em; } }
 
-.sio-wrapper {
+.Sio-wrapper {
   text-align: center;
   vertical-align: middle;
   max-width: 61.025641em;
   margin: 0 auto;
   padding: 0 1.538462em; }
   @media (max-width: 37.5em) {
-    .sio-wrapper {
+    .Sio-wrapper {
       padding: 0 0.769231em; } }
 
 

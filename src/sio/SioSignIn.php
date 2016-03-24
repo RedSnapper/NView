@@ -1,4 +1,4 @@
-<?php namespace RedSnapper\NView;
+<?php namespace redsnapper\nview;
 mb_internal_encoding('UTF-8');
 
 /**
@@ -6,7 +6,7 @@ mb_internal_encoding('UTF-8');
  */
 class SioSignIn {
 	use Form;
-	const SIG = "siosignin_";
+	const SIG = "Siosignin_";
 	public static function sig() { return static::SIG; }
 	private static $v=array();
 	private static $use_un=true;
@@ -55,11 +55,11 @@ class SioSignIn {
 	protected function func() {
 		switch ($this->fields['_fn'][0]) {
 			case 'forgot': {
-				$sf=new SIOForgot();
+				$sf=new SioForgot();
 				return $sf->form();
 			} break;
 			case 'register': {
-				$sf=new SIOReg();
+				$sf=new SioReg();
 				return $sf->form();
 			} break;
 		}
@@ -101,7 +101,7 @@ class SioSignIn {
 		}
 		$pw = @$this->fields['password'][0];
 		if (!is_null($unm) && !is_null($pw)) {
-			$ph=SIOSetPW::enhash($unm,$pw);
+			$ph=SioSetPW::enhash($unm,$pw);
 			Settings::esc($unm);
 			$qry="select count(id) as ok from " . $this->table . " where active='on' and ".$field."='" .$unm. "' and password='" . $ph . "'";
 			if ($rx = Settings::$sql->query($qry)) {

@@ -1,6 +1,6 @@
 <!DOCTYPE div>
 <div xmlns="http://www.w3.org/1999/xhtml">
-	<h3 data-tr="siosetem_note_email_change_title" />
-	<p data-tr="siosetem_note_email_change_message" />
-	<p><a data-xp="ha"  data-tr="siosetem_note_email_change_action_link" /></p>
+	<h3 data-tr="Siosetem_note_email_change_title" />
+	<p data-tr="Siosetem_note_email_change_message" />
+	<p><a data-xp="ha"  data-tr="Siosetem_note_email_change_action_link" /></p>
 </div>

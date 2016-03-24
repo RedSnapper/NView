@@ -1,6 +1,6 @@
-<?php namespace RedSnapper\NView;
+<?php namespace redsnapper\nview;
 mb_internal_encoding('UTF-8');
-class SIO {
+class Sio {
 	const SIG = "sio_";
 	private static $v=array();
 	private static $use_un=true;
@@ -19,8 +19,8 @@ class SIO {
 				$stt=2; //default = sign-out.
 				if(!empty(Settings::$qst['siof'])) {
 					$siof=Settings::$qst['siof'];
-					if (SIOSetEmail::conforms($siof)) {
-						$formlet=SIOSetEmail::pushit($siof); //sig.pushit
+					if (SioSetEmail::conforms($siof)) {
+						$formlet=SioSetEmail::pushit($siof); //sig.pushit
 						$stt=0;
 					} else {
 						$stt=1;
@@ -28,14 +28,14 @@ class SIO {
 				}
 				if ($stt==2 ) {
 					if (SioSetPW::inScope()) {  //doing a set-pw post.
-						$stt=0; $sio=new SioSetPW($key); $formlet=$sio->form(false);
-						if ($sio->success()) {
-							$formlet=$sio->pushit();
+						$stt=0; $Sio=new SioSetPW($key); $formlet=$Sio->form(false);
+						if ($Sio->success()) {
+							$formlet=$Sio->pushit();
 						}
-					} elseif (SIOSetEmail::inScope()) {  //doing a set-pw post.
-						$stt=0; $sio=new SIOSetEmail($key); $formlet=$sio->form(false);
-						if ($sio->success()) {
-							$formlet=SIOSetEmail::pushit();
+					} elseif (SioSetEmail::inScope()) {  //doing a set-pw post.
+						$stt=0; $Sio=new SioSetEmail($key); $formlet=$Sio->form(false);
+						if ($Sio->success()) {
+							$formlet=SioSetEmail::pushit();
 						}
 					}
 				}
@@ -47,24 +47,24 @@ class SIO {
 						$stt=0;
 						$formlet=SioReg::pushit($siof);
 					} elseif (SioResetPW::conforms($siof)) {
-						$stt=0; $sio=new SioResetPW($siof);
-						$formlet=$sio->form(false);
-						if ($sio->success()) { //else this is a get/failed post.
+						$stt=0; $Sio=new SioResetPW($siof);
+						$formlet=$Sio->form(false);
+						if ($Sio->success()) { //else this is a get/failed post.
 							$formlet=SioResetPW::pushit();
-						} 
+						}
 					} else {
 						$stt=1;
 					}
 				} else {
 					if (SioReg::inScope() || isset(Settings::$qst[SioReg::SIG]) ) {
-						$stt=0; $sio=new SioReg($key); $formlet=$sio->form(false);
-						if ($sio->success()) {
-							$formlet=$sio->pushit();
+						$stt=0; $Sio=new SioReg($key); $formlet=$Sio->form(false);
+						if ($Sio->success()) {
+							$formlet=$Sio->pushit();
 						}
 					} elseif (SioForgot::inScope() || isset(Settings::$qst[SioForgot::SIG]) ) {
-						$stt=0; $sio=new SioForgot($key); $formlet=$sio->form(false);
-						if ($sio->success()) {
-							$formlet=$sio->commitv();
+						$stt=0; $Sio=new SioForgot($key); $formlet=$Sio->form(false);
+						if ($Sio->success()) {
+							$formlet=$Sio->commitv();
 						}
 					}
 				}
@@ -75,17 +75,17 @@ class SIO {
 					$ssi=new SioSignIn($key); $formlet=$ssi->form(false);
 					//need to do 'waiting for validation' line here.
 					if ($ssi->success()) {
-						$sio=new SioSignOut($key); $formlet = $sio->form(false);
+						$Sio=new SioSignOut($key); $formlet = $Sio->form(false);
 					}
 				} break;
 				case 2: {
 					$sso=new SioSignOut($key); $formlet=$sso->form(false);
 					if ($sso->success()) {
-						$sio=new SioSignIn($key); $formlet=$sio->form(false);
+						$Sio=new SioSignIn($key); $formlet=$Sio->form(false);
 					}
 				} break;
 			}
-			$v->set("//*[@data-xp='sio']",$formlet);
+			$v->set("//*[@data-xp='Sio']",$formlet);
 			return $v;
 		}
 	}
@@ -135,7 +135,7 @@ class SIO {
 		}
 		return $retval;
 	}
-	
+
 	public static function signin($username = null,$email=null,$override=false) {
 		if($override || !Session::has('username')) {
 			if ($username && $email) {

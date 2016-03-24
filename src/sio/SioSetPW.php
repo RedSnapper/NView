@@ -1,9 +1,9 @@
-<?php namespace RedSnapper\NView;
+<?php namespace redsnapper\nview;
 mb_internal_encoding('UTF-8');
 
-class SIOSetPW {
+class SioSetPW {
 	use Form;
-	const SIG = "siosetpw_";
+	const SIG = "Siosetpw_";
 	public static function sig() { return static::SIG; }
 	private static $v=array();
 	private static $use_un=true;
@@ -34,7 +34,7 @@ class SIOSetPW {
 			} else { //using email
 				$unm=Settings::$usr['email'];
 			}
-			$ph=SIOSetPW::enhash($unm,$this->fields['password'][0]);
+			$ph=SioSetPW::enhash($unm,$this->fields['password'][0]);
 			$qry="select count(id) as ok from " . $this->table . " where active='on' and id='" .Settings::$usr['ID']. "' and password='" . $ph . "'";
 			if ($rx = Settings::$sql->query($qry)) {
 				if (strcmp($rx->fetch_row()[0],"1") !== 0) {
@@ -55,7 +55,7 @@ class SIOSetPW {
 				$retval = false;
 			}
 			$err_ar = array();
-			$pw_retval = SIO::$utility->pw_validate($pwa,$err_ar);
+			$pw_retval = Sio::$utility->pw_validate($pwa,$err_ar);
 			foreach($err_ar as $err) {
 				$this->seterr("passwordn",Dict::get($err));
 			}
@@ -81,7 +81,7 @@ class SIOSetPW {
 		} else { //using email
 			$unm=Settings::$usr['email'];
 		}
-		$ph=SIOSetPW::enhash($unm,$this->fields['passwordn'][0]);
+		$ph=SioSetPW::enhash($unm,$this->fields['passwordn'][0]);
 		$qry="update " . $this->table . " set password='".$ph."' where active='on' and id='" .Settings::$usr['ID']. "'";
 		Settings::$sql->query($qry);
 		$this->show = false;
@@ -93,7 +93,7 @@ class SIOSetPW {
 		$nv->set("//*[@data-tr]/@data-tr/preceding-gap()",static::SIG);
 		return $nv;
 	}
-	
+
 	public static function enhash($unm=NULL,&$pw=NULL) {
 		if (!is_null($unm)) {
 			Settings::esc($unm);

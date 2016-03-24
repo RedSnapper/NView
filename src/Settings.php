@@ -1,4 +1,4 @@
-<?php namespace RedSnapper\NView;
+<?php namespace redsnapper\nview;
 mb_internal_encoding('UTF-8');
 use Monolog\Logger;
 use Monolog\Handler;
@@ -23,8 +23,8 @@ class Settings extends Singleton {
 	public static $domain=null;	//The domain to be used for emails being sent out.
 	private static $sql_types=null;
 	private static $log_stack = array();
-	
-	public static function sql_types() { 
+
+	public static function sql_types() {
 	    if (is_null(static::$sql_types)) {
 	        static::$sql_types = array();
 	        $constants = get_defined_constants(true);
@@ -54,7 +54,7 @@ class Settings extends Singleton {
 		}
 		self::$usr['uid']=0;
 		self::$usr['ID']=0;
-		
+
 		if(isset($_SERVER["RS_SQLCONFIG_FILE"])) { //the path to the my.cnf for this connection.
 			self::$sql = mysqli_init();
 			self::$sqls = parse_ini_file($_SERVER["RS_SQLCONFIG_FILE"]);
@@ -93,10 +93,10 @@ class Settings extends Singleton {
 			}
 		}
 	}
-	
+
 /**
  * 'setLogger' Set Logger. Should be done pretty much immediately after construct.
- 
+
 CREATE TABLE sio_log (
   id int(11) NOT NULL AUTO_INCREMENT,
   l_channel char(64) NOT NULL DEFAULT '',
@@ -106,7 +106,7 @@ CREATE TABLE sio_log (
   ts timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
- 
+
  */
 	public static function setLogger($log_i = NULL,$hndl_i = NULL) {
 		if (is_null($log_i) && is_null(static::$log) ) {
@@ -123,7 +123,7 @@ CREATE TABLE sio_log (
 		}
 		static::$log->pushProcessor(new Processor\PsrLogMessageProcessor());
 	}
-	
+
 
 /**
  * 'usr'  initialise session, and user id etc.
@@ -251,13 +251,13 @@ public static function udecode($data,$pw="Never use the default password!") {
 		static::$log->pushHandler($log_handler);
 		static::$log->pushName($name);
 	}
-	
+
 	public static function popLog() {
 		if (count(static::$log_stack) > 0)
 		$logfile = array_pop(static::$log_stack);
 		rewind($logfile);
-		$result = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<!DOCTYPE div><div xmlns=\"http://www.w3.org/1999/xhtml\">" . stream_get_contents($logfile) . "</div>";		
-		$handler = static::$log->popHandler();	
+		$result = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<!DOCTYPE div><div xmlns=\"http://www.w3.org/1999/xhtml\">" . stream_get_contents($logfile) . "</div>";
+		$handler = static::$log->popHandler();
 		$handler->close();
 		static::$log->popName();
 		return new NView($result);

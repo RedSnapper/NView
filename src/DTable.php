@@ -1,4 +1,4 @@
-<?php namespace RedSnapper\NView;
+<?php namespace redsnapper\nview;
 
 /**
  * Helper functions for building a DataTables server-side processing SQL query

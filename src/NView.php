@@ -1,4 +1,4 @@
-<?php namespace RedSnapper\NView;
+<?php namespace redsnapper\nview;
 mb_internal_encoding('UTF-8');
 
 /**
@@ -78,8 +78,8 @@ class NView {
 		$retval="";
 		if (!is_null($this->doc) && !is_null($this->xp)) {
 			$this->tidyView();
-            ob_start(); 
-            $this->doc->save('php://output'); 
+            ob_start();
+            $this->doc->save('php://output');
             $retval = ob_get_clean();
 			if (!$whole_doc) {
 				$retval = static::as_fragment($retval);
@@ -87,7 +87,7 @@ class NView {
 		}
 		return $retval;
 	}
-	
+
 /**
  * 'as_fragment'
  */
@@ -316,13 +316,13 @@ class NView {
 						if ($entries) {
 							if ($entries->length === 0 ) { //maybe this is a new attribute!? [&& $gap == self::GAP_NONE]
 								$spoint = mb_strrpos($xpath,'/');
-								$apoint = mb_strrpos($xpath,'@');  
+								$apoint = mb_strrpos($xpath,'@');
 								if ($apoint == $spoint+1) {
 									$aname= mb_substr($xpath,$apoint+1); //grab the attribute name.
 									$xpath= mb_substr($xpath,0,$spoint); //resize the xpath.
 									$gap=self::GAP_NATTR;
 									if (is_null($ref)) { //re-evaluate the xpath without the attribute component.
-										$entries = $this->xp->query($xpath); 
+										$entries = $this->xp->query($xpath);
 									} else {
 										$entries = $this->xp->query($xpath,$ref);
 									}
@@ -389,7 +389,7 @@ class NView {
 														$fvalue = static::as_fragment($txt);
 													} else {
 														$this->doMsg("NView:  ". gettype($value). " not yet implemented for comment insertion.");
-													}											
+													}
 												}
 												$fvalue=str_replace(array("<!--","-->"),"", $value);
 												$entry->replaceData(0,$entry->length,$fvalue);
@@ -554,7 +554,7 @@ class NView {
 				$value->setAttribute("xmlns",$value->namespaceURI);
 			} else {
 				$value->setAttribute("xmlns:".$value->prefix,$value->namespaceURI);
-			}			
+			}
 			$node = $this->doc->importNode($value, true);
 			$this->doc->appendChild($node);
 			$olde= $value->ownerDocument->documentElement;

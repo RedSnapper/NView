@@ -1,4 +1,4 @@
-<?php namespace RedSnapper\NView;
+<?php namespace redsnapper\nview;
 mb_internal_encoding('UTF-8');
 
 /**
@@ -6,7 +6,7 @@ mb_internal_encoding('UTF-8');
  */
 class SioSignOut {
 	use Form;
-	const SIG = "siosignout_";
+	const SIG = "Siosignout_";
 	public static function sig() { return static::SIG; }
 	private static $v=array();
 	private static $use_un=true;
@@ -27,11 +27,11 @@ class SioSignOut {
 	protected function func() {
 		switch ($this->fields['_fn'][0]) {
 			case 'email': {
-				$sf=new SIOSetEmail();
+				$sf=new SioSetEmail();
 				return $sf->form();
 			} break;
 			case 'reset': {
-				$sf=new SIOSetPW();
+				$sf=new SioSetPW();
 				return $sf->form();
 			} break;
 		}
@@ -42,7 +42,7 @@ class SioSignOut {
  * fn OVERLOADING trait 'Form'.
  */
 	protected function commit() {
-		SIO::signout();
+		Sio::signout();
 		return true;
 	}
 

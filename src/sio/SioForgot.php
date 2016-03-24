@@ -1,10 +1,10 @@
-<?php namespace RedSnapper\NView;
+<?php namespace redsnapper\nview;
 mb_internal_encoding('UTF-8');
 
-//This is the 'sending end' of the paired sioresetpw_ class
+//This is the 'sending end' of the paired Sioresetpw_ class
 class SioForgot {
 	use Form;
-//the following munge must be the same as the one found in sioresetpw_
+//the following munge must be the same as the one found in Sioresetpw_
 	private static $munge="sha2(concat(ifnull(username,id),'-',ifnull(password,id),'-',ifnull(email,id),'-',ifnull(ts,id)),256)";
 	const SIG = "sioforgot_";
 	public static function sig() { return static::SIG; }
@@ -64,7 +64,7 @@ class SioForgot {
 		static::mail_forgot($em,$qry);
 		return true;
 	}
-	
+
 	public static function munge($em=NULL) {
 		Settings::esc($em);
 		$munge=NULL;
@@ -75,7 +75,7 @@ class SioForgot {
 		}
 		return $munge;
 	}
-	
+
 	//mail_qry must include '[MUNGE]' or field as munge, and username(if $use_un) in it's result.
 	// eg SioForgot::mail_forgot($rf['emailp'],$email_qry,Settings::$url);
 	public static function mail_forgot($destination,$email_qry,$url=NULL) {
@@ -117,7 +117,7 @@ class SioForgot {
 		}
 	}
 
-	
+
 
 	public static function initialise($use_un=true,$custom_views=array()) {
 		static::$use_un=$use_un;
@@ -131,7 +131,7 @@ class SioForgot {
 
 //translations
 		$en = array(
-		
+
 			static::SIG .'prompt_emailaddress' => "Email",
 			static::SIG .'button_resetpassword'=>"Reset Password",
 			static::SIG .'errors_bad_email'=>"The email address appears to be wrong",

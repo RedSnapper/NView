@@ -1,9 +1,9 @@
-<?php namespace RedSnapper\NView;
+<?php namespace redsnapper\nview;
 mb_internal_encoding('UTF-8');
 
 class SioReg {
 	use Form;
-	const SIG="sioreg_";
+	const SIG="Sioreg_";
 	public static function sig() { return static::SIG; }
 	protected static $munge="sha2(concat(ifnull(username,id),'_',ifnull(password,id),'_',ifnull(email,id),'_',ifnull(ts,id)),256)";
 	protected static $v=array();
@@ -82,7 +82,7 @@ class SioReg {
 				$retval = false;
 			}
 			$err_ar = array();
-			$pw_retval = SIO::$utility->pw_validate($pwa,$err_ar);
+			$pw_retval = Sio::$utility->pw_validate($pwa,$err_ar);
 			foreach($err_ar as $err) {
 				$this->seterr("passwordn",Dict::get($err));
 			}
@@ -234,7 +234,7 @@ class SioReg {
 				$em_field = "email";
 				$active_val= "on";
 			}
-			$ph=SIOSetPW::enhash($id_for_hash,$pw); // $pw is being set to null here
+			$ph=SioSetPW::enhash($id_for_hash,$pw); // $pw is being set to null here
 			$ph = is_null($ph) ? "NULL" : "'$ph'";
 			$insql="insert into sio_user set ts=null,{$extra},{$em_field}='{$em}',password={$ph},active='{$active_val}'";
 			Settings::$sql->query($insql);

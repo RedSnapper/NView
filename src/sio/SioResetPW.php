@@ -1,10 +1,10 @@
-<?php namespace RedSnapper\NView;
+<?php namespace redsnapper\nview;
 mb_internal_encoding('UTF-8');
 
 //This is the 'receiving end' of the paired sioforgot_ class
-class SIOResetPW {
+class SioResetPW {
 	use Form;
-	const SIG = "sioresetpw_";
+	const SIG = "Sioresetpw_";
 	public static function sig() { return static::SIG; }
 	//The following munge must be the same as the one in sioforgot_
 	private static $munge="sha2(concat(ifnull(username,id),'-',ifnull(password,id),'-',ifnull(email,id),'-',ifnull(ts,id)),256)";
@@ -47,7 +47,7 @@ class SIOResetPW {
 				$retval = false;
 			}
 			$err_ar = array();
-			$pw_retval = SIO::$utility->pw_validate($pwa,$err_ar);
+			$pw_retval = Sio::$utility->pw_validate($pwa,$err_ar);
 			foreach($err_ar as $err) {
 				$this->seterr("password",Dict::get($err));
 			}
@@ -79,7 +79,7 @@ class SIOResetPW {
 				} else { //using email
 					$unm=$f_email;
 				}
-				$ph=SIOSetPW::enhash($unm,$this->fields['password'][0]);
+				$ph=SioSetPW::enhash($unm,$this->fields['password'][0]);
 				$cond=" and ".self::$munge."='".$ha."'";
 				if ($f['active']=='on') {
 					$qry="update " . $this->table . " set password='".$ph."',ts=current_timestamp where active='on' ".$cond ;
@@ -115,7 +115,7 @@ class SIOResetPW {
 		$retval = $return_id ? $retval : !is_null($retval) ;
 		return $retval;
 	}
-	
+
 	public static function initialise($use_un=true,$custom_views=array()) {
 		static::$use_un=$use_un;
 //views arrays
