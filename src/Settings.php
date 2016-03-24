@@ -65,7 +65,7 @@ class Settings extends Singleton {
 			self::$sqls['user']=getenv('RS_SQLUSER');
 			self::$sqls['password']=getenv('RS_SQLUSERPW');
 			self::$sqls['database']=getenv('RS_DATABASE');
-			self::$sql = new mysqli(self::$sqls['host'],self::$sqls['user'],self::$sqls['password'],self::$sqls['database']);
+			self::$sql = new \mysqli(self::$sqls['host'],self::$sqls['user'],self::$sqls['password'],self::$sqls['database']);
 		}
 		if (self::$sql->connect_error) {
 			static::$log->fatal('SQL Connection Error (' . self::$sql->connect_errno . ') ' . self::$sql->connect_error);
@@ -73,7 +73,7 @@ class Settings extends Singleton {
 		}
 		$srch=getenv('RS_SEARCH_HOST');
 		if (!empty($srch)) {
-	       self::$sphinx = new mysqli(getenv('RS_SEARCH_HOST'),NULL,NULL,NULL,9306);
+	       self::$sphinx = new \mysqli(getenv('RS_SEARCH_HOST'),NULL,NULL,NULL,9306);
 		} else {
 		   self::$sphinx = null;
 		}
