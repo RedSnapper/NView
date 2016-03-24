@@ -215,7 +215,7 @@ class NView {
 							$retval = $entry->value;
 						} elseif ($entry->nodeType == XML_ELEMENT_NODE) {
 							//convert this to a domdocument so that we can maintain the namespace.
-							$retval = new DOMDocument("1.0","utf-8");
+							$retval = new \DOMDocument("1.0","utf-8");
 							$retval->preserveWhiteSpace = true;
 							$retval->formatOutput = false;
 							$node = $retval->importNode($entry, true);
@@ -374,7 +374,7 @@ class NView {
 												$fvalue = "";
 												if ($value instanceof DOMNodeList) {
 													foreach($value as $nodi) {
-														$doc = new DOMDocument("1.0","utf-8");
+														$doc = new \DOMDocument("1.0","utf-8");
 														$node = $doc->importNode($nodi, true);
 														$doc->appendChild($node);
 														$txt = $doc->saveXML();
@@ -382,7 +382,7 @@ class NView {
 													}
 												} else {
 													if ($value instanceof DOMNode) {
-														$doc = new DOMDocument("1.0","utf-8");
+														$doc = new \DOMDocument("1.0","utf-8");
 														$node=$doc->importNode($value, true);
 														$doc->appendChild($node);
 														$txt = $doc->saveXML();
@@ -517,7 +517,7 @@ class NView {
  * 'initDoc'
  */
 	private function initDoc() {
-		$this->doc = new DOMDocument("1.0","utf-8");
+		$this->doc = new \DOMDocument("1.0","utf-8");
 		$this->doc->preserveWhiteSpace = true;
 		$this->doc->formatOutput = false;
 	}
@@ -526,7 +526,7 @@ class NView {
  * 'initXPath'
  */
 	private function initXPath() {
-		$this->xp = new DOMXPath($this->doc);
+		$this->xp = new \DOMXPath($this->doc);
 		$this->xp->registerNamespace("h","http://www.w3.org/1999/xhtml");
 	}
 
