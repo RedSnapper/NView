@@ -2,7 +2,7 @@
 mb_internal_encoding('UTF-8');
 use Monolog\Logger;
 
-class NViewLogger extends Monolog\Logger
+class NViewLogger extends \Monolog\Logger
 {
 	private $stack;
 	private $base_name;
