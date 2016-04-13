@@ -3,7 +3,7 @@ mb_internal_encoding('UTF-8');
 
 class SioSetPW {
 	use Form;
-	const SIG = "Siosetpw_";
+	const SIG = "siosetpw_";
 	public static function sig() { return static::SIG; }
 	private static $v=array();
 	private static $use_un=true;

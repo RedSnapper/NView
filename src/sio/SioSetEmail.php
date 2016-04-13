@@ -3,7 +3,7 @@ mb_internal_encoding('UTF-8');
 
 class SioSetEmail {
 	use Form;
-	const SIG = "Siosetem_";
+	const SIG = "siosetem_";
 	public static function sig() { return static::SIG; }
 	private static $munge="sha2(concat(ifnull(username,id),'+',ifnull(password,id),'+',ifnull(email,id),'+',ifnull(ts,id)),256)";
 	private static $v=array();

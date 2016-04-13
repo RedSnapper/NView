@@ -3,7 +3,7 @@ mb_internal_encoding('UTF-8');
 
 class SioReg {
 	use Form;
-	const SIG="Sioreg_";
+	const SIG="sioreg_";
 	public static function sig() { return static::SIG; }
 	protected static $munge="sha2(concat(ifnull(username,id),'_',ifnull(password,id),'_',ifnull(email,id),'_',ifnull(ts,id)),256)";
 	protected static $v=array();

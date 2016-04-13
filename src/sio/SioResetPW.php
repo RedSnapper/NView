@@ -4,7 +4,7 @@ mb_internal_encoding('UTF-8');
 //This is the 'receiving end' of the paired sioforgot_ class
 class SioResetPW {
 	use Form;
-	const SIG = "Sioresetpw_";
+	const SIG = "sioresetpw_";
 	public static function sig() { return static::SIG; }
 	//The following munge must be the same as the one in sioforgot_
 	private static $munge="sha2(concat(ifnull(username,id),'-',ifnull(password,id),'-',ifnull(email,id),'-',ifnull(ts,id)),256)";

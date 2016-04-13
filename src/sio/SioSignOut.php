@@ -6,7 +6,7 @@ mb_internal_encoding('UTF-8');
  */
 class SioSignOut {
 	use Form;
-	const SIG = "Siosignout_";
+	const SIG = "siosignout_";
 	public static function sig() { return static::SIG; }
 	private static $v=array();
 	private static $use_un=true;
