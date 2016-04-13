@@ -2,6 +2,9 @@
     "name": "rs",
     "license": "GPL-2.0",
     "description": "true control-view separation with sign-in sign-out",
+    "autoload": {
+        "classmap": ["src/", "src/sio" ]
+    },
     "require": {
         "phpmailer/phpmailer": "~5.2.10",
         "monolog/monolog": "~1.17",
