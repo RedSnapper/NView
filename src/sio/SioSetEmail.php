@@ -1,4 +1,4 @@
-<?php namespace redsnapper\sio;
+<?php
 mb_internal_encoding('UTF-8');
 
 class SioSetEmail {
@@ -193,6 +193,9 @@ class SioSetEmail {
 			static::SIG .'note_email_change_action_link'=>"PLEASE CONTINUE HERE",
 			static::SIG .'note_email_see_html_alt'=>"Please see the html alternative of this email."
 		);
+		$es = array(
+			static::SIG .'prompt_your_password'=>"Contraseña"
+		);
 		$de = array(
 			static::SIG ."mesg_success"=>"Sie haben Ihre E-Mail-Adresse erfolgreich geändert.",
 			static::SIG ."mesg_failure"=>"Ein Problem beim Versuch, Ihre E-Mail-Adresse zu ändern. Bitte loggen Sie sich mit Ihrer alten E-Mail-Adresse und versuchen Sie es erneut.",
@@ -212,6 +215,7 @@ class SioSetEmail {
 			static::SIG .'note_email_see_html_alt'=>"Sollte die E-Mail nicht korrekt dargestellt werden, wechseln Sie bitte in das HTML-Format."
 		);
 		Dict::set($en,'en');
+		Dict::set($en,'es');
 		Dict::set($de,'de');
 	}
 

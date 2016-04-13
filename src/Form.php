@@ -1,4 +1,4 @@
-<?php namespace redsnapper\nview;
+<?php
 mb_internal_encoding('UTF-8');
 
 /**
@@ -581,6 +581,8 @@ trait Form {
 	public function setfrompost() {
 		$this->fields = array();
 		foreach ($_POST as $k => $v) {
+			//We remove <> as valid characters to prevent XSS html script attacks..
+			$v = str_replace(array("<",">"),array("＜","＞"),$v);
 			if (strpos($k,$this->idprefix) === 0) {
 				$key = mb_substr($k,$this->idprefixlen);
 				if ($key === $this->subsfield) {

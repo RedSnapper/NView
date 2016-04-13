@@ -1,4 +1,4 @@
-<?php namespace redsnapper\sio;
+<?php
 mb_internal_encoding('UTF-8');
 
 class SioSetPW {
@@ -132,6 +132,8 @@ class SioSetPW {
 			static::SIG ."errors_new_pw_too_un_simple"=>" Passwords must be different from your username!",
 			static::SIG ."errors_new_pw_too_em_simple"=>" Passwords must be different from your email!"
 		);
+		$es = array(
+		);
 		$de = array(
 			static::SIG ."mesg_success"=>"Sie haben Ihre passwort erfolgreich geändert.",
 			static::SIG ."prompt_original_password"=>"Bisheriges Passwort",
@@ -146,6 +148,7 @@ class SioSetPW {
 			static::SIG ."errors_new_pw_too_em_simple"=>" Passwort und E-Mail dürfen nicht übereinstimmen."
 		);
 		Dict::set($en,'en');
+		Dict::set($en,'es');
 		Dict::set($de,'de');
 	}
 

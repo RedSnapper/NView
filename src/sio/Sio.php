@@ -1,4 +1,4 @@
-<?php namespace redsnapper\sio;
+<?php
 mb_internal_encoding('UTF-8');
 class Sio {
 	const SIG = "sio_";

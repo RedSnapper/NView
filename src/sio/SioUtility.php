@@ -1,4 +1,4 @@
-<?php namespace redsnapper\sio;
+<?php
 /**
  * Created by PhpStorm.
  * User: akis

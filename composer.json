@@ -1,17 +1,10 @@
 {
-    "name": "redsnapper/nview",
+    "name": "rs",
     "license": "GPL-2.0",
     "description": "true control-view separation with sign-in sign-out",
     "require": {
         "phpmailer/phpmailer": "~5.2.10",
         "monolog/monolog": "~1.17",
        	"google/recaptcha": "~1.1"
-    },
-    "autoload": {
-        "psr-4": {
-            "redsnapper\\nview\\": "src",
-            "redsnapper\\sio\\": "src/sio"
-
-        }
     }
 }

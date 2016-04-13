@@ -1,4 +1,4 @@
-<?php namespace redsnapper\sio;
+<?php
 mb_internal_encoding('UTF-8');
 
 /**
@@ -60,12 +60,20 @@ class SioSignOut {
 			static::SIG .'button_newemailaddr'=>"Change Registered Email Address",
 			static::SIG .'button_newpassword'=>"Change Password"
 		);
+		$es = array(
+			static::SIG .'button_signout'=>"Cerrar sesión",
+			static::SIG .'button_newemailaddr'=>"Cambiar la dirección de correo electrónico registrada",
+			static::SIG .'button_newpassword'=>"Cambiar contraseña"
+		);
 		$de = array(
 			static::SIG .'button_signout'=>"Abmelden",
 			static::SIG .'button_newemailaddr'=>"E-Mail-Adresse ändern",
 			static::SIG .'button_newpassword'=>"Passwort ändern"
 		);
+		
+		
 		Dict::set($en,'en');
+		Dict::set($en,'es');
 		Dict::set($de,'de');
 	}
 }

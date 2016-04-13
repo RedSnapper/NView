@@ -1,4 +1,4 @@
-<?php namespace redsnapper\sio;
+<?php
 mb_internal_encoding('UTF-8');
 
 //This is the 'receiving end' of the paired sioforgot_ class
@@ -135,6 +135,9 @@ class SioResetPW {
 			static::SIG ."errors_new_pw_too_un_simple"=>" Passwords must be different from your username!",
 			static::SIG .'errors_new_pw_too_em_simple'=>"  Passwords must be different from your email!"
 		);
+		$es = array(
+			static::SIG .'prompt_password' => "Contraseña"
+		);
 		$de = array(
 			static::SIG ."mesg_success"=>"Sie haben Ihre passwort erfolgreich geändert.",
 			static::SIG .'prompt_password' => "Passwort",
@@ -146,6 +149,7 @@ class SioResetPW {
 			static::SIG .'errors_new_pw_too_em_simple'=>" Passwort und E-Mail dürfen nicht übereinstimmen."
 		);
 		Dict::set($en,'en');
+		Dict::set($en,'es');
 		Dict::set($de,'de');
 	}
 

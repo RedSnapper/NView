@@ -1,4 +1,4 @@
-<?php namespace redsnapper\sio;
+<?php
 mb_internal_encoding('UTF-8');
 
 class SioReg {
@@ -286,7 +286,11 @@ class SioReg {
 				static::SIG ."mesg_see_html_alt"=>"Please see the html alternative of this email.",
 				static::SIG ."mesg_success"=>"You have successfully validated your registration."
 			);
-
+			$es = array(
+				static::SIG ."prompt_email"=>"Correo electrónico",
+				static::SIG ."prompt_password"=>"Contraseña",
+				static::SIG ."button_signin"=>"Iniciar sesión",
+			);
 			$de = array(
 				static::SIG .'prompt_email'=> 'E-Mail-Adresse',
 				static::SIG .'prompt_password'=> 'Passwort',
@@ -328,6 +332,7 @@ class SioReg {
 			static::$v = array_replace(static::$v,$custom_views);
 			Dict::set($en,'en');
 			Dict::set($de,'de');
+			Dict::set($es,'es');
         }
 
 	}

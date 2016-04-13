@@ -1,4 +1,4 @@
-<?php namespace redsnapper\sio;
+<?php
 mb_internal_encoding('UTF-8');
 
 /**
@@ -189,6 +189,13 @@ class SioSignIn {
 			static::SIG .'button_forgot'=>"Passwort vergessen",
 			static::SIG .'button_register'=>"Registrieren"
 		);
+		$es = array(
+			static::SIG .'prompt_password'=>"Contraseña",
+			static::SIG .'button_signin'=>"Iniciar sesión",
+			static::SIG .'button_forgot'=>"He olvidado la contraseña",
+			static::SIG .'button_register'=>"Registrarse"
+		);
+		
 
 //set the views array.
 		if(static::$use_un) {
@@ -213,6 +220,7 @@ class SioSignIn {
 			$de[static::SIG .'errors_email_unmatched']=" E-Mail-Adresse und/oder Passwort nicht korrekt.";
 			$de[static::SIG .'errors_email_empty']=" Bitte geben Sie Ihr Passwort ein.";
 
+			$es[static::SIG ."prompt_email"]= "Correo electrónico";
 		}
 		$en[static::SIG .'errors_user_pending_validation']=" You are registered, but we are waiting for you to validate your email.<br />A new validation email has just been sent.";
 		$en[static::SIG ."errors_password_empty"]= "You need to enter your email address and password!";

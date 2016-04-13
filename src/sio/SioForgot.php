@@ -1,4 +1,4 @@
-<?php namespace redsnapper\sio;
+<?php
 mb_internal_encoding('UTF-8');
 
 //This is the 'sending end' of the paired Sioresetpw_ class
@@ -131,7 +131,6 @@ class SioForgot {
 
 //translations
 		$en = array(
-
 			static::SIG .'prompt_emailaddress' => "Email",
 			static::SIG .'button_resetpassword'=>"Reset Password",
 			static::SIG .'errors_bad_email'=>"The email address appears to be wrong",
@@ -143,6 +142,9 @@ class SioForgot {
 			static::SIG .'mail_see_alt'=>"Please see the html alternative of this email",
 			static::SIG ."mail_from"=>"Password Reset Service",
 			static::SIG .'mail_subject'=>'Password Reset'
+		);
+		$es = array(
+			static::SIG .'prompt_emailaddress'=> "Correo electrónico.",
 		);
 		$de = array(
 			static::SIG .'prompt_emailaddress'=> "E-Mail-Adresse",
@@ -159,6 +161,7 @@ class SioForgot {
 		);
 		Dict::set($en,'en');
 		Dict::set($de,'de');
+		Dict::set($es,'es');
 	}
 
 }
