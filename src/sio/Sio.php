@@ -7,7 +7,7 @@ class Sio {
 	public static $utility = NULL;
 	public static $presets = array(); //only good for email/username presets.
 
-	public static function run($key=NULL) {
+	public static function run($key=NULL,$debug=false) {
 		$v = new NView(@static::$v[static::SIG]);
 		$err = $v->messages();
 		if (isset($err) && !empty($err)) {
@@ -85,7 +85,7 @@ class Sio {
 					}
 				} break;
 			}
-			$v->set("//*[@data-xp='Sio']",$formlet);
+			$v->set("//*[@data-xp='sio']",$formlet);
 			return $v;
 		}
 	}

@@ -14,8 +14,8 @@ class SioSignIn {
 /**
  * '__construct'
  */
-	function __construct($key=NULL) {
-		$this->iniForm($key,@static::$v[static::SIG]);
+	function __construct($key=NULL,$debug=false) {
+		$this->iniForm($key,@static::$v[static::SIG],true,'id',$debug);
 		$this->key=$key;
 		$this->table="sio_user";
 		if(static::$use_un) {
@@ -207,7 +207,6 @@ class SioSignIn {
 			$de[static::SIG .'prompt_username']= "Benutzername";
 			$de[static::SIG .'errors_username_unmatched']=" Benutzername und/oder Passwort nicht korrekt.";
 			$de[static::SIG .'errors_username_empty']=" Bitte geben Sie Ihren Benutzernamen an.";
-
 		} else {
 			static::$v[static::SIG]=static::SIG."mv.ixml";
 			$en[static::SIG ."prompt_email"]= "Email";
