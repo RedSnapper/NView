@@ -73,7 +73,7 @@ class SioSignOut {
 		
 		
 		Dict::set($en,'en');
-		Dict::set($en,'es');
+		Dict::set($es,'es');
 		Dict::set($de,'de');
 	}
 }

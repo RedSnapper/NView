@@ -145,6 +145,16 @@ class SioForgot {
 		);
 		$es = array(
 			static::SIG .'prompt_emailaddress'=> "Correo electrónico.",
+			static::SIG .'button_resetpassword'=>"Restablecer la contraseña",
+			static::SIG .'errors_bad_email'=>"La dirección de correo electrónico parece no ser correcta",
+			static::SIG .'commit_msg'=>"En breve recibirá un correo electrónico con instrucciones para restablecer su contraseña",
+			static::SIG .'mail_head'=>"Solicitud  para restablecer su contraseña - " . $_SERVER['HTTP_HOST'],
+			static::SIG ."mail_body"=>" Alguien con esta dirección de correo electrónico ha solicitado un restablecimiento de contraseña para esta " . $_SERVER['HTTP_HOST'] .". Si esto no es para usted, por favor ignore esta comunicación, , de lo contrario ",
+			static::SIG .'mail_userhint'=>"Su nombre de usuario es:",
+			static::SIG .'mail_url_text'=>"haga clic aquí para restablecer su contraseña.",
+			static::SIG .'mail_see_alt'=>"Por favor, vea el html de este correo electrónico.",
+			static::SIG ."mail_from"=>"Servicio para restablecer su contraseña",
+			static::SIG .'mail_subject'=>'Restablecimiento de contraseña'
 		);
 		$de = array(
 			static::SIG .'prompt_emailaddress'=> "E-Mail-Adresse",

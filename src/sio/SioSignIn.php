@@ -207,6 +207,10 @@ class SioSignIn {
 			$de[static::SIG .'prompt_username']= "Benutzername";
 			$de[static::SIG .'errors_username_unmatched']=" Benutzername und/oder Passwort nicht korrekt.";
 			$de[static::SIG .'errors_username_empty']=" Bitte geben Sie Ihren Benutzernamen an.";
+
+			$es[static::SIG .'prompt_username']= "Nombre de usuario";
+			$es[static::SIG .'errors_username_unmatched']=" Su nombre de usuario o contraseña no coinciden con nuestros registros.";
+			$es[static::SIG .'errors_username_empty']=" Es necesario que introduzca su nombre de usuario.";
 		} else {
 			static::$v[static::SIG]=static::SIG."mv.ixml";
 			$en[static::SIG ."prompt_email"]= "Email";
@@ -219,15 +223,25 @@ class SioSignIn {
 			$de[static::SIG .'errors_email_unmatched']=" E-Mail-Adresse und/oder Passwort nicht korrekt.";
 			$de[static::SIG .'errors_email_empty']=" Bitte geben Sie Ihr Passwort ein.";
 
-			$es[static::SIG ."prompt_email"]= "Correo electrónico";
+			$es[static::SIG ."prompt_email"]= "Email";
+			$es[static::SIG ."errors_email_badformat"]=" El formato de correo electrónico no se reconoce";
+			$es[static::SIG .'errors_email_unmatched']=" El correo electrónico o la contraseña no coinciden con nuestros registros";
+			$es[static::SIG .'errors_email_empty']=" Es necesario que introduzca su dirección de correo electrónico";
 		}
 		$en[static::SIG .'errors_user_pending_validation']=" You are registered, but we are waiting for you to validate your email.<br />A new validation email has just been sent.";
 		$en[static::SIG ."errors_password_empty"]= "You need to enter your email address and password!";
+
+		$de[static::SIG .'errors_user_pending_validation']=" Sie sind registriert, aber wir warten auf Sie Ihre E-Mail zu bestätigen.<br />Eine neue E-Mail- Validierung hat gerade gesendet wurde.";
+		$de[static::SIG ."errors_password_empty"]= "Sie müssen Ihre E-Mail -Adresse und Ihr Passwort eingeben !";
+
+		$es[static::SIG .'errors_user_pending_validation']=" Usted está registrado, pero estamos esperando a que valide su correo electrónico.<br /> Se le acaba de enviar un nuevo correo electrónico de validación.";
+		$es[static::SIG ."errors_password_empty"]= "Es necesario que introduzca su dirección de correo electrónico y su contraseña!";
 
 		//set the views after all the above.
 		static::$v = array_replace(static::$v,$custom_views);
 		Dict::set($en,'en');
 		Dict::set($de,'de');
+		Dict::set($es,'es');
 	}
 
 

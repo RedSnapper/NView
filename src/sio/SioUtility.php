@@ -177,11 +177,27 @@ class SioUtility {
 		);
 
 		$de = array(
-			'pw_error_length_too_short'=> "Das Passwort muss aus mehr als sieben Zeichen bestehen."
+			'pw_error_length_too_short'=> "Das Passwort muss aus mehr als sieben Zeichen bestehen.",
+            "pw_error_not_mixed_case"=>" Passwörter müssen sowohl Groß- als auch Kleinbuchstaben enthalten.",
+            "pw_error_no_number"=>" Passwords must include at least one digit.",
+            "pw_error_no_alpha"=>" Passwörter müssen mindestens eine Ziffer enthalten.",
+            "pw_error_no_symbols"=>" Das Passwort muss mindestens ein Symbol enthalten.  z.B. $",
+            "pw_error_low_score"=> " Passwortstärke  ist zu gering."
 		);
+
+
+        $es = array(
+            'pw_error_length_too_short'=> "La contraseña debe tener al menos siete caracteres.",
+            "pw_error_not_mixed_case"=>" Las contraseñas deben incluir mayúsculas y minúsculas.",
+            "pw_error_no_number"=>" Las contraseñas deben incluir al menos un dígito.",
+            "pw_error_no_alpha"=>" Las contraseñas deben incluir al menos una letra.",
+            "pw_error_no_symbols"=>" La contraseña debe contener al menos un símbolo. Por ejemplo. $",
+            "pw_error_low_score"=> " La seguridad de contraseña es demasiado baja."
+        );
 
 		Dict::set($en,'en');
 		Dict::set($de,'de');
+        Dict::set($es,'es');
 	}
 
 

@@ -133,6 +133,17 @@ class SioSetPW {
 			static::SIG ."errors_new_pw_too_em_simple"=>" Passwords must be different from your email!"
 		);
 		$es = array(
+			static::SIG ."mesg_success"=>"Ha cambiado correctamente la contraseña.",
+			static::SIG ."prompt_original_password"=>"Contraseña actual",
+			static::SIG ."prompt_new_password"=>"Nueva contraseña",
+			static::SIG ."prompt_retype_new_password"=>"Reescriba la nueva contraseña",
+			static::SIG ."button_set_new_password"=>"Crear una contraseña nueva",
+			static::SIG ."errors_orig_pw_wrong"=>" La contraseña actual no coincide con nuestros registros.",
+			static::SIG ."errors_password_empty"=>" Debe introducir su contraseña actual.",
+			static::SIG ."errors_new_pw_empty"=>" Debe introducir una nueva contraseña.",
+			static::SIG ."errors_new_pw_different"=>" Ambas contraseñas deben ser iguales.",
+			static::SIG ."errors_new_pw_too_un_simple"=>" Las contraseñas deben ser diferentes de su nombre de usuario!",
+			static::SIG ."errors_new_pw_too_em_simple"=>" Las contraseñas deben ser diferentes de su correo electrónico!"
 		);
 		$de = array(
 			static::SIG ."mesg_success"=>"Sie haben Ihre passwort erfolgreich geändert.",
@@ -148,7 +159,7 @@ class SioSetPW {
 			static::SIG ."errors_new_pw_too_em_simple"=>" Passwort und E-Mail dürfen nicht übereinstimmen."
 		);
 		Dict::set($en,'en');
-		Dict::set($en,'es');
+		Dict::set($es,'es');
 		Dict::set($de,'de');
 	}
 

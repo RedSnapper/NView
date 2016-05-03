@@ -194,7 +194,22 @@ class SioSetEmail {
 			static::SIG .'note_email_see_html_alt'=>"Please see the html alternative of this email."
 		);
 		$es = array(
-			static::SIG .'prompt_your_password'=>"Contraseña"
+			static::SIG ."mesg_success"=>"Ha cambiado correctamente su correo electrónico.",
+			static::SIG ."mesg_failure"=>"Ocurrió un problema al intentar cambiar su correo electrónico. Por favor, inicie la sesión con su antigua dirección de correo y vuelva a intentarlo",
+			static::SIG ."mesg_checkem"=>"Para configurar su dirección de correo electrónico confirme el cambio a través del correo electrónico que se le acaba de enviar.",
+			static::SIG .'prompt_new_email'=>"Nueva dirección de correo electrónico",
+			static::SIG .'prompt_retype_new_email'=>"Vuelva a escribir la nueva dirección de correo electrónico",
+			static::SIG .'prompt_your_password'=>"Contraseña",
+			static::SIG .'button_set_email'=>"Establezca una nueva dirección de correo electrónico",
+			static::SIG .'errors_emails_unmatched'=>" Ambas direcciones de correo electrónico deben ser iguales.",
+			static::SIG .'errors_email_badformat'=>" El formato de correo electrónico no se reconoce.",
+			static::SIG .'errors_emails_empty'=>" El formato de correo electrónico no se reconoce.",
+			static::SIG .'errors_password_bad'=>" No se reconoce la contraseña.",
+			static::SIG ."mail_from"=>"Servicio de cambio de correo electrónico",
+			static::SIG .'note_email_change_title'=>"Solicitud de cambio de correo electrónico",
+			static::SIG .'note_email_change_message'=>"Parece que usted ha elegido cambiar su dirección de e - mail a la que ha recibido este mensaje.",
+			static::SIG .'note_email_change_action_link'=>"POR FAVOR CONTINUAR AQUÍ",
+			static::SIG .'note_email_see_html_alt'=>"Por favor, vea el html de este correo electrónico."
 		);
 		$de = array(
 			static::SIG ."mesg_success"=>"Sie haben Ihre E-Mail-Adresse erfolgreich geändert.",
@@ -215,7 +230,7 @@ class SioSetEmail {
 			static::SIG .'note_email_see_html_alt'=>"Sollte die E-Mail nicht korrekt dargestellt werden, wechseln Sie bitte in das HTML-Format."
 		);
 		Dict::set($en,'en');
-		Dict::set($en,'es');
+		Dict::set($es,'es');
 		Dict::set($de,'de');
 	}
 

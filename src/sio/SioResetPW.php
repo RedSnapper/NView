@@ -136,7 +136,14 @@ class SioResetPW {
 			static::SIG .'errors_new_pw_too_em_simple'=>"  Passwords must be different from your email!"
 		);
 		$es = array(
-			static::SIG .'prompt_password' => "Contraseña"
+			static::SIG ."mesg_success"=>"Ha cambiado correctamente la contraseña.",
+			static::SIG .'prompt_password' => "Contraseña",
+			static::SIG .'prompt_retype_password' => "Vuelva a escribir la contraseña",
+			static::SIG .'button_new_password'=>"Crear una nueva contraseña",
+			static::SIG .'errors_password_different'=>" Ambas contraseñas deben ser iguales.",
+			static::SIG .'errors_password_empty'=>" Escriba su contraseña.",
+			static::SIG ."errors_new_pw_too_un_simple"=>" La contraseña debe ser diferente de su nombre de usuario!",
+			static::SIG .'errors_new_pw_too_em_simple'=>"  La contraseña debe ser diferente de su correo electrónico!"
 		);
 		$de = array(
 			static::SIG ."mesg_success"=>"Sie haben Ihre passwort erfolgreich geändert.",
@@ -149,7 +156,7 @@ class SioResetPW {
 			static::SIG .'errors_new_pw_too_em_simple'=>" Passwort und E-Mail dürfen nicht übereinstimmen."
 		);
 		Dict::set($en,'en');
-		Dict::set($en,'es');
+		Dict::set($es,'es');
 		Dict::set($de,'de');
 	}
 

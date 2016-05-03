@@ -287,9 +287,23 @@ class SioReg {
 				static::SIG ."mesg_success"=>"You have successfully validated your registration."
 			);
 			$es = array(
-				static::SIG ."prompt_email"=>"Correo electrónico",
+				static::SIG ."prompt_email"=>"Email",
 				static::SIG ."prompt_password"=>"Contraseña",
-				static::SIG ."button_signin"=>"Iniciar sesión",
+				static::SIG ."prompt_retype_password"=>"Vuelva a escribir la contraseña",
+				static::SIG ."button_register"=>"Registro",
+				static::SIG ."button_signin"=>"Registrarse",
+				static::SIG ."mail_from"=>"Servicio de verificación de registro",
+				static::SIG ."note_register_title"=>"Verificación de solicitud de registro " . $_SERVER['HTTP_HOST'],
+				static::SIG ."note_register_message"=>" Alguien con esta dirección de correo electrónico se ha registrado en " . $_SERVER['HTTP_HOST'] .". Si esto no era usted puede ignorar este mensaje , de lo contrario ",
+				static::SIG ."note_register_action_link"=>"haga clic aquí para confirmar su registro.",
+				static::SIG ."errors_email_badformat"=>" El formato de correo electrónico no se reconoce.",
+				static::SIG ."errors_email_exists"=>" Ya existe en el sistema un usuario con este correo electrónico. Por favor, utilice otra dirección de correo electrónico.",
+				static::SIG ."errors_no_email"=>" Debe introducir una dirección de correo electrónico.",
+				static::SIG ."errors_no_password"=>" Debe introducir una contraseña.",
+				static::SIG ."errors_new_pw_different"=>" Ambas contraseñas deben ser iguales.",
+				static::SIG ."mesg_register_check_email"=>"Gracias por registrarse. Se le ha enviado un correo electrónico de confirmación a su dirección de correo (E-mail) para su verificación.",
+				static::SIG ."mesg_see_html_alt"=>"Por favor, vea el html de este correo electrónico.",
+				static::SIG ."mesg_success"=>"Usted ha validado con éxito su registro."
 			);
 			$de = array(
 				static::SIG .'prompt_email'=> 'E-Mail-Adresse',
@@ -314,19 +328,24 @@ class SioReg {
 				static::$v[static::SIG]=static::SIG."uv.ixml";
 				$en[static::SIG ."prompt_username"]="Username";
 				$de[static::SIG ."prompt_username"]="Benutzername";
+				$es[static::SIG ."prompt_username"]="Nombre de usuario";
 
 				$en[static::SIG ."errors_username_exists"]="This username already exists on the system. Please choose another.";
 				$de[static::SIG ."errors_username_exists"]="Dieser Benutzername wird bereits verwendet. Bitte wählen Sie einen anderen Benutzernamen.";
+				$es[static::SIG ."errors_username_exists"]="Este nombre de usuario ya existe en el sistema . Por favor, elija otro.";
 
 				$en[static::SIG ."errors_no_username"]="You need to enter a username.";
 				$de[static::SIG ."errors_no_username"]="Bitte geben Sie Ihren Benutzernamen ein.";
+				$es[static::SIG ."errors_no_username"]="Es necesario introducir un nombre de usuario.";
 
 				$en[static::SIG ."errors_new_pw_too_un_simple"]=" Passwords must be different from your username!";
 				$de[static::SIG ."errors_new_pw_too_un_simple"]=" Passwort und Benutzername dürfen nicht übereinstimmen.";
+				$es[static::SIG ."errors_new_pw_too_un_simple"]=" Las contraseñas deben ser diferentes de su nombre de usuario!";
 			} else {
 				static::$v[static::SIG]=static::SIG."mv.ixml";
 				$en[static::SIG ."errors_new_pw_too_em_simple"]=" Passwords must be different from your email!";
 				$de[static::SIG ."errors_new_pw_too_em_simple"]=" Passwort und E-Mail-Adresse dürfen nicht übereinstimmen.";
+				$es[static::SIG ."errors_new_pw_too_em_simple"]=" Las contraseñas deben ser diferentes de su correo electrónico!";
 			}
 			//set these after any contextual changes;
 			static::$v = array_replace(static::$v,$custom_views);
