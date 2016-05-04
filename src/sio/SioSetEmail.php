@@ -153,7 +153,6 @@ class SioSetEmail {
 					Settings::$sql->query($query);
 					Session::del(static::SIG);
 					$nv = new NView(@static::$v[static::SIG."success"]);
-					Session::set('email',$email);
 					Settings::usr();
 				} else {
 					$nv = new NView(@static::$v[static::SIG."failure"]);
