@@ -85,7 +85,7 @@ CREATE TABLE sio_log (
   l_channel char(64) NOT NULL DEFAULT '',
   l_level char(8) NOT NULL DEFAULT '',
   l_message text NOT NULL,
-  l_date char(32) NOT NULL DEFAULT '',
+  l_date datetime DEFAULT NULL,
   ts timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
