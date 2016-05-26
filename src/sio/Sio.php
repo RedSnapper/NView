@@ -3,6 +3,7 @@ mb_internal_encoding('UTF-8');
 class Sio {
 	const SIG = "sio_";
 	private static $v=array();
+	private static $cb=array();
 	private static $use_un=true;
 	public static $utility = NULL;
 	public static $presets = array(); //only good for email/username presets.
@@ -91,22 +92,23 @@ class Sio {
 	}
 
 //This must be run to overload views and translations.
-	public static function initialise($use_un=true,$custom_views=array(),$translations=NULL,$presets=array()) {
+	public static function initialise($use_un=true,$custom_views=array(),$translations=NULL,$presets=array(),$cb_fns=array()) {
 		static::$use_un=$use_un;
 		static::$presets=$presets; //prefill username/email if required
 		static::$v=array(
 			static::SIG => static::SIG."v.ixml"
 		);
-		SioSignIn::initialise($use_un,$custom_views);
-		SioSignOut::initialise($use_un,$custom_views);
-		SioReg::initialise($use_un,$custom_views);
-		SioForgot::initialise($use_un,$custom_views);
-		SioSetEmail::initialise($use_un,$custom_views);
-		SioSetPW::initialise($use_un,$custom_views);
-		SioResetPW::initialise($use_un,$custom_views);
+		static::$v 	= array_replace(static::$v,$custom_views);
+		static::$cb	= array_replace(static::$cb,$cb_fns);
+		SioSignIn::initialise($use_un,static::$v);
+		SioSignOut::initialise($use_un,static::$v);
+		SioReg::initialise($use_un,static::$v);
+		SioForgot::initialise($use_un,static::$v);
+		SioSetEmail::initialise($use_un,static::$v);
+		SioSetPW::initialise($use_un,static::$v);
+		SioResetPW::initialise($use_un,static::$v);
+		static::$utility	= new SioUtility();
 		//now override any translations
-		static::$v = array_replace(static::$v,$custom_views);
-		static::$utility = new SioUtility();
 		if(!is_null($translations)) {
 			foreach ($translations as $lang => $trans_array) {
 				Dict::set($trans_array,$lang);
@@ -135,20 +137,32 @@ class Sio {
 		}
 		return $retval;
 	}
-
+	
 	public static function signin($username = null,$email=null,$override=false) {
 		if($override || !Session::has('username')) {
 			if ($username && $email) {
 				Session::set('username',$username);
 				Session::set('email',$email);
 				Settings::usr();
+				static::callback(array("user"=>Settings::$usr));
 			}
 		}
 	}
 
 	public static function signout(){
+		static::callback(array("user"=>Settings::$usr));
 		Settings::$usr['ID']=NULL;
 		Settings::usr(false);
 		Session::del();
+	}
+	
+	public static function callback($args = array()) {
+		$caller = debug_backtrace()[1];
+		$cb_sig = "{$caller['class']}::{$caller['function']}";  //eg 'SIO::signout'
+		$cb = @static::$cb[$cb_sig];
+		$args = array_replace($caller['args'],$args);
+		if (!is_null($cb)) {
+			$cb($args);
+		}
 	}
 }

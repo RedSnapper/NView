@@ -196,7 +196,12 @@ public function write( $session_id , $data ) {
 			} else {
 				static::$session = $_COOKIE["session"];
 			}
-			setcookie("xsession",static::$session,time()+8640000,'/'); // 8640000 = 100 days
+			if (empty($_SERVER['HTTPS'])) {
+				setcookie("xsession",static::$session,time()+8640000,'/'); // 8640000 = 100 days
+			} else {
+			//possibly don't need this.
+				setcookie("xsession",static::$session,time()+8640000,'/','',true); // 8640000 = 100 days
+			}
 		} else {
 			static::$session = $_COOKIE["xsession"];
 		}
