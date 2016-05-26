@@ -252,7 +252,7 @@ class SioReg {
 				}
 			}
 		}
-		static::callback(array("userID"=>$retval,"error"=>!is_null($retval)));
+		Sio::callback(array("userID"=>$retval,"error"=>!is_null($retval)));
 		return $retval;
 	}
 
