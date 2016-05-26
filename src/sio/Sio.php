@@ -162,7 +162,9 @@ class Sio {
 		$cb = @static::$cb[$cb_sig];
 		$args = array_replace($caller['args'],$args);
 		if (!is_null($cb)) {
+			Settings::$log->pushName("Sio");
 			$cb($args);
+			Settings::$log->popName();
 		}
 	}
 }
