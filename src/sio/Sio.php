@@ -124,7 +124,7 @@ class Sio {
 				$qry="select id from sio_user where username='$identifier' and active !=''";
 			} else {
 				if ( (bool) $pending) {
-					$qry="select id from sio_user where (email='$identifier' and active='on') or (emailp'=$identifier' and active='xx')";
+					$qry="select id from sio_user where (email='$identifier' and active='on') or (emailp='$identifier' and active='xx')";
 				} else {
 					$qry="select id from sio_user where email='$identifier' and active !=''";
 				}
