@@ -137,7 +137,22 @@ class Sio {
 		}
 		return $retval;
 	}
-	
+
+	public static function getUserByID($id){
+		$retval = false;
+		if($id){
+			Settings::esc($id);
+			$qry="select email,active,username from sio_user where id=$id";
+			if ($rs = Settings::$sql->query($qry)) {
+				while ($rf = $rs->fetch_assoc()) {
+					$retval=$rf;
+				}
+				$rs->close();
+			}
+		}
+		return $retval;
+	}
+
 	public static function signin($username = null,$email=null,$override=false) {
 		if($override || !Session::has('username')) {
 			if ($username && $email) {
@@ -149,13 +164,33 @@ class Sio {
 		}
 	}
 
+	public static function signinById($id,$override=false) {
+		 Settings::esc($id);
+		$query= "select email,username from sio_user where active='on' and id= $id";
+		if ($rs = Settings::$sql->query($query)) {
+			while ($rf = $rs->fetch_assoc()) {
+				$email = $rf['email'];
+				$username = $rf['username'];
+				self::signin($username,$email,$override);
+			}
+			$rs->close();
+		}
+	}
+	public static function activateUserById($id) {
+		if($id){
+			$query = "update sio_user set active='on' where id=$id";
+			Settings::$sql->query($query);
+		}
+	}
+
 	public static function signout(){
 		static::callback(array("user"=>Settings::$usr));
 		Settings::$usr['ID']=NULL;
 		Settings::usr(false);
 		Session::del();
+		Session::start(); // Start a new session
 	}
-	
+
 	public static function callback($args = array()) {
 		$caller = debug_backtrace()[1];
 		$cb_sig = "{$caller['class']}::{$caller['function']}";  //eg 'SIO::signout'

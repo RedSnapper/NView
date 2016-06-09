@@ -143,11 +143,12 @@ CREATE TABLE sio_log (
 			}
 //Now store user data.
 			if (self::table_exists("sio_user")) {
-				if ($rx = self::$sql->query("select id,username,email from sio_user where active='on' and username='". @self::$usr['RU'] ."'")) {
+				if ($rx = self::$sql->query("select id,username,email,if(password is null,false,true) as has_password from sio_user where active='on' and username='". @self::$usr['RU'] ."'")) {
 					while ($row = $rx->fetch_assoc()) {
 						self::$usr['ID']=$row['id'];
 						self::$usr['username']=$row['username'];
 						self::$usr['email']=$row['email'];
+						self::$usr['has_password']=$row['has_password'];
 					}
 					$rx->close();
 				}

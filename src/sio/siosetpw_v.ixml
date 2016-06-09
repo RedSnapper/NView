@@ -2,21 +2,21 @@
 <fieldset  xmlns="http://www.w3.org/1999/xhtml" class="siso__fieldset">
 	<input type="hidden" data-xp="_ident" />
 	<ul class="siso__formlet">
-		<li>
+		<li data-xp="password">
 			<label class="siso__control" data-semantic="field" data-xp="comment">
 				<span class="siso__label" data-xp="label" data-tr="prompt_original_password" />
 				<div class="siso__flex"><input class="siso__input" autocomplete="off" type="password" name="password" /></div>
 				<span class="siso__error" data-msg="password" />
 			</label>
 		</li>
-		<li>
+		<li data-xp="passwordn">
 			<label class="siso__control" data-semantic="field" data-xp="comment">
 				<span class="siso__label" data-xp="label" data-tr="prompt_new_password" />
 				<div class="siso__flex"><input class="siso__input" autocomplete="off" type="password" name="passwordn" /></div>
 				<span class="siso__error" data-msg="passwordn" />
 			</label>
 		</li>
-		<li>
+		<li data-xp="passwordb">
 			<label class="siso__control" data-semantic="field" data-xp="comment">
 				<span class="siso__label" data-xp="label" data-tr="prompt_retype_new_password" />
 				<div class="siso__flex"><input class="siso__input" type="password" name="passwordb" /></div>

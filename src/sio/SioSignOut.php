@@ -21,6 +21,18 @@ class SioSignOut {
 	}
 
 /**
+ * 'populate'
+ * fn overloading of trait 'Form'.
+ */
+	protected function populate() {
+		if(Settings::$usr['has_password']){
+			$this->view->set("//*[@data-xp='btnset']");
+		}else{
+			$this->view->set("//*[@data-xp='btnreset']");
+		}
+	}
+
+/**
  * 'func'
  * fn overloading of trait 'Form'.
  */
@@ -58,17 +70,20 @@ class SioSignOut {
 		$en = array(
 			static::SIG .'button_signout'=>"Sign Out",
 			static::SIG .'button_newemailaddr'=>"Change Registered Email Address",
-			static::SIG .'button_newpassword'=>"Change Password"
+			static::SIG .'button_newpassword'=>"Change Password",
+			static::SIG .'button_setpassword'=>"Set Password"
 		);
 		$es = array(
 			static::SIG .'button_signout'=>"Cerrar sesión",
 			static::SIG .'button_newemailaddr'=>"Cambiar la dirección de correo electrónico registrada",
-			static::SIG .'button_newpassword'=>"Cambiar contraseña"
+			static::SIG .'button_newpassword'=>"Cambiar contraseña",
+			static::SIG .'button_setpassword'=>"Configurar contraseña"
 		);
 		$de = array(
 			static::SIG .'button_signout'=>"Abmelden",
 			static::SIG .'button_newemailaddr'=>"E-Mail-Adresse ändern",
-			static::SIG .'button_newpassword'=>"Passwort ändern"
+			static::SIG .'button_newpassword'=>"Passwort ändern",
+			static::SIG .'button_setpassword'=>"Passwort festlegen"
 		);
 		
 		

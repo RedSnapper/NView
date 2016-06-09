@@ -21,6 +21,16 @@ class SioSetPW {
 	}
 
 /**
+ * 'populate'
+ * fn overloading of trait 'Form'.
+ */
+protected function populate() {
+	if(!Settings::$usr['has_password']){
+		$this->vset('password','delete');
+	}
+}
+
+/**
  * 'validate'
  * fn fulfilling abstract requirement of trait 'Form'.
  * validate all fields in this->fields.
@@ -44,8 +54,10 @@ class SioSetPW {
 				$rx->close();
 			}
 		} else {
-			$this->seterr("password",Dict::get(static::SIG.'errors_password_empty'));
-			$retval = false;
+			if(Settings::$usr['has_password']){
+				$this->seterr("password",Dict::get(static::SIG.'errors_password_empty'));
+				$retval = false;
+			}
 		}
 		if (isset($this->fields['passwordn'][0]) && isset($this->fields['passwordb'][0])) {
 			$pwa=$this->fields['passwordn'][0];

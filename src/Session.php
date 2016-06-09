@@ -177,29 +177,33 @@ public function write( $session_id , $data ) {
  * Set / manage the session cookie and it's correlating data-record.
  */
 	protected function __construct() {
+		$this->start(false);
+	}
+
+	public static function start($override = true){
 		if(isset($_COOKIE["session"])) {
 			static::$apache_cookie = Settings::$sql->escape_string($_COOKIE["session"]);
 		} else {
 			static::$apache_cookie = "_NEW";
 		}
-		if(!isset($_COOKIE["xsession"])) {
-			if(!isset($_COOKIE["session"])) {
-					$session_id = getenv("UNIQUE_ID");
-					if (! $session_id) {
-						$session_id = sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
-						  mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff),
-						  mt_rand(0, 0x0fff) | 0x4000, mt_rand(0, 0x3fff) | 0x8000,
-						  mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
-						);
-					}
-					static::$session = md5($session_id);
+		if(!isset($_COOKIE["xsession"]) || $override) {
+			if(!isset($_COOKIE["session"]) || $override) {
+				$session_id = getenv("UNIQUE_ID");
+				if (! $session_id) {
+					$session_id = sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+						mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff),
+						mt_rand(0, 0x0fff) | 0x4000, mt_rand(0, 0x3fff) | 0x8000,
+						mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
+					);
+				}
+				static::$session = md5($session_id);
 			} else {
 				static::$session = $_COOKIE["session"];
 			}
 			if (empty($_SERVER['HTTPS'])) {
 				setcookie("xsession",static::$session,time()+8640000,'/'); // 8640000 = 100 days
 			} else {
-			//possibly don't need this.
+				//possibly don't need this.
 				setcookie("xsession",static::$session,time()+8640000,'/','',true); // 8640000 = 100 days
 			}
 		} else {
@@ -215,7 +219,7 @@ public function write( $session_id , $data ) {
 				$rx->close();
 			}
 		}
-		static::tidy_session();	//always make sure that the _NEW is updated.
+		static::tidy_session();
 	}
 
 /**
@@ -227,6 +231,8 @@ public function write( $session_id , $data ) {
 			Settings::$sql->query("update sio_sessiondata set session='".static::$apache_cookie."' where sid='".static::$sqlsess."' and session='_NEW'");
 		}
 	}
+
+
 
 
 

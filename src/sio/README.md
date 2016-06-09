@@ -89,5 +89,19 @@ CREATE TABLE sio_log (
   ts timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE sio_oauth (
+  service char(20) NOT NULL,
+  id varchar(68) NOT NULL DEFAULT '',
+  user int(11) DEFAULT NULL,
+  token text DEFAULT NULL,
+  firstname char(80) NOT NULL DEFAULT '',
+  lastname char(80) NOT NULL DEFAULT '',
+  email varchar(200) DEFAULT NULL,
+  active tinyint(1) NOT NULL DEFAULT '1',
+  ts timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (service,id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 ```
 

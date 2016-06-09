@@ -2,7 +2,7 @@
 <fieldset xmlns="http://www.w3.org/1999/xhtml" class="siso__fieldset">
 	<input type="hidden" data-xp="_ident" />
 	<ul class="siso__signout">
-		<li>
+		<li data-xp="btnreset">
 			<label class="siso__button" data-semantic="button">
 				<button data-xp="btnemail" class="siso__btn--email" type="submit" name="_fn" value="email" data-tr="button_newemailaddr" />
 			</label>
@@ -10,6 +10,7 @@
 		<li>
 			<label class="siso__button" data-semantic="button">
 				<button data-xp="btnreset" class="siso__btn--password" type="submit" name="_fn" value="reset" data-tr="button_newpassword" />
+                <button data-xp="btnset" class="siso__btn--password" type="submit" name="_fn" value="reset" data-tr="button_setpassword" />
 			</label>
 		</li>
 		<li>
