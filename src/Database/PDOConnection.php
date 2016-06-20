@@ -11,12 +11,6 @@ class PDOConnection implements ConnectionInterface {
 	 */
 	protected $pdo;
 	/**
-	 * The active PDO connection used for reads.
-	 *
-	 * @var PDO
-	 */
-	protected $readPdo;
-	/**
 	 * The default fetch mode of the connection.
 	 *
 	 * @var int
@@ -86,8 +80,8 @@ class PDOConnection implements ConnectionInterface {
 	 * @deprecated
 	 */
 	public function esc(&$s) {
-		if(!is_null($this->pdo)) {
-			$s=$this->pdo->quote($s);
+		if (!is_null($this->pdo)) {
+			$s = $this->pdo->quote($s);
 		}
 		return $s;
 	}
@@ -96,7 +90,7 @@ class PDOConnection implements ConnectionInterface {
 	 * Run a select statement and return a single result.
 	 *
 	 * @param  string $query
-	 * @param  array  $bindings
+	 * @param  array $bindings
 	 * @return mixed
 	 */
 	public function selectOne($query, $bindings = []) {
@@ -109,8 +103,8 @@ class PDOConnection implements ConnectionInterface {
 	 * Run a select statement against the database.
 	 *
 	 * @param  string $query
-	 * @param  array  $bindings
-	 * @param  bool   $useReadPdo
+	 * @param  array $bindings
+	 * @param  bool $useReadPdo
 	 * @return array
 	 */
 	public function select($query, $bindings = []) {
@@ -137,19 +131,58 @@ class PDOConnection implements ConnectionInterface {
 	}
 
 	/**
+	 * Get the connection query log.
+	 *
+	 * @return array
+	 */
+	public function getQueryLog() {
+		return $this->queryLog;
+	}
+
+	/**
+	 * Enable the query log on the connection.
+	 *
+	 * @return void
+	 */
+	public function enableQueryLog() {
+		$this->loggingQueries = true;
+	}
+
+	/**
+	 * Log a query in the connection's query log.
+	 *
+	 * @param  string $query
+	 * @param  array $bindings
+	 * @param  float|null $time
+	 * @return void
+	 */
+	public function logQuery($query, $bindings, $time = null) {
+		if ($this->loggingQueries) {
+			$realQuery = static::interpolateQuery($query,$bindings);
+			$this->queryLog[] = compact('query', 'bindings', 'time','realQuery');
+		}
+	}
+
+	/**
 	 * Run a SQL statement and log its execution context.
 	 *
-	 * @param  string   $query
-	 * @param  array    $bindings
+	 * @param  string $query
+	 * @param  array $bindings
 	 * @param  \Closure $callback
 	 * @return mixed
 	 */
 	protected function run($query, $bindings, Closure $callback) {
-
+		$start = microtime(true);
 		// Here we will run this query. If an exception occurs we'll determine if it was
 		// caused by a connection that has been lost. If that is the cause, we'll try
 		// to re-establish connection and re-run the query with a fresh connection.
 		$result = $this->runQueryCallback($query, $bindings, $callback);
+
+		// Once we have run the query we will calculate the time that it took to run and
+		// then log the query, bindings, and execution time so we will report them on
+		// the event that the developer needs them. We'll log time in milliseconds.
+		$time = $this->getElapsedTime($start);
+		$this->logQuery($query, $bindings, $time);
 
 		return $result;
 	}
@@ -166,8 +199,8 @@ class PDOConnection implements ConnectionInterface {
 	/**
 	 * Run a SQL statement.
 	 *
-	 * @param  string   $query
-	 * @param  array    $bindings
+	 * @param  string $query
+	 * @param  array $bindings
 	 * @param  \Closure $callback
 	 * @return mixed
 	 */
@@ -192,20 +225,9 @@ class PDOConnection implements ConnectionInterface {
 	}
 
 	/**
-	 * Run a select statement against the database.
-	 *
-	 * @param  string $query
-	 * @param  array  $bindings
-	 * @return array
-	 */
-	public function selectFromWriteConnection($query, $bindings = []) {
-		return $this->select($query, $bindings, false);
-	}
-
-	/**
 	 * @param       $query
 	 * @param array $bindings
-	 * @param bool  $useReadPdo
+	 * @param bool $useReadPdo
 	 * @return Generator
 	 */
 	public function cursor($query, $bindings = [], $useReadPdo = true) {
@@ -238,7 +260,7 @@ class PDOConnection implements ConnectionInterface {
 	 * Run an insert statement against the database.
 	 *
 	 * @param  string $query
-	 * @param  array  $bindings
+	 * @param  array $bindings
 	 * @return bool
 	 */
 	public function insert($query, $bindings = []) {
@@ -249,7 +271,7 @@ class PDOConnection implements ConnectionInterface {
 	 * Execute an SQL statement and return the boolean result.
 	 *
 	 * @param  string $query
-	 * @param  array  $bindings
+	 * @param  array $bindings
 	 * @return bool
 	 */
 	public function statement($query, $bindings = []) {
@@ -270,7 +292,7 @@ class PDOConnection implements ConnectionInterface {
 	 * Bind values to their parameters in the given statement.
 	 *
 	 * @param  \PDOStatement $statement
-	 * @param  array         $bindings
+	 * @param  array $bindings
 	 * @return void
 	 */
 	public function bindValues($statement, $bindings) {
@@ -286,7 +308,7 @@ class PDOConnection implements ConnectionInterface {
 	 * Run an update statement against the database.
 	 *
 	 * @param  string $query
-	 * @param  array  $bindings
+	 * @param  array $bindings
 	 * @return int
 	 */
 	public function update($query, $bindings = []) {
@@ -297,7 +319,7 @@ class PDOConnection implements ConnectionInterface {
 	 * Run an SQL statement and get the number of rows affected.
 	 *
 	 * @param  string $query
-	 * @param  array  $bindings
+	 * @param  array $bindings
 	 * @return int
 	 */
 	public function affectingStatement($query, $bindings = []) {
@@ -323,7 +345,7 @@ class PDOConnection implements ConnectionInterface {
 	 * Run a delete statement against the database.
 	 *
 	 * @param  string $query
-	 * @param  array  $bindings
+	 * @param  array $bindings
 	 * @return int
 	 */
 	public function delete($query, $bindings = []) {
@@ -375,6 +397,8 @@ class PDOConnection implements ConnectionInterface {
 	public function pretend(Closure $callback) {
 		$loggingQueries = $this->loggingQueries;
 
+		$this->enableQueryLog();
+
 		$this->pretending = true;
 
 		$this->queryLog = [];
@@ -397,7 +421,20 @@ class PDOConnection implements ConnectionInterface {
 	 * @return void
 	 */
 	public function disconnect() {
-		$this->setPdo(null)->setReadPdo(null);
+		$this->setPdo(null);
+	}
+
+	/**
+	 * Set the PDO connection.
+	 *
+	 * @param  \PDO|null $pdo
+	 * @return $this
+	 *
+	 * @throws \RuntimeException
+	 */
+	public function setPdo($pdo) {
+		$this->pdo = $pdo;
+		return $this;
 	}
 
 	/**
@@ -421,7 +458,7 @@ class PDOConnection implements ConnectionInterface {
 	/**
 	 * Set the default fetch mode for the connection, and optional arguments for the given fetch mode.
 	 *
-	 * @param  int   $fetchMode
+	 * @param  int $fetchMode
 	 * @param  mixed $fetchArgument
 	 * @param  array $fetchConstructorArgument
 	 * @return int
@@ -449,4 +486,32 @@ class PDOConnection implements ConnectionInterface {
 	public function getFetchConstructorArgument() {
 		return $this->fetchConstructorArgument;
 	}
+
+	/**
+	 * Get the elapsed time since a given starting point.
+	 *
+	 * @param  int $start
+	 * @return float
+	 */
+	protected function getElapsedTime($start) {
+		return round((microtime(true) - $start) * 1000, 2);
+	}
+
+	protected static function interpolateQuery($query, $params) {
+		$keys = array();
+		$newParams = array();
+		# build a regular expression for each parameter
+		foreach ($params as $key => $value) {
+			if (is_string($key)) {
+				$keys[] = '/:'.$key.'/';
+				$newParams[$key] = "'$value'";
+			} else {
+				$keys[] = '/[?]/';
+			}
+		}
+		$query = preg_replace($keys, $newParams, $query, 1, $count);
+
+		return $query;
+	}
+
 }

@@ -8,7 +8,7 @@ class Bootstrap {
 
 	public static function init() {
 		spl_autoload_register();
-		require '../vendor/autoload.php';
+		require __DIR__ . '/../vendor/autoload.php';
 	}
 	
 }
