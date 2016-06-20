@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "3f9ff8530b8b22495967f90261a150a8",
+    "hash": "2ea2b0e1ebc94343c3d0fba4d757c2af",
     "packages": [
         {
             "name": "google/recaptcha",
@@ -480,6 +480,49 @@
                 "oauth2"
             ],
             "time": "2015-08-28 18:33:30"
+        },
+        {
+            "name": "level-2/dice",
+            "version": "2.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Level-2/Dice.git",
+                "reference": "fee948c67e8881f081627f6b1791b841d2e5bd0e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Level-2/Dice/zipball/fee948c67e8881f081627f6b1791b841d2e5bd0e",
+                "reference": "fee948c67e8881f081627f6b1791b841d2e5bd0e",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.6.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Dice\\": "./"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-2-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Tom Butler",
+                    "email": "tom@r.je"
+                }
+            ],
+            "description": "A minimalist Dependency injection container (DIC) for PHP. Please note: This branch is only compatible with PHP5.6. 5.5, 5.4 and 5.3 compatible version is available as a separate branch on github. ",
+            "homepage": "http://r.je/dice.html",
+            "keywords": [
+                "dependency injection",
+                "dependency injection container",
+                "di",
+                "ioc"
+            ],
+            "time": "2015-12-13 17:24:53"
         },
         {
             "name": "monolog/monolog",
