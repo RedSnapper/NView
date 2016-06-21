@@ -3,7 +3,7 @@
     "license": "GPL-2.0",
     "description": "true control-view separation with sign-in sign-out",
     "autoload": {
-        "classmap": ["src/", "src/sio", "src/Environment", "src/Database", "src/Log" ]
+        "classmap": ["src/", "src/sio", "src/Environment", "src/Database", "src/Log", "src/Session" ]
     },
     "require": {
         "phpmailer/phpmailer": "~5.2.10",
