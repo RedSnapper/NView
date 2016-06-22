@@ -86,7 +86,10 @@ class Settings extends Config {
 	private function uri() {
 		$s = $this->s;
 		$server = $s->get('EnvServer');
-
+		$this->uri = $s->get('UriInterface');
+		
+		
+		
 		if($server->has('QUERY_STRING')) {
 			parse_str($server->get('QUERY_STRING'),self::$qst);
 			self::$req=explode ('&',$server->get('QUERY_STRING'));

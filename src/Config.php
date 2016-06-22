@@ -14,6 +14,11 @@ class Config {
 		$s = $this->s;
 		$s->addRule('EnvironmentInterface',['shared' => true]);
 
+		$s->addRule('UriInterface', [
+			'instanceOf'      => "Uri",
+			'shared'          => false,
+		]);
+
 		$server = $s->get('EnvServer');
 
 		$s->addRule('LoggerInterface', [

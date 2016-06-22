@@ -1,6 +1,6 @@
 <?php
 mb_internal_encoding('UTF-8');
-use Monolog\Logger;
+//use \Monolog\Logger;
 
 class NViewLogger extends \Monolog\Logger implements LoggerInterface {
 	private $stack;

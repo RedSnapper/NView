@@ -10,6 +10,7 @@ class Services extends \Dice\Dice {
 	}
 
 	public function get($namedInterface, array $args = [], array $share = []) {
-			return $this->create($namedInterface, $args, $share);
+//		print("[$namedInterface]");
+		return $this->create($namedInterface, $args, $share);
 	}
 }
