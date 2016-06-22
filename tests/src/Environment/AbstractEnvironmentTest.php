@@ -1,11 +1,5 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: paramdhaliwal
- * Date: 17/06/2016
- * Time: 09:38
- */
 class AbstractEnvironmentTest extends \PHPUnit_Framework_TestCase {
 	public $env;
 

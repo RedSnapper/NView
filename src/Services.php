@@ -6,11 +6,17 @@ class Services extends \Dice\Dice {
 
 	public function __construct() {
 		//'*' represents the class being instantiated, not the class being requested.
-		$this->addRule('*',['constructParams'=>[$this]]);
+		$dice = $this;
+		$rule = [
+			'substitutions' => [
+				'Services' => ['instance' => function() use($dice){ return $dice;}]
+			],
+			'shared'=> true
+		];
+		$this->addRule('*',$rule);
 	}
 
 	public function get($namedInterface, array $args = [], array $share = []) {
-//		print("[$namedInterface]");
 		return $this->create($namedInterface, $args, $share);
 	}
 }

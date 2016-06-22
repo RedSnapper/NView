@@ -36,9 +36,9 @@ class Uri implements UriInterface {
 	/**
 	 * @param string $uri URI to parse
 	 */
-	public function __construct(Services $s, $uri = null) {
-		$this->server = $s->get('EnvServer');
-		$this->log = $s->get('Psr\Log\LoggerInterface');
+	public function __construct(EnvServer $server,LoggerInterface $log,$uri = null) {
+		$this->server = $server;
+		$this->log = $log;
 		$uri = is_null($uri) ? $this->current() : $uri;
 		$this->initialize($uri);
 	}
