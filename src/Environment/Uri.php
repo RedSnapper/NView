@@ -58,7 +58,7 @@ class Uri implements UriInterface {
 
 		$server = $this->server;
 		$path = $server->get("REQUEST_URI");
-		$scheme = ($server->sig('HTTPS') && $server->get("HTTPS") =='on') ? "https" : "http";
+		$scheme = $server->getScheme();
 		$host=$server->get("HTTP_HOST"); //client used this to get here..
 
 		return "{$scheme}://{$host}{$path}";
@@ -212,7 +212,13 @@ class Uri implements UriInterface {
 	 * @return bool
 	 */
 	public function isLocal() {
-		return $this->server->get("HTTP_HOST") == $this->host;
+		$uri = (string) $this;
+		$host = $this->getHost();
+		$scheme = $this->getScheme();
+		return ($uri != "")
+			&& ($host == "" || $this->server->get("HTTP_HOST") == $host)
+			&& ($scheme == "" || $this->server->getScheme() == $scheme);
+
 	}
 
 	public function getLink() {
