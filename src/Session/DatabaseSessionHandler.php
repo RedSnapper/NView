@@ -14,24 +14,17 @@ class DatabaseSessionHandler implements SessionHandlerInterface {
 	 * @var string
 	 */
 	protected $table;
-	/*
-	 * The number of minutes the session should be valid.
-	 *
-	 * @var int
-	 */
-	protected $minutes;
+
 
 	/**
 	 * Create a new database session handler instance.
 	 *
 	 * @param  ConnectionInterface $connection
 	 * @param  string $table
-	 * @param  string $minutes
 	 * @return void
 	 */
-	public function __construct(ConnectionInterface $connection, $table, $minutes) {
+	public function __construct(ConnectionInterface $connection, $table) {
 		$this->table = $table;
-		$this->minutes = $minutes;
 		$this->connection = $connection;
 	}
 
@@ -62,7 +55,8 @@ class DatabaseSessionHandler implements SessionHandlerInterface {
 	 * @since 5.4.0
 	 */
 	public function read($sessionId) {
-		return $this->connection->select("select value from $this->table where sid=:sid",['sid'=>$sessionId]);
+		$session = $this->connection->selectOne("select value from $this->table where id=:id",['id'=>$sessionId]);
+		return $session ? $session->value : "";
 	}
 
 	/**
@@ -83,7 +77,7 @@ class DatabaseSessionHandler implements SessionHandlerInterface {
 	 * @since 5.4.0
 	 */
 	public function write($session_id, $session_data) {
-		
+		return $this->connection->statement("replace into {$this->table} (id,value) values (:id,:data)",["id"=>$session_id,"data"=>$session_data]);
 	}
 
 	/**
@@ -110,7 +104,7 @@ class DatabaseSessionHandler implements SessionHandlerInterface {
 	 * @since 5.4.0
 	 */
 	public function destroy($session_id) {
-		// TODO: Implement destroy() method.
+		return $this->connection->statement("delete from {$this->table} where id=:id",['id'=>$session_id]);
 	}
 
 	/**
@@ -127,7 +121,7 @@ class DatabaseSessionHandler implements SessionHandlerInterface {
 	 * @since 5.4.0
 	 */
 	public function gc($maxlifetime) {
-		// TODO: Implement gc() method.
+		return $this->connection->statement("delete from {$this->table} where TIMESTAMPADD(SECOND,:lifetime,ts) < CURRENT_TIMESTAMP",["lifetime"=>$maxlifetime]);
 	}
 
 }

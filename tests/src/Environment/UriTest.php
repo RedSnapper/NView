@@ -28,7 +28,7 @@ class UriTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	public function testCanTransformAndRetrievePartsIndividually() {
-		$uri = ($this->getUri())
+		$uri = $this->getUri()
 			->withScheme('https')
 			->withUserInfo('user', 'pass')
 			->withHost('example.com')
@@ -171,7 +171,7 @@ class UriTest extends \PHPUnit_Framework_TestCase {
 		$this->assertSame('http', $uri->getScheme());
 		$this->assertSame('http://example.com', (string)$uri);
 
-		$uri = ($this->getUri('//example.com'))->withScheme('HTTP');
+		$uri = $this->getUri('//example.com')->withScheme('HTTP');
 
 		$this->assertSame('http', $uri->getScheme());
 		$this->assertSame('http://example.com', (string)$uri);
