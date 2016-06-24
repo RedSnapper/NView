@@ -101,4 +101,20 @@ interface SessionInterface {
 	 */
 	public function push($key, $value);
 
+	/**
+	 * Flash a key / value pair to the session.
+	 *
+	 * @param  string $key
+	 * @param  mixed $value
+	 * @return void
+	 */
+	public function flash($key, $value);
+
+	/**
+	 * Remove one or many items from the session.
+	 *
+	 * @param  string|array $keys
+	 * @return void
+	 */
+	public function forget($keys);
 }

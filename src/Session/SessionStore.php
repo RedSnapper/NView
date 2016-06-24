@@ -104,6 +104,16 @@ class SessionStore implements SessionInterface
 	}
 
 	/**
+	 * Remove one or many items from the session.
+	 *
+	 * @param  string|array $keys
+	 * @return void
+	 */
+	public function forget($keys) {
+		$this->session->forget($keys);
+	}
+
+	/**
 	 * Checks if the session was started.
 	 *
 	 * @return bool
@@ -169,7 +179,28 @@ class SessionStore implements SessionInterface
 		$this->set($key, $array);
 	}
 
-	
+	/**
+	 * Flash a key / value pair to the session.
+	 *
+	 * @param  string $key
+	 * @param  mixed $value
+	 * @return void
+	 */
+	public function flash($key, $value) {
+		$this->set($key, $value);
+		$this->push('flash.new', $key);
+	}
+
+	/**
+	 * Age the flash data for the session.
+	 *
+	 * @return void
+	 */
+	private function ageFlashData() {
+		$this->forget($this->get('flash.old', []));
+		$this->set('flash.old', $this->get('flash.new', []));
+		$this->set('flash.new', []);
+	}
 
 	/**
 	 * Load the session with attributes.
@@ -187,8 +218,8 @@ class SessionStore implements SessionInterface
 		$this->closed = false;
 	}
 
-	public function shutdown(){
-
+	public function shutdown() {
+		$this->ageFlashData();
 	}
 
 }

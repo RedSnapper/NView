@@ -2,15 +2,13 @@
 
 abstract class AbstractEnvironment implements EnvironmentInterface {
 	protected $env = array();
-	protected $ienv = array();
+
 
 	public function initialize(array $env = array()) {
 		$this->env = $env;
-		$this->ienv = array_change_key_case($env, \CASE_LOWER);
 	}
 
 	public function initializeByRef(array &$env = array()) {
-		$this->initialize($env);
 		$this->env = &$env;
 	}
 
@@ -35,7 +33,21 @@ abstract class AbstractEnvironment implements EnvironmentInterface {
 	}
 
 	/**
-	 * Clears out data from bag.
+	 * Remove one or many array items from a given array
+	 *
+	 * @param  array  $array
+	 * @param  array|string  $keys
+	 * @return void
+	 */
+	public function forget($keys){
+		$keys = (array) $keys;
+		foreach ($keys as $key) {
+			$this->remove($key);
+		}
+	}
+
+	/**
+	 * Clears out data.
 	 *
 	 * @return mixed Whatever data was contained.
 	 */
@@ -53,7 +65,7 @@ abstract class AbstractEnvironment implements EnvironmentInterface {
 	public function ihas($v) {
 		$v = is_array($v) ? $v : func_get_args();
 		$v = array_map('strtolower', $v);
-		return $this->doHas($v, $this->ienv);
+		return $this->doHas($v, $this->getLowerEnv());
 	}
 
 	public function set($key, $value) {
@@ -70,7 +82,8 @@ abstract class AbstractEnvironment implements EnvironmentInterface {
 
 	public function iget($v, $d = null) {
 		if ($this->ihas($v)) {
-			return $this->ienv[strtolower($v)];
+			$env = $this->getLowerEnv();
+			return $env[strtolower($v)];
 		} else {
 			return $d;
 		}
@@ -84,7 +97,7 @@ abstract class AbstractEnvironment implements EnvironmentInterface {
 	public function isig($v) {
 		$v = is_array($v) ? $v : func_get_args();
 		$v = array_map('strtolower', $v);
-		return $this->doSig($v, $this->ienv);
+		return $this->doSig($v, $this->getLowerEnv());
 	}
 
 	private function doSig(array $keys, array $repo) {
@@ -108,6 +121,10 @@ abstract class AbstractEnvironment implements EnvironmentInterface {
 	private function isEmptyString($value) {
 		$boolOrArray = is_bool($value) || is_array($value);
 		return !$boolOrArray && trim((string)$value) === '';
+	}
+
+	private function getLowerEnv(){
+		return array_change_key_case($this->env, \CASE_LOWER);
 	}
 }
 

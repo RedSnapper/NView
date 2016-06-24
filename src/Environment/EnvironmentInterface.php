@@ -11,4 +11,5 @@ Interface EnvironmentInterface {
 	public function isig($v);
 	public function remove($name);
 	public function clear();
+	public function forget($keys);
 }

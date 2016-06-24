@@ -16,6 +16,7 @@ class AbstractEnvironmentTest extends \PHPUnit_Framework_TestCase {
 	public function testGet() {
 		$env = $this->env;
 		$this->assertEquals('bar', $env->get('foo'), '->get() gets the value of a parameter');
+		$this->assertEquals('baz', $env->get('BIM'), '->get() gets the value of uppercase parameter');
 		$this->assertEquals('default', $env->get('unknown', 'default'), '->get() returns second argument as default if a parameter is not defined');
 		$this->assertNull($env->get('unknown'), '->get() returns null if not found');
 	}
