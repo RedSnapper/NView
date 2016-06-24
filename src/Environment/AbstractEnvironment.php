@@ -1,6 +1,6 @@
 <?php
 
-abstract class AbstractEnvironment implements EnvironmentInterface {
+abstract class AbstractEnvironment implements EnvironmentInterface,\IteratorAggregate, \Countable {
 	protected $env = array();
 
 
@@ -35,7 +35,6 @@ abstract class AbstractEnvironment implements EnvironmentInterface {
 	/**
 	 * Remove one or many array items from a given array
 	 *
-	 * @param  array  $array
 	 * @param  array|string  $keys
 	 * @return void
 	 */
@@ -98,6 +97,15 @@ abstract class AbstractEnvironment implements EnvironmentInterface {
 		$v = is_array($v) ? $v : func_get_args();
 		$v = array_map('strtolower', $v);
 		return $this->doSig($v, $this->getLowerEnv());
+	}
+
+	
+	public function getIterator() {
+		return new \ArrayIterator($this->env);
+	}
+
+	public function count() {
+		return count($this->env);
 	}
 
 	private function doSig(array $keys, array $repo) {
