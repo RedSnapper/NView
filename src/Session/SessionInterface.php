@@ -92,4 +92,13 @@ interface SessionInterface {
 	 */
 	public function invalidate($lifetime = null);
 
+	/**
+	 * Push a value onto a session array.
+	 *
+	 * @param  string  $key
+	 * @param  mixed   $value
+	 * @return void
+	 */
+	public function push($key, $value);
+
 }

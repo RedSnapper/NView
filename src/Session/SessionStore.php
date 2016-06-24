@@ -1,6 +1,7 @@
 <?php
 
-class SessionStore implements SessionInterface {
+class SessionStore implements SessionInterface
+{
 
 	/**
 	 * @var bool
@@ -34,8 +35,9 @@ class SessionStore implements SessionInterface {
 	 */
 	public function start($session = null) {
 		if (!$this->started) {
-			session_set_save_handler($this->handler, false);
+			session_set_save_handler($this->handler);
 			session_start();
+			register_shutdown_function(array($this, 'shutdown'));
 			$this->loadSession();
 		}
 		return $this->started;
@@ -123,7 +125,8 @@ class SessionStore implements SessionInterface {
 	 * @return bool True if session invalidated, false if error.
 	 */
 	public function invalidate($lifetime = null) {
-
+		$this->clear();
+		return $this->migrate(true, $lifetime);
 	}
 
 	/**
@@ -154,6 +157,21 @@ class SessionStore implements SessionInterface {
 	}
 
 	/**
+	 * Push a value onto a session array.
+	 *
+	 * @param  string $key
+	 * @param  mixed $value
+	 * @return void
+	 */
+	public function push($key, $value) {
+		$array = $this->get($key, []);
+		$array[] = $value;
+		$this->set($key, $array);
+	}
+
+	
+
+	/**
 	 * Load the session with attributes.
 	 *
 	 *
@@ -168,4 +186,9 @@ class SessionStore implements SessionInterface {
 		$this->started = true;
 		$this->closed = false;
 	}
+
+	public function shutdown(){
+
+	}
+
 }
