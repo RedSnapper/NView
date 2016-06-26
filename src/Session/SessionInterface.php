@@ -1,6 +1,21 @@
 <?php
 
 interface SessionInterface {
+
+	/**
+	 * Get the session handler instance.
+	 *
+	 * @return \SessionHandlerInterface
+	 */
+	public function getHandler();
+
+	/**
+	 * Returns the session ID.
+	 *
+	 * @return string The session ID.
+	 */
+	public function getId();
+
 	/**
 	 * Starts the session storage.
 	 *

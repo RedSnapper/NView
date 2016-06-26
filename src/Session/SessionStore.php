@@ -1,7 +1,6 @@
 <?php
 
-class SessionStore implements SessionInterface
-{
+class SessionStore implements SessionInterface {
 
 	/**
 	 * @var bool
@@ -29,11 +28,10 @@ class SessionStore implements SessionInterface
 	/**
 	 * Starts the session storage.
 	 *
-	 * @param array $session
 	 * @return bool True if session started.
 	 *
 	 */
-	public function start($session = null) {
+	public function start() {
 		if (!$this->started) {
 			session_set_save_handler($this->handler);
 			session_start();
@@ -63,7 +61,7 @@ class SessionStore implements SessionInterface
 	 * @return mixed
 	 */
 	public function get($name, $default = null) {
-		return $this->session->get($name);
+		return $this->session->get($name, $default);
 	}
 
 	/**
@@ -189,6 +187,24 @@ class SessionStore implements SessionInterface
 	public function flash($key, $value) {
 		$this->set($key, $value);
 		$this->push('flash.new', $key);
+	}
+
+	/**
+	 * Get the underlying session handler implementation.
+	 *
+	 * @return \SessionHandlerInterface
+	 */
+	public function getHandler() {
+		return $this->handler;
+	}
+
+	/**
+	 * Gets the session ID.
+	 *
+	 * @return string
+	 */
+	public function getId() {
+		return session_id();
 	}
 
 	/**
