@@ -86,29 +86,16 @@ class Settings extends Config {
 	private function uri() {
 		$s = $this->s;
 		$server = $s->get('EnvServer');
-		$this->uri = $s->get('UriInterface');
+		$uri = $s->get('UriInterface');
 		
-		
-		
+		self::$url=$uri->getPath();
+		self::$website=$uri->getSchemeAndHost();
+		self::$domain=$server->get("HTTP_DOMAIN",$uri->getDomain());
+
+
 		if($server->has('QUERY_STRING')) {
 			parse_str($server->get('QUERY_STRING'),self::$qst);
 			self::$req=explode ('&',$server->get('QUERY_STRING'));
-		}
-		self::$url=strtok($server->get('REQUEST_URI'),'?');
-
-		self::$website='http';
-		if($server->sig('HTTPS') && $server->get("HTTPS") =='on') { self::$website.='s'; }
-		$host=$server->get("HTTP_HOST"); //client used this to get here..
-		self::$website.='://' . $host;
-		if ($server->sig("HTTP_DOMAIN")) {	//allow for domain to be passed over.
-			self::$domain=$server->get("HTTP_DOMAIN");
-		} else {
-			$domain_arr = explode('.',$host, 2);	//[xxx][yy.coo.bbb]
-			if($domain_arr[0]=='www') { //[WWW.wibble.co.uk]/[WWW.domain]  [wibble-preview.redsnapper.net]
-				self::$domain=$domain_arr[1];
-			} else {
-				self::$domain=$host;
-			}
 		}
 
 	}

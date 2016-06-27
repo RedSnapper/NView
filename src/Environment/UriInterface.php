@@ -20,4 +20,16 @@ interface UriInterface extends Psr\Http\Message\UriInterface {
 	 * @return bool
 	 */
 	public function isLocal();
+
+	/**
+	 * Gets the domain for this uri
+	 * @return string
+	 */
+	public function getDomain();
+
+	/**
+	 * Gets the scheme and HTTP host.
+	 * @return string The scheme and HTTP host
+	 */
+	public function getSchemeAndHost();
 }

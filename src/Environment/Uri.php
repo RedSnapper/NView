@@ -29,21 +29,28 @@ class Uri implements UriInterface {
 
 	/** @var string Uri fragment. */
 	private $fragment = '';
-
-	private $log;
+	/**
+	 * @var EnvServer
+	 */
 	private $server;
+	/**
+	 * @var LoggerInterface
+	 */
+	private $log;
 
 	/**
-	 * @param string $uri URI to parse
+	 * @param EnvServer $server
+	 * @param LoggerInterface $log
+	 * @param string $uri
 	 */
-	public function __construct(EnvServer $server,LoggerInterface $log,$uri = null) {
+	public function __construct(EnvServer $server, LoggerInterface $log, $uri = null) {
 		$this->server = $server;
 		$this->log = $log;
 		$uri = is_null($uri) ? $this->current() : $uri;
 		$this->initialize($uri);
 	}
 
-	private function initialize($uri=null) {
+	private function initialize($uri = null) {
 		if (!is_null($uri)) {
 			$parts = parse_url($uri);
 			if ($parts === false) {
@@ -54,12 +61,12 @@ class Uri implements UriInterface {
 		}
 	}
 
-	private function current(){
+	private function current() {
 
 		$server = $this->server;
 		$path = $server->get("REQUEST_URI");
 		$scheme = $server->getScheme();
-		$host=$server->get("HTTP_HOST"); //client used this to get here..
+		$host = $server->get("HTTP_HOST");
 
 		return "{$scheme}://{$host}{$path}";
 	}
@@ -117,6 +124,24 @@ class Uri implements UriInterface {
 
 	public function getFragment() {
 		return $this->fragment;
+	}
+
+	/**
+	 * Gets the scheme and HTTP host.
+	 * @return string The scheme and HTTP host
+	 */
+	public function getSchemeAndHost() {
+		return $this->getScheme() . '://' . $this->getHost();
+	}
+
+
+	public function getDomain() {
+		$domain_arr = explode('.',$this->getHost(), 2);
+		if($domain_arr[0]=='www') {
+			return $domain_arr[1];
+		} else {
+			return $this->getHost();
+		}
 	}
 
 	public function withScheme($scheme) {
@@ -212,20 +237,20 @@ class Uri implements UriInterface {
 	 * @return bool
 	 */
 	public function isLocal() {
-		$uri = (string) $this;
+		$uri = (string)$this;
 		$host = $this->getHost();
 		$scheme = $this->getScheme();
 		return ($uri != "")
-			&& ($host == "" || $this->server->get("HTTP_HOST") == $host)
-			&& ($scheme == "" || $this->server->getScheme() == $scheme);
+		&& ($host == "" || $this->server->get("HTTP_HOST") == $host)
+		&& ($scheme == "" || $this->server->getScheme() == $scheme);
 
 	}
 
 	public function getLink() {
-		if($this->isLocal()){
+		if ($this->isLocal()) {
 			$host = "";
 			$scheme = "";
-		}else{
+		} else {
 			$host = $this->host;
 			$scheme = $this->scheme;
 		}
@@ -241,20 +266,20 @@ class Uri implements UriInterface {
 
 	public function mergeQuery($query) {
 
-		if($query instanceof UriInterface){
+		if ($query instanceof UriInterface) {
 			$query = $query->getQuery();
-		}else{
+		} else {
 			$query = $this->filterQueryAndFragment($query);
 		}
-		parse_str($query,$newQ);
-		parse_str($this->query,$oldQ);
-		$newQ = array_merge($oldQ,$newQ);
-		array_walk($newQ, function(&$val, $key) {
+		parse_str($query, $newQ);
+		parse_str($this->query, $oldQ);
+		$newQ = array_merge($oldQ, $newQ);
+		array_walk($newQ, function (&$val, $key) {
 			$val = $val == "" ? urlencode($key) : urlencode($key) . "=" . urlencode($val);
 		});
 
 		$new = clone $this;
-		$new->query = implode("&",$newQ);
+		$new->query = implode("&", $newQ);
 		return $new;
 	}
 
