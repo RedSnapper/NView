@@ -60,6 +60,7 @@ class SessionStoreTest extends PHPUnit_Framework_TestCase {
 		$this->assertTrue($session->migrate(true));
 		$this->assertNotEquals($oldId, $session->getId());
 	}
+
 	/**
 	 * @runInSeparateProcess
 	 */
@@ -76,6 +77,63 @@ class SessionStoreTest extends PHPUnit_Framework_TestCase {
 		$this->assertFalse($session->has('name'));
 		$this->assertNotEquals($oldId, $session->getId());
 		$this->assertCount(0, $session->all());
+	}
+
+	/**
+	 * @runInSeparateProcess
+	 */
+	public function testSessionIsProperlySaved() {
+		$session = $this->session;
+		$session->start();
+		$session->set('foo', 'bar');
+		$session->flash('baz', 'boom');
+		$session->getHandler()->expects($this->once())->method('write')->with(
+			$this->getSessionId(),
+			[
+				'_token' => $session->token(),
+				'foo' => 'bar',
+				'baz' => 'boom',
+				'flash.new' => [],
+				'flash.old' => []
+			]
+		);
+		$this->assertFalse($session->isStarted());
+	}
+
+	/**
+	 * @runInSeparateProcess
+	 */
+	public function testReplace() {
+		$session = $this->session;
+		$session->start();
+		$session->set('foo', 'bar');
+		$session->set('qu', 'ux');
+		$session->replace(['foo' => 'baz']);
+		$this->assertEquals('baz', $session->get('foo'));
+		$this->assertEquals('ux', $session->get('qu'));
+	}
+
+	/**
+	 * @runInSeparateProcess
+	 */
+	public function testRemove() {
+		$session = $this->session;
+		$session->start();
+		$session->set('foo', 'bar');
+		$pulled = $session->remove('foo');
+		$this->assertFalse($session->has('foo'));
+		$this->assertEquals('bar', $pulled);
+	}
+	
+	/**
+	 * @runInSeparateProcess
+	 */
+	public function testClear() {
+		$session = $this->session;
+		$session->start();
+		$session->set('foo', 'bar');
+		$session->clear();
+		$this->assertFalse($session->has('foo'));
 	}
 
 }
