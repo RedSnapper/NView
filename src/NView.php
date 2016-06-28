@@ -23,8 +23,12 @@ class NView {
 	private $xp = null;
 	private $doc = null;
 	protected $msgs = array();
+	/**
+	 * @var LoggerInterface
+	 */
+	private $log;
 
-/**
+	/**
  * '__clone'
  */
 	public function __clone() {
@@ -36,7 +40,8 @@ class NView {
 /**
  * '__construct'
  */
-	public function __construct($value='') {
+	public function __construct($value='',LoggerInterface $log = null) {
+		$this->log = $log;
 		set_error_handler(array($this, 'doMsg'), E_ALL | E_STRICT);
 		try {
 			switch(gettype($value)) {
@@ -62,6 +67,7 @@ class NView {
 			$this->doMsg($e->getCode(),"NView: " . $e->getMessage(),$e->getFile(), $e->getLine());
 		}
 		restore_error_handler();
+
 	}
 
 /**
@@ -687,6 +693,11 @@ class NView {
  * parser message handler..
  */
 	function doMsg($errno, $errstr='', $errfile='', $errline=0) {
+		if(!is_null($this->log)){
+			$this->log->pushName("NView");
+			$this->log->error("$errno $errstr $errfile $errline");
+			$this->log->popName();
+		}
 		$this->msgs[] = array($errno, $errstr, $errfile, $errline); //this adds to the array
 	}
 

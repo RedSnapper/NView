@@ -4,7 +4,7 @@ mb_internal_encoding('UTF-8');
 class Config {
 	//this is really a 'fake' class which holds our common rules..
 	//it's also used for legacy static bindings.
-	protected $s;
+	public $s;
 
 	public function __construct(Services $s) {
 		$this->s = $s;
