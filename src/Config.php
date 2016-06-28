@@ -25,6 +25,14 @@ class Config {
 		$s->addRule('LoggerInterface', [
 			'instanceOf' => "NViewLogger",
 			'constructParams' => ["Log"],
+			'shared' => true,
+			'call' => [
+				['pushHandler',[['instance' => PDOLogHandler::class]]]
+			]
+		]);
+
+		$s->addRule(PDOLogHandler::class,[
+			'constructParams' => ["sio_log"],
 			'shared' => true
 		]);
 
@@ -33,6 +41,7 @@ class Config {
 			'constructParams' => [parse_ini_file($server->get("RS_SQLCONFIG_FILE"))],
 			'shared' => false
 		]);
+
 		$connector = $s->create('ConnectorInterface');
 
 		$s->addRule('ConnectionInterface', [
