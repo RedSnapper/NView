@@ -55,12 +55,12 @@ class Settings extends Config {
 				'constructParams' => [$sphinx->connect()],
 				'shared' => true
 			]);
+			static::$sp = $s->get('SphinxConnection');
 			static::$sphinx = static::$sp->getConnection();
 		}
 
 		static::$sqls = parse_ini_file($_SERVER["RS_SQLCONFIG_FILE"]);
 		static::$log = $s->get('LoggerInterface');
-		static::$sp = $s->get('SphinxConnection');
 		static::$mysqli = $s->get('MySqliConnection');
 		static::$sql = static::$mysqli->getConnection();
 

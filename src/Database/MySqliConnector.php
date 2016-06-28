@@ -31,7 +31,7 @@ class MySqliConnector extends Connector implements ConnectorInterface {
 			mysqli_options($sql,MYSQLI_READ_DEFAULT_FILE,$file);
 			mysqli_real_connect($sql);
 		} else {
-			mysqli_real_connect($sql, @$config['host'], @$config['user'], @$config['password'], @$config['database']);
+			mysqli_real_connect($sql, @$config['host'], @$config['user'], @$config['password'], @$config['database'], @config['port']);
 		}
 
 		return $sql;
