@@ -26,9 +26,9 @@ class Config {
 			'instanceOf' => "NViewLogger",
 			'constructParams' => ["Log"],
 			'shared' => true,
-			'call' => [
-				['pushHandler',[['instance' => PDOLogHandler::class]]]
-			]
+//			'call' => [
+//				['pushHandler',[['instance' => PDOLogHandler::class]]]
+//			]
 		]);
 
 		$s->addRule(PDOLogHandler::class,[
