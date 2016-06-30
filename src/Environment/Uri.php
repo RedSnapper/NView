@@ -281,7 +281,7 @@ class Uri implements UriInterface {
 		});
 
 		$new = clone $this;
-		$new->query = implode("&", $newQ);
+		$new->query = implode("&amp;", $newQ);
 		return $new;
 	}
 
