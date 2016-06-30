@@ -476,7 +476,7 @@ class NView {
 							$this->doMsg('NView::set() ' . $xpath . ' failed.');
 						}
 					} else {
-						$this->doMsg("NView: Unknown value type of object ". gettype($value) ." found");
+						$this->doMsg("NView: Unknown value type of object ". get_class($value) ." found");
 					}
 				} break;
 				default: { //treat as text.
