@@ -67,7 +67,6 @@ class NView {
 			$this->doMsg($e->getCode(),"NView: " . $e->getMessage(),$e->getFile(), $e->getLine());
 		}
 		restore_error_handler();
-
 	}
 
 /**
@@ -119,7 +118,8 @@ class NView {
                         $n->parentNode->removeAttributeNode($n);		  //now remove the translation attribute.
                     }
                 } else { //just the one attribute..
-                    $this->set("//*[@data-tr='".$tr_attrs."']/child-gap()",Dict::get($tr_attrs));
+									/** @noinspection PhpToStringImplementationInspection */
+									$this->set("//*[@data-tr='" . $tr_attrs . "']/child-gap()", Dict::get($tr_attrs));
                     $this->set("//*[@data-tr='".$tr_attrs."']/@data-tr");
                 }
             } else {
@@ -138,7 +138,6 @@ class NView {
 			$this->xp->registerNamespace($prefix,$namespace);
 		}
 	}
-
 
 /**
  * 'strToNode'
@@ -170,6 +169,7 @@ class NView {
  * 'count'
  */
 	public function count($xpath,$ref=null) {
+		$retval = 0;
 		if (!is_null($this->doc) && !is_null($this->xp)) {
 			if (is_null($ref)) {
 				$entries = $this->xp->query($xpath);
@@ -177,14 +177,14 @@ class NView {
 				$entries = $this->xp->query($xpath,$ref);
 			}
 			if ($entries) {
-				return $entries->length;
+				$retval = $entries->length;
 			} else {
 				$this->doMsg('NView: count() ' . $xpath . ' failed.');
-				return 0;
 			}
 		} else {
 			$this->doMsg('NView: count() ' . $xpath . ' attempted on a non-document.');
 		}
+		return $retval;
 	}
 
 /**
@@ -309,7 +309,6 @@ class NView {
 				} break;
 				case "boolean":
 				case "integer":
-				case "double":
 				case "string":
 				case "double":
 				case "object" : { //probably a node.
@@ -476,7 +475,7 @@ class NView {
 							$this->doMsg('NView::set() ' . $xpath . ' failed.');
 						}
 					} else {
-						$this->doMsg("NView: Unknown value type of object ". get_class($value) ." found");
+						$this->doMsg("NView: Unknown value type of object " . gettype($value) . " found");
 					}
 				} break;
 				default: { //treat as text.

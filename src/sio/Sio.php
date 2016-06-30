@@ -8,87 +8,98 @@ class Sio {
 	public static $utility = NULL;
 	public static $presets = array(); //only good for email/username presets.
 
-	public static function run($key=NULL,$debug=false) {
+	public static function run($key = null, $debug = false) {
 		$v = new NView(@static::$v[static::SIG]);
-		$err = $v->messages();
-		if (isset($err) && !empty($err)) {
-			print $err;
-		} else {
-        $formlet=null;
-			$stt=0;		//stt: 0=other, 1=sign-in, 2=sign-out.
-			if (Session::has('username')) { //signed in.
-				$stt=2; //default = sign-out.
-				if(!empty(Settings::$qst['siof'])) {
-					$siof=Settings::$qst['siof'];
-					if (SioSetEmail::conforms($siof)) {
-						$formlet=SioSetEmail::pushit($siof); //sig.pushit
-						$stt=0;
-					} else {
-						$stt=1;
+		$formlet = null;
+		$stt = 0;    //stt: 0=other, 1=sign-in, 2=sign-out.
+		if (Session::has('username')) { //signed in.
+			$stt = 2; //default = sign-out.
+			if (!empty(Settings::$qst['siof'])) {
+				$siof = Settings::$qst['siof'];
+				if (SioSetEmail::conforms($siof)) {
+					$formlet = SioSetEmail::pushit($siof); //sig.pushit
+					$stt = 0;
+				} else {
+					$stt = 1;
+				}
+			}
+			if ($stt == 2) {
+				if (SioSetPW::inScope()) {  //doing a set-pw post.
+					$stt = 0;
+					$Sio = new SioSetPW($key);
+					$formlet = $Sio->form(false);
+					if ($Sio->success()) {
+						$formlet = $Sio->pushit();
+					}
+				} elseif (SioSetEmail::inScope()) {  //doing a set-pw post.
+					$stt = 0;
+					$Sio = new SioSetEmail($key);
+					$formlet = $Sio->form(false);
+					if ($Sio->success()) {
+						$formlet = SioSetEmail::pushit();
 					}
 				}
-				if ($stt==2 ) {
-					if (SioSetPW::inScope()) {  //doing a set-pw post.
-						$stt=0; $Sio=new SioSetPW($key); $formlet=$Sio->form(false);
-						if ($Sio->success()) {
-							$formlet=$Sio->pushit();
-						}
-					} elseif (SioSetEmail::inScope()) {  //doing a set-pw post.
-						$stt=0; $Sio=new SioSetEmail($key); $formlet=$Sio->form(false);
-						if ($Sio->success()) {
-							$formlet=SioSetEmail::pushit();
-						}
-					}
-				}
-			} else { //not-signed in
-				$stt=1; //default = sign-in.
-				if(!empty(Settings::$qst['siof'])) {
-					$siof=Settings::$qst['siof'];
-					if (SioReg::conforms($siof)) {
-						$stt=0;
-						$formlet=SioReg::pushit($siof);
-					} elseif (SioResetPW::conforms($siof)) {
-						$stt=0; $Sio=new SioResetPW($siof);
-						$formlet=$Sio->form(false);
-						if ($Sio->success()) { //else this is a get/failed post.
-							$formlet=SioResetPW::pushit();
-						}
-					} else {
-						$stt=1;
+			}
+		} else { //not-signed in
+			$stt = 1; //default = sign-in.
+			if (!empty(Settings::$qst['siof'])) {
+				$siof = Settings::$qst['siof'];
+				if (SioReg::conforms($siof)) {
+					$stt = 0;
+					$formlet = SioReg::pushit($siof);
+				} elseif (SioResetPW::conforms($siof)) {
+					$stt = 0;
+					$Sio = new SioResetPW($siof);
+					$formlet = $Sio->form(false);
+					if ($Sio->success()) { //else this is a get/failed post.
+						$formlet = SioResetPW::pushit();
 					}
 				} else {
-					if (SioReg::inScope() || isset(Settings::$qst[SioReg::SIG]) ) {
-						$stt=0; $Sio=new SioReg($key); $formlet=$Sio->form(false);
-						if ($Sio->success()) {
-							$formlet=$Sio->pushit();
-						}
-					} elseif (SioForgot::inScope() || isset(Settings::$qst[SioForgot::SIG]) ) {
-						$stt=0; $Sio=new SioForgot($key); $formlet=$Sio->form(false);
-						if ($Sio->success()) {
-							$formlet=$Sio->commitv();
-						}
+					$stt = 1;
+				}
+			} else {
+				if (SioReg::inScope() || isset(Settings::$qst[SioReg::SIG])) {
+					$stt = 0;
+					$Sio = new SioReg($key);
+					$formlet = $Sio->form(false);
+					if ($Sio->success()) {
+						$formlet = $Sio->pushit();
+					}
+				} elseif (SioForgot::inScope() || isset(Settings::$qst[SioForgot::SIG])) {
+					$stt = 0;
+					$Sio = new SioForgot($key);
+					$formlet = $Sio->form(false);
+					if ($Sio->success()) {
+						$formlet = $Sio->commitv();
 					}
 				}
 			}
-			switch ($stt) {
-				case 0: break;
-				case 1: {
-					$ssi=new SioSignIn($key); $formlet=$ssi->form(false);
-					//need to do 'waiting for validation' line here.
-					if ($ssi->success()) {
-						$Sio=new SioSignOut($key); $formlet = $Sio->form(false);
-					}
-				} break;
-				case 2: {
-					$sso=new SioSignOut($key); $formlet=$sso->form(false);
-					if ($sso->success()) {
-						$Sio=new SioSignIn($key); $formlet=$Sio->form(false);
-					}
-				} break;
-			}
-			$v->set("//*[@data-xp='sio']",$formlet);
-			return $v;
 		}
+		switch ($stt) {
+			case 0:
+				break;
+			case 1: {
+				$ssi = new SioSignIn($key);
+				$formlet = $ssi->form(false);
+				//need to do 'waiting for validation' line here.
+				if ($ssi->success()) {
+					$Sio = new SioSignOut($key);
+					$formlet = $Sio->form(false);
+				}
+			}
+				break;
+			case 2: {
+				$sso = new SioSignOut($key);
+				$formlet = $sso->form(false);
+				if ($sso->success()) {
+					$Sio = new SioSignIn($key);
+					$formlet = $Sio->form(false);
+				}
+			}
+				break;
+		}
+		$v->set("//*[@data-xp='sio']", $formlet);
+		return $v;
 	}
 
 //This must be run to overload views and translations.

@@ -6,7 +6,7 @@ mb_internal_encoding('UTF-8');
 set_include_path( get_include_path() . PATH_SEPARATOR . $_SERVER['DOCUMENT_ROOT'] . PATH_SEPARATOR . dirname(__FILE__));
 
 //load the nview class
-require_once("../NView.php");
+//require_once("../NView.php");
 
 //Instantiate the view for this php.
 //hw.xml uses the basename of this file + 'xml' as an extension.

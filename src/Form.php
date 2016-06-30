@@ -151,6 +151,7 @@ trait Form {
  * as the normal formlet processor will handle the 'save' function.
  */
 	public function func() {
+		$retval = null;
 		switch ($this->fields['_fn'][0]) {
 			default: {
 				if($this->debug) {
@@ -158,6 +159,7 @@ trait Form {
 				}
 			} break;
 		}
+		return $retval;
 	}
 
 /**

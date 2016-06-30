@@ -1904,9 +1904,6 @@ sub {
   padding-bottom: 0.512821em;
   box-sizing: content-box;
   overflow: hidden;
-  @inclide bp(mobile) {
-    overflow: hidden; }
- }
   @media (max-width: 75em) {
     .bar__header--wrap {
       width: 49.230769em; } }

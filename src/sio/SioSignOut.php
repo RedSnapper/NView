@@ -37,16 +37,18 @@ class SioSignOut {
  * fn overloading of trait 'Form'.
  */
 	protected function func() {
+		$retval = null;
 		switch ($this->fields['_fn'][0]) {
 			case 'email': {
 				$sf=new SioSetEmail();
-				return $sf->form();
+				$retval = $sf->form();
 			} break;
 			case 'reset': {
 				$sf=new SioSetPW();
-				return $sf->form();
+				$retval = $sf->form();
 			} break;
 		}
+		return $retval;
 	}
 
 /**

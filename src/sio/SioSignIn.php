@@ -53,16 +53,18 @@ class SioSignIn {
  * fn 'save' - the default action - is handled higher up.
  */
 	protected function func() {
+		$retval = null;
 		switch ($this->fields['_fn'][0]) {
 			case 'forgot': {
 				$sf=new SioForgot();
-				return $sf->form();
+				$retval = $sf->form();
 			} break;
 			case 'register': {
 				$sf=new SioReg();
-				return $sf->form();
+				$retval = $sf->form();
 			} break;
 		}
+		return $retval;
 	}
 
 	public function prefilter() {
