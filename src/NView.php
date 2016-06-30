@@ -149,7 +149,8 @@ class NView {
 		set_error_handler(array($this, 'noMsg'), E_ALL | E_STRICT);
 		try {
 			// One should always xml-encode ampersands in URLs in XML.
-			$fragstr = preg_replace('/&(?![\w#]{1,7};)/i','&amp;',$value);
+
+			$fragstr = $this->xmlenc($value);
 			$fnode->appendXML($fragstr);
 		} catch (Exception $ex) {
 			$this->doMsg('Attempted fragment:',htmlspecialchars(print_r($fragstr,true)));
@@ -351,14 +352,14 @@ class NView {
 										if (($entry->nodeType == XML_ATTRIBUTE_NODE) && (gettype($value) != "object")) {
 											switch ($gap) {
 												case self::GAP_NONE: {
-													$entry->value = strval($value);
+													$entry->value = $this->xmlenc(strval($value));
 												} break;
 												case self::GAP_PRECEDING: {
-													$entry->value = strval($value) . $entry->value ;
+													$entry->value = $this->xmlenc(strval($value)) . $entry->value;
 												} break;
 												case self::GAP_FOLLOWING:
 												case self::GAP_CHILD: {
-													$entry->value .= strval($value);
+													$entry->value .= $this->xmlenc(strval($value));
 												} break;
 											}
 										} elseif (($entry->nodeType == XML_CDATA_SECTION_NODE) && (gettype($value) != "object")) {
@@ -669,6 +670,13 @@ class NView {
 		else {
 			$this->doMsg("NView: object constructor only uses instances of NView or subclasses of DOMNode.");
 		}
+	}
+
+	/**
+	 * 'xmlenc'
+	 */
+	private function xmlenc($value) {
+		return preg_replace('/&(?![\w#]{1,7};)/i', '&amp;', $value);
 	}
 
 /**
