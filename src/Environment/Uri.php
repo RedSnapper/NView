@@ -62,13 +62,15 @@ class Uri implements UriInterface {
 	}
 
 	private function current() {
-
+		$current = null;
 		$server = $this->server;
 		$path = $server->get("REQUEST_URI");
 		$scheme = $server->getScheme();
 		$host = $server->get("HTTP_HOST");
-
-		return "{$scheme}://{$host}{$path}";
+		if (!($host === "" && $path === "")) {
+			$current = "{$scheme}://{$host}{$path}";
+		}
+		return $current;
 	}
 
 	public function __toString() {
