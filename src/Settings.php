@@ -50,11 +50,6 @@ class Settings extends Config {
 		static::$sphinx = null;
 
 		if ($server->has('RS_SEARCH_CONFIG_FILE')) {
-			$sphinx = $s->create('MySqliConnector', [parse_ini_file($server->get("RS_SEARCH_CONFIG_FILE"))]);
-			$s->addRule('SphinxConnection', [
-				'constructParams' => [$sphinx->connect()],
-				'shared' => true
-			]);
 			static::$sp = $s->get('SphinxConnection');
 			static::$sphinx = static::$sp->getConnection();
 		}

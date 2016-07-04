@@ -64,14 +64,16 @@ class Config {
 			]
 		]);
 
+
 		if ($server->has('RS_SEARCH_CONFIG_FILE')) {
-			$sphinx = $s->create('MySqlConnector', [parse_ini_file($server->get("RS_SEARCH_CONFIG_FILE"))]);
 			$s->addRule('SphinxConnection', [
-				'constructParams' => [$sphinx->connect()],
+				'constructParams' => [['instance'=>function() use($s,$server){
+					$sphinx = $s->create('MySqliConnector', [parse_ini_file($server->get("RS_SEARCH_CONFIG_FILE"))]);
+					return $sphinx->connect();
+				}]],
 				'shared' => true
 			]);
 		}
-
 	}
 
 }
