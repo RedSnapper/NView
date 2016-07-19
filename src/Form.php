@@ -945,7 +945,8 @@ trait Form {
 			if (Settings::$sql->query($query)) {
 				if (Settings::$sql->affected_rows == 1 && $r=Settings::$sql->query("select last_insert_id()")) {
 					$this->newid = intval($r->fetch_row()[0]);
-					if (!$this->in_composite && (($this->newid !== 0) && ($this->show || !is_null($this->redirect)))) {
+
+					if (!isset($this->subsfield) && !$this->in_composite && (($this->newid !== 0) && ($this->show || !is_null($this->redirect)))) {
 						$this->show = false;
 						$this->redirection($this->redirect,$this->insert_qs,$this->newid);
 					}
