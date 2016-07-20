@@ -112,15 +112,15 @@ class NView {
             if(is_null($keys)) {
                 $tr_attrs = $this->get("//*[@data-tr]/@data-tr");
                 if ($tr_attrs instanceof DOMNodeList) {
-                    foreach($tr_attrs as $n) {
-                        $nvnode = $this->strToNode(Dict::get($n->value)); //textnode from the dictionary keyed by the attribute value.
-                        $n->parentNode->appendChild($nvnode);			  //now we have added it in.
-                        $n->parentNode->removeAttributeNode($n);		  //now remove the translation attribute.
-                    }
+									foreach ($tr_attrs as $na) {
+										$value = $na->value;
+										$this->set("//*[@data-tr='" . $value . "']/child-gap()", Dict::get($value));
+										$this->set("//*[@data-tr='" . $value . "']/@data-tr");
+									}
                 } else { //just the one attribute..
 									/** @noinspection PhpToStringImplementationInspection */
 									$this->set("//*[@data-tr='" . $tr_attrs . "']/child-gap()", Dict::get($tr_attrs));
-                    $this->set("//*[@data-tr='".$tr_attrs."']/@data-tr");
+									$this->set("//*[@data-tr='" . $tr_attrs . "']/@data-tr");
                 }
             } else {
                 foreach($keys as $k) {
