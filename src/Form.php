@@ -329,20 +329,20 @@ trait Form {
 		return $condition;
 	}
 
-	protected function vsetrads($input='_unused',$qvp='select 0 as prompt,0 as value',$v=NULL) {
-		if (is_null($v)) {
+	protected function vsetrads($input='_unused',$qvp=NULL,$v=NULL) {
+		if (is_null($v) && !is_null($qvp)) {
 			$v = new NView('radio_v.ixml');
-		}
-		$v->set("//h:input/@name",$input);
-		//generate all the radio buttons
-		if ($rx = Settings::$sql->query($qvp)) {
-			while ($f = $rx->fetch_assoc()) {
-				$o = new NView($v);
-				$o->set("/*/h:input/@value",$f['value']);
-				$o->set("/*/*[@data-xp='label']/child-gap()",$f['prompt']);
-				$this->view->set("//*[@data-xp='$input']//*[@data-xp='radiogroup']/child-gap()",$o);
+			$v->set("//h:input/@name",$input);
+			//generate all the radio buttons
+			if ($rx = Settings::$sql->query($qvp)) {
+				while ($f = $rx->fetch_assoc()) {
+					$o = new NView($v);
+					$o->set("/*/h:input/@value",$f['value']);
+					$o->set("/*/*[@data-xp='label']/child-gap()",$f['prompt']);
+					$this->view->set("//*[@data-xp='$input']//*[@data-xp='radiogroup']/child-gap()",$o);
+				}
+				$rx->close();
 			}
-			$rx->close();
 		}
 		//set the selected radio button(s)
 		if (isset($this->fields[$input])) {
