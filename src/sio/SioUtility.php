@@ -147,7 +147,7 @@ class SioUtility {
     public function pw_validate($password="",&$err_arr)
     {
     	if ($this->minLength > 0) {
-    		if (strlen($password) < $this->minLength) {
+				if (mb_strlen($password) < $this->minLength) {
     			$err_arr[]='pw_error_length_too_short';
     		}
     	}
