@@ -209,12 +209,12 @@ class DTable {
 		$sql = "select {$this->fields} from {$this->tables} $restrict {$groupby} $order $limit "; // Get total number of filterd records with the limit
 		$stmt = $this->sql_exec($sql, $this->bindings);
 
-		return array(
+		return [
 			"draw" => intval($request['draw']),
 			"recordsTotal" => intval($this->getTotalRecords()),
 			"recordsFiltered" => intval($this->getTotalFiltered()),
 			"data" => $this->data_output($stmt)
-		);
+		];
 	}
 
 	public function getTotalRecords() {
@@ -444,12 +444,15 @@ class DTable {
 		$filterArray = array();
 
 		if (isset($request['columns'])) {
+
 			for ($i = 0, $ien = count($request['columns']); $i < $ien; $i++) {
 				$requestColumn = $request['columns'][$i];
-				$column = "{$columns[ $i ]->table}.{$columns[ $i ]->orgname}";
+				$table = $columns[ $i ]->table;
+				$columnName = $columns[ $i ]->orgname;
+				$column = "$table.$columnName";
 
 				// Make sure we are not searching on a derived column
-				if ($column != '.') {
+				if ($table !== '' && $columnName !== '') {
 					if ($requestColumn['searchable'] == 'true' && isset($request['search']) && $request['search']['value'] != '') {
 						$str = $request['search']['value'];
 						Settings::esc($str);
