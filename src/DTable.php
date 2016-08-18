@@ -62,7 +62,7 @@ class DTable {
 		$this->groupby = '';
 
 		$this->pkey = @$this->settings->pkey;
-		$this->request = $_SERVER['REQUEST_METHOD'] === 'POST' ? json_decode($_POST['json'], true) : $_GET;
+		$this->request = ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['json'])) ? json_decode($_POST['json'], true) : $_GET;
 
 		if (!is_null($this->settings->pkey) && $this->settings->groupby) {
 			if (is_array($this->settings->pkey)) {
