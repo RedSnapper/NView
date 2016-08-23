@@ -584,12 +584,14 @@ class DTable {
 					$name = implode(",", $value['filter']['fields']);
 				}
 
+
 				$label = isset($value['filter']['label']) ? $value['filter']['label'] : $key;
 
 				$filters[] = array(
 					"name" => $name,
 					"label" => $label,
 					"value" => $value['filter'],
+					"values" => $value['filter']['values'] ?? [],
 					"query" => @$value['query']
 				);
 			}
@@ -630,6 +632,11 @@ class DTable {
 			$o->set("//h:option/child-gap()", htmlspecialchars($f['prompt']));
 			$select->set("//h:select/child-gap()", $o);
 		}
+
+		foreach ($filter['values'] as $val) {
+			$select->set("//h:select/h:option[@value='" . $val . "']/@selected","selected");
+		}
+
 		$select->set('//*[@data-xp="label"]/child-gap()', htmlspecialchars($filter['label']));
 		$select->set('//h:select/@name', "$type:{$filter['name']}");
 
