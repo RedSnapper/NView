@@ -8,8 +8,9 @@ class SioSignOut {
 	use Form;
 	const SIG = "siosignout_";
 	public static function sig() { return static::SIG; }
-	private static $v=array();
-	private static $use_un=true;
+
+	protected static $v = array();
+	protected static $use_un = true;
 
 /**
  * '__construct'
