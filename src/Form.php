@@ -174,7 +174,7 @@ trait Form {
 	private function ident() { //ident includes userid and is used as a SCRF Token
 		$ident = '';
 		if(isset(Settings::$usr['ID'])) {
-			$ident = hash('sha256',Settings::$usr['ID'] . '_' . $this->signature,false);
+			$ident = hash('sha256',Session::get() . '_' . Settings::$usr['ID'] . '_' . $this->signature,false);
 		} else {
 			$ident = hash('sha256',Session::get() . '_' .$this->signature,false);
 		}

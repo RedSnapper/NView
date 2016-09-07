@@ -17,8 +17,8 @@ class SioSignOut {
  */
 	function __construct($key=NULL) {
 		$this->iniForm($key,@static::$v[static::SIG]);
-	    $this->key=$key;
-	    $this->table="sio_user";
+	  $this->key=$key;
+	  $this->table="sio_user";
 	}
 
 /**
