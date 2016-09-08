@@ -1,0 +1,11 @@
+<!DOCTYPE li>
+<li data-xp="ddate" xmlns="http://www.w3.org/1999/xhtml">
+    <span class="form__label" data-xp='label'/>
+    <label class="form__control">
+        <input data-js="date" data-xp="from" type="text" class="form__input"/>
+    </label>
+    <label class="form__control">
+        <input data-js="date" data-xp="to" type="text" class="form__input"/>
+    </label>
+</li>
+

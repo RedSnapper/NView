@@ -17,6 +17,7 @@ class DTable {
 		'csvFileName' => "report.csv",
 		'view' => "dtable_v.ixml",
 		'filterview' => "dtable_f.ixml",
+		'dateview' => "dtable_date.ixml",
 		'selectview' => "dtable_select.ixml",
 		'ajax' => NULL,
 		'columns' => array(), //each column is an array of information about specialised columns.
@@ -62,7 +63,8 @@ class DTable {
 		$this->groupby = '';
 
 		$this->pkey = @$this->settings->pkey;
-		$this->request = ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['json'])) ? json_decode($_POST['json'], true) : $_GET;
+		$this->request = ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['json'])) ? json_decode($_POST['json'],
+																										true) : $_GET;
 
 		if (!is_null($this->settings->pkey) && $this->settings->groupby) {
 			if (is_array($this->settings->pkey)) {
@@ -447,8 +449,8 @@ class DTable {
 
 			for ($i = 0, $ien = count($request['columns']); $i < $ien; $i++) {
 				$requestColumn = $request['columns'][$i];
-				$table = $columns[ $i ]->table;
-				$columnName = $columns[ $i ]->orgname;
+				$table = $columns[$i]->table;
+				$columnName = $columns[$i]->orgname;
 				$column = "$table.$columnName";
 
 				// Make sure we are not searching on a derived column
@@ -473,31 +475,35 @@ class DTable {
 				$columns);
 			foreach ($request['filters'] as $key => $filterinfo) {
 
-				$type = array_keys($filterinfo)[0];
-				$filter = array();
-				$keys = explode(',', $key);
+				$types = array_keys($filterinfo);
 
-				foreach ($keys as $name) {
-					$filter['type'] = $type;
-					$filter['names'][] = $name;
-					$filter['range'] = array();
-					$filter['rangevalues'] = array();
-					$filter['derived'] = in_array($name, $columnNames);
-					$filterValue = $filterinfo[$type];
+				foreach ($types as $type) {
+					$filter = array();
+					$keys = explode(',', $key);
 
-					if ($type == 'multi') {
-						foreach ($filterValue as $val) {
-							self::bind($bindings, $val, 's');
-							Settings::esc($val);
-							$filter['range'][] = "?";
-							$filter['rangevalues'][] = "'$val'";
+					foreach ($keys as $name) {
+						$filter['type'] = $type;
+						$filter['names'][] = $name;
+						$filter['range'] = array();
+						$filter['rangevalues'] = array();
+						$filter['derived'] = in_array($name, $columnNames);
+						$filterValue = $filterinfo[$type];
+
+						if ($type == 'multi') {
+							foreach ($filterValue as $val) {
+								self::bind($bindings, $val, 's');
+								Settings::esc($val);
+								$filter['range'][] = "?";
+								$filter['rangevalues'][] = "'$val'";
+							}
+						}
+						if (count($filterValue) == 1) {
+							$filter['value'] = $filterValue[0];
 						}
 					}
-					if ($type == 'null') {
-						$filter['value'] = $filterValue[0];
-					}
+					array_push($filterArray, $filter);
 				}
-				array_push($filterArray, $filter);
+
 			}
 		}
 
@@ -509,33 +515,47 @@ class DTable {
 
 	}
 
-	private static function composeFilters($search = array(), $filtersArray = array(), $values = false, $derived = false) {
+	private static function composeFilters($search = array(), $filtersArray = array(), $values = false) {
 		// Combine the filters into a single string
 		$filters = array();
-		foreach ($filtersArray as $filterinfo) {
+		foreach ($filtersArray as $filterInfo) {
 
 			$filterOr = array();
 
-			if ($filterinfo['type'] == 'multi') {
-				$filter = $values ? $filterinfo['rangevalues'] : $filterinfo['range'];
-				foreach ($filterinfo['names'] as $name) {
+			if ($filterInfo['type'] == 'multi') {
+				$filter = $values ? $filterInfo['rangevalues'] : $filterInfo['range'];
+				foreach ($filterInfo['names'] as $name) {
 					$filterOr[] = $name . ' in(' . implode(',', $filter) . ')';
 				}
 			}
-			if ($filterinfo['type'] == 'null') {
+			if ($filterInfo['type'] == 'null') {
 				$null = '';
-				if ($filterinfo['value'] == '1') {
+				if ($filterInfo['value'] == '1') {
 					$null = 'is not null';
 				}
-				if ($filterinfo['value'] == '0') {
+				if ($filterInfo['value'] == '0') {
 					$null = 'is null';
 				}
 				if ($null != '') {
-					foreach ($filterinfo['names'] as $name) {
+					foreach ($filterInfo['names'] as $name) {
 						$filterOr[] = "$name $null";
 					}
 				}
 			}
+			if ($filterInfo['type'] == 'date-to' || $filterInfo['type'] == 'date-from') {
+
+				$date = Settings::esc($filterInfo['value']);
+				if(static::validateDate($filterInfo['value'])){
+					foreach ($filterInfo['names'] as $name) {
+						if($filterInfo['type'] == 'date-from'){
+							$filters[] = "$name >= '{$date} 00:00'";
+						}else{
+							$filters[] = "$name <= '{$date} 23:59'";
+						}
+					}
+				}
+			}
+
 			if (count($filterOr) > 0) {
 				$filters[] = "(" . implode(' OR ', $filterOr) . ")";
 			}
@@ -553,7 +573,6 @@ class DTable {
 			}
 			$restrict .= '(' . implode(' AND ', $filters) . ')';
 		}
-
 		return $restrict;
 	}
 
@@ -584,7 +603,6 @@ class DTable {
 					$name = implode(",", $value['filter']['fields']);
 				}
 
-
 				$label = isset($value['filter']['label']) ? $value['filter']['label'] : $key;
 
 				$filters[] = array(
@@ -598,15 +616,15 @@ class DTable {
 		}
 
 		foreach ($filters as $filter) {
-			if ($rx = Settings::$sql->query($filter['query'])) {
-				$type = $filter['value']['type'];
 
-				switch ($type) {
-					default:
-						$this->selectView($rx, $filter, $type, $v);
+			$type = $filter['value']['type'];
+			switch ($type) {
+				case "date": {
+					$this->dateView($filter, $v);
+					break;
 				}
-			} else {
-				echo Settings::$sql->error;
+				default:
+					$this->selectView($filter, $v);
 			}
 		}
 
@@ -614,9 +632,20 @@ class DTable {
 
 	}
 
-	public function selectView($rx, $filter, $type, $v) {
+	public function dateView($filter, $v) {
+		$dateView = new NView($this->settings->dateview);
+		$type = $filter['value']['type'];
+		$dateView->set('//*[@data-xp="label"]/child-gap()', htmlspecialchars($filter['label']));
+		$dateView->set('//*[@data-xp="from"]/@name', "{$type}-from:{$filter['name']}");
+		$dateView->set('//*[@data-xp="to"]/@name', "{$type}-to:{$filter['name']}");
+		$v->set('//*[@data-xp="filters"]/child-gap()', $dateView);
+	}
+
+	public function selectView($filter, $v) {
+
 		$select = new NView($this->settings->selectview);
 		$ot = $select->consume('//h:option');
+		$type = $filter['value']['type'];
 
 		if ($type == 'multi') {
 			$select->set('//h:select/@multiple', "true");
@@ -626,15 +655,17 @@ class DTable {
 			$select->set("//h:select/child-gap()", $o);
 		}
 
-		while ($f = $rx->fetch_assoc()) {
-			$o = new NView($ot);
-			$o->set("//h:option/@value", htmlspecialchars($f['value']));
-			$o->set("//h:option/child-gap()", htmlspecialchars($f['prompt']));
-			$select->set("//h:select/child-gap()", $o);
+		if (isset($filter['query']) && $rx = Settings::$sql->query($filter['query'])) {
+			while ($f = $rx->fetch_assoc()) {
+				$o = new NView($ot);
+				$o->set("//h:option/@value", htmlspecialchars($f['value']));
+				$o->set("//h:option/child-gap()", htmlspecialchars($f['prompt']));
+				$select->set("//h:select/child-gap()", $o);
+			}
 		}
 
 		foreach ($filter['values'] as $val) {
-			$select->set("//h:select/h:option[@value='" . $val . "']/@selected","selected");
+			$select->set("//h:select/h:option[@value='" . $val . "']/@selected", "selected");
 		}
 
 		$select->set('//*[@data-xp="label"]/child-gap()', htmlspecialchars($filter['label']));
@@ -710,6 +741,12 @@ class DTable {
 						 ));
 		exit(0);
 	}
+
+	private static function validateDate($date, $format = 'Y-m-d'):bool {
+		$d = DateTime::createFromFormat($format, $date);
+		return $d && $d->format($format) == $date;
+	}
+
 
 }
 
