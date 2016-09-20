@@ -34,25 +34,25 @@ class Sio {
 					}
 				} elseif (SioSetEmail::inScope()) {  //doing a set-pw post.
 					$stt = 0;
-					if (static::$useReCaptcha) {
-						$SioRe = new SioCaptcha();
-						$Sio = new SioSetEmail($key);
-						$Sio::formlets([$SioRe, $Sio], false);
-						if ($Sio->success() && $SioRe->success()) {
-							$formlet = SioSetEmail::pushit();
-						} else {
-							$formlet = $Sio->reveal();
-							$cap = $SioRe->reveal();
-							$formlet->set("//*[@data-xp='siso__captcha']", $cap);
-						}
-					} else {
+					//if (static::$useReCaptcha) {
+					//	$SioRe = new SioCaptcha();
+					//	$Sio = new SioSetEmail($key);
+					//	$Sio::formlets([$SioRe, $Sio], false);
+					//	if ($Sio->success() && $SioRe->success()) {
+					//		$formlet = SioSetEmail::pushit();
+					//	} else {
+					//		$formlet = $Sio->reveal();
+					//		$cap = $SioRe->reveal();
+					//		$formlet->set("//*[@data-xp='siso__captcha']", $cap);
+					//	}
+					//} else {
 						$Sio = new SioSetEmail($key);
 						$formlet = $Sio->form(false);
 						if ($Sio->success()) {
 							$formlet = SioSetEmail::pushit();
 						}
-						$formlet->set("//*[@data-xp='siso__captcha']");
-					}
+					//	$formlet->set("//*[@data-xp='siso__captcha']");
+					//}
 				}
 			}
 		} else { //not-signed in

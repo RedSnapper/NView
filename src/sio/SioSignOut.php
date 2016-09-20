@@ -41,18 +41,18 @@ class SioSignOut {
 		$retval = null;
 		switch ($this->fields['_fn'][0]) {
 			case 'email': {
-				if (Sio::$useReCaptcha) {
-					$SioRe = new SioCaptcha();
-					$Sio = new SioSetEmail();
-					$Sio::formlets([$SioRe, $Sio], false);
-					$retval = $Sio->reveal();
-					$cap = $SioRe->reveal();
-					$retval->set("//*[@data-xp='siso__captcha']", $cap);
-				} else {
+				//if (Sio::$useReCaptcha) {
+				//	$SioRe = new SioCaptcha();
+				//	$Sio = new SioSetEmail();
+				//	$Sio::formlets([$SioRe, $Sio], false);
+				//	$retval = $Sio->reveal();
+				//	$cap = $SioRe->reveal();
+				//	$retval->set("//*[@data-xp='siso__captcha']", $cap);
+				//} else {
 					$sf = new SioSetEmail();
 					$retval = $sf->form(false);
 					$retval->set("//*[@data-xp='siso__captcha']");
-				}
+				//}
 			} break;
 			case 'reset': {
 				$sf=new SioSetPW();
