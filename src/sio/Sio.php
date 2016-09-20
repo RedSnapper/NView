@@ -160,6 +160,7 @@ class Sio {
 		SioSetEmail::initialise($use_un,static::$v);
 		SioSetPW::initialise($use_un,static::$v);
 		SioResetPW::initialise($use_un,static::$v);
+		SioCaptcha::initialise(static::$v);
 		static::$utility	= new SioUtility();
 		//now override any translations
 		if(!is_null($translations)) {
