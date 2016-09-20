@@ -47,7 +47,7 @@ class SioForgot {
  * validate all fields in this->fields.
  * errors are placed into the this->view.
  */
-	protected function validate() {
+	public function validate() {
 		$this->valSignificant('email',Dict::get(static::SIG .'errors_bad_email'));
 		$this->valEmail('email',Dict::get(static::SIG .'errors_bad_email'));
 	}
@@ -56,7 +56,7 @@ class SioForgot {
  * 'commit'
  * fn OVERLOADING trait 'Form'.
  */
-	protected function commit() {
+	public function commit() {
 		$this->show=false;
 		$em=$this->fields['email'][0];
 		Settings::esc($em);
@@ -117,6 +117,7 @@ class SioForgot {
 				$mail_v->set("//*[@data-xp='hl']/child-gap()",$url);
 				$mail->Body = $mail_v->show(false);
 				$mail->AltBody=$mail_v->doc()->textContent;
+				//TODO:: protect with a captcha.
 				$mail->send();
 			}
 			$rx->close();

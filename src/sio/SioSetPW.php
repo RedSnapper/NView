@@ -24,7 +24,7 @@ class SioSetPW {
  * 'populate'
  * fn overloading of trait 'Form'.
  */
-protected function populate() {
+	public function populate() {
 	if(!Settings::$usr['has_password']){
 		$this->vset('password','delete');
 	}
@@ -36,7 +36,7 @@ protected function populate() {
  * validate all fields in this->fields.
  * errors are placed into the this->view.
  */
-	protected function validate() {
+	public function validate() {
 		$retval = true;
 		if (isset($this->fields['password'][0])) {
 			if(static::$use_un) {
@@ -87,7 +87,7 @@ protected function populate() {
 		$this->valid = $retval;
 	}
 
-	protected function commit() {
+	public function commit() {
 		if(static::$use_un) {
 			$unm=Settings::$usr['username'];
 		} else { //using email

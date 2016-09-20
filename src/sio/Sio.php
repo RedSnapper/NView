@@ -5,7 +5,8 @@ class Sio {
 	private static $v=array();
 	private static $cb=array();
 	private static $use_un=true;
-	public static $utility = NULL;
+	public static $useReCaptcha = false;
+	public static $utility = null;
 	public static $presets = array(); //only good for email/username presets.
 
 	public static function run($key = null, $debug = false) {
@@ -33,10 +34,24 @@ class Sio {
 					}
 				} elseif (SioSetEmail::inScope()) {  //doing a set-pw post.
 					$stt = 0;
-					$Sio = new SioSetEmail($key);
-					$formlet = $Sio->form(false);
-					if ($Sio->success()) {
-						$formlet = SioSetEmail::pushit();
+					if (static::$useReCaptcha) {
+						$SioRe = new SioCaptcha();
+						$Sio = new SioSetEmail($key);
+						$Sio::formlets([$SioRe, $Sio], false);
+						if ($Sio->success() && $SioRe->success()) {
+							$formlet = SioSetEmail::pushit();
+						} else {
+							$formlet = $Sio->reveal();
+							$cap = $SioRe->reveal();
+							$formlet->set("//*[@data-xp='siso__captcha']", $cap);
+						}
+					} else {
+						$Sio = new SioSetEmail($key);
+						$formlet = $Sio->form(false);
+						if ($Sio->success()) {
+							$formlet = SioSetEmail::pushit();
+						}
+						$formlet->set("//*[@data-xp='siso__captcha']");
 					}
 				}
 			}
@@ -60,24 +75,52 @@ class Sio {
 			} else {
 				if (SioReg::inScope() || isset(Settings::$qst[SioReg::SIG])) {
 					$stt = 0;
-					$Sio = new SioReg($key);
-					$formlet = $Sio->form(false);
-					if ($Sio->success()) {
-						$formlet = $Sio->pushit();
+					if (static::$useReCaptcha) {
+						$SioRe = new SioCaptcha();
+						$Sio = new SioReg($key);
+						$Sio::formlets([$SioRe, $Sio], false);
+						if ($Sio->success() && $SioRe->success()) {
+							$formlet = $Sio->pushit();
+						} else {
+							$formlet = $Sio->reveal();
+							$cap = $SioRe->reveal();
+							$formlet->set("//*[@data-xp='siso__captcha']", $cap);
+						}
+					} else {
+						$Sio = new SioReg($key);
+						$formlet = $Sio->form(false);
+						if ($Sio->success()) {
+							$formlet = $Sio->pushit();
+						}
+						$formlet->set("//*[@data-xp='siso__captcha']");
 					}
 				} elseif (SioForgot::inScope() || isset(Settings::$qst[SioForgot::SIG])) {
 					$stt = 0;
-					$Sio = new SioForgot($key);
-					$formlet = $Sio->form(false);
-					if ($Sio->success()) {
-						$formlet = $Sio->commitv();
+					if (static::$useReCaptcha) {
+						$SioRe = new SioForgot();
+						$Sio = new SioReg($key);
+						$Sio::formlets([$SioRe, $Sio], false);
+						if ($Sio->success() && $SioRe->success()) {
+							$formlet = $Sio->pushit();
+						} else {
+							$formlet = $Sio->reveal();
+							$cap = $SioRe->reveal();
+							$formlet->set("//*[@data-xp='siso__captcha']", $cap);
+						}
+					} else {
+						$Sio = new SioForgot($key);
+						$formlet = $Sio->form(false);
+						if ($Sio->success()) {
+							$formlet = $Sio->commitv();
+						}
+						$formlet->set("//*[@data-xp='siso__captcha']", $cap);
 					}
 				}
 			}
 		}
 		switch ($stt) {
 			case 0:
-				break;
+			break;
 			case 1: {
 				$ssi = new SioSignIn($key);
 				$formlet = $ssi->form(false);
@@ -87,7 +130,7 @@ class Sio {
 					$formlet = $Sio->form(false);
 				}
 			}
-				break;
+			break;
 			case 2: {
 				$sso = new SioSignOut($key);
 				$formlet = $sso->form(false);
@@ -96,7 +139,7 @@ class Sio {
 					$formlet = $Sio->form(false);
 				}
 			}
-				break;
+			break;
 		}
 		$v->set("//*[@data-xp='sio']", $formlet);
 		return $v;
@@ -125,6 +168,12 @@ class Sio {
 				Dict::set($trans_array,$lang);
 			}
 		}
+	}
+
+	public static function setRecaptcha(string $siteKey, string $secret) {
+		SioCaptcha::$siteKey = $siteKey;
+		SioCaptcha::$secret = $secret;
+		self::$useReCaptcha = true;
 	}
 
 	public static function userid($identifier=null,$pending=true) {

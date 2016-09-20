@@ -3,6 +3,7 @@ mb_internal_encoding('UTF-8');
 
 /**
  * class 'SioSignIn'
+ * uses SioForgot.
  */
 class SioSignIn {
 	use Form;
@@ -52,16 +53,36 @@ class SioSignIn {
  * These are set by values in the buttons on the view.
  * fn 'save' - the default action - is handled higher up.
  */
-	protected function func() {
+	public function func() {
 		$retval = null;
 		switch ($this->fields['_fn'][0]) {
 			case 'forgot': {
-				$sf=new SioForgot();
-				$retval = $sf->form();
+				if (static::$useReCaptcha) {
+					$SioRe = new SioCaptcha();
+					$Sio = new SioForgot();
+					$Sio::formlets([$SioRe, $Sio], false);
+					$retval = $Sio->reveal();
+					$cap = $SioRe->reveal();
+					$retval->set("//*[@data-xp='siso__captcha']", $cap);
+				} else {
+					$sf = new SioForgot();
+					$retval = $sf->form(false);
+					$retval->set("//*[@data-xp='siso__captcha']");
+				}
 			} break;
 			case 'register': {
-				$sf=new SioReg();
-				$retval = $sf->form();
+				if (static::$useReCaptcha) {
+					$SioRe = new SioCaptcha();
+					$Sio = new SioReg();
+					$Sio::formlets([$SioRe, $Sio], false);
+					$retval = $Sio->reveal();
+					$cap = $SioRe->reveal();
+					$retval->set("//*[@data-xp='siso__captcha']", $cap);
+				} else {
+					$sf = new SioReg();
+					$retval = $sf->form(false);
+					$retval->set("//*[@data-xp='siso__captcha']");
+				}
 			} break;
 		}
 		return $retval;
@@ -82,7 +103,7 @@ class SioSignIn {
  * validate all fields in this->fields.
  * errors are placed into the this->view.
  */
-	protected function validate() {
+	public function validate() {
 		$retval = false;
 		$unm = NULL;
 		if(static::$use_un) {
@@ -154,7 +175,7 @@ class SioSignIn {
  * 'commit'
  * fn OVERLOADING trait 'Form'.
  */
-	protected function commit() {
+	public function commit() {
 		if(static::$use_un) {
 			$f_uname=$this->fields['username'][0];
 			$user_sql=$f_uname; Settings::esc($user_sql);

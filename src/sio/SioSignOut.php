@@ -25,7 +25,7 @@ class SioSignOut {
  * 'populate'
  * fn overloading of trait 'Form'.
  */
-	protected function populate() {
+	public function populate() {
 		if(Settings::$usr['has_password']){
 			$this->view->set("//*[@data-xp='btnset']");
 		}else{
@@ -37,12 +37,22 @@ class SioSignOut {
  * 'func'
  * fn overloading of trait 'Form'.
  */
-	protected function func() {
+	public function func() {
 		$retval = null;
 		switch ($this->fields['_fn'][0]) {
 			case 'email': {
-				$sf=new SioSetEmail();
-				$retval = $sf->form();
+				if (static::$useReCaptcha) {
+					$SioRe = new SioCaptcha();
+					$Sio = new SioSetEmail();
+					$Sio::formlets([$SioRe, $Sio], false);
+					$retval = $Sio->reveal();
+					$cap = $SioRe->reveal();
+					$retval->set("//*[@data-xp='siso__captcha']", $cap);
+				} else {
+					$sf = new SioSetEmail();
+					$retval = $sf->form(false);
+					$retval->set("//*[@data-xp='siso__captcha']");
+				}
 			} break;
 			case 'reset': {
 				$sf=new SioSetPW();
@@ -56,7 +66,7 @@ class SioSignOut {
  * 'commit'
  * fn OVERLOADING trait 'Form'.
  */
-	protected function commit() {
+	public function commit() {
 		Sio::signout();
 		return true;
 	}

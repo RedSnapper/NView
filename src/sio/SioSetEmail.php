@@ -36,7 +36,7 @@ class SioSetEmail {
  * validate all fields in this->fields.
  * errors are placed into the this->view.
  */
-	protected function validate() {
+	public function validate() {
 		$retval = false;
 		if (isset($this->fields['emailp'][0]) && isset($this->fields['emailb'][0])) {
 			$ema=$this->fields['emailp'][0];
@@ -82,7 +82,7 @@ class SioSetEmail {
 		$this->valid = ($this->valid && $retval && $pwdval);
 	}
 
-	protected function commit() {
+	public function commit() {
 		$em=$this->fields['emailp'][0];
 		$emq=Settings::esc($em);
 		$cqry="update ".$this->table." set ts=null,emailp='".$emq."' where id='".Settings::$usr['ID']."'";
@@ -115,7 +115,8 @@ class SioSetEmail {
 				}
 				$mail_v->set("//*[@data-xp='ha']/@href",$url);
 				$mail->Body = $mail_v->show(false);
-				$mail->AltBody=$mail_v->doc()->textContent;;
+				$mail->AltBody = $mail_v->doc()->textContent;
+				//TODO:: protect with a captcha.
 				$mail->send();
 			}
 			$rx->close();

@@ -180,7 +180,8 @@ class SioReg {
 				$mail_v->set("//*[@data-xp='ha']/@href",$url);
 				$mail_v->set("//*[@data-xp='hl']/child-gap()",$url);
 				$mail->Body = $mail_v->show(false);
-				$mail->AltBody=$mail_v->doc()->textContent;;
+				$mail->AltBody = $mail_v->doc()->textContent;
+				//TODO:: protect with a captcha.
 				$mail->send();
 			}
 			$rx->close();
