@@ -100,7 +100,7 @@ class Sio {
 						$Sio = new SioForgot($key);
 						$Sio::formlets([$SioRe, $Sio], false);
 						if ($Sio->success() && $SioRe->success()) {
-							$formlet = $Sio->pushit();
+							$formlet = $Sio->commitv();
 						} else {
 							$formlet = $Sio->reveal();
 							$formlet->set("//*[@data-xp='siso__captcha']", $SioRe->reveal());
