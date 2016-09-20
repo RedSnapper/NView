@@ -10,8 +10,9 @@ class SioCaptcha {
 	public function __toString() {
 		return "SioCaptcha";
 	}
-
 	const SIG = "siocaptcha_";
+	private static $v = array();
+
 
 	public static function sig() {
 		return static::SIG;
