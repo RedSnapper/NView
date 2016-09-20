@@ -57,7 +57,7 @@ class SioSignIn {
 		$retval = null;
 		switch ($this->fields['_fn'][0]) {
 			case 'forgot': {
-				if (static::$useReCaptcha) {
+				if (Sio::$useReCaptcha) {
 					$SioRe = new SioCaptcha();
 					$Sio = new SioForgot();
 					$Sio::formlets([$SioRe, $Sio], false);
@@ -71,7 +71,7 @@ class SioSignIn {
 				}
 			} break;
 			case 'register': {
-				if (static::$useReCaptcha) {
+				if (Sio::$useReCaptcha) {
 					$SioRe = new SioCaptcha();
 					$Sio = new SioReg();
 					$Sio::formlets([$SioRe, $Sio], false);

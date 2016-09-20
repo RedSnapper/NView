@@ -41,7 +41,7 @@ class SioSignOut {
 		$retval = null;
 		switch ($this->fields['_fn'][0]) {
 			case 'email': {
-				if (static::$useReCaptcha) {
+				if (Sio::$useReCaptcha) {
 					$SioRe = new SioCaptcha();
 					$Sio = new SioSetEmail();
 					$Sio::formlets([$SioRe, $Sio], false);
