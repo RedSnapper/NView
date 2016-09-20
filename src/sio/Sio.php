@@ -148,6 +148,7 @@ class Sio {
 //This must be run to overload views and translations.
 	public static function initialise($use_un=true,$custom_views=array(),$translations=NULL,$presets=array(),$cb_fns=array()) {
 		static::$use_un=$use_un;
+		static::$useReCaptcha = false;
 		static::$presets=$presets; //prefill username/email if required
 		static::$v=array(
 			static::SIG => static::SIG."v.ixml"
