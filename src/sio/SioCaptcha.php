@@ -11,15 +11,16 @@ class SioCaptcha {
 		return "SioCaptcha";
 	}
 
+	const SIG = "siocaptcha_";
+
 	public static function sig() {
-		return "botFilter";
+		return static::SIG;
 	}
 
 	function __construct($debug = false) {
+		$this->iniForm(0, @static::$v[static::SIG]);
 		Dict::set(array("errors_captcha_missing-input-response" => "You must show us that you are a human."), "en");
 		$this->table = "none";
-		$this->view = new NView("siocaptcha.ixml");
-		$this->iniForm('', null, false, 'id', $debug);
 		$this->setfld('captcha', '0');
 	}
 
@@ -45,6 +46,12 @@ class SioCaptcha {
 		}
 	}
 
+	public static function initialise($custom_views = array()) {
+		static::$v = array(
+			static::SIG => static::SIG . "v.ixml"
+		);
+		static::$v = array_replace(static::$v, $custom_views);
+	}
 	private function valCaptcha($name = 'captcha') {
 		if (isset($this->fields[$name][0])) {
 			$response = $this->fields[$name][0];
