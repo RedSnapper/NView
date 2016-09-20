@@ -97,8 +97,8 @@ class Sio {
 				} elseif (SioForgot::inScope() || isset(Settings::$qst[SioForgot::SIG])) {
 					$stt = 0;
 					if (static::$useReCaptcha) {
-						$SioRe = new SioForgot();
-						$Sio = new SioReg($key);
+						$SioRe = new SioCaptcha();
+						$Sio = new SioForgot($key);
 						$Sio::formlets([$SioRe, $Sio], false);
 						if ($Sio->success() && $SioRe->success()) {
 							$formlet = $Sio->pushit();

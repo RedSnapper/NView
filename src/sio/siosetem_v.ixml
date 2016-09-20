@@ -24,7 +24,6 @@
 			</label>
 		</li>
 	</ul>
-	<div data-xp="siso__captcha" />
 	<ul class="siso__btns">
 		<li>
 			<label class="siso__button" data-semantic="field" data-xp="button">
