@@ -1,0 +1,15 @@
+<!DOCTYPE fieldset>
+<fieldset  xmlns="http://www.w3.org/1999/xhtml" class="siso__fieldset">
+	<input type="hidden" data-xp="_ident" />
+	<ul class="siso__formlet">
+		<li>
+			<label class="siso__control" data-semantic="field" data-xp="comment">
+				<span class="siso__error" data-msg="captcha" />
+			</label>
+		</li>
+        <li>
+          <div class="g-recaptcha" data-sitekey=""></div>
+        </li>
+    </ul>
+  <script type="text/javascript" src="https://www.google.com/recaptcha/api.js?hl=en"></script>
+</fieldset>
