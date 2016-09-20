@@ -113,7 +113,7 @@ class Sio {
 						if ($Sio->success()) {
 							$formlet = $Sio->commitv();
 						}
-						$formlet->set("//*[@data-xp='siso__captcha']", $cap);
+						$formlet->set("//*[@data-xp='siso__captcha']");
 					}
 				}
 			}
