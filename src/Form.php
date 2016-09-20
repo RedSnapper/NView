@@ -531,7 +531,7 @@ trait Form {
 					}
 				}
 				//Now run a global val_fn over it.
-				if (!is_null($valfn)) {
+				if (!is_null($valfn) && is_callable($valfn)) {
 					$valid = $valid && $valfn();
 				}
 				if ($valid) {
