@@ -83,8 +83,7 @@ class Sio {
 							$formlet = $Sio->pushit();
 						} else {
 							$formlet = $Sio->reveal();
-							$cap = $SioRe->reveal();
-							$formlet->set("//*[@data-xp='siso__captcha']", $cap);
+							$formlet->set("//*[@data-xp='siso__captcha']", $SioRe->reveal());
 						}
 					} else {
 						$Sio = new SioReg($key);
@@ -104,8 +103,7 @@ class Sio {
 							$formlet = $Sio->pushit();
 						} else {
 							$formlet = $Sio->reveal();
-							$cap = $SioRe->reveal();
-							$formlet->set("//*[@data-xp='siso__captcha']", $cap);
+							$formlet->set("//*[@data-xp='siso__captcha']", $SioRe->reveal());
 						}
 					} else {
 						$Sio = new SioForgot($key);
