@@ -16,10 +16,10 @@ class SioCaptcha {
 	}
 
 	function __construct($debug = false) {
-		$this->table = "none";
-		$v = new NView("siocaptcha.ixml");
 		Dict::set(array("errors_captcha_missing-input-response" => "You must show us that you are a human."), "en");
-		$this->iniForm(null, null, false, null, $debug);
+		$this->table = "none";
+		$this->view = new NView("siocaptcha.ixml");
+		$this->iniForm('', null, false, 'id', $debug);
 		$this->setfld('captcha', '0');
 	}
 

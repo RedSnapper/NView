@@ -214,10 +214,6 @@ trait Form {
 				$file = $vp;
 			}
 			$this->view = new NView($file);
-			$err = $this->view->messages(); //currently unused.
-			if (mb_strlen($err) > 0) {
-				print $err;
-			}
 		}
 		if ($vprefix) {
 			$this->view->set("//*[@data-tr]/@data-tr/preceding-gap()",static::sig());

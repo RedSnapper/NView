@@ -1,5 +1,5 @@
 <!DOCTYPE fieldset>
-<fieldset  xmlns="http://www.w3.org/1999/xhtml" class="siso__fieldset">
+<fieldset xmlns="http://www.w3.org/1999/xhtml" class="siso__fieldset">
 	<input type="hidden" data-xp="_ident" />
 	<ul class="siso__formlet">
 		<li>
