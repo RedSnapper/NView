@@ -168,7 +168,7 @@ class SioUtility {
 	private function initialise() {
 //translations
 		$en = array(
-			"pw_error_length_too_short"=>" Passwords must be more than seven characters.",
+			"pw_error_length_too_short"=>" Passwords must be more than six characters.",
 			"pw_error_not_mixed_case"=>" Passwords must include both upper and lower case characters.",
 			"pw_error_no_number"=>" Passwords must include at least one digit.",
 			"pw_error_no_alpha"=>" Passwords must include at least one letter.",
@@ -177,7 +177,7 @@ class SioUtility {
 		);
 
 		$de = array(
-			'pw_error_length_too_short'=> "Das Passwort muss aus mehr als sieben Zeichen bestehen.",
+			'pw_error_length_too_short'=> "Das Passwort muss aus mehr als sechs Zeichen bestehen.",
             "pw_error_not_mixed_case"=>" Passwörter müssen sowohl Groß- als auch Kleinbuchstaben enthalten.",
             "pw_error_no_number"=>" Passwords must include at least one digit.",
             "pw_error_no_alpha"=>" Passwörter müssen mindestens eine Ziffer enthalten.",
@@ -187,7 +187,7 @@ class SioUtility {
 
 
         $es = array(
-            'pw_error_length_too_short'=> "La contraseña debe tener al menos siete caracteres.",
+            'pw_error_length_too_short'=> "La contraseña debe tener al menos seis caracteres.",
             "pw_error_not_mixed_case"=>" Las contraseñas deben incluir mayúsculas y minúsculas.",
             "pw_error_no_number"=>" Las contraseñas deben incluir al menos un dígito.",
             "pw_error_no_alpha"=>" Las contraseñas deben incluir al menos una letra.",
