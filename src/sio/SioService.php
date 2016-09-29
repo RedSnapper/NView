@@ -131,7 +131,7 @@ abstract class SioService {
 		}
 
 		if (is_null($userID)) {
-			$this->createUser($owner);
+			$userID = $this->createUser($owner);
 		}
 
 		if ($userID) {
