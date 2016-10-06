@@ -11,6 +11,7 @@ abstract class SioService {
 	protected $v;
 	protected $token;
 	protected $debug = false;
+	private $userCreateClosure;
 	const SERVICE_NAME = null;
 
 	function __construct(League\OAuth2\Client\Provider\AbstractProvider $provider, array $authScope = array(), NView $v = NULL) {
@@ -31,6 +32,13 @@ abstract class SioService {
 		return new NView(static::VIEW_TPL);
 	}
 
+	/**
+	 * @param Closure setUserCreateClosure
+	 */
+	public function setUserCreateClosure(Closure $callback) {
+		$this->userCreateClosure = $callback;
+	}
+
 	public function setDebug(bool $bool) {
 		$this->debug = $bool;
 	}
@@ -48,7 +56,7 @@ abstract class SioService {
 	}
 
 	public function setSuccessURL($url) {
-		$this->successURL = $url;
+		$this->successURLsuccessURL = $url;
 	}
 
 	public function handleCallback() {
@@ -148,7 +156,12 @@ abstract class SioService {
 	protected function createUser(Owner $owner) {
 		$email = $owner->getEmail();
 		if ($email) {
-			return SioReg::createuser(null, $email);
+			$userID = SioReg::createuser(null, $email);
+			if(!is_null($userID) && !is_null($this->userCreateClosure)){
+				$closure = $this->userCreateClosure->bindTo($this,$this);
+				$closure($userID,$this->getUserFields($owner));
+			}
+			return $userID;
 		} else {
 			$this->seterr("errors", Dict::get(static::SERVICE_NAME . '_noemail'));
 		}
