@@ -212,12 +212,7 @@ public function write( $session_id , $data ) {
 		if (!empty(static::$session)) {
 			static::$sqlsess = Settings::$sql->escape_string(static::$session);
 			Settings::$sql->query("delete sio_sessiondata from sio_sessiondata left join sio_session on sid=id where id is null");
-			if ($rx = Settings::$sql->query("select count(id) as scount from sio_session where id='" . static::$sqlsess . "'")) {
-				if (strcmp($rx->fetch_row()[0],"0") === 0) {
-					Settings::$sql->query("replace into sio_session set id='" . static::$sqlsess . "'");
-				}
-				$rx->close();
-			}
+			Settings::$sql->query("replace into sio_session set id='" . static::$sqlsess . "'");
 		}
 		static::tidy_session();
 	}
