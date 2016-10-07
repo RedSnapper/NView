@@ -217,9 +217,30 @@ public function write( $session_id , $data ) {
 		static::tidy_session();
 	}
 
-/**
- * 'set cookie as found.'
- */
+	/**
+	 * Returns the time to live in seconds for the current session
+	 * @param int $seconds
+	 * @return int
+	 */
+	public static function ttl(int $seconds=144000):int{
+
+		$session = @$_COOKIE["xsession"];
+		$ttl = 0;
+
+		if(!is_null($session)) {
+			$statement = Settings::$sql->prepare("select TIMESTAMPDIFF(SECOND,NOW(),(ts + INTERVAL ? SECOND)) from sio_session where id=?");
+			$statement->bind_param("is",$seconds,$session);
+			$statement->execute();
+			$statement->bind_result($ttl);
+			$statement->fetch();
+		}
+
+		return $ttl;
+	}
+
+	/**
+	 * 'set cookie as found.'
+ 	*/
 	private static function tidy_session() {
 		if((static::$apache_cookie === "_NEW") && isset($_COOKIE["session"])) {
 			static::$apache_cookie = Settings::$sql->escape_string($_COOKIE["session"]);
