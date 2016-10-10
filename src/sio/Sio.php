@@ -248,7 +248,7 @@ class Sio {
 		Settings::$usr['ID']=NULL;
 		Settings::usr(false);
 		Session::del();
-		Session::start(); // Start a new session
+		Session::start(true); // Start a new session
 	}
 
 	public static function callback($args = array()) {

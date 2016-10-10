@@ -177,10 +177,10 @@ public function write( $session_id , $data ) {
  * Set / manage the session cookie and it's correlating data-record.
  */
 	protected function __construct() {
-		$this->start(false);
+		//$this->start(false);
 	}
 
-	public static function start($override = true){
+	public static function start($override = false){
 		if(isset($_COOKIE["session"])) {
 			static::$apache_cookie = Settings::$sql->escape_string($_COOKIE["session"]);
 		} else {
@@ -218,14 +218,15 @@ public function write( $session_id , $data ) {
 	}
 
 	/**
-	 * Returns the time to live in seconds for the current session
-	 * @param int $seconds
+	 * Returns the time to live in minutes for the current session
+	 * @param int $minutes
 	 * @return int
 	 */
-	public static function ttl(int $seconds=144000):int{
+	public static function ttl(int $minutes=1440):int{
 
 		$session = @$_COOKIE["xsession"];
 		$ttl = 0;
+		$seconds = $minutes * 60;
 
 		if(!is_null($session)) {
 			$statement = Settings::$sql->prepare("select TIMESTAMPDIFF(SECOND,NOW(),(ts + INTERVAL ? SECOND)) from sio_session where id=?");
