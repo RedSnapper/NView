@@ -56,7 +56,7 @@ abstract class SioService {
 	}
 
 	public function setSuccessURL($url) {
-		$this->successURLsuccessURL = $url;
+		$this->successURL = $url;
 	}
 
 	public function handleCallback() {
