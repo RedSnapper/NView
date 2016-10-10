@@ -236,7 +236,7 @@ public function write( $session_id , $data ) {
 			$statement->fetch();
 		}
 
-		return $ttl;
+		return $ttl ?? 0;
 	}
 
 	/**
