@@ -116,7 +116,7 @@ class SioSetEmail {
 				$mail_v->set("//*[@data-xp='ha']/@href",$url);
 				$mail->Body = $mail_v->show(false);
 				$mail->AltBody = $mail_v->doc()->textContent;
-				//TODO:: protect with a captcha.
+				Sio::callback(["email" => $em, "mailer" => $mail]);
 				$mail->send();
 			}
 			$rx->close();
