@@ -98,7 +98,7 @@ class SioForgot {
 				$mail->CharSet='utf-8';
 				$mail->Encoding='base64';
 				$mail->setFrom($from_address, Dict::get(static::SIG .'mail_from') );
-				$mail->addBCC('auto@redsnapper.net', 'Auto'); //bcc
+//				$mail->addBCC('auto@redsnapper.net', 'Auto'); //bcc
 				$mail->Subject = Dict::get(static::SIG .'mail_subject');
 				$mail->isHTML(true);
 				if (strpos($url, '?') !== false) {
