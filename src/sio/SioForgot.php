@@ -98,7 +98,6 @@ class SioForgot {
 				$mail->CharSet='utf-8';
 				$mail->Encoding='base64';
 				$mail->setFrom($from_address, Dict::get(static::SIG .'mail_from') );
-//				$mail->addBCC('auto@redsnapper.net', 'Auto'); //bcc
 				$mail->Subject = Dict::get(static::SIG .'mail_subject');
 				$mail->isHTML(true);
 				if (strpos($url, '?') !== false) {
@@ -117,7 +116,7 @@ class SioForgot {
 				$mail_v->set("//*[@data-xp='hl']/child-gap()",$url);
 				$mail->Body = $mail_v->show(false);
 				$mail->AltBody=$mail_v->doc()->textContent;
-				//TODO:: protect with a captcha.
+				Sio::callback(["email" => $destination, "mailer" => $mail]);
 				$mail->send();
 			}
 			$rx->close();
