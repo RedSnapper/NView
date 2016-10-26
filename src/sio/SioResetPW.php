@@ -110,6 +110,12 @@ class SioResetPW {
 			if ($rs = Settings::$sql->query($query)) {
 				$retval= (int) $rs->fetch_row()[0];
 				$rs->close();
+				if ($retval > 0) { //ensure that the siof works only once.
+					$query = "update sio_user set ts=now() where id=$retval";
+					Settings::$sql->query($query);
+				} else {
+					$retval = null;
+				}
 			}
 		}
 		$retval = $return_id ? $retval : !is_null($retval) ;
