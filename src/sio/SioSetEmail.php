@@ -138,7 +138,7 @@ class SioSetEmail {
 		return $retval;
 	}
 
-	public static function pushit($ha=NULL) {
+	public static function pushit($ha = null) { // ha = $siof = esc($munge)
 		if (is_null($ha)) { //check email
 			$nv = new NView(@static::$v[static::SIG."check_mail"]);
 		} else {			 //set success..
