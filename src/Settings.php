@@ -87,7 +87,6 @@ class Settings extends Config {
 		self::$website=$uri->getSchemeAndHost();
 		self::$domain=$server->get("HTTP_DOMAIN",$uri->getDomain());
 
-
 		if($server->has('QUERY_STRING')) {
 			parse_str($server->get('QUERY_STRING'),self::$qst);
 			self::$req=explode ('&',$server->get('QUERY_STRING'));

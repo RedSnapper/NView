@@ -34,25 +34,11 @@ class Sio {
 					}
 				} elseif (SioSetEmail::inScope()) {  //doing a set-pw post.
 					$stt = 0;
-					//if (static::$useReCaptcha) {
-					//	$SioRe = new SioCaptcha();
-					//	$Sio = new SioSetEmail($key);
-					//	$Sio::formlets([$SioRe, $Sio], false);
-					//	if ($Sio->success() && $SioRe->success()) {
-					//		$formlet = SioSetEmail::pushit();
-					//	} else {
-					//		$formlet = $Sio->reveal();
-					//		$cap = $SioRe->reveal();
-					//		$formlet->set("//*[@data-xp='siso__captcha']", $cap);
-					//	}
-					//} else {
 						$Sio = new SioSetEmail($key);
 						$formlet = $Sio->form(false);
 						if ($Sio->success()) {
 							$formlet = SioSetEmail::pushit();
 						}
-					//	$formlet->set("//*[@data-xp='siso__captcha']");
-					//}
 				}
 			}
 		} else { //not-signed in
@@ -225,7 +211,7 @@ class Sio {
 	}
 
 	public static function signinById($id,$override=false) {
-		 Settings::esc($id);
+		Settings::esc($id);
 		$query= "select email,username from sio_user where active='on' and id= $id";
 		if ($rs = Settings::$sql->query($query)) {
 			while ($rf = $rs->fetch_assoc()) {
