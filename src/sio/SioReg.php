@@ -243,6 +243,8 @@ class SioReg {
 				$retval = intval($r->fetch_row()[0]);
 				if ($retval !== 0) {
 					Settings::$sql->query("insert into sio_userprofile set user=".$retval);
+				}else{
+					$retval = NULL;
 				}
 			}
 			if ($pending) { //either of these work for auto-signin.
@@ -253,7 +255,7 @@ class SioReg {
 				}
 			}
 		}
-		Sio::callback(array("userID"=>$retval,"error"=>!is_null($retval)));
+		Sio::callback(array("userID"=>$retval,"error"=>is_null($retval)));
 		return $retval;
 	}
 
