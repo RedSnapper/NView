@@ -775,20 +775,23 @@ trait Form {
 				$flds = "";
 
 				foreach ($getf as $key => $value) {
-					if (strcmp($key, $value) === 0) {
-						if (mb_strpos($key,";") !== false) {
-							$fld_composite="concat(";
-							$n_arr = explode(";",$value);
-							$fsize = count($n_arr);
-							for($j=0; $j<$fsize; $j++) {
-								$fld_composite .= $n_arr[$j] . ",';',";
+					
+					if($value != "!skip"){
+						if (strcmp($key, $value) === 0) {
+							if (mb_strpos($key,";") !== false) {
+								$fld_composite="concat(";
+								$n_arr = explode(";",$value);
+								$fsize = count($n_arr);
+								for($j=0; $j<$fsize; $j++) {
+									$fld_composite .= $n_arr[$j] . ",';',";
+								}
+								$flds .= substr($fld_composite,0, -5) . ") as `{$value}`,";
+							} else {
+								$flds .= "$key,";
 							}
-							$flds .= substr($fld_composite,0, -5) . ") as `{$value}`,";
 						} else {
-							$flds .= "$key,";
+							$flds .= $value . " as {$key},";
 						}
-					} else {
-						$flds .= $value . " as {$key},";
 					}
 				}
 				$flds = rtrim($flds,",");
