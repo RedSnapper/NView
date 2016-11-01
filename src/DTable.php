@@ -418,7 +418,7 @@ class DTable {
 				$columnIdx = intval($request['order'][$i]['column']);
 				$requestColumn = $request['columns'][$columnIdx];
 
-				if ($columns[$columnIdx]->orgname) {
+				if ($columns[$columnIdx]->orgname && $columns[$columnIdx]->table) {
 					$column = "{$columns[ $columnIdx ]->table}.{$columns[ $columnIdx ]->orgname}";
 				} else {
 					$column = "`{$columns[ $columnIdx ]->name}`";
