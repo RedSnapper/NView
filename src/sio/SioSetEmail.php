@@ -90,7 +90,7 @@ class SioSetEmail {
 		$qry="select username,".static::$munge." as munge from " . $this->table . " where id='" .Settings::$usr['ID']. "' and active='on'";
 		if ($rx = Settings::$sql->query($qry)) {
 			while ($f = $rx->fetch_assoc()) {
-			    $from_address="no_reply@" . Settings::$domain;
+				$from_address = "no_reply@" . Settings::$domain;
 				$mail_v=new NView(@static::$v[static::SIG."email_body"]);
 				$mail = new PHPMailer();
 				$mail->isSendmail();
@@ -104,16 +104,14 @@ class SioSetEmail {
 				}
 				$mail->Subject = Dict::get(static::SIG .'note_email_change_title');
 				$mail->isHTML(true);
-				$url=$_SERVER["SCRIPT_URI"];
-				if (strpos($url, '?') !== false) {
-					$url .= "&siof=" . $f['munge'];
-				} else {
-					$url .= "?siof=" . $f['munge'];
-				}
+				$url = Settings::create(UriInterface::class);
+				$siof = "siof=" . $f['munge'];
+				$url->mergeQuery($siof);
 				if(!static::$use_un) {
 					Session::set(static::SIG,SioSetPW::enhash($this->fields['emailp'][0],$this->fields['password'][0]));
 				}
-				$mail_v->set("//*[@data-xp='ha']/@href",$url);
+				$mail_v->set("//*[@data-xp='ha']/@href", $url->getAbsoluteLink());
+				$mail_v->set("//*[@data-xp='hl']/child-gap()", $url->getAbsoluteLink());
 				$mail->Body = $mail_v->show(false);
 				$mail->AltBody = $mail_v->doc()->textContent;
 				Sio::callback(["email" => $em, "mailer" => $mail]);
