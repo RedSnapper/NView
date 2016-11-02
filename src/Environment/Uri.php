@@ -248,13 +248,7 @@ class Uri implements UriInterface {
 	}
 
 	public function getAbsoluteLink() : string {
-		return self::createUriString(
-			$this->host,
-			$this->scheme,
-			$this->path,
-			$this->query,
-			$this->fragment
-		);
+		return self::__toString();
 	}
 
 	public function redirect() {
@@ -331,14 +325,17 @@ class Uri implements UriInterface {
 
 	/**
 	 * Create a URI string from its various parts
+
 	 *
-	 * @param string $scheme
+*@param string $scheme
 	 * @param string $authority
 	 * @param string $path
 	 * @param string $query
 	 * @param string $fragment
 	 * @return string
-	 */
+	 *    return self::createUriString(
+	 *    );
+ */
 	private static function createUriString($scheme, $authority, $path, $query, $fragment) {
 		$uri = '';
 
