@@ -111,12 +111,9 @@ class SioResetPW {
 			if ($rs = Settings::$sql->query($query)) {
 				$retval= (int) $rs->fetch_row()[0];
 				$rs->close();
-				if ($retval > 0) {
-					//we cannot change the db here (to ensure that the hash only works once),
-					//because we will use the ts to match the ha.
-				} else {
-					$retval = null;
-				}
+				//we cannot change the db here (to ensure that the hash only works once),
+				//because we will use the ts to match the ha.
+				$retval = $retval > 0 ? $retval : null;
 			}
 		}
 		$retval = $return_id ? $retval : !is_null($retval) ;
