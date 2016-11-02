@@ -10,11 +10,9 @@ mb_internal_encoding('UTF-8');
  * cf. http://php.net/manual/en/session.configuration.php
  */
 class Session extends Singleton{
-
-	private static $tom=null; 				//timeout minutes
-	private static $session=null;
+	private static $tom = null;            // timeout minutes
 	private static $sqlsess=null;
-	private static $apache_cookie=null;		//This is the session cookie or '[new session]'- used for session-only variables.
+	private static $apache_cookie = null;    // This is the session cookie or '[new session]'- used for session-only variables.
 	private static $registry;
 
 
@@ -82,7 +80,6 @@ class Session extends Singleton{
 			}
 
 		}
-
 		return static::$registry;
 	}
 

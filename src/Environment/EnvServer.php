@@ -10,7 +10,6 @@ class EnvServer extends AbstractEnvironment implements EnvironmentInterface {
 	}
 
 	public function getScheme(){
-
 		return ($this->sig('HTTPS') && $this->get("HTTPS") =='on') ? "https" : "http";
 	}
 }

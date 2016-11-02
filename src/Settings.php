@@ -8,6 +8,9 @@ class Settings extends Config {
 
 	public static $log;        //PsrLogLoggerInterface instance
 	public static $sphinx = null;
+	/**
+	 * @var mysqli
+	 */
 	public static $sql = null;
 	public static $url = null; //current url
 	public static $msg = array();    //array of application variables
@@ -22,12 +25,25 @@ class Settings extends Config {
 	private static $log_stack = array();
 	private static $mysqli = null;
 	private static $sp = null;
+	/**
+	 * @var Services
+	 */
+	private static $services = null;
 
 	public function __construct(Services $s) {
 		parent::__construct($s);
 		$this->legacy();
 		$this->user();
 		$this->uri();
+	}
+
+	public function __debugInfo() {
+		return [];
+	}
+
+	public function create(...$i) {
+		$class = array_shift($i);
+		return static::$services->get($class, $i);
 	}
 
 	public function legacy() {
@@ -54,6 +70,7 @@ class Settings extends Config {
 			static::$sphinx = static::$sp->getConnection();
 		}
 
+		static::$services = $s;
 		static::$sqls = parse_ini_file($_SERVER["RS_SQLCONFIG_FILE"]);
 		static::$log = $s->get('LoggerInterface');
 		static::$mysqli = $s->get('MySqliConnection');
@@ -82,7 +99,7 @@ class Settings extends Config {
 		$s = $this->s;
 		$server = $s->get('EnvServer');
 		$uri = $s->get('UriInterface');
-		
+
 		self::$url=$uri->getPath();
 		self::$website=$uri->getSchemeAndHost();
 		self::$domain=$server->get("HTTP_DOMAIN",$uri->getDomain());

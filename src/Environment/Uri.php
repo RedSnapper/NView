@@ -43,7 +43,7 @@ class Uri implements UriInterface {
 	 * @param LoggerInterface $log
 	 * @param string $uri
 	 */
-	public function __construct(EnvServer $server, LoggerInterface $log, $uri = null) {
+	public function __construct($uri = null, EnvServer $server, LoggerInterface $log) {
 		$this->server = $server;
 		$this->log = $log;
 		$uri = is_null($uri) ? $this->current() : $uri;
@@ -245,7 +245,21 @@ class Uri implements UriInterface {
 		return ($uri != "")
 		&& ($host == "" || $this->server->get("HTTP_HOST") == $host)
 		&& ($scheme == "" || $this->server->getScheme() == $scheme);
+	}
 
+	public function getAbsoluteLink() : string {
+		return self::createUriString(
+			$this->host,
+			$this->scheme,
+			$this->path,
+			$this->query,
+			$this->fragment
+		);
+	}
+
+	public function redirect() {
+		$absolute = $this->getAbsoluteLink();
+		header("location: $absolute");
 	}
 
 	public function getLink() {
@@ -451,18 +465,16 @@ class Uri implements UriInterface {
 
 	/**
 	 * Filters the query string or fragment of a URI.
-	 *
-	 * @param string $str
-	 *
+
+*
+	 * @param mixed $str
 	 * @return string
-	 *
-	 * @throws \InvalidArgumentException If the query or fragment is invalid.
+
 	 */
 	private function filterQueryAndFragment($str) {
 		if (!is_string($str)) {
-			throw new \InvalidArgumentException('Query and fragment must be a string');
+			$str = http_build_query($str);
 		}
-
 		return preg_replace_callback(
 			'/(?:[^' . self::$charUnreserved . self::$charSubDelims . '%:@\/\?]++|%(?![A-Fa-f0-9]{2}))/',
 			[$this, 'rawurlencodeMatchZero'],

@@ -1,6 +1,6 @@
 <?php
 
-interface UriInterface extends Psr\Http\Message\UriInterface {
+interface UriInterface extends \Psr\Http\Message\UriInterface {
 
 	/**
 	 * Returns the uri suitable in embedding in a web page
@@ -32,4 +32,20 @@ interface UriInterface extends Psr\Http\Message\UriInterface {
 	 * @return string The scheme and HTTP host
 	 */
 	public function getSchemeAndHost();
+
+	/**
+	 * Returns the absolute-uri suitable in embedding in a web page
+	 *
+	 * @return string
+	 */
+	public function getAbsoluteLink() : string;
+
+	/**
+	 * sets a redirect based on the url.
+	 *
+	 * @return void
+	 */
+	public function redirect();
+
+
 }

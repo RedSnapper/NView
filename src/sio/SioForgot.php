@@ -87,11 +87,12 @@ class SioForgot {
 	//mail_qry must include '[MUNGE]' or field as munge, and username(if $use_un) in it's result.
 	// eg SioForgot::mail_forgot($rf['emailp'],$email_qry,Settings::$url);
 	public static function mail_forgot($destination,$email_qry,$url=NULL) {
+//	$uri = Settings::get(UriInterface::class);
 		$url = is_null($url) ? $_SERVER["SCRIPT_URI"] : $url;
 		$email_qry = str_replace("'[MUNGE]'",static::$munge." as munge",$email_qry);
 		if ($rx = Settings::$sql->query($email_qry)) {
 			while ($f = $rx->fetch_assoc()) {
-			    $from_address="no_reply@" . Settings::$domain;
+				$from_address = "no_reply@" . Settings::$domain;
 				$mail_v=new NView(@static::$v[static::SIG."email_body"]);
 				$mail = new PHPMailer();
 				$mail->isSendmail();
