@@ -156,7 +156,7 @@ class SioReg {
 	//mail_qry must include '[MUNGE]' or field as munge, and emailp in it's result.
 	// eg SioReg::mail_pending($rf['emailp'],$email_qry,Settings::$url);
 	public static function mail_pending($destination,$email_qry,$url=NULL) {
-		$url = is_null($url) ? $_SERVER["SCRIPT_URI"] : $url;
+		$url = Settings::create(UriInterface::class, $url);
 		$email_qry = str_replace("'[MUNGE]'",static::$munge." as munge",$email_qry);
 		if ($rx = Settings::$sql->query($email_qry)) {
 			while ($f = $rx->fetch_assoc()) {
@@ -172,13 +172,10 @@ class SioReg {
 				$mail->addBCC("auto@redsnapper.net",'Auto');
 				$mail->Subject = Dict::get(static::SIG.'note_register_title');
 				$mail->isHTML(true);
-				if (strpos($url, '?') !== false) {
-					$url .= '&amp;siof=' . $f['munge'];
-				} else {
-					$url .= '?siof=' . $f['munge'];
-				}
-				$mail_v->set("//*[@data-xp='ha']/@href",$url);
-				$mail_v->set("//*[@data-xp='hl']/child-gap()",$url);
+				$siof = "siof=" . $f['munge'];
+				$url = $url->mergeQuery($siof);
+				$mail_v->set("//*[@data-xp='ha']/@href", $url->getAbsoluteLink());
+				$mail_v->set("//*[@data-xp='hl']/child-gap()", $url->getAbsoluteLink());
 				$mail->Body = $mail_v->show(false);
 				$mail->AltBody = $mail_v->doc()->textContent;
 				Sio::callback(["email" => $destination, "mailer" => $mail]);

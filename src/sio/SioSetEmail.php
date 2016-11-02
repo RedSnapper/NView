@@ -106,7 +106,7 @@ class SioSetEmail {
 				$mail->isHTML(true);
 				$url = Settings::create(UriInterface::class);
 				$siof = "siof=" . $f['munge'];
-				$url->mergeQuery($siof);
+				$url = $url->mergeQuery($siof);
 				if(!static::$use_un) {
 					Session::set(static::SIG,SioSetPW::enhash($this->fields['emailp'][0],$this->fields['password'][0]));
 				}

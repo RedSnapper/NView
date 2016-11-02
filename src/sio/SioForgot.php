@@ -106,7 +106,7 @@ class SioForgot {
 				$mail->Subject = Dict::get(static::SIG .'mail_subject');
 				$mail->isHTML(true);
 				$siof = "siof=" . $f['munge'];
-				$url->mergeQuery($siof);
+				$url = $url->mergeQuery($siof);
 				if (static::$use_un) {
 					$mail->addAddress($destination,$f['username']);
 					$mail_v->set("//*[@data-xp='un']/child-gap()",$f['username']);
