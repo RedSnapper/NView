@@ -41,7 +41,7 @@ class Settings extends Config {
 		return [];
 	}
 
-	public function create(...$i) {
+	public static function create(...$i) {
 		$class = array_shift($i);
 		return static::$services->get($class, $i);
 	}
