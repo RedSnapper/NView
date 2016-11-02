@@ -84,11 +84,15 @@ class SioForgot {
 		}
 	}
 
-	//mail_qry must include '[MUNGE]' or field as munge, and username(if $use_un) in it's result.
-	// eg SioForgot::mail_forgot($rf['emailp'],$email_qry,Settings::$url);
-	public static function mail_forgot($destination,$email_qry,$url=NULL) {
-//	$uri = Settings::get(UriInterface::class);
-		$url = is_null($url) ? $_SERVER["SCRIPT_URI"] : $url;
+	// mail_qry must include '[MUNGE]' or field as munge, and username(if $use_un) in it's result.
+	// e.g. SioForgot::mail_forgot($rf['emailp'],$email_qry,Settings::$url);
+	/**
+	 * @param                          $destination
+	 * @param                          $email_qry
+	 * @param UriInterface|string|null $url
+	 */
+	public static function mail_forgot($destination, $email_qry, $url = null) {
+		$url = Settings::create(UriInterface::class, $url);
 		$email_qry = str_replace("'[MUNGE]'",static::$munge." as munge",$email_qry);
 		if ($rx = Settings::$sql->query($email_qry)) {
 			while ($f = $rx->fetch_assoc()) {
@@ -101,11 +105,8 @@ class SioForgot {
 				$mail->setFrom($from_address, Dict::get(static::SIG .'mail_from') );
 				$mail->Subject = Dict::get(static::SIG .'mail_subject');
 				$mail->isHTML(true);
-				if (strpos($url, '?') !== false) {
-					$url .= '&siof=' . $f['munge'];
-				} else {
-					$url .= '?siof=' . $f['munge'];
-				}
+				$siof = "siof=" . $f['munge'];
+				$url->mergeQuery($siof);
 				if (static::$use_un) {
 					$mail->addAddress($destination,$f['username']);
 					$mail_v->set("//*[@data-xp='un']/child-gap()",$f['username']);
@@ -113,8 +114,8 @@ class SioForgot {
 					$mail->addAddress($destination,$destination);
 					$mail_v->set("//*[@data-xp='un']");
 				}
-				$mail_v->set("//*[@data-xp='ha']/@href",$url);
-				$mail_v->set("//*[@data-xp='hl']/child-gap()",$url);
+				$mail_v->set("//*[@data-xp='ha']/@href", $url->getAbsoluteLink());
+				$mail_v->set("//*[@data-xp='hl']/child-gap()", $url->getAbsoluteLink());
 				$mail->Body = $mail_v->show(false);
 				$mail->AltBody=$mail_v->doc()->textContent;
 				Sio::callback(["email" => $destination, "mailer" => $mail]);
@@ -125,8 +126,6 @@ class SioForgot {
 			print(Settings::$sql->error);
 		}
 	}
-
-
 
 	public static function initialise($use_un=true,$custom_views=array()) {
 		static::$use_un=$use_un;
