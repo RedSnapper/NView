@@ -14,7 +14,7 @@ class Session extends Singleton{
 	private static $sqlsess=null;
 	private static $apache_cookie = null;    // This is the session cookie or '[new session]'- used for session-only variables.
 	private static $registry;
-
+	private static $session;
 
 	/*
 	 * set timeout (in minutes)
