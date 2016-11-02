@@ -29,7 +29,8 @@ class SioResetPW {
 		$retval = $this->valid;
 		$the_username="[[broken username]]";
 		$the_email="[[broken email]]";
-		$query= "select username,if(active='xx',emailp,email) as email from ".$this->table." where ".self::$munge."='".$this->key."'";
+		$ha = Settings::esc($this->key); //this comes via the url...
+		$query = "select username,if(active='xx',emailp,email) as email from " . $this->table . " where " . self::$munge . "='$ha'";
 		if ($rs = Settings::$sql->query($query)) {
 			while ($f = $rs->fetch_assoc()) {
 				$the_username=$f['username'];
@@ -75,9 +76,9 @@ class SioResetPW {
 				$f_uname=$f['username'];
 				$f_email=$f['email'];
 				if(static::$use_un) {
-					$unm=$f_uname;
+					$unm = $f_uname;
 				} else { //using email
-					$unm=$f_email;
+					$unm = $f_email;
 				}
 				$ph=SioSetPW::enhash($unm,$this->fields['password'][0]);
 				$cond=" and ".self::$munge."='".$ha."'";
@@ -106,13 +107,13 @@ class SioResetPW {
 		$retval= NULL;
 		if (!is_null($hat)) {
 			$ha=Settings::esc($hat);
-			$query= "select id from sio_user where ".self::$munge."='".$ha."'";
+			$query = "select id from sio_user where " . self::$munge . "='$ha'";
 			if ($rs = Settings::$sql->query($query)) {
 				$retval= (int) $rs->fetch_row()[0];
 				$rs->close();
-				if ($retval > 0) { //ensure that the siof works only once.
-					$query = "update sio_user set ts=now() where id=$retval";
-					Settings::$sql->query($query);
+				if ($retval > 0) {
+					//we cannot change the db here (to ensure that the hash only works once),
+					//because we will use the ts to match the ha.
 				} else {
 					$retval = null;
 				}
