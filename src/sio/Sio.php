@@ -9,6 +9,7 @@ class Sio {
 	public static $utility = null;
 	public static $presets = array(); //only good for email/username presets.
 
+
 	public static function run($key = null, $debug = false) {
 		$v = new NView(@static::$v[static::SIG]);
 		$formlet = null;
@@ -154,6 +155,10 @@ class Sio {
 				Dict::set($trans_array,$lang);
 			}
 		}
+	}
+
+	public static function setView(string $key, NView $view) {
+		static::$v[$key] = $view;
 	}
 
 	public static function setRecaptcha(string $siteKey, string $secret) {
