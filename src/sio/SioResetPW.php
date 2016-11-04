@@ -19,6 +19,10 @@ class SioResetPW {
 		$this->setfld('passwordb','','!skip');
 	}
 
+	public static function setView(string $key, NView $view) {
+		static::$v[$key] = $view;
+	}
+
 /**
  * 'validate'
  * fn fulfilling abstract requirement of trait 'Form'.

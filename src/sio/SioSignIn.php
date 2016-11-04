@@ -27,6 +27,10 @@ class SioSignIn {
 		$this->setfld('password');
 	}
 
+	public static function setView(string $key, NView $view) {
+		static::$v[$key] = $view;
+	}
+
 /**
  * 'ident'
  *  This overrides the standard ident - we don't want to check usr value for signin.

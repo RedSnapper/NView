@@ -24,6 +24,10 @@ class SioForgot {
 		}
 	}
 
+	public static function setView(string $key, NView $view) {
+		static::$v[$key] = $view;
+	}
+
 /**
  * 'commit-view'
  */

@@ -21,6 +21,10 @@ class SioSetEmail {
 		$this->setfld('emailb','','!skip');
 	}
 
+	public static function setView(string $key, NView $view) {
+		static::$v[$key] = $view;
+	}
+
 	public function prefilter() {
 		if (isset($this->fields['emailp'][0])) {
 			$this->fields['emailp'][0]=mb_strtolower($this->fields['emailp'][0]);

@@ -20,6 +20,10 @@ class SioSetPW {
 		$this->setfld('passwordb','','!skip');
 	}
 
+	public static function setView(string $key, NView $view) {
+		static::$v[$key] = $view;
+	}
+
 /**
  * 'populate'
  * fn overloading of trait 'Form'.

@@ -21,6 +21,10 @@ class SioSignOut {
 	  $this->table="sio_user";
 	}
 
+	public static function setView(string $key, NView $view) {
+		static::$v[$key] = $view;
+	}
+
 /**
  * 'populate'
  * fn overloading of trait 'Form'.

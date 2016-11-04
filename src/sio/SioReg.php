@@ -24,6 +24,10 @@ class SioReg {
  		$this->setfld('commentary','','!skip'); //honeypot.
 	}
 
+	public static function setView(string $key, NView $view) {
+		static::$v[$key] = $view;
+	}
+
 	public function prefilter() {
 		if (isset($this->fields['username'][0])) {
 			$this->fields['username'][0]=mb_strtolower($this->fields['username'][0]);

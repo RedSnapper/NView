@@ -157,10 +157,6 @@ class Sio {
 		}
 	}
 
-	public static function setView(string $key, NView $view) {
-		static::$v[$key] = $view;
-	}
-
 	public static function setRecaptcha(string $siteKey, string $secret) {
 		SioCaptcha::$siteKey = $siteKey;
 		SioCaptcha::$secret = $secret;
