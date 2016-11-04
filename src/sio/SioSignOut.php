@@ -22,7 +22,7 @@ class SioSignOut {
 	}
 
 	public static function setView(string $key, NView $view) {
-		static::$v[$key] = $view;
+		static::$v[static::SIG.$key] = $view;
 	}
 
 /**
