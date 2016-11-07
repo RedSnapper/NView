@@ -7,7 +7,7 @@ class UriTest extends \PHPUnit_Framework_TestCase {
 
 	public function setup() {
 		$this->log = $this->createMock('NViewLogger');
-		$this->server = $this->createMock('EnvServer');
+		$this->server = $this->createMock(EnvServer::class);
 		$this->server->method('getScheme')->willReturn('http');
 	}
 
@@ -62,7 +62,7 @@ class UriTest extends \PHPUnit_Framework_TestCase {
 					->getMock();
 
 		$log->expects($this->once())->method('error')->with("Unable to parse URI: $invalidUri");
-		new Uri($this->server,$log,$invalidUri);
+		new Uri($invalidUri,$this->server,$log);
 
 	}
 
@@ -99,7 +99,7 @@ class UriTest extends \PHPUnit_Framework_TestCase {
 			->getMock();
 
 		$log->expects($this->once())->method('error')->with("Unable to parse URI: $invalidPort");
-		new Uri($this->server,$log,$invalidPort);
+		new Uri($invalidPort,$this->server,$log);
 	}
 
 	/**
@@ -123,19 +123,6 @@ class UriTest extends \PHPUnit_Framework_TestCase {
 		$this->getUri()->withPath([]);
 	}
 
-	/**
-	 * @expectedException \InvalidArgumentException
-	 */
-	public function testQueryMustHaveCorrectType() {
-		$this->getUri()->withQuery([]);
-	}
-
-	/**
-	 * @expectedException \InvalidArgumentException
-	 */
-	public function testFragmentMustHaveCorrectType() {
-		$this->getUri()->withFragment([]);
-	}
 
 	public function testCanParseFalseyUriParts() {
 		$uri = $this->getUri('0://0:0@0/0?0#0');
@@ -167,6 +154,39 @@ class UriTest extends \PHPUnit_Framework_TestCase {
 		$this->assertSame('0', $uri->getQuery());
 		$this->assertSame('0', $uri->getFragment());
 		$this->assertSame('0://0:0@0/0?0#0', (string)$uri);
+	}
+
+	public function testAddAndRemoveQueryValues() {
+		$uri = $this->getUri("?a=b&c=d&e");
+		$uri = Uri::withoutQueryValue($uri, 'c');
+		$this->assertSame('a=b&e', $uri->getQuery());
+		$uri = Uri::withoutQueryValue($uri, 'e');
+		$this->assertSame('a=b', $uri->getQuery());
+		$uri = Uri::withoutQueryValue($uri, 'a');
+		$this->assertSame('', $uri->getQuery());
+	}
+
+	public function testWithoutQueryValueRemovesAllSameKeys() {
+		$uri = $this->getUri("?a=b&c=d&a=e");
+		$uri = Uri::withoutQueryValue($uri, 'a');
+		$this->assertSame('c=d', $uri->getQuery());
+	}
+
+	public function testRemoveNonExistingQueryValue() {
+		$uri = $this->getUri("?a=b");
+		$uri = Uri::withoutQueryValue($uri, 'c');
+		$this->assertSame('a=b', $uri->getQuery());
+	}
+
+	public function testWithoutQueryValueHandlesEncoding() {
+		// It also tests that the case of the percent-encoding does not matter,
+		// i.e. both lowercase "%3d" and uppercase "%5E" can be removed.
+		$uri = ($this->getUri())->withQuery('E%3dmc%5E2=einstein&foo=bar');
+		$uri = Uri::withoutQueryValue($uri, 'E=mc^2');
+		$this->assertSame('foo=bar', $uri->getQuery(), 'Handles key in decoded form');
+		$uri = ($this->getUri())->withQuery('E%3dmc%5E2=einstein&foo=bar');
+		$uri = Uri::withoutQueryValue($uri, 'E%3Dmc%5e2');
+		$this->assertSame('foo=bar', $uri->getQuery(), 'Handles key in encoded form');
 	}
 
 	public function testSchemeIsNormalizedToLowercase() {
@@ -381,7 +401,7 @@ class UriTest extends \PHPUnit_Framework_TestCase {
         ];
 		$server->method('get')->will($this->returnValueMap($map));
 		$server->method('getScheme')->willReturn($https);
-		$uri = new Uri($server,$this->log,$url);
+		$uri = new Uri($url,$server,$this->log);
 		$this->assertEquals($uri->isLocal(),$expected);
 
 	}
@@ -409,7 +429,7 @@ class UriTest extends \PHPUnit_Framework_TestCase {
 		];
 		$server->method('get')->will($this->returnValueMap($map));
 		$server->method('getScheme')->willReturn($https);
-		$uri = new Uri($server,$this->log,$url);
+		$uri = new Uri($url,$server,$this->log);
 		$this->assertSame($uri->getLink(),$expected);
 	}
 
@@ -445,7 +465,7 @@ class UriTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	protected function getUri($url=null) {
-		return new Uri($this->server,$this->log,$url);
+		return new Uri($url,$this->server,$this->log);
 	}
 
 

@@ -1,5 +1,7 @@
 <?php
 
+use Psr\Http\Message\UriInterface;
+
 class Uri implements UriInterface {
 	private static $schemes = [
 		'http' => 80,
@@ -294,6 +296,30 @@ class Uri implements UriInterface {
 	}
 
 	/**
+	 * Creates a new URI with a specific query string value removed.
+	 *
+	 * Any existing query string values that exactly match the provided key are
+	 * removed.
+	 *
+	 * @param UriInterface $uri URI to use as a base.
+	 * @param string       $key Query string key to remove.
+	 *
+	 * @return UriInterface
+	 */
+	public static function withoutQueryValue(UriInterface $uri, $key) {
+		$current = $uri->getQuery();
+		if ($current === '') {
+			return $uri;
+		}
+		$decodedKey = rawurldecode($key);
+		$result = array_filter(explode('&', $current), function ($part) use ($decodedKey) {
+			return rawurldecode(explode('=', $part)[0]) !== $decodedKey;
+		});
+		return $uri->withQuery(implode('&', $result));
+	}
+
+
+	/**
 	 * Apply parse_url parts to a URI.
 	 *
 	 * @param array $parts Array of parse_url parts to apply.
@@ -462,8 +488,7 @@ class Uri implements UriInterface {
 
 	/**
 	 * Filters the query string or fragment of a URI.
-
-*
+	 *
 	 * @param mixed $str
 	 * @return string
 
