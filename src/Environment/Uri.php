@@ -301,21 +301,19 @@ class Uri implements UriInterface {
 	 * Any existing query string values that exactly match the provided key are
 	 * removed.
 	 *
-	 * @param UriInterface $uri URI to use as a base.
-	 * @param string       $key Query string key to remove.
-	 *
+	 * @param string       $key Query string key to remove
 	 * @return UriInterface
 	 */
-	public static function withoutQueryValue(UriInterface $uri, $key) {
-		$current = $uri->getQuery();
+	public function withoutQueryValue($key) {
+		$current = $this->getQuery();
 		if ($current === '') {
-			return $uri;
+			return $this;
 		}
 		$decodedKey = rawurldecode($key);
 		$result = array_filter(explode('&', $current), function ($part) use ($decodedKey) {
 			return rawurldecode(explode('=', $part)[0]) !== $decodedKey;
 		});
-		return $uri->withQuery(implode('&', $result));
+		return $this->withQuery(implode('&', $result));
 	}
 
 

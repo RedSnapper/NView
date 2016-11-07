@@ -158,23 +158,23 @@ class UriTest extends \PHPUnit_Framework_TestCase {
 
 	public function testAddAndRemoveQueryValues() {
 		$uri = $this->getUri("?a=b&c=d&e");
-		$uri = Uri::withoutQueryValue($uri, 'c');
+		$uri = $uri->withoutQueryValue('c');
 		$this->assertSame('a=b&e', $uri->getQuery());
-		$uri = Uri::withoutQueryValue($uri, 'e');
+		$uri = $uri->withoutQueryValue('e');
 		$this->assertSame('a=b', $uri->getQuery());
-		$uri = Uri::withoutQueryValue($uri, 'a');
+		$uri = $uri->withoutQueryValue('a');
 		$this->assertSame('', $uri->getQuery());
 	}
 
 	public function testWithoutQueryValueRemovesAllSameKeys() {
 		$uri = $this->getUri("?a=b&c=d&a=e");
-		$uri = Uri::withoutQueryValue($uri, 'a');
+		$uri = $uri->withoutQueryValue('a');
 		$this->assertSame('c=d', $uri->getQuery());
 	}
 
 	public function testRemoveNonExistingQueryValue() {
 		$uri = $this->getUri("?a=b");
-		$uri = Uri::withoutQueryValue($uri, 'c');
+		$uri = $uri->withoutQueryValue('c');
 		$this->assertSame('a=b', $uri->getQuery());
 	}
 
@@ -182,10 +182,10 @@ class UriTest extends \PHPUnit_Framework_TestCase {
 		// It also tests that the case of the percent-encoding does not matter,
 		// i.e. both lowercase "%3d" and uppercase "%5E" can be removed.
 		$uri = ($this->getUri())->withQuery('E%3dmc%5E2=einstein&foo=bar');
-		$uri = Uri::withoutQueryValue($uri, 'E=mc^2');
+		$uri = $uri->withoutQueryValue('E=mc^2');
 		$this->assertSame('foo=bar', $uri->getQuery(), 'Handles key in decoded form');
 		$uri = ($this->getUri())->withQuery('E%3dmc%5E2=einstein&foo=bar');
-		$uri = Uri::withoutQueryValue($uri, 'E%3Dmc%5e2');
+		$uri = $uri->withoutQueryValue('E%3Dmc%5e2');
 		$this->assertSame('foo=bar', $uri->getQuery(), 'Handles key in encoded form');
 	}
 
