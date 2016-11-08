@@ -434,8 +434,8 @@ class NView {
 													$nodc = $value->cloneNode(true);
 													$node = $this->doc->importNode($nodc, true);
 												}
-												if (!is_null($node->firstChild) || $node->nodeType == XML_TEXT_NODE )
-												{
+												//if (!is_null($node->firstChild) || $node->nodeType == XML_TEXT_NODE )
+												if (!is_a($node,DOMDocumentFragment::class) || (!is_null($node->firstChild))) {
 													switch ($gap) {
 														case self::GAP_NONE: {
 															$entry->parentNode->replaceChild($node, $entry);
