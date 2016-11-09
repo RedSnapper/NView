@@ -65,14 +65,15 @@ class SioCaptcha {
 					$this->valid = false;
 				}
 			} else {
+				$hash = hash('sha256', $response); //need to hash this->value
 				if (Session::has('valCaptchaResponse')) {
 					$last = Session::get('valCaptchaResponse');
-					if ($last == $response) {
+					if ($last == $hash) {
 						$this->seterr($name, Dict::get("errors_captcha_repeated"));
 						$this->valid = false;
 					}
 				}
-				Session::set('valCaptchaCaptchaResponse', $response);
+				Session::set('valCaptchaCaptchaResponse', $hash);
 			}
 		} else {
 			$this->seterr($name, Dict::get('errors_captcha_not_submitted'));
