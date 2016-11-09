@@ -63,9 +63,10 @@ class SioForgot {
 	public function commit() {
 		$this->show=false;
 		$em=$this->fields['email'][0];
+		$destination = $this->fields['email'][0];
 		Settings::esc($em);
 		$qry="select username,'$em' as email,'[MUNGE]' from " . $this->table . " where (active='on' and email='$em') or (active='xx' and emailp='$em')";
-		static::mail_forgot($em,$qry);
+		static::mail_forgot($destination,$qry);
 		return true;
 	}
 

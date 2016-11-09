@@ -61,7 +61,9 @@ class SioReg {
 		}
 
 		if (isset($this->fields['emailp'][0])) {
-			$em=Settings::$sql->real_escape_string($this->fields['emailp'][0]);
+			$em=$this->fields['emailp'][0];
+			Settings::esc($em);
+
 			$qry="select count(id) as ok from " . $this->table . " where email='".$em."' or emailp='" . $em . "'";
 			if ($rx = Settings::$sql->query($qry)) {
 				if (strcmp($rx->fetch_row()[0],"0") !== 0) {

@@ -88,7 +88,8 @@ class SioSetEmail {
 
 	public function commit() {
 		$em=$this->fields['emailp'][0];
-		$emq=Settings::esc($em);
+		$emq=$this->fields['emailp'][0];
+		Settings::esc($emq);
 		$cqry="update ".$this->table." set ts=null,emailp='".$emq."' where id='".Settings::$usr['ID']."'";
 		Settings::$sql->query($cqry);
 		$qry="select username,".static::$munge." as munge from " . $this->table . " where id='" .Settings::$usr['ID']. "' and active='on'";
