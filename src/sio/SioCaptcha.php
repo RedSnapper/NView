@@ -64,6 +64,15 @@ class SioCaptcha {
 					$this->seterr($name, Dict::get("errors_captcha_$k"));
 					$this->valid = false;
 				}
+			} else {
+				if (Session::has('valCaptchaResponse')) {
+					$last = Session::get('valCaptchaResponse');
+					if ($last == $response) {
+						$this->seterr($name, Dict::get("errors_captcha_repeated"));
+						$this->valid = false;
+					}
+				}
+				Session::set('valCaptchaCaptchaResponse', $response);
 			}
 		} else {
 			$this->seterr($name, Dict::get('errors_captcha_not_submitted'));
