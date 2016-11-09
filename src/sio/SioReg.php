@@ -164,7 +164,7 @@ class SioReg {
 		$email_qry = str_replace("'[MUNGE]'",static::$munge." as munge",$email_qry);
 		if ($rx = Settings::$sql->query($email_qry)) {
 			while ($f = $rx->fetch_assoc()) {
-			    $from_address="no_reply@" . Settings::$domain;
+				$from_address = "no_reply@" . Settings::$domain;
 				$mail_v=new NView(@static::$v[static::SIG."email_body"]);
 				$mail_v->set("//*[@data-tr]/@data-tr/preceding-gap()",static::SIG);
 				$mail = new PHPMailer();

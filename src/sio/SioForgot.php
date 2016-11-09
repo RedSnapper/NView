@@ -87,7 +87,6 @@ class SioForgot {
 			$this->vset('email');
 		}
 	}
-
 	// mail_qry must include '[MUNGE]' or field as munge, and username(if $use_un) in it's result.
 	// e.g. SioForgot::mail_forgot($rf['emailp'],$email_qry,Settings::$url);
 	/**
