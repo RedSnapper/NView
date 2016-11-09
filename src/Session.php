@@ -31,7 +31,7 @@ class Session extends Singleton{
 			$code = @$_SERVER['REMOTE_ADDR'] . @$_SERVER['SSL_SESSION_ID'] . "_wxf9[9]Z(9.2)";
 			$vector = $_SERVER['SCRIPT_URI'] . "37b807ea4118db8d";
 			$mutated = hash('sha256', openssl_encrypt(gzdeflate($session), "aes-256-cbc", $code, OPENSSL_RAW_DATA, substr($vector, 0, 16)));
-			Settings::$sql->query("update sio_session     set  id='$mutated' where  id='$session'");
+			Settings::$sql->query("update sio_session set id='$mutated' where id='$session'");
 			Settings::$sql->query("update sio_sessiondata set sid='$mutated' where sid='$session'");
 			static::$session = $mutated;
 			setcookie("xsession", static::$session, time() + 8640000, '/', '', true); // 8640000 = 100 days
