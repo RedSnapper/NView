@@ -203,6 +203,7 @@ class Sio {
 	public static function signin($username = null,$email=null,$override=false) {
 		if($override || !Session::has('username')) {
 			if ($username && $email) {
+				Session::mutate();
 				Session::set('username',$username);
 				Session::set('email',$email);
 				Settings::usr();
@@ -236,6 +237,7 @@ class Sio {
 		Settings::usr(false);
 		Session::del();
 		Session::start(true); // Start a new session
+		Session::mutate();
 	}
 
 	public static function callback($args = array()) {
