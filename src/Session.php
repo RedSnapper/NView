@@ -26,7 +26,7 @@ class Session extends Singleton{
 	}
 
 	public static function mutate() {
-		if (isset($_COOKIE["xsession"]) && !empty($_SERVER['HTTPS'])) {
+		if (isset($_COOKIE["xsession"])) {
 			$session = static::$session;
 			$code = @$_SERVER['REMOTE_ADDR'] . @$_SERVER['SSL_SESSION_ID'] . "_wxf9[9]Z(9.2)";
 			$vector = $_SERVER['SCRIPT_URI'] . "37b807ea4118db8d";
