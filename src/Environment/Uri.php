@@ -304,16 +304,20 @@ class Uri implements UriInterface {
 	 * @param string       $key Query string key to remove
 	 * @return UriInterface
 	 */
-	public function withoutQueryValue($key) {
+	public function withoutQueryValue(string $key = null) : \UriInterface {
 		$current = $this->getQuery();
 		if ($current === '') {
 			return $this;
 		}
-		$decodedKey = rawurldecode($key);
-		$result = array_filter(explode('&', $current), function ($part) use ($decodedKey) {
-			return rawurldecode(explode('=', $part)[0]) !== $decodedKey;
-		});
-		return $this->withQuery(implode('&', $result));
+		if (!empty($key)) {
+			$decodedKey = rawurldecode($key);
+			$result = array_filter(explode('&', $current), function ($part) use ($decodedKey) {
+				return rawurldecode(explode('=', $part)[0]) !== $decodedKey;
+			});
+			return $this->withQuery(implode('&', $result));
+		} else {
+			return $this->withQuery("");
+		}
 	}
 
 

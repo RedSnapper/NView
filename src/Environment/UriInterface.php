@@ -47,5 +47,12 @@ interface UriInterface extends \Psr\Http\Message\UriInterface {
 	 */
 	public function redirect();
 
+	/**
+	 * removes a part of (or all a query value).
+	 *
+	 * @return void
+	 */
+	public function withoutQueryValue(string $key = null) : \UriInterface;
+
 
 }
