@@ -48,11 +48,18 @@ interface UriInterface extends \Psr\Http\Message\UriInterface {
 	public function redirect();
 
 	/**
+	 * This replaces the query, whereas mergeQuery merges a query
+	 * @param string $query
+	 * @return UriInterface
+	 */
+	public function withQuery($query) : UriInterface;
+
+	/**
 	 * removes a part of (or all a query value).
 	 *
 	 * @return void
 	 */
-	public function withoutQueryValue(string $key = null) : \UriInterface;
+	public function withoutQueryValue(string $key = null) : UriInterface;
 
 
 }

@@ -212,7 +212,7 @@ class Uri implements UriInterface {
 		return $new;
 	}
 
-	public function withQuery($query) {
+	public function withQuery($query) : UriInterface {
 		$query = $this->filterQueryAndFragment($query);
 
 		if ($this->query === $query) {
@@ -304,7 +304,7 @@ class Uri implements UriInterface {
 	 * @param string       $key Query string key to remove
 	 * @return UriInterface
 	 */
-	public function withoutQueryValue(string $key = null) : \UriInterface {
+	public function withoutQueryValue(string $key = null) : UriInterface {
 		$current = $this->getQuery();
 		if ($current === '') {
 			return $this;
