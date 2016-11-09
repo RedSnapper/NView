@@ -48,6 +48,14 @@ interface UriInterface extends \Psr\Http\Message\UriInterface {
 	public function redirect();
 
 	/**
+	 * Set a fragment to the url.
+	 *
+	 * @param string $fragment
+	 * @return UriInterface
+	 */
+	public function withFragment($fragment) : UriInterface;
+
+	/**
 	 * This replaces the query, whereas mergeQuery merges a query
 	 * @param string $query
 	 * @return UriInterface
