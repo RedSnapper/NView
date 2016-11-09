@@ -59,22 +59,15 @@ class SioCaptcha {
 			$recaptcha = new \ReCaptcha\ReCaptcha(static::$secret);
 			$resp = $recaptcha->verify($response);
 			if (!$resp->isSuccess()) {
+				$this->valid = false;
+				$found = false;
 				$errors = $resp->getErrorCodes();
 				foreach ($errors as $k) {
+					$found = true;
 					$this->seterr($name, Dict::get("errors_captcha_$k"));
-					$this->valid = false;
 				}
-			} else {
-				$hash = hash('sha256', $response); //need to hash this->value
-				if (Session::has('valCaptchaResponse')) {
-					$last = Session::get('valCaptchaResponse');
-					if ($last == $hash) {
-						$this->seterr($name, Dict::get("errors_captcha_repeated"));
-						$this->valid = false;
-					}
-				}
-				if ($this->valid) {
-					Session::set('valCaptchaResponse', $hash);
+				if (!$found) { //repeated post
+					$this->seterr($name, Dict::get("errors_captcha_repeat"));
 				}
 			}
 		} else {
