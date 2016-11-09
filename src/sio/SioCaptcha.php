@@ -73,7 +73,7 @@ class SioCaptcha {
 						$this->valid = false;
 					}
 				}
-				Session::set('valCaptchaCaptchaResponse', $hash);
+				Session::set('valCaptchaResponse', $hash);
 			}
 		} else {
 			$this->seterr($name, Dict::get('errors_captcha_not_submitted'));
