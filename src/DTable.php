@@ -33,6 +33,7 @@ class DTable {
 					'type' => //switch null/multi
 							'null'   //nulls represent something, not just a lack of data..
 							'multi'  // representing if multi-select is to be used.
+							'select' // Normal select
 					'fields' //(array) filter the value on multiple fields, rather than just one.
 					'label'  //allows to change the default column name label.
 				}
@@ -489,7 +490,7 @@ class DTable {
 						$filter['derived'] = in_array($name, $columnNames);
 						$filterValue = $filterinfo[$type];
 
-						if ($type == 'multi') {
+						if ($type == 'multi' || $type == 'select') {
 							foreach ($filterValue as $val) {
 								self::bind($bindings, $val, 's');
 								Settings::esc($val);
@@ -521,14 +522,15 @@ class DTable {
 		foreach ($filtersArray as $filterInfo) {
 
 			$filterOr = array();
+			$filterType = $filterInfo['type'];
 
-			if ($filterInfo['type'] == 'multi') {
+			if ($filterType  == 'multi' || $filterType  == 'select' ) {
 				$filter = $values ? $filterInfo['rangevalues'] : $filterInfo['range'];
 				foreach ($filterInfo['names'] as $name) {
 					$filterOr[] = $name . ' in(' . implode(',', $filter) . ')';
 				}
 			}
-			if ($filterInfo['type'] == 'null') {
+			if ($filterType == 'null') {
 				$null = '';
 				if ($filterInfo['value'] == '1') {
 					$null = 'is not null';
@@ -542,12 +544,12 @@ class DTable {
 					}
 				}
 			}
-			if ($filterInfo['type'] == 'date-to' || $filterInfo['type'] == 'date-from') {
+			if ($filterType == 'date-to' || $filterType == 'date-from') {
 
 				$date = Settings::esc($filterInfo['value']);
 				if(static::validateDate($filterInfo['value'])){
 					foreach ($filterInfo['names'] as $name) {
-						if($filterInfo['type'] == 'date-from'){
+						if($filterType == 'date-from'){
 							$filters[] = "$name >= '{$date} 00:00'";
 						}else{
 							$filters[] = "$name <= '{$date} 23:59'";

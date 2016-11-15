@@ -36,7 +36,7 @@ class Session extends Singleton{
 			Settings::$sql->query("update sio_sessiondata set sid='$mutated' where sid='$session'");
 			static::$sqlsess = $mutated;
 			static::$session = $mutated;
-			setcookie("xsession", static::$session, time() + 8640000, '/', '', true); // 8640000 = 100 days
+			setcookie("xsession", static::$session, time() + 8640000, '/', '', !empty($_SERVER['HTTPS'])); // 8640000 = 100 days
 		}
 	}
 
