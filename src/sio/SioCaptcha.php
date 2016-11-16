@@ -20,7 +20,6 @@ class SioCaptcha {
 
 	function __construct($debug = false) {
 		$this->iniForm(0, @static::$v[static::SIG]);
-		Dict::set(array("errors_captcha_missing-input-response" => "You must show us that you are a human."), "en");
 		$this->table = "none";
 		$this->setfld('captcha', '0');
 	}
@@ -52,6 +51,14 @@ class SioCaptcha {
 			static::SIG => static::SIG . "v.ixml"
 		);
 		static::$v = array_replace(static::$v, $custom_views);
+
+		$en = [
+		  static::SIG ."errors_missing-input-response"=>"You must show us that you are a human.",
+		  static::SIG .'errors_captcha_repeat' => "This form has already been submitted.",
+		  static::SIG .'errors_captcha_not_submitted' => "You must show us that you are a human.",
+		];
+
+		Dict::set($en,'en');
 	}
 	private function valCaptcha($name = 'captcha') {
 		if (isset($this->fields[$name][0])) {
@@ -64,14 +71,14 @@ class SioCaptcha {
 				$errors = $resp->getErrorCodes();
 				foreach ($errors as $k) {
 					$found = true;
-					$this->seterr($name, Dict::get("errors_captcha_$k"));
+					$this->seterr($name, Dict::get(static::SIG ."errors_captcha_$k"));
 				}
 				if (!$found) { //repeated post
-					$this->seterr($name, Dict::get("errors_captcha_repeat"));
+					$this->seterr($name, Dict::get(static::SIG . "errors_captcha_repeat"));
 				}
 			}
 		} else {
-			$this->seterr($name, Dict::get('errors_captcha_not_submitted'));
+			$this->seterr($name, Dict::get(static::SIG .'errors_captcha_not_submitted'));
 			$this->valid = false;
 		}
 	}
