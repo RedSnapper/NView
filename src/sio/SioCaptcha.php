@@ -53,7 +53,7 @@ class SioCaptcha {
 		static::$v = array_replace(static::$v, $custom_views);
 
 		$en = [
-		  static::SIG ."errors_missing-input-response"=>"You must show us that you are a human.",
+		  static::SIG ."errors_captcha_missing-input-response"=>"You must show us that you are a human.",
 		  static::SIG .'errors_captcha_repeat' => "This form has already been submitted.",
 		  static::SIG .'errors_captcha_not_submitted' => "You must show us that you are a human.",
 		];
