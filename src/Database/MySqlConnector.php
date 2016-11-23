@@ -28,32 +28,32 @@ class MySqlConnector extends Connector implements ConnectorInterface {
 		// new connection instance. The PDO options control various aspects of the
 		// connection's behavior, and some might be specified by the developers.
 		$connection = $this->createConnection($dsn, $config, $options);
+		if (isset($connection)) {
+			if (isset($config['database'])) {
+				$connection->exec("use `{$config['database']}`;");
+			}
 
-		if (isset($config['database'])) {
-			$connection->exec("use `{$config['database']}`;");
+			$collation = @$config['collation'];
+
+			// Next we will set the "names" and "collation" on the clients connections so
+			// a correct character set will be used by this client. The collation also
+			// is set on the server but needs to be set here on this client objects.
+			$charset = $config['default-character-set'];
+
+			$names = "set names '$charset'" .
+				(!is_null($collation) ? " collate '$collation'" : '');
+
+			$connection->prepare($names)->execute();
+
+			// Next, we will check to see if a timezone has been specified in this config
+			// and if it has we will issue a statement to modify the timezone with the
+			// database. Setting this DB timezone is an optional configuration item.
+			if (isset($config['timezone'])) {
+				$connection->prepare(
+					'set time_zone="' . $config['timezone'] . '"'
+				)->execute();
+			}
 		}
-
-		$collation = @$config['collation'];
-
-		// Next we will set the "names" and "collation" on the clients connections so
-		// a correct character set will be used by this client. The collation also
-		// is set on the server but needs to be set here on this client objects.
-		$charset = $config['default-character-set'];
-
-		$names = "set names '$charset'" .
-			(!is_null($collation) ? " collate '$collation'" : '');
-
-		$connection->prepare($names)->execute();
-
-		// Next, we will check to see if a timezone has been specified in this config
-		// and if it has we will issue a statement to modify the timezone with the
-		// database. Setting this DB timezone is an optional configuration item.
-		if (isset($config['timezone'])) {
-			$connection->prepare(
-				'set time_zone="' . $config['timezone'] . '"'
-			)->execute();
-		}
-
 		return $connection;
 	}
 	
@@ -90,15 +90,21 @@ class MySqlConnector extends Connector implements ConnectorInterface {
 
 	/**
 	 * Get the DSN string for a host / port configuration.
+	 * extract() — Import variables into the current symbol table from an array
 	 *
-	 * @param  array $config
+*@param  array $config
 	 * @return string
 	 */
 	protected function getHostDsn(array $config) {
 		extract($config, EXTR_SKIP);
-
-		return isset($port)
-			? "mysql:host={$host};port={$port};dbname={$database}"
-			: "mysql:host={$host};dbname={$database}";
+		if (isset($host)) {
+			return isset($port)
+				? "mysql:host={$host};port={$port};dbname={$database}"
+				: "mysql:host={$host};dbname={$database}";
+		} else {
+			return isset($port)
+				? "mysql:port={$port};dbname={$database}"
+				: "mysql:dbname={$database}";
+		}
 	}
 }
