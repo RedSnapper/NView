@@ -35,7 +35,7 @@ class Connector {
 	 */
 	public function createConnection($dsn, array $config, array $options) {
 		$username = $config['user'];
-		$password = $config['password'];
+		$password = @$config['password'];
 
 		try {
 			$pdo = new PDO($dsn, $username, $password, $options);
