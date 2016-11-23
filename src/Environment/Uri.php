@@ -69,7 +69,7 @@ class Uri implements UriInterface {
 		$path = $server->get("REQUEST_URI");
 		$scheme = $server->getScheme();
 		$host = $server->get("HTTP_HOST");
-		if (!($host === "" && $path === "")) {
+		if (!(empty($host) && empty($path))) {
 			$current = "{$scheme}://{$host}{$path}";
 		}
 		return $current;
@@ -224,7 +224,7 @@ class Uri implements UriInterface {
 		return $new;
 	}
 
-	public function withFragment($fragment) {
+	public function withFragment($fragment) : UriInterface {
 		$fragment = $this->filterQueryAndFragment($fragment);
 
 		if ($this->fragment === $fragment) {
