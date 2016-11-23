@@ -15,13 +15,15 @@ class Session extends Singleton{
 	private static $apache_cookie = null;    // This is the session cookie or '[new session]'- used for session-only variables.
 	private static $registry;
 	private static $session;
+	private static $cookieLife = null;
 
 	/*
 	 * set timeout (in minutes)
 	 * this is traditionally set using a php.ini value session.gc_lifetime
 	 */
-	public static function setto($tom_p=1440) {
+	public static function setto($tom_p = 1440, int $cookieLife = 8640000) {
 		static::$tom = Settings::$sql->escape_string($tom_p);
+		static::$cookieLife = $cookieLife > 0 ? time() + $cookieLife : 0;
 		Settings::$sql->query("delete from sio_session where TIMESTAMPADD(MINUTE," . static::$tom . ",ts) < CURRENT_TIMESTAMP");
 	}
 
@@ -36,7 +38,7 @@ class Session extends Singleton{
 			Settings::$sql->query("update sio_sessiondata set sid='$mutated' where sid='$session'");
 			static::$sqlsess = $mutated;
 			static::$session = $mutated;
-			setcookie("xsession", static::$session, time() + 8640000, '/', '', !empty($_SERVER['HTTPS'])); // 8640000 = 100 days
+			setcookie("xsession", static::$session, static::$cookieLife, '/', '', true); // 8640000 = 100 days
 		}
 	}
 
@@ -87,13 +89,14 @@ class Session extends Singleton{
 		if(is_null(static::$registry)){
 			static::$registry = [];
 			$statement = Settings::$sql->prepare("select name,value from sio_sessiondata where sid=? and (session is NULL or session=? or session='_NEW')");
-			$statement->bind_param("ss",static::$sqlsess,static::$apache_cookie);
-			$statement->bind_result($name, $value);
-			$statement->execute();
-			while($statement->fetch()) {
-				static::$registry[$name] = $value;
+			if ($statement !== false) {
+				$statement->bind_param("ss", static::$sqlsess, static::$apache_cookie);
+				$statement->bind_result($name, $value);
+				$statement->execute();
+				while ($statement->fetch()) {
+					static::$registry[$name] = $value;
+				}
 			}
-
 		}
 		return static::$registry;
 	}
@@ -156,10 +159,10 @@ class Session extends Singleton{
 				static::$session = $_COOKIE["session"];
 			}
 			if (empty($_SERVER['HTTPS'])) {
-				setcookie("xsession",static::$session,time()+8640000,'/'); // 8640000 = 100 days
+				setcookie("xsession", static::$session, static::$cookieLife, '/');
 			} else {
 				//possibly don't need this.
-				setcookie("xsession",static::$session,time()+8640000,'/','',true); // 8640000 = 100 days
+				setcookie("xsession", static::$session, static::$cookieLife, '/', '', true);
 			}
 		} else {
 			static::$session = $_COOKIE["xsession"];
