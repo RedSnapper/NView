@@ -326,8 +326,11 @@ trait Form {
 	}
 
 	protected function vsetrads($input='_unused',$qvp=NULL,$v=NULL) {
-		if (is_null($v) && !is_null($qvp)) {
-			$v = new NView('radio_v.ixml');
+		// If there is no query we can not generate the radios
+		if (!is_null($qvp)) {
+			if(is_null($v)){
+				$v = new NView('radio_v.ixml');
+			}
 			$v->set("//h:input/@name",$input);
 			//generate all the radio buttons
 			if ($rx = Settings::$sql->query($qvp)) {
