@@ -506,15 +506,14 @@ class NView {
 				$result .= $msg;
 			}
 			$result .= "<pre>"; // . print_r($this->doc,true);
-			if (!empty($this->fname)) {
-				 $result .= "Document loaded at :" . $this->fname;
-			 }
-			ob_start();
-			debug_print_backtrace();
-			$result .= ob_get_contents();
-			ob_end_clean();
-
-			$result .= "</pre></div>";
+//			if (!empty($this->fname)) {
+//				 $result .= "Document loaded at :" . $this->fname;
+//			 }
+//			ob_start();
+//			debug_print_backtrace();
+//			$result .= ob_get_contents();
+//			ob_end_clean();
+//			$result .= "</pre></div>";
 		}
 		return $result;
 	}
