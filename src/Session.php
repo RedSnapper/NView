@@ -9,9 +9,9 @@ mb_internal_encoding('UTF-8');
  * We are currently ignoring the following php.ini session.* configuration settings.
  * cf. http://php.net/manual/en/session.configuration.php
  */
-class Session extends Singleton{
+class Session extends Singleton {
 	private static $tom = null;            // timeout minutes
-	private static $sqlsess=null;
+	private static $sqlsess = null;
 	private static $apache_cookie = null;    // This is the session cookie or '[new session]'- used for session-only variables.
 	private static $registry;
 	private static $session;
@@ -38,32 +38,32 @@ class Session extends Singleton{
 			Settings::$sql->query("update sio_sessiondata set sid='$mutated' where sid='$session'");
 			static::$sqlsess = $mutated;
 			static::$session = $mutated;
-			setcookie("xsession", static::$session, static::$cookieLife, '/', '', true); // 8640000 = 100 days
+			setcookie("xsession", static::$session, static::$cookieLife, '/', '', true, true); // 8640000 = 100 days
 		}
 	}
 
 	/**
 	 * has (with no name = check for session) - otherwise, check for session variable
 	 */
-	public static function has($name=NULL) {
+	public static function has($name = null) {
 		$retVal = false;
 		if (!empty(static::$session)) {
 			if (!empty($name)) {
 				$registry = static::getRegistry();
 				$retVal = isset($registry[$name]);
 			} else {
-				$retVal=true;
+				$retVal = true;
 			}
 		}
 		return $retVal;
 	}
 
-	public static function get($name=NULL) {
+	public static function get($name = null) {
 		$retVal = false;
 		if (!empty(static::$session)) {
-			if(!is_null($name)) {
+			if (!is_null($name)) {
 				$registry = static::getRegistry();
-				if(static::has($name)){
+				if (static::has($name)) {
 					$retVal = $registry[$name];
 				}
 			} else {
@@ -73,20 +73,20 @@ class Session extends Singleton{
 		return $retVal;
 	}
 
-	public static function set($name=NULL, $val=NULL, $session_only=false) {
+	public static function set($name = null, $val = null, $session_only = false) {
 		$retVal = false;
-		if (!empty(static::$session) && !is_null($name) ) {
+		if (!empty(static::$session) && !is_null($name)) {
 			$sqlnam = Settings::$sql->escape_string($name);
-			$sonly = $session_only ? "'".static::$apache_cookie."'" : "NULL";
-			$value = is_null($val) ? "NULL" : "'".Settings::$sql->escape_string($val)."'";
+			$sonly = $session_only ? "'" . static::$apache_cookie . "'" : "NULL";
+			$value = is_null($val) ? "NULL" : "'" . Settings::$sql->escape_string($val) . "'";
 			Settings::$sql->query("replace into sio_sessiondata (sid,name,value,session) values ('" . static::$sqlsess . "','{$sqlnam}',{$value},{$sonly})");
 			static::$registry[$name] = $val;
 		}
 		return $retVal;
 	}
 
-	private static function getRegistry(){
-		if(is_null(static::$registry)){
+	private static function getRegistry() {
+		if (is_null(static::$registry)) {
 			static::$registry = [];
 			$statement = Settings::$sql->prepare("select name,value from sio_sessiondata where sid=? and (session is NULL or session=? or session='_NEW')");
 			if ($statement !== false) {
@@ -101,12 +101,11 @@ class Session extends Singleton{
 		return static::$registry;
 	}
 
-
-	public static function del($nam=NULL) {
+	public static function del($nam = null) {
 		if (!empty(static::$session)) {
-			if(!is_null($nam)) {
+			if (!is_null($nam)) {
 				$sqlname = Settings::$sql->escape_string($nam);
-				$query="delete from sio_sessiondata where sid='" . static::$sqlsess . "' and name='" . $sqlname . "'";
+				$query = "delete from sio_sessiondata where sid='" . static::$sqlsess . "' and name='" . $sqlname . "'";
 				Settings::$sql->query($query);
 				unset(static::$registry[$nam]);
 			} else {
@@ -123,7 +122,7 @@ class Session extends Singleton{
 	 */
 	public static function fresh() {
 		$retval = false;
-		if( (!isset($_COOKIE["session"])) || (static::$session === $_COOKIE["session"])) {
+		if ((!isset($_COOKIE["session"])) || (static::$session === $_COOKIE["session"])) {
 			$retval = true;
 		}
 		return $retval;
@@ -134,24 +133,23 @@ class Session extends Singleton{
 	 * Set / manage the session cookie and it's correlating data-record.
 	 */
 	protected function __construct() {
-
 	}
 
-	public static function start($override = false){
+	public static function start($override = false) {
 		static::resetRegistry();
-		if(isset($_COOKIE["session"])) {
+		if (isset($_COOKIE["session"])) {
 			static::$apache_cookie = Settings::$sql->escape_string($_COOKIE["session"]);
 		} else {
 			static::$apache_cookie = "_NEW";
 		}
-		if(!isset($_COOKIE["xsession"]) || $override) {
-			if(!isset($_COOKIE["session"]) || $override) {
+		if (!isset($_COOKIE["xsession"]) || $override) {
+			if (!isset($_COOKIE["session"]) || $override) {
 				$session_id = getenv("UNIQUE_ID");
-				if (! $session_id) {
+				if (!$session_id) {
 					$session_id = sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
-						mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff),
-						mt_rand(0, 0x0fff) | 0x4000, mt_rand(0, 0x3fff) | 0x8000,
-						mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
+					  mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff),
+					  mt_rand(0, 0x0fff) | 0x4000, mt_rand(0, 0x3fff) | 0x8000,
+					  mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
 					);
 				}
 				static::$session = md5($session_id);
@@ -159,10 +157,10 @@ class Session extends Singleton{
 				static::$session = $_COOKIE["session"];
 			}
 			if (empty($_SERVER['HTTPS'])) {
-				setcookie("xsession", static::$session, static::$cookieLife, '/');
+				setcookie("xsession", static::$session, static::$cookieLife, '/', '', false, true);
 			} else {
 				//possibly don't need this.
-				setcookie("xsession", static::$session, static::$cookieLife, '/', '', true);
+				setcookie("xsession", static::$session, static::$cookieLife, '/', '', true, true);
 			}
 		} else {
 			static::$session = $_COOKIE["xsession"];
@@ -177,18 +175,19 @@ class Session extends Singleton{
 
 	/**
 	 * Returns the time to live in minutes for the current session
+	 *
 	 * @param int $minutes
 	 * @return int
 	 */
-	public static function ttl(int $minutes=1440):int{
+	public static function ttl(int $minutes = 1440): int {
 
 		$session = @$_COOKIE["xsession"];
 		$ttl = 0;
 		$seconds = $minutes * 60;
 
-		if(!is_null($session)) {
+		if (!is_null($session)) {
 			$statement = Settings::$sql->prepare("select TIMESTAMPDIFF(SECOND,NOW(),(ts + INTERVAL ? SECOND)) from sio_session where id=?");
-			$statement->bind_param("is",$seconds,$session);
+			$statement->bind_param("is", $seconds, $session);
 			$statement->execute();
 			$statement->bind_result($ttl);
 			$statement->fetch();
@@ -199,20 +198,16 @@ class Session extends Singleton{
 
 	/**
 	 * 'set cookie as found.'
- 	*/
+	 */
 	private static function tidy_session() {
-		if((static::$apache_cookie === "_NEW") && isset($_COOKIE["session"])) {
+		if ((static::$apache_cookie === "_NEW") && isset($_COOKIE["session"])) {
 			static::$apache_cookie = Settings::$sql->escape_string($_COOKIE["session"]);
-			Settings::$sql->query("update sio_sessiondata set session='".static::$apache_cookie."' where sid='".static::$sqlsess."' and session='_NEW'");
+			Settings::$sql->query("update sio_sessiondata set session='" . static::$apache_cookie . "' where sid='" . static::$sqlsess . "' and session='_NEW'");
 		}
 	}
 
-	private static function resetRegistry(){
+	private static function resetRegistry() {
 		static::$registry = null;
 	}
-
-
-
-
 
 }
