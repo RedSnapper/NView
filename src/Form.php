@@ -1041,9 +1041,14 @@ trait Form {
 	}
 	public function valInt($name='',$msg=" This must be a whole number.") {
 		if (isset($this->fields[$name][0])) {
-			if ((mb_strlen($this->fields[$name][0]) > 0) && !is_int($this->fields[$name][0])) {
-				$this->valid = false;
-				$this->seterr($name,$msg);
+
+			$field = $this->fields[$name][0];
+
+			if ((mb_strlen($field) > 0)) {
+				if (!is_numeric($field) || ((string)$field !== (string)((int)$field))) {
+					$this->valid = false;
+					$this->seterr($name,$msg);
+				}
 			}
 		}
 	}
