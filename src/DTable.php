@@ -36,6 +36,7 @@ class DTable {
 							'select' // Normal select
 					'fields' //(array) filter the value on multiple fields, rather than just one.
 					'label'  //allows to change the default column name label.
+		            'options' // Associative array for drop downs
 				}
 			)
 		*/
@@ -612,7 +613,8 @@ class DTable {
 					"label" => $label,
 					"value" => $value['filter'],
 					"values" => $value['filter']['values'] ?? [],
-					"query" => @$value['query']
+					"query" => @$value['query'],
+                    "options" => $value['filter']['options'] ?? []
 				);
 			}
 		}
@@ -658,13 +660,15 @@ class DTable {
 		}
 
 		if (isset($filter['query']) && $rx = Settings::$sql->query($filter['query'])) {
-			while ($f = $rx->fetch_assoc()) {
-				$o = new NView($ot);
-				$o->set("//h:option/@value", htmlspecialchars($f['value']));
-				$o->set("//h:option/child-gap()", htmlspecialchars($f['prompt']));
-				$select->set("//h:select/child-gap()", $o);
+
+		    $options = [];
+		    while ($f = $rx->fetch_assoc()) {
+                $options[$f['value']] = $f['prompt'];
 			}
+            $select = $this->renderOptions($select,$ot,$filter['options']);
 		}
+
+		$select = $this->renderOptions($select,$ot,$filter['options']);
 
 		foreach ($filter['values'] as $val) {
 			$select->set("//h:select/h:option[@value='" . $val . "']/@selected", "selected");
@@ -675,6 +679,18 @@ class DTable {
 
 		$v->set('//*[@data-xp="filters"]/child-gap()', $select);
 	}
+
+	private function renderOptions(NView $select,$option,array $options):NView{
+
+        foreach ($options as $key=>$value) {
+            $o = new NView($option);
+            $o->set("//h:option/@value", htmlspecialchars($key));
+            $o->set("//h:option/child-gap()", htmlspecialchars($value));
+            $select->set("//h:select/child-gap()", $o);
+	    }
+
+        return $select;
+    }
 
 	/**
 	 * Execute an SQL query on the database
