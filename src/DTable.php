@@ -665,7 +665,7 @@ class DTable {
 		    while ($f = $rx->fetch_assoc()) {
                 $options[$f['value']] = $f['prompt'];
 			}
-            $select = $this->renderOptions($select,$ot,$filter['options']);
+            $select = $this->renderOptions($select,$ot,$options);
 		}
 
 		$select = $this->renderOptions($select,$ot,$filter['options']);
