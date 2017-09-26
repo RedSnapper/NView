@@ -371,15 +371,21 @@ trait Form {
 			if (isset($err) && (mb_strlen($err) > 0)) {
 				echo $err;
 			} else {
-				if ($rx = Settings::$sql->query($qvp)) {
-					while ($f = $rx->fetch_assoc()) {
-						$o = new NView($v);
-						$o->set("/h:option/@value",$f['value']);
-						$o->set("/h:option/child-gap()",$f['prompt']);
-						$this->view->set("//h:select[@name='$input']/child-gap()",$o);
-					}
-					$rx->close();
-				}
+			    if(is_string($qvp)){
+                    if ($rx = Settings::$sql->query($qvp)) {
+                        $options = [];
+                        while ($f = $rx->fetch_assoc()) {
+                            $options[$f['value']] = $f['prompt'];
+                        }
+                        $rx->close();
+                        $this->setoptsRender($input,$v,$options);
+                    }
+                }
+
+                if(is_array($qvp)){
+                    $this->setoptsRender($input,$v,$qvp);
+                }
+
 				if (isset($this->fields[$input])) {
 					foreach ($this->fields[$input] as $val) {
 						$this->view->set("//h:select[@name='$input']/h:option[@value='" . $val . "']/@selected","selected");
@@ -400,6 +406,15 @@ trait Form {
 				}
 			}
 	}
+
+	private function setoptsRender(string $input,NView $view,$options){
+        foreach ($options as $key=>$value) {
+            $o = new NView($view);
+            $o->set("/h:option/@value",$key);
+            $o->set("/h:option/child-gap()",$value);
+            $this->view->set("//h:select[@name='$input']/child-gap()",$o);
+        }
+    }
 
 /**
  * 'vset'
