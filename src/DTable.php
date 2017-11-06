@@ -58,7 +58,8 @@ class DTable {
 	private $request;
 
 	public function __construct($fields = null, $tables = null, $restrict = null, $options = array()) {
-		$envGet = Settings::create(EnvGet::class);
+		$this->envGet = Settings::create(EnvGet::class);
+		$this->envPost = Settings::create(EnvPost::class);
 
 		$this->fields = $fields;
 		$this->tables = $tables;
@@ -68,7 +69,7 @@ class DTable {
 
 		$this->pkey = @$this->settings->pkey;
 
-		$this->request = ($_SERVER['REQUEST_METHOD'] === 'POST' && $envGet->get('type') == 'json') ? $_POST : $_GET;
+		$this->request = $this->getRequest();
 
 
 		if (!is_null($this->settings->pkey) && $this->settings->groupby) {
@@ -768,6 +769,20 @@ class DTable {
 		return $d && $d->format($format) == $date;
 	}
 
+	private function getRequest(){
+		
+		$method = $_SERVER['REQUEST_METHOD'];
+		
+		if($method === "POST" && $this->envGet->get('type') == 'json'){
+			return $_POST;
+		}
+	
+		if($method === "POST" && $this->envPost->has('json')){
+			return json_decode($_POST['json'],true);
+		}
+
+		return $_GET;
+	}
 
 }
 
