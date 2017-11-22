@@ -218,7 +218,7 @@ class SioReg {
 			$extra="username='".mb_strtolower(uniqid("u",true))."'";
 		}
 		$unique=false;
-		$qve="select count(id) as ok from sio_user where email='{$em}' or emailp='{$em}'";
+		$qve="select count(id) as ok from sio_user where (email='{$em}' and active='on') or (emailp='{$em}' and active='xx')";
 		if ($rx = Settings::$sql->query($qve)) {
 			if (strcmp($rx->fetch_row()[0],"0") === 0) {
 				$unique=true;
@@ -226,6 +226,10 @@ class SioReg {
 			$rx->close();
 		}
 		if ($unique) {
+			//Rare conflict when a pending user started to modify another user-account and then backed out.
+			$delConflict="update sio_user set emailp=null where active='on' and emailp='{$em}'";
+			Settings::$sql->query($delConflict);
+
 			if ($pending) {
 				$em_field = "emailp";
 				$active_val= "xx";
