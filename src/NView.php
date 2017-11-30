@@ -347,7 +347,9 @@ class NView {
 								}
 								foreach($entries as $entry) {
 									if ($gap == self::GAP_NATTR && $entry->nodeType==XML_ELEMENT_NODE && isset($aname)) {
-										$entry->setAttribute($aname,$this->xmlenc(strval($value)));
+										$entry->setAttribute($aname,'x');
+										$attribute = $entry->getAttributeNode($aname);
+										$attribute->value = $this->xmlenc(strval($value));
 									} else {
 										if (($entry->nodeType == XML_ATTRIBUTE_NODE) && (gettype($value) != "object")) {
 											switch ($gap) {
