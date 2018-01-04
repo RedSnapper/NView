@@ -59,7 +59,7 @@ class Settings extends Config {
 		}
 		
 		$s->addRule('MySqliConnector', [
-			'constructParams' => [parse_ini_file($inifile],
+			'constructParams' => [parse_ini_file($inifile)],
 			'shared'=> false
 		]);
 
