@@ -38,7 +38,8 @@ class Config {
 
 		$s->addRule('ConnectorInterface', [
 			'instanceOf' => "MySqlConnector",
-			'constructParams' => [parse_ini_file($server->get("RS_SQLCONFIG_FILE"))],
+			//SQL_CONFIG_FILE = new name, RS_SQLCONFIG_FILE = old name.
+			'constructParams' => [parse_ini_file($server->get("SQL_CONFIG_FILE",$server->get("RS_SQLCONFIG_FILE")))],
 			'shared' => false
 		]);
 
