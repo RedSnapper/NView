@@ -71,7 +71,7 @@ class Settings extends Config {
 		}
 
 		static::$services = $s;
-		static::$sqls = parse_ini_file($_SERVER["RS_SQLCONFIG_FILE"]);
+		static::$sqls = parse_ini_file($server->get("SQL_CONFIG_FILE",$server->get("RS_SQLCONFIG_FILE")));
 		static::$log = $s->get('LoggerInterface');
 		static::$mysqli = $s->get('MySqliConnection');
 		static::$sql = static::$mysqli->getConnection();
