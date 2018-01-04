@@ -53,7 +53,12 @@ class Settings extends Config {
 
 		// This is to allow for backward compatibility to mysql.
 		$s->addRule('MySqliConnector', [
-			'constructParams' => [parse_ini_file($server->get("RS_SQLCONFIG_FILE"))],
+			$inifile = $server->get("SQL_CONFIG_FILE",$server->get("RS_SQLCONFIG_FILE"));
+			if(is_null($inifile)) {
+				print("SQL config file environment missing");
+				print_r($server);
+			}
+			'constructParams' => [parse_ini_file($inifile],
 			'shared'=> false
 		]);
 
