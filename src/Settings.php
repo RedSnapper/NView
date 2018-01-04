@@ -52,12 +52,13 @@ class Settings extends Config {
 		$server = $s->get('EnvServer');
 
 		// This is to allow for backward compatibility to mysql.
+		$inifile = $server->get("SQL_CONFIG_FILE",$server->get("RS_SQLCONFIG_FILE"));
+		if(is_null($inifile)) {
+			print("SQL config file environment missing");
+			print_r($server);
+		}
+		
 		$s->addRule('MySqliConnector', [
-			$inifile = $server->get("SQL_CONFIG_FILE",$server->get("RS_SQLCONFIG_FILE"));
-			if(is_null($inifile)) {
-				print("SQL config file environment missing");
-				print_r($server);
-			}
 			'constructParams' => [parse_ini_file($inifile],
 			'shared'=> false
 		]);
