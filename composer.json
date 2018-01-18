@@ -12,7 +12,8 @@
         "league/oauth2-facebook": "~1.4",
         "league/oauth2-google": "~1.0",
         "level-2/dice": "~2.0",
-        "psr/http-message": "~1.0"
+        "psr/http-message": "~1.0",
+        "tightenco/collect": "^5.5"
     },
     "require-dev": {
         "phpunit/phpunit": "~5.4"
