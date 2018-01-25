@@ -35,11 +35,16 @@ class Config {
 			'constructParams' => ["sio_log"],
 			'shared' => true
 		]);
+		
+		$configFilename = $server->get("SQL_CONFIG_FILE",$server->get("RS_SQLCONFIG_FILE"));
+		$config = [];
+		if (! empty($configFilename)) {
+			$config =  parse_ini_file($configFilename);
+		}
 
 		$s->addRule('ConnectorInterface', [
 			'instanceOf' => "MySqlConnector",
-			//SQL_CONFIG_FILE = new name, RS_SQLCONFIG_FILE = old name.
-			'constructParams' => [parse_ini_file($server->get("SQL_CONFIG_FILE",$server->get("RS_SQLCONFIG_FILE")))],
+			'constructParams' => [$config],
 			'shared' => false
 		]);
 
