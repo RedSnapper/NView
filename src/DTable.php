@@ -455,9 +455,10 @@ class DTable
         return $order;
     }
 
-    public function serialize(){
+    public function serialize()
+    {
 
-        $options = (array) $this->options;
+        $options = $this->cleanOptionsForSerialization($this->options);
 
         $options['request'] = $this->request;
 
@@ -479,8 +480,6 @@ class DTable
     {
         return new static(...unserialize($data));
     }
-
-
 
     public function setFilters()
     {
@@ -821,7 +820,7 @@ class DTable
      *
      * @return DTableRequest
      */
-    private function getRequest():DTableRequest
+    private function getRequest(): DTableRequest
     {
 
         if (!is_null($this->settings->request)) {
@@ -844,6 +843,20 @@ class DTable
         }
 
         return $_GET;
+    }
+
+    private function cleanOptionsForSerialization($options)
+    {
+        $options = (array) $options;
+
+        if(!isset($options['columns'])){
+            return $options;
+        }
+
+        return collect($options['columns'])->map(function ($column) {
+            $column['formatter'] = null;
+            return $column;
+        })->all();
     }
 
 }
