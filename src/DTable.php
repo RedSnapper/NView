@@ -457,13 +457,15 @@ class DTable
 
     public function serialize(){
 
-        $this->options['request'] = $this->request;
+        $options = (array) $this->options;
+
+        $options['request'] = $this->request;
 
         return serialize([
           $this->fields,
           $this->tables,
           $this->restrict,
-          $this->options
+          $options
         ]);
     }
 
