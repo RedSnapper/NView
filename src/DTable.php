@@ -476,9 +476,16 @@ class DTable
      * @param string $data
      * @return DTable
      */
-    public static function fromSerialized(string $data): self
+    public static function fromSerialized(string $data,DTableRequest $request = null): self
     {
-        return new static(...unserialize($data));
+        //$fields = null, $tables = null, $restrict = null, $options = array()
+        [$fields, $tables,$restrict,$options] = unserialize($data);
+
+        if(!is_null($options)){
+            $options['request'] = $request;
+        }
+
+        return new static($fields,$tables,$restrict,$options);
     }
 
     public function setFilters()
