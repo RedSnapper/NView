@@ -461,7 +461,7 @@ class DTable
         $options = $this->cleanOptionsForSerialization($this->options);
 
         $options['request'] = $this->request;
-
+        
         return serialize([
           $this->fields,
           $this->tables,
@@ -860,10 +860,13 @@ class DTable
             return $options;
         }
 
-        return collect($options['columns'])->map(function ($column) {
+        $options['columns'] = collect($options['columns'])->map(function ($column) {
             $column['formatter'] = null;
             return $column;
         })->all();
+
+        return $options;
+
     }
 
 }
