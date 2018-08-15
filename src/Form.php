@@ -520,9 +520,9 @@ trait Form {
 				$fm->show=$show;
 				$fm->setfound(true);
 				$fm->setfrompost();
-				if (isset($fm->fields['_fn'][0]) && strcmp($fm->fields['_fn'][0],"save") !== 0 ) {
+				if ($fm->hasFunc() ) {
 					if($debug) {
-						print("<p>Non-save function:".$fm->fields['_fn'][0]."</p>");
+						print("<p>Non-save function:".$fm->getFuncName()."</p>");
 					}
 					if (!is_null($func)) {
 						if($debug) { print("<p>{$fm->sig()}:Use only one formlet with a func in formlets()</p>"); }
@@ -793,7 +793,7 @@ trait Form {
 				$flds = "";
 
 				foreach ($getf as $key => $value) {
-					
+
 					if($value != "!skip"){
 						if (strcmp($key, $value) === 0) {
 							if (mb_strpos($key,";") !== false) {
@@ -1193,6 +1193,26 @@ trait Form {
 			}
 		}
 	}
+
+    /**
+     * Does the post have a function which is not save
+     *
+     * @return bool
+     */
+    public function hasFunc(): bool
+    {
+        return isset($this->fields['_fn'][0]) && strcmp($this->fields['_fn'][0], "save") !== 0;
+    }
+
+    /**
+     * Gets the current func name
+     *
+     * @return string|null
+     */
+    public function getFuncName(): ?string
+    {
+        return @$this->fields['_fn'][0];
+    }
 
 
 }
