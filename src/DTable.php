@@ -840,14 +840,17 @@ class DTable
     private function getRequestFromEnvironment()
     {
         $method = $_SERVER['REQUEST_METHOD'];
+        $type = $this->envGet->get('type');
 
-        if ($method === "POST" && $this->envGet->get('type') == 'json') {
+
+        if ($method === "POST" && $type == 'json' || $type == 'jsonids' ) {
             return $_POST;
         }
 
         if ($method === "POST" && $this->envPost->has('json')) {
             return json_decode($_POST['json'], true);
         }
+
 
         return $_GET;
     }
