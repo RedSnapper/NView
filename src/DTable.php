@@ -843,7 +843,7 @@ class DTable
         $type = $this->envGet->get('type');
 
 
-        if ($method === "POST" && $type == 'json' || $type == 'jsonids' ) {
+        if ($method === "POST" && ($type == 'json' || $type == 'jsonids') ) {
             return $_POST;
         }
 
