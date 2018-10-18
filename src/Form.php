@@ -901,35 +901,39 @@ trait Form
                 $flds = rtrim($flds, ",");
                 if (isset($this->table)) {
                     $condition = $this->pkeysql();
-                    if (mb_strlen($flds) == 0) {
+                    //if both the fields are empty and there's no primary key we should do nothing.
+                    if (mb_strlen($flds) == 0 && !is_null($this->key)) {
                         $flds = "true";
                     }
                     $query = "select " . $flds . " from " . $this->table . " where " . $condition;
                 } else {
                     $query = "select " . $flds;
                 }
-                if ($this->debug) {
-                    print('<br />DEBUG: Set fields SQL=' . $query);
-                }
-                if ($rx = Settings::$sql->query($query)) {
-                    $this->record_found = ($rx->num_rows !== 0);
-                    if (!is_null($this->subsfield)) { //need this for gets.
-                        if ($rx->num_rows > 0) {
-                            $this->subsvalue = "true";
-                        } else {
-                            $this->subsvalue = "false";
-                        }
+               //if all the fields are empty and there's no primary key we should do nothing.
+               if (mb_strlen($flds) != 0 && !is_null($this->key)) {
+                    if ($this->debug) {
+                        print('<br />DEBUG: Set fields SQL=' . $query);
                     }
-                    while ($f = $rx->fetch_assoc()) {
-                        foreach ($this->names as $n) {
-                            if (isset($f[$n])) {
-                                $this->fields[$n] = explode("␟", $f[$n]); //Unit Separator Symbol...
+                    if ($rx = Settings::$sql->query($query)) {
+                        $this->record_found = ($rx->num_rows !== 0);
+                        if (!is_null($this->subsfield)) { //need this for gets.
+                            if ($rx->num_rows > 0) {
+                                $this->subsvalue = "true";
                             } else {
-                                $this->fields[$n] = null;
+                                $this->subsvalue = "false";
                             }
                         }
+                        while ($f = $rx->fetch_assoc()) {
+                            foreach ($this->names as $n) {
+                                if (isset($f[$n])) {
+                                    $this->fields[$n] = explode("␟", $f[$n]); //Unit Separator Symbol...
+                                } else {
+                                    $this->fields[$n] = null;
+                                }
+                            }
+                        }
+                        $rx->close();
                     }
-                    $rx->close();
                 }
             }
         }
