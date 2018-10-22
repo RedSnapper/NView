@@ -519,7 +519,7 @@ class DTable
             }
         }
 
-        if (isset($request['filters'])) {
+        if (isset($request['filters']) && is_array($request['filters'])) {
 
             $columnNames = array_map(function ($i) {
                 return $i->name;
