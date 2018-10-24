@@ -262,6 +262,7 @@ trait Form
         $this->record_found = false;
         $this->valid = true;
         $this->show = true;
+        $this->redirectOnInsert = true;
         $this->in_composite = false;
         $this->insert_qs = null;
         $this->redirect = null;
