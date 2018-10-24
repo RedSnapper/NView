@@ -200,6 +200,17 @@ class NView {
 		return $retval;
 	}
 
+	/**
+	 * @param string $xpath
+	 * @param null   $ref
+	 * @return \DOMNodeList
+	 */
+	public function getList(string $xpath, $ref = null): \DOMNodeList {
+		if (!is_null($this->doc) && !is_null($this->xp)) {
+			return $this->xp->query($xpath, $ref);
+		}
+		return new \DOMNodeList();
+	}
 /**
  * 'get'
  */
