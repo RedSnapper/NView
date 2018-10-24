@@ -33,6 +33,7 @@ trait Form
     protected $subspostv;    //subscriber field-value based on post.
     protected $subsdshow;    //subscriber (defaults to true) show empty field if deleted..
     protected $subfn;        //subscriber CNUD function that happened - one of create/null/update/delete
+    protected $redirectOnInsert=true;   //boolean defaulting to true that indicates if a redirect should happen on insert.
     public $redirect;        //where to go on insert.
     public $insert_qs;        //query string for new records. id placeholder = [[ID]]
     public $in_composite;    //this formlet is being called via formlets();
@@ -1056,9 +1057,7 @@ trait Form
             if (Settings::$sql->query($query)) {
                 if (Settings::$sql->affected_rows == 1 && $r = Settings::$sql->query("select last_insert_id()")) {
                     $this->newid = intval($r->fetch_row()[0]);
-
                     if (!isset($this->subsfield) && !$this->in_composite && (($this->newid !== 0) && ($this->show || !is_null($this->redirect)))) {
-                        $this->show = false;
                         $this->redirection($this->redirect, $this->insert_qs, $this->newid);
                     }
                     $r->close();
@@ -1075,25 +1074,28 @@ trait Form
 
     public function redirection($redirect = null, $insert_qs = null, $newid = 0)
     {
-        if ($newid != 0) {
-            if (!is_null($redirect)) {
-                $new_url = $redirect;
-            } else {
-                $new_url = Settings::$url;
-            }
-            if (mb_strpos($new_url, "?") === false) {
-                $new_url .= "?";
-            }
-            if (is_null($insert_qs)) {
-                $new_url .= "[[ID]]";
-            } else {
-                $new_url .= $insert_qs;
-            }
-            $new_url = str_replace("[[ID]]", $newid, $new_url);
-            if ($this->debug) {
-                print('<br />DEBUG: Redirect set to =' . $new_url);
-            } else {
-                header("Location: " . $new_url);
+        if($this->redirectOnInsert) {
+            $this->show = false;
+            if ($newid != 0) {
+                if (!is_null($redirect)) {
+                    $new_url = $redirect;
+                } else {
+                    $new_url = Settings::$url;
+                }
+                if (mb_strpos($new_url, "?") === false) {
+                    $new_url .= "?";
+                }
+                if (is_null($insert_qs)) {
+                    $new_url .= "[[ID]]";
+                } else {
+                    $new_url .= $insert_qs;
+                }
+                $new_url = str_replace("[[ID]]", $newid, $new_url);
+                if ($this->debug) {
+                    print('<br />DEBUG: Redirect set to =' . $new_url);
+                } else {
+                    header("Location: " . $new_url);
+                }
             }
         }
     }
