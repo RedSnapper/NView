@@ -10,8 +10,7 @@ class Services extends \Dice\Dice {
 		$rule = [
 			'substitutions' => [
 				'Services' => ['instance' => function() use($dice){ return $dice;}]
-			],
-			'shared'=> true
+			]
 		];
 		$this->addRule('*',$rule);
 	}
