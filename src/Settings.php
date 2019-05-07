@@ -7,7 +7,6 @@ use Monolog\Formatter;
 class Settings extends Config {
 
 	public static $log;        //PsrLogLoggerInterface instance
-	public static $sphinx = null;
 	/**
 	 * @var mysqli
 	 */
@@ -24,7 +23,6 @@ class Settings extends Config {
 	private static $sql_types = null;
 	private static $log_stack = array();
 	private static $mysqli = null;
-	private static $sp = null;
 	/**
 	 * @var Services
 	 */
@@ -57,7 +55,7 @@ class Settings extends Config {
 			print("SQL config file environment missing");
 			print_r($server);
 		}
-		
+
 		$s->addRule('MySqliConnector', [
 			'constructParams' => [parse_ini_file($inifile)],
 			'shared'=> false
@@ -68,13 +66,6 @@ class Settings extends Config {
 			'constructParams' => [$connector->connect()],
 			'shared' => true
 		]);
-
-		static::$sphinx = null;
-
-		if ($server->has('RS_SEARCH_CONFIG_FILE')) {
-			static::$sp = $s->get('SphinxConnection');
-			static::$sphinx = static::$sp->getConnection();
-		}
 
 		static::$services = $s;
 		static::$sqls = parse_ini_file($server->get("SQL_CONFIG_FILE",$server->get("RS_SQLCONFIG_FILE")));
@@ -220,15 +211,9 @@ class Settings extends Config {
 		return static::$mysqli->esc($s);
 	}
 
-	public static function sphinx_esc(&$s) {
-		return static::$sp->esc($s);
-	}
 
 	public static function close() {
 		self::$mysqli->close();
-		if (!empty(self::$sphinx)) {
-			self::$sp->close();
-		}
 	}
 
 	/**
