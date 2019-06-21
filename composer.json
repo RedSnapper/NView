@@ -1,5 +1,5 @@
 {
-    "name": "rs",
+    "name": "rs/nview",
     "license": "GPL-2.0",
     "description": "true control-view separation with sign-in sign-out",
     "autoload": {
