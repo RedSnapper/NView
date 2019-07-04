@@ -989,28 +989,33 @@ trait Form
                                     $val = "'on'";
                                 }
                             } else {
-                                //multi-value inputs are comma separated.
-                                $vv = implode("␟", $this->fields[$n]); //Unit Separator Symbol...
-                                //composite inputs do not work with multi-value inputs, yet.
-                                if ((count($this->fields[$n]) < 2) && (mb_strpos($n, ";") !== false)) {
-                                    $skip = true;
-                                    $n_arr = explode(";", $n);
-                                    $v_arr = explode(";", $vv);
-                                    $fsize = count($n_arr);
-                                    if ($fsize === count($v_arr)) {
-                                        for ($i = 0; $i < $fsize; $i++) {
-                                            $n_i = $n_arr[$i];
-                                            $v_i = $v_arr[$i];
-                                            Settings::esc($n_i);
-                                            Settings::esc($v_i);
-                                            $flist .= $n_i . ",";
-                                            $vlist .= "'$v_i',";
-                                            $ulist .= $n_i . "=values(" . $n_i . "),";
+                                // Developer has set the value to be null probably in the commit
+                                if(count($this->fields[$n]) === 1 && is_null($this->fields[$n][0])){
+                                    $val = "null";
+                                }else {
+                                    //multi-value inputs are comma separated.
+                                    $vv = implode("␟", $this->fields[$n]); //Unit Separator Symbol...
+                                    //composite inputs do not work with multi-value inputs, yet.
+                                    if ((count($this->fields[$n]) < 2) && (mb_strpos($n, ";") !== false)) {
+                                        $skip = true;
+                                        $n_arr = explode(";", $n);
+                                        $v_arr = explode(";", $vv);
+                                        $fsize = count($n_arr);
+                                        if ($fsize === count($v_arr)) {
+                                            for ($i = 0; $i < $fsize; $i++) {
+                                                $n_i = $n_arr[$i];
+                                                $v_i = $v_arr[$i];
+                                                Settings::esc($n_i);
+                                                Settings::esc($v_i);
+                                                $flist .= $n_i.",";
+                                                $vlist .= "'$v_i',";
+                                                $ulist .= $n_i."=values(".$n_i."),";
+                                            }
                                         }
+                                    } else {
+                                        Settings::esc($vv);
+                                        $val = "'".$vv."'";
                                     }
-                                } else {
-                                    Settings::esc($vv);
-                                    $val = "'" . $vv . "'";
                                 }
                             }
                         } else {
