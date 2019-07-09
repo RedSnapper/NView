@@ -85,6 +85,11 @@ class Session extends Singleton {
 		return $retVal;
 	}
 
+    public static function getId()
+    {
+        return static::$session;
+    }
+
 	private static function getRegistry() {
 		if (is_null(static::$registry)) {
 			static::$registry = [];
