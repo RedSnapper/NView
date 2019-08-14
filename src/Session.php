@@ -147,33 +147,37 @@ class Session extends Singleton {
 
 	public static function start($override = false) {
 		static::resetRegistry();
-		if (isset($_COOKIE["session"])) {
-			static::$apache_cookie = Settings::$sql->escape_string($_COOKIE["session"]);
-		} else {
-			static::$apache_cookie = "_NEW";
-		}
-		if (!isset($_COOKIE["xsession"]) || $override) {
-			if (!isset($_COOKIE["session"]) || $override) {
-				$session_id = getenv("UNIQUE_ID");
-				if (!$session_id) {
-					$session_id = sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
-					  mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff),
-					  mt_rand(0, 0x0fff) | 0x4000, mt_rand(0, 0x3fff) | 0x8000,
-					  mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
-					);
+		
+		if(is_null(static::$session)){
+		
+			if (isset($_COOKIE["session"])) {
+				static::$apache_cookie = Settings::$sql->escape_string($_COOKIE["session"]);
+			} else {
+				static::$apache_cookie = "_NEW";
+			}
+			if (!isset($_COOKIE["xsession"]) || $override) {
+				if (!isset($_COOKIE["session"]) || $override) {
+					$session_id = getenv("UNIQUE_ID");
+					if (!$session_id) {
+						$session_id = sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+						  mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff),
+						  mt_rand(0, 0x0fff) | 0x4000, mt_rand(0, 0x3fff) | 0x8000,
+						  mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
+						);
+					}
+					static::$session = md5($session_id);
+				} else {
+					static::$session = $_COOKIE["session"];
 				}
-				static::$session = md5($session_id);
+				if (empty($_SERVER['HTTPS'])) {
+					setcookie("xsession", static::$session, static::$cookieLife, '/', '', false, true);
+				} else {
+					//possibly don't need this.
+					setcookie("xsession", static::$session, static::$cookieLife, '/', '', true, true);
+				}
 			} else {
-				static::$session = $_COOKIE["session"];
+				static::$session = $_COOKIE["xsession"];
 			}
-			if (empty($_SERVER['HTTPS'])) {
-				setcookie("xsession", static::$session, static::$cookieLife, '/', '', false, true);
-			} else {
-				//possibly don't need this.
-				setcookie("xsession", static::$session, static::$cookieLife, '/', '', true, true);
-			}
-		} else {
-			static::$session = $_COOKIE["xsession"];
 		}
 		if (!empty(static::$session)) {
 			static::$sqlsess = Settings::$sql->escape_string(static::$session);
