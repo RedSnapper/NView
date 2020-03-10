@@ -6,7 +6,7 @@
         "classmap": ["src/", "src/sio", "src/Environment", "src/Database", "src/Log", "src/Session" ]
     },
     "require": {
-        "phpmailer/phpmailer": "~5.2.27",
+        "phpmailer/phpmailer": ">=5.2.27",
         "monolog/monolog": "~1.17",
        	"google/recaptcha": "~1.1",
         "league/oauth2-facebook": "~1.4",
