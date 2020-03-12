@@ -1,6 +1,9 @@
 <?php
 namespace RS\NView\Session;
 
+use RS\NView\Database\ConnectionInterface;
+use SessionHandlerInterface;
+
 class DatabaseSessionHandler implements SessionHandlerInterface {
 
 	/**

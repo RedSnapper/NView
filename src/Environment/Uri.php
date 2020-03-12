@@ -1,7 +1,8 @@
 <?php
 namespace RS\NView\Environment;
 
-use Psr\Http\Message\UriInterface;
+use RS\NView\Log\LoggerInterface;
+use RS\NView\Environment\UriInterface;
 
 class Uri implements UriInterface {
 	private static $schemes = [

@@ -1,6 +1,8 @@
 <?php
 namespace RS\NView\Database;
 
+use mysqli;
+
 /**
  * Created by PhpStorm.
  * User: ben
@@ -124,6 +126,6 @@ class MySqliConnection implements ConnectionInterface {
 	 * @param  \Closure $callback
 	 * @return array
 	 */
-	public function pretend(Closure $callback) {
+	public function pretend(\Closure $callback) {
 	}
 }

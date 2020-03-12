@@ -1,5 +1,6 @@
 <?php
 namespace RS\NView\Database;
+use \PDO;
 
 class Connector {
 	/**
@@ -39,8 +40,8 @@ class Connector {
 		$password = @$config['password'];
 
 		try {
-			$pdo = new PDO($dsn, $username, $password, $options);
-		} catch (Exception $e) {
+			$pdo = new \PDO($dsn, $username, $password, $options);
+		} catch (\Exception $e) {
 			echo $e->getMessage();
 		}
 

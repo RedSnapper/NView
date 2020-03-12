@@ -1,6 +1,9 @@
 <?php
 namespace RS\NView\Session;
 
+use RS\NView\Environment\EnvSession;
+use SessionHandlerInterface;
+
 class SessionStore implements SessionInterface {
 
 	/**

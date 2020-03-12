@@ -1,11 +1,13 @@
 <?php
 /* 2016-04-14: Temporary Legacy File. Use basis.php in future. */
+use RS\NView\{Services, Session, Settings};
+
 mb_internal_encoding('UTF-8');
 spl_autoload_register();
 require 'vendor/autoload.php';
 
 $s = new Services();
-$st = $s->get('Settings');
+$st = $s->get(Settings::class);
 Session::getInstance();  //initialise session.
 Session::setto(144000);  //100 days
 Session::start();

@@ -1,7 +1,12 @@
 <?php
 namespace RS\NView\Sio;
 
+use Closure;
 use \League\OAuth2\Client\Provider\ResourceOwnerInterface as Owner;
+use RS\NView\Dict;
+use RS\NView\Log\NViewLogger;
+use RS\NView\NView;
+use RS\NView\Settings;
 
 abstract class SioService {
 

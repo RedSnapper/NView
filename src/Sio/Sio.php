@@ -1,6 +1,10 @@
 <?php
 namespace RS\NView\Sio;
 
+use RS\NView\Dict;
+use RS\NView\NView;
+use RS\NView\Settings;
+
 class Sio {
 	const SIG = "sio_";
 	private static $v=array();

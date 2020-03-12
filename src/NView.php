@@ -1,6 +1,12 @@
 <?php
 namespace RS\NView;
 
+use DOMAttr;
+use DOMDocumentFragment;
+use DOMNode;
+use DOMNodeList;
+use Exception;
+
 /**
  * class 'NView'
  * NView class, provides DomNode and easy XPath support

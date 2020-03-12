@@ -8,7 +8,7 @@ class PDOConnection implements ConnectionInterface {
 	/**
 	 * The active PDO connection.
 	 *
-	 * @var PDO
+	 * @var \PDO
 	 */
 	protected $pdo;
 	/**
@@ -16,7 +16,7 @@ class PDOConnection implements ConnectionInterface {
 	 *
 	 * @var int
 	 */
-	protected $fetchMode = PDO::FETCH_OBJ;
+	protected $fetchMode = \PDO::FETCH_OBJ;
 	/**
 	 * The argument for the fetch mode.
 	 *
@@ -51,7 +51,7 @@ class PDOConnection implements ConnectionInterface {
 	/**
 	 * Create a new database connection instance.
 	 *
-	 * @param  PDO
+	 * @param  \PDO
 	 */
 
 	public function __construct(\PDO $pdo = null) {
@@ -172,7 +172,7 @@ class PDOConnection implements ConnectionInterface {
 	 * @param  \Closure $callback
 	 * @return mixed
 	 */
-	protected function run($query, $bindings, Closure $callback) {
+	protected function run($query, $bindings, \Closure $callback) {
 		$start = microtime(true);
 		// Here we will run this query. If an exception occurs we'll determine if it was
 		// caused by a connection that has been lost. If that is the cause, we'll try
@@ -205,7 +205,7 @@ class PDOConnection implements ConnectionInterface {
 	 * @param  \Closure $callback
 	 * @return mixed
 	 */
-	protected function runQueryCallback($query, $bindings, Closure $callback) {
+	protected function runQueryCallback($query, $bindings, \Closure $callback) {
 		// To execute the statement, we'll simply call the callback, which will actually
 		// run the SQL against the PDO connection. Then we can calculate the time it
 		// took to execute and log the query SQL, bindings and time in our memory.
@@ -219,7 +219,7 @@ class PDOConnection implements ConnectionInterface {
 	 * @return \PDO
 	 */
 	public function getPdo() {
-		if ($this->pdo instanceof Closure) {
+		if ($this->pdo instanceof \Closure) {
 			return $this->pdo = call_user_func($this->pdo);
 		}
 		return $this->pdo;
@@ -229,7 +229,7 @@ class PDOConnection implements ConnectionInterface {
 	 * @param       $query
 	 * @param array $bindings
 	 * @param bool $useReadPdo
-	 * @return Generator
+	 * @return \Generator
 	 */
 	public function cursor($query, $bindings = [], $useReadPdo = true) {
 		$statement = $this->run($query, $bindings, function ($me, $query, $bindings) use ($useReadPdo) {
@@ -239,7 +239,7 @@ class PDOConnection implements ConnectionInterface {
 
 			$statement = $this->getPdo()->prepare($query);
 
-			if ($me->getFetchMode() === PDO::FETCH_CLASS) {
+			if ($me->getFetchMode() === \PDO::FETCH_CLASS) {
 				$statement->setFetchMode($me->getFetchMode(), 'StdClass');
 			} else {
 				$statement->setFetchMode($me->getFetchMode());
@@ -300,7 +300,7 @@ class PDOConnection implements ConnectionInterface {
 		foreach ($bindings as $key => $value) {
 			$statement->bindValue(
 				is_string($key) ? $key : $key + 1, $value,
-				filter_var($value, FILTER_VALIDATE_FLOAT) !== false ? PDO::PARAM_INT : PDO::PARAM_STR
+				filter_var($value, FILTER_VALIDATE_FLOAT) !== false ? \PDO::PARAM_INT : \PDO::PARAM_STR
 			);
 		}
 	}
@@ -395,7 +395,7 @@ class PDOConnection implements ConnectionInterface {
 	 * @param  \Closure $callback
 	 * @return array
 	 */
-	public function pretend(Closure $callback) {
+	public function pretend(\Closure $callback) {
 		$loggingQueries = $this->loggingQueries;
 
 		$this->enableQueryLog();

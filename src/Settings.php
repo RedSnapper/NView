@@ -4,6 +4,14 @@ use Monolog\Logger;
 use Monolog\Processor;
 use Monolog\Handler;
 use Monolog\Formatter;
+use mysqli;
+use mysqli_result;
+use RS\NView\Database\MySqliConnection;
+use RS\NView\Database\MySqliConnector;
+use RS\NView\Environment\EnvServer;
+use RS\NView\Environment\UriInterface;
+use RS\NView\Log\LoggerInterface;
+use RS\NView\Log\SQLHandler;
 
 class Settings extends Config {
 
@@ -48,7 +56,7 @@ class Settings extends Config {
 	public function legacy() {
 
 		$s = $this->s;
-		$server = $s->get('EnvServer');
+		$server = $s->get(EnvServer::class);
 
 		// This is to allow for backward compatibility to mysql.
 		$inifile = $server->get("SQL_CONFIG_FILE",$server->get("RS_SQLCONFIG_FILE"));
@@ -57,28 +65,28 @@ class Settings extends Config {
 			print_r($server);
 		}
 
-		$s->addRule('MySqliConnector', [
+		$s->addRule(MySqliConnector::class, [
 			'constructParams' => [parse_ini_file($inifile)],
 			'shared'=> false
 		]);
 
-		$connector = $s->create('MySqliConnector');
-		$s->addRule('MySqliConnection', [
+		$connector = $s->create(MySqliConnector::class);
+		$s->addRule(MySqliConnection::class, [
 			'constructParams' => [$connector->connect()],
 			'shared' => true
 		]);
 
 		static::$services = $s;
 		static::$sqls = parse_ini_file($server->get("SQL_CONFIG_FILE",$server->get("RS_SQLCONFIG_FILE")));
-		static::$log = $s->get('LoggerInterface');
-		static::$mysqli = $s->get('MySqliConnection');
+		static::$log = $s->get(LoggerInterface::class);
+		static::$mysqli = $s->get(MySqliConnection::class);
 		static::$sql = static::$mysqli->getConnection();
 
 	}
 
 	private function user() {
 		$s = $this->s;
-		$server = $s->get('EnvServer');
+		$server = $s->get(EnvServer::class);
 
 		if ($server->sig("PHP_AUTH_USER")) {
 			self::$usr['RU']= $server->get('PHP_AUTH_USER');
@@ -95,8 +103,8 @@ class Settings extends Config {
 
 	private function uri() {
 		$s = $this->s;
-		$server = $s->get('EnvServer');
-		$uri = $s->get('UriInterface');
+		$server = $s->get(EnvServer::class);
+		$uri = $s->get(UriInterface::class);
 
 		self::$url=$uri->getPath();
 		self::$website=$uri->getSchemeAndHost();

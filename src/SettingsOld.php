@@ -5,6 +5,9 @@ use Monolog\Logger;
 use Monolog\Handler;
 use Monolog\Formatter;
 use Monolog\Processor;
+use mysqli_result;
+use RS\NView\Log\NViewLogger;
+use RS\NView\Log\SQLHandler;
 
 /**
  * class 'Settings'

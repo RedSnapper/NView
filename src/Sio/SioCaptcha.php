@@ -1,6 +1,9 @@
 <?php
 namespace RS\NView\Sio;
 
+use RS\NView\Dict;
+use RS\NView\Form;
+
 class SioCaptcha {
 	use Form {
 		commit as trait_commit;

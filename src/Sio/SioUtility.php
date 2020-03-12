@@ -1,6 +1,8 @@
 <?php
 namespace RS\NView\Sio;
 
+use RS\NView\Dict;
+
 class SioUtility {
 
 /*

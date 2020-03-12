@@ -2,6 +2,11 @@
 namespace RS\NView\Sio;
 
 //This is the 'receiving end' of the paired sioforgot_ class
+use RS\NView\Dict;
+use RS\NView\Form;
+use RS\NView\NView;
+use RS\NView\Settings;
+
 class SioResetPW {
 	use Form;
 	const SIG = "sioresetpw_";

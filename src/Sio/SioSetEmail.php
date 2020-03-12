@@ -1,6 +1,12 @@
 <?php
 namespace RS\NView\Sio;
 
+use PHPMailer;
+use RS\NView\Dict;
+use RS\NView\Form;
+use RS\NView\NView;
+use RS\NView\Settings;
+
 class SioSetEmail {
 	use Form;
 	const SIG = "siosetem_";

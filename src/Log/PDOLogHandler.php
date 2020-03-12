@@ -2,8 +2,10 @@
 namespace RS\NView\Log;
 use Monolog\Logger;
 use Monolog\Formatter\NormalizerFormatter;
+use Monolog\Handler\AbstractProcessingHandler;
+use RS\NView\Database\ConnectionInterface;
 
-class PDOLogHandler extends Monolog\Handler\AbstractProcessingHandler {
+class PDOLogHandler extends AbstractProcessingHandler {
 	/**
 	 * @var ConnectionInterface
 	 */

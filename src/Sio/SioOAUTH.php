@@ -1,6 +1,8 @@
 <?php
 namespace RS\NView\Sio;
 
+use RS\NView\Settings;
+
 class SioOAUTH {
 
 	public static function add($service, $serviceId, $userId, League\OAuth2\Client\Token\AccessToken  $token, $fields = array()) {

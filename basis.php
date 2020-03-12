@@ -1,10 +1,13 @@
 <?php
+
+use RS\NView\{Services, Session, Settings};
+
 mb_internal_encoding('UTF-8');
 spl_autoload_register();
 require 'vendor/autoload.php';
 
 $s = new Services();
-$st = $s->get('Settings');
+$st = $s->get(Settings::class);
 Session::getInstance();  //initialise session.
 Session::setto(144000);  //100 days
 Session::start();

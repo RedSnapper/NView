@@ -1,6 +1,11 @@
 <?php
 namespace RS\NView\Sio;
 
+use RS\NView\Dict;
+use RS\NView\Form;
+use RS\NView\NView;
+use RS\NView\Settings;
+
 /**
  * class 'SioSignOut'
  */

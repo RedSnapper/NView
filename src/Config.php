@@ -1,6 +1,12 @@
 <?php
 namespace RS\NView;
 
+use RS\NView\Environment\{EnvironmentInterface, UriInterface, EnvServer};
+use RS\NView\Log\{LoggerInterface, NViewLogger, PDOLogHandler};
+use RS\NView\Database\{ConnectionInterface, ConnectorInterface, MySqlConnector, MySqliConnector, SphinxConnection};
+use SessionHandlerInterface;
+use RS\NView\Session\{SessionInterface, SessionStore, DatabaseSessionHandler};
+
 class Config {
 	//this is really a 'fake' class which holds our common rules..
 	//it's also used for legacy static bindings.
@@ -8,22 +14,22 @@ class Config {
 
 	public function __construct(Services $s) {
 		$this->s = $s;
-		$this->setRules("PDO");
+		$this->setRules(MySqlConnector::class);
 	}
 
-	private function setRules($dbinterface) {
+	private function setRules($db_interface) {
 		$s = $this->s;
-		$s->addRule('EnvironmentInterface', ['shared' => true]);
+		$s->addRule(EnvironmentInterface::class, ['shared' => true]);
 
-		$s->addRule('UriInterface', [
+		$s->addRule(UriInterface::class, [
 			'instanceOf' => "Uri",
 			'shared' => false,
 		]);
 
-		$server = $s->get('EnvServer');
+		$server = $s->get(EnvServer::class);
 
-		$s->addRule('LoggerInterface', [
-			'instanceOf' => "NViewLogger",
+		$s->addRule(LoggerInterface::class, [
+			'instanceOf' => NViewLogger::class,
 			'constructParams' => ["Log"],
 			'shared' => true,
 //			'call' => [
@@ -36,33 +42,33 @@ class Config {
 			'shared' => true
 		]);
 		
-		$configFilename = $server->get("SQL_CONFIG_FILE",$server->get("RS_SQLCONFIG_FILE"));
+		$configFilename = $server->get("SQL_CONFIG_FILE");
 		$config = [];
 		if (! empty($configFilename)) {
 			$config =  parse_ini_file($configFilename);
 		}
 
-		$s->addRule('ConnectorInterface', [
-			'instanceOf' => "MySqlConnector",
+		$s->addRule(ConnectorInterface::class, [
+			'instanceOf' => MySqlConnector::class,
 			'constructParams' => [$config],
 			'shared' => false
 		]);
 
-		$connector = $s->create('ConnectorInterface');
+		$connector = $s->create(ConnectorInterface::class);
 
-		$s->addRule('ConnectionInterface', [
-			'instanceOf' => "{$dbinterface}Connection",
+		$s->addRule(ConnectionInterface::class, [
+			'instanceOf' => $db_interface,
 			'constructParams' => [$connector->connect()],
 			'shared' => true
 		]);
 
-		$s->addRule('SessionHandlerInterface', [
+		$s->addRule(SessionHandlerInterface::class, [
 			'shared' => true,
 			'instanceOf' => DatabaseSessionHandler::class,
 			'constructParams' => ['sio_session']
 		]);
 
-		$s->addRule('SessionInterface', [
+		$s->addRule(SessionInterface::class, [
 			'shared' => true,
 			'instanceOf' => SessionStore::class,
 			'call' => [
@@ -72,9 +78,9 @@ class Config {
 
 
 		if ($server->has('RS_SEARCH_CONFIG_FILE')) {
-			$s->addRule('SphinxConnection', [
+			$s->addRule(SphinxConnection::class, [
 				'constructParams' => [['instance'=>function() use($s,$server){
-					$sphinx = $s->create('MySqliConnector', [parse_ini_file($server->get("RS_SEARCH_CONFIG_FILE"))]);
+					$sphinx = $s->create(MySqliConnector::class, [parse_ini_file($server->get("RS_SEARCH_CONFIG_FILE"))]);
 					return $sphinx->connect();
 				}]],
 				'shared' => true

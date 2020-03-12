@@ -92,5 +92,5 @@ interface ConnectionInterface {
 	 * @param  \Closure $callback
 	 * @return array
 	 */
-	public function pretend(Closure $callback);
+	public function pretend(\Closure $callback);
 }
