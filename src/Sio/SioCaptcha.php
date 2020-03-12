@@ -1,4 +1,5 @@
 <?php
+namespace RS\NView\Sio;
 
 class SioCaptcha {
 	use Form {

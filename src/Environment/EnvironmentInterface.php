@@ -1,4 +1,5 @@
 <?php
+namespace RS\NView\Environment;
 
 Interface EnvironmentInterface {
 	public function initialize(array $env);

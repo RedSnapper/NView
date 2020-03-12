@@ -1,4 +1,5 @@
 <?php
+namespace RS\NView\Environment;
 
 use Psr\Http\Message\UriInterface;
 

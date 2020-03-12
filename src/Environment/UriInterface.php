@@ -1,4 +1,5 @@
 <?php
+namespace RS\NView\Environment;
 
 interface UriInterface extends \Psr\Http\Message\UriInterface {
 

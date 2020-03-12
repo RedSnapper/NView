@@ -1,5 +1,5 @@
 <?php
-mb_internal_encoding('UTF-8');
+namespace RS\NView\Sio;
 
 //This is the 'sending end' of the paired Sioresetpw_ class
 class SioForgot {

@@ -1,4 +1,5 @@
 <?php
+namespace RS\NView\Session;
 
 interface SessionInterface {
 

@@ -1,4 +1,5 @@
 <?php
+namespace RS\NView\Session;
 
 class SessionStore implements SessionInterface {
 

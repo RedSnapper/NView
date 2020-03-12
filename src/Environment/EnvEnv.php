@@ -1,4 +1,5 @@
 <?php
+namespace RS\NView\Environment;
 
 class EnvEnv extends AbstractEnvironment implements EnvironmentInterface {
 	/**

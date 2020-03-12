@@ -1,10 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: akis
- * Date: 02/06/15
- * Time: 13:06
- */
+namespace RS\NView\Sio;
 
 class SioUtility {
 

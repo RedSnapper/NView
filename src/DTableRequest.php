@@ -1,4 +1,5 @@
 <?php
+namespace RS\NView;
 
 class DTableRequest implements ArrayAccess
 {

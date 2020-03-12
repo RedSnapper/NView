@@ -1,4 +1,5 @@
 <?php
+namespace RS\NView\Environment;
 
 abstract class AbstractEnvironment implements EnvironmentInterface,\IteratorAggregate, \Countable {
 	protected $env = array();

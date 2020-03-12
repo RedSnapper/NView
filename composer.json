@@ -1,12 +1,15 @@
 {
     "name": "rs/nview",
-    "license": "GPL-2.0",
-    "description": "true control-view separation with sign-in sign-out",
+    "license": "GPL-2.0-or-later",
+    "version": "1.0.0.3",
+    "description": "True control-view separation with sign-in sign-out",
     "autoload": {
-        "classmap": ["src/", "src/sio", "src/Environment", "src/Database", "src/Log", "src/Session" ]
+        "psr-4": {
+            "RS\\NView\\": "src"
+        }
     },
     "require": {
-        "phpmailer/phpmailer": ">=5.2.27",
+        "phpmailer/phpmailer": "~5.2.27",
         "monolog/monolog": "~1.17",
        	"google/recaptcha": "~1.1",
         "league/oauth2-facebook": "~1.4",

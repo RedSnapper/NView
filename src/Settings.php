@@ -1,4 +1,5 @@
 <?php
+namespace RS\NView;
 use Monolog\Logger;
 use Monolog\Processor;
 use Monolog\Handler;

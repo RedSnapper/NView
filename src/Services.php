@@ -1,8 +1,9 @@
 <?php
+namespace RS\NView;
 
-mb_internal_encoding('UTF-8');
+use Dice\Dice;
 
-class Services extends \Dice\Dice {
+class Services extends Dice {
 
 	public function __construct() {
 		//'*' represents the class being instantiated, not the class being requested.

@@ -1,5 +1,5 @@
 <?php
-mb_internal_encoding('UTF-8');
+namespace RS\NView;
 
 class Export {
 	static function csv($fn="data.csv",$addheaders=true,$sql="select a,b,c") {

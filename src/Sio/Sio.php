@@ -1,5 +1,6 @@
 <?php
-mb_internal_encoding('UTF-8');
+namespace RS\NView\Sio;
+
 class Sio {
 	const SIG = "sio_";
 	private static $v=array();

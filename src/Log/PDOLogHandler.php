@@ -1,5 +1,5 @@
 <?php
-
+namespace RS\NView\Log;
 use Monolog\Logger;
 use Monolog\Formatter\NormalizerFormatter;
 

@@ -1,4 +1,5 @@
 <?php
+namespace RS\NView;
 
 abstract class AbstractFactory {
 	protected $services;

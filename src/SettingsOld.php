@@ -1,4 +1,5 @@
 <?php
+namespace RS\NView;
 mb_internal_encoding('UTF-8');
 use Monolog\Logger;
 use Monolog\Handler;

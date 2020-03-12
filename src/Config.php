@@ -1,5 +1,5 @@
 <?php
-mb_internal_encoding('UTF-8');
+namespace RS\NView;
 
 class Config {
 	//this is really a 'fake' class which holds our common rules..
