@@ -1,9 +1,14 @@
 <?php
 namespace RS\NView;
 
-use RS\NView\Environment\{EnvironmentInterface, UriInterface, EnvServer};
+use RS\NView\Environment\{EnvironmentInterface, Uri, UriInterface, EnvServer};
 use RS\NView\Log\{LoggerInterface, NViewLogger, PDOLogHandler};
-use RS\NView\Database\{ConnectionInterface, ConnectorInterface, MySqlConnector, MySqliConnector, SphinxConnection};
+use RS\NView\Database\{ConnectionInterface,
+  ConnectorInterface,
+  MySqlConnector,
+  MySqliConnector,
+  PDOConnection,
+  SphinxConnection};
 use SessionHandlerInterface;
 use RS\NView\Session\{SessionInterface, SessionStore, DatabaseSessionHandler};
 
@@ -14,7 +19,7 @@ class Config {
 
 	public function __construct(Services $s) {
 		$this->s = $s;
-		$this->setRules(MySqlConnector::class);
+		$this->setRules(PDOConnection::class);
 	}
 
 	private function setRules($db_interface) {
@@ -22,7 +27,7 @@ class Config {
 		$s->addRule(EnvironmentInterface::class, ['shared' => true]);
 
 		$s->addRule(UriInterface::class, [
-			'instanceOf' => "Uri",
+			'instanceOf' => Uri::class,
 			'shared' => false,
 		]);
 

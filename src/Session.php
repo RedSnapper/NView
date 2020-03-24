@@ -1,6 +1,9 @@
 <?php
 namespace RS\NView;
 
+use RS\NView\Environment\EnvServer;
+use RS\NView\Environment\UriInterface;
+
 /**
  * class 'Session'
  * This uses static functions, but is constructed at a specific time.
@@ -29,16 +32,18 @@ class Session extends Singleton {
 
 	public static function mutate() {
 		if (isset($_COOKIE["xsession"])) {
-			$session = static::$session;
+		    /** @var EnvServer $server */
+			$server = Settings::create(EnvServer::class);
+		    $session = static::$session;
 			$code = @$_SERVER['REMOTE_ADDR'] . @$_SERVER['SSL_SESSION_ID'] . "_wxf9[9]Z(9.2)";
-			$vector = $_SERVER['SCRIPT_URI'] . "37b807ea4118db8d";
+			$vector = (string) Settings::create(UriInterface::class) . "37b807ea4118db8d";
 			$mutated = hash('sha256', openssl_encrypt(gzdeflate($session), "aes-256-cbc", $code, OPENSSL_RAW_DATA, substr($vector, 0, 16)));
 			$sqlSession = Settings::$sql->escape_string($session);
 			Settings::$sql->query("update sio_session set id='$mutated' where id='$sqlSession'");
 			Settings::$sql->query("update sio_sessiondata set sid='$mutated' where sid='$sqlSession'");
 			static::$sqlsess = $mutated;
 			static::$session = $mutated;
-			setcookie("xsession", static::$session, static::$cookieLife, '/', '', true, true); // 8640000 = 100 days
+			setcookie("xsession", static::$session, static::$cookieLife, '/', '', $server->getScheme() === "https", true); // 8640000 = 100 days
 		}
 	}
 

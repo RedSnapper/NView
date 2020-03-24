@@ -28,7 +28,7 @@ class SQLHandler extends Handler\AbstractProcessingHandler
         parent::__construct($level, $bubble);
     }
     
-    protected function write(array $params)
+    protected function write(array $params):void
     {
 	// with call_user_func_array, array params must be passed by reference..
     	$sql_params = $params['context'];
@@ -47,7 +47,7 @@ class SQLHandler extends Handler\AbstractProcessingHandler
     /**
      * {@inheritDoc}
      */
-    protected function getDefaultFormatter()
+    protected function getDefaultFormatter():\Monolog\Formatter\FormatterInterface
     {
         return new Formatter\NormalizerFormatter();
     }

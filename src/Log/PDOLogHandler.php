@@ -32,7 +32,7 @@ class PDOLogHandler extends AbstractProcessingHandler {
 	 * @param  array $record
 	 * @return void
 	 */
-	protected function write(array $record) {
+	protected function write(array $record):void {
 		$formatted = $record['formatted'];
 		$this->db->insert("insert low_priority into $this->table (l_channel,l_level,l_message,l_date) values(:channel,:level,:message,:date)", [
 			'channel' => $formatted['channel'],
@@ -45,7 +45,7 @@ class PDOLogHandler extends AbstractProcessingHandler {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected function getDefaultFormatter() {
+	protected function getDefaultFormatter():\Monolog\Formatter\FormatterInterface {
 		return new NormalizerFormatter();
 	}
 

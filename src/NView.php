@@ -6,6 +6,7 @@ use DOMDocumentFragment;
 use DOMNode;
 use DOMNodeList;
 use Exception;
+use RS\NView\Log\LoggerInterface;
 
 /**
  * class 'NView'
@@ -114,7 +115,7 @@ class NView {
  * 'tset - translation hooks'
  */
 	public function tset($keys= NULL) {
-	    if(class_exists("Dict")) {
+	    if(class_exists(Dict::class)) {
             if(is_null($keys)) {
                 $tr_attrs = $this->get("//*[@data-tr]/@data-tr");
                 if ($tr_attrs instanceof DOMNodeList) {

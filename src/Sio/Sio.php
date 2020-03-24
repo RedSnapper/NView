@@ -3,6 +3,7 @@ namespace RS\NView\Sio;
 
 use RS\NView\Dict;
 use RS\NView\NView;
+use RS\NView\Session;
 use RS\NView\Settings;
 
 class Sio {
