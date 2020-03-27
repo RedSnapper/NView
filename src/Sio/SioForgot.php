@@ -4,6 +4,7 @@ namespace RS\NView\Sio;
 //This is the 'sending end' of the paired Sioresetpw_ class
 use PHPMailer;
 use RS\NView\Dict;
+use RS\NView\Environment\UriInterface;
 use RS\NView\Form;
 use RS\NView\NView;
 use RS\NView\Settings;
