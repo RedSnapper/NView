@@ -270,11 +270,7 @@ class NView {
 	}
 
 
-/**
- * If xpath returns nodes for an attribute selector then it will not insert attribute. eg 
- * //*/@foo this will add foo attribute to all elements unless any element(s) already have a foo attribute
- * Workaround: Remove all foo attributes first, or...
- * //*[@foo or not(@foo)]/@foo	 
+/** 
  *
  * 'set'
  */
