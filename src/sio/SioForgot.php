@@ -1,4 +1,7 @@
 <?php
+
+use PHPMailer\PHPMailer\PHPMailer;
+
 mb_internal_encoding('UTF-8');
 
 //This is the 'sending end' of the paired Sioresetpw_ class

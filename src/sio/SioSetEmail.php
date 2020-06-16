@@ -1,4 +1,7 @@
 <?php
+
+use PHPMailer\PHPMailer\PHPMailer;
+
 mb_internal_encoding('UTF-8');
 
 class SioSetEmail {
