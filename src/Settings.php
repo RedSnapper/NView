@@ -46,8 +46,8 @@ class Settings extends Config {
 
 	public function legacy() {
 
-		$s = $this->s;
-		$server = $s->get('EnvServer');
+		
+		$server = $this->s->get('EnvServer');
 
 		// This is to allow for backward compatibility to mysql.
 		$inifile = $server->get("SQL_CONFIG_FILE",$server->get("RS_SQLCONFIG_FILE"));
@@ -56,28 +56,28 @@ class Settings extends Config {
 			print_r($server);
 		}
 
-		$s->addRule('MySqliConnector', [
+        $this->s = $this->s->addRule('MySqliConnector', [
 			'constructParams' => [parse_ini_file($inifile)],
 			'shared'=> false
 		]);
 
-		$connector = $s->create('MySqliConnector');
-		$s->addRule('MySqliConnection', [
+		$connector = $this->s->create('MySqliConnector');
+        $this->s = $this->s->addRule('MySqliConnection', [
 			'constructParams' => [$connector->connect()],
 			'shared' => true
 		]);
 
-		static::$services = $s;
+		static::$services = $this->s;
 		static::$sqls = parse_ini_file($server->get("SQL_CONFIG_FILE",$server->get("RS_SQLCONFIG_FILE")));
-		static::$log = $s->get('LoggerInterface');
-		static::$mysqli = $s->get('MySqliConnection');
+		static::$log = $this->s->get('LoggerInterface');
+		static::$mysqli = $this->s->get('MySqliConnection');
 		static::$sql = static::$mysqli->getConnection();
 
 	}
 
 	private function user() {
 		$s = $this->s;
-		$server = $s->get('EnvServer');
+		$server = $this->s->get('EnvServer');
 
 		if ($server->sig("PHP_AUTH_USER")) {
 			self::$usr['RU']= $server->get('PHP_AUTH_USER');
@@ -94,8 +94,8 @@ class Settings extends Config {
 
 	private function uri() {
 		$s = $this->s;
-		$server = $s->get('EnvServer');
-		$uri = $s->get('UriInterface');
+		$server = $this->s->get('EnvServer');
+		$uri = $this->s->get('UriInterface');
 
 		self::$url=$uri->getPath();
 		self::$website=$uri->getSchemeAndHost();

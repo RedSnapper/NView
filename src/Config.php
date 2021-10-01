@@ -12,17 +12,17 @@ class Config {
 	}
 
 	private function setRules($dbinterface) {
-		$s = $this->s;
-		$s->addRule('EnvironmentInterface', ['shared' => true]);
 
-		$s->addRule('UriInterface', [
+        $this->s =  $this->s->addRule('EnvironmentInterface', ['shared' => true]);
+
+        $this->s = $this->s->addRule('UriInterface', [
 			'instanceOf' => "Uri",
 			'shared' => false,
 		]);
 
-		$server = $s->get('EnvServer');
+		$server = $this->s->get('EnvServer');
 
-		$s->addRule('LoggerInterface', [
+        $this->s = $this->s->addRule('LoggerInterface', [
 			'instanceOf' => "NViewLogger",
 			'constructParams' => ["Log"],
 			'shared' => true,
@@ -31,7 +31,7 @@ class Config {
 //			]
 		]);
 
-		$s->addRule(PDOLogHandler::class,[
+        $this->s = $this->s->addRule(PDOLogHandler::class,[
 			'constructParams' => ["sio_log"],
 			'shared' => true
 		]);
@@ -42,27 +42,27 @@ class Config {
 			$config =  parse_ini_file($configFilename);
 		}
 
-		$s->addRule('ConnectorInterface', [
+        $this->s =  $this->s->addRule('ConnectorInterface', [
 			'instanceOf' => "MySqlConnector",
 			'constructParams' => [$config],
 			'shared' => false
 		]);
 
-		$connector = $s->create('ConnectorInterface');
+		$connector = $this->s->create('ConnectorInterface');
 
-		$s->addRule('ConnectionInterface', [
+        $this->s =  $this->s->addRule('ConnectionInterface', [
 			'instanceOf' => "{$dbinterface}Connection",
 			'constructParams' => [$connector->connect()],
 			'shared' => true
 		]);
 
-		$s->addRule('SessionHandlerInterface', [
+        $this->s = $this->s->addRule('SessionHandlerInterface', [
 			'shared' => true,
 			'instanceOf' => DatabaseSessionHandler::class,
 			'constructParams' => ['sio_session']
 		]);
 
-		$s->addRule('SessionInterface', [
+        $this->s = $this->s->addRule('SessionInterface', [
 			'shared' => true,
 			'instanceOf' => SessionStore::class,
 			'call' => [
@@ -70,11 +70,10 @@ class Config {
 			]
 		]);
 
-
 		if ($server->has('RS_SEARCH_CONFIG_FILE')) {
-			$s->addRule('SphinxConnection', [
+            $this->s = $this->s->addRule('SphinxConnection', [
 				'constructParams' => [['instance'=>function() use($s,$server){
-					$sphinx = $s->create('MySqliConnector', [parse_ini_file($server->get("RS_SEARCH_CONFIG_FILE"))]);
+					$sphinx = $this->s->create('MySqliConnector', [parse_ini_file($server->get("RS_SEARCH_CONFIG_FILE"))]);
 					return $sphinx->connect();
 				}]],
 				'shared' => true
