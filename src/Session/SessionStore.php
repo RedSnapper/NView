@@ -33,7 +33,8 @@ class SessionStore implements SessionInterface {
 	 */
 	public function start() {
 		if (!$this->started) {
-			session_set_save_handler($this->handler);
+
+			session_set_save_handler($this->handler,true);
 			session_start();
 			register_shutdown_function(array($this, 'shutdown'));
 			$this->loadSession();

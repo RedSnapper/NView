@@ -1,6 +1,8 @@
 <?php
 
-class NViewLoggerTest extends PHPUnit_Framework_TestCase {
+use PHPUnit\Framework\TestCase;
+
+class NViewLoggerTest extends TestCase {
 
 	public function testPushName() {
 		$logger = new NViewLogger('Foo');

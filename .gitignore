@@ -2,3 +2,4 @@ docs/
 /vendor/
 .idea/
 composer.phar
+.phpunit.result.cache

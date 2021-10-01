@@ -29,6 +29,7 @@ abstract class AbstractEnvironment implements EnvironmentInterface,\IteratorAggr
 			$retval = $this->env[$name];
 			unset($this->env[$name]);
 		}
+
 		return $retval;
 	}
 

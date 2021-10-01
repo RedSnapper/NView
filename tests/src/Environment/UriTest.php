@@ -1,11 +1,13 @@
 <?php
 
-class UriTest extends \PHPUnit_Framework_TestCase {
+use PHPUnit\Framework\TestCase;
+
+class UriTest extends TestCase {
 
 	public $log;
 	public $server;
 
-	public function setup() {
+	public function setup():void {
 		$this->log = $this->createMock('NViewLogger');
 		$this->server = $this->createMock(EnvServer::class);
 		$this->server->method('getScheme')->willReturn('http');
@@ -62,7 +64,7 @@ class UriTest extends \PHPUnit_Framework_TestCase {
 					->getMock();
 
 		$log->expects($this->once())->method('error')->with("Unable to parse URI: $invalidUri");
-		new Uri($invalidUri,$this->server,$log);
+		new Uri($this->server,$log,$invalidUri);
 
 	}
 
@@ -76,51 +78,44 @@ class UriTest extends \PHPUnit_Framework_TestCase {
 		];
 	}
 
-	/**
-	 * @expectedException \InvalidArgumentException
-	 * @expectedExceptionMessage Invalid port: 100000. Must be between 1 and 65535
-	 */
+
 	public function testPortMustBeValid() {
-		$this->getUri()->withPort(100000);
+		$this->expectException(InvalidArgumentException::class);
+        $this->expectErrorMessage("Invalid port: 100000. Must be between 1 and 65535");
+        $this->getUri()->withPort(100000);
 	}
 
-	/**
-	 * @expectedException \InvalidArgumentException
-	 * @expectedExceptionMessage Invalid port: 0. Must be between 1 and 65535
-	 */
+
 	public function testWithPortCannotBeZero() {
-		$this->getUri()->withPort(0);
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectErrorMessage("Invalid port: 0. Must be between 1 and 65535");
+        $this->getUri()->withPort(0);
 	}
 
 	public function testParseUriPortCannotBeZero() {
 		$invalidPort = "//example.com:0";
-		$log = $this->getMockBuilder('NViewLogger')
-			->setMethods(['error'])
-			->getMock();
 
-		$log->expects($this->once())->method('error')->with("Unable to parse URI: $invalidPort");
-		new Uri($invalidPort,$this->server,$log);
+        $log = Mockery::mock(NViewLogger::class);
+
+        $this->expectException(InvalidArgumentException::class);
+
+		new Uri($this->server,$log,$invalidPort);
 	}
 
-	/**
-	 * @expectedException \InvalidArgumentException
-	 */
 	public function testSchemeMustHaveCorrectType() {
-		$this->getUri()->withScheme([]);
+        $this->expectException(InvalidArgumentException::class);
+        $this->getUri()->withScheme([]);
 	}
 
-	/**
-	 * @expectedException \InvalidArgumentException
-	 */
 	public function testHostMustHaveCorrectType() {
+        $this->expectException(InvalidArgumentException::class);
 		$this->getUri()->withHost([]);
 	}
 
-	/**
-	 * @expectedException \InvalidArgumentException
-	 */
+
 	public function testPathMustHaveCorrectType() {
-		$this->getUri()->withPath([]);
+		$this->expectException(InvalidArgumentException::class);
+        $this->getUri()->withPath([]);
 	}
 
 
@@ -401,7 +396,7 @@ class UriTest extends \PHPUnit_Framework_TestCase {
         ];
 		$server->method('get')->will($this->returnValueMap($map));
 		$server->method('getScheme')->willReturn($https);
-		$uri = new Uri($url,$server,$this->log);
+		$uri = new Uri($server,$this->log,$url);
 		$this->assertEquals($uri->isLocal(),$expected);
 
 	}
@@ -429,7 +424,7 @@ class UriTest extends \PHPUnit_Framework_TestCase {
 		];
 		$server->method('get')->will($this->returnValueMap($map));
 		$server->method('getScheme')->willReturn($https);
-		$uri = new Uri($url,$server,$this->log);
+		$uri = new Uri($server,$this->log,$url);
 		$this->assertSame($uri->getLink(),$expected);
 	}
 
@@ -465,7 +460,7 @@ class UriTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	protected function getUri($url=null) {
-		return new Uri($url,$this->server,$this->log);
+		return new Uri($this->server,$this->log,$url);
 	}
 
 

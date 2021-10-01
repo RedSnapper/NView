@@ -1,6 +1,8 @@
 <?php
 
-class SphinxConnectionTest extends PHPUnit_Framework_TestCase {
+use PHPUnit\Framework\TestCase;
+
+class SphinxConnectionTest extends TestCase {
 
 	public function testEsc() {
 		$mysqli = $this->createMock('mysqli');

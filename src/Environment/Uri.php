@@ -45,7 +45,7 @@ class Uri implements UriInterface {
 	 * @param LoggerInterface $log
 	 * @param string $uri
 	 */
-	public function __construct($uri = null, EnvServer $server, LoggerInterface $log) {
+	public function __construct(EnvServer $server, LoggerInterface $log,$uri = null) {
 		$this->server = $server;
 		$this->log = $log;
 		$uri = is_null($uri) ? $this->current() : $uri;

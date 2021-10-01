@@ -1,6 +1,8 @@
 <?php
 
-class PDOConnectionTest extends PHPUnit_Framework_TestCase {
+use PHPUnit\Framework\TestCase;
+
+class PDOConnectionTest extends TestCase {
 
 	public function testSelectProperlyCallsPDO() {
 		$pdo = $this->getMockBuilder('PDO')

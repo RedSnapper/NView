@@ -1,10 +1,10 @@
 <?php
 
-class AbstractEnvironmentTest extends \PHPUnit_Framework_TestCase
+class AbstractEnvironmentTest extends \PHPUnit\Framework\TestCase
 {
 	public $env;
 
-	public function setup() {
+	public function setup():void {
 		$this->env = $this->getMockForAbstractClass(AbstractEnvironment::class);;
 		$this->env->initialize(['foo' => 'bar', 'BIM' => 'baz', 'empty' => '', 'EMPTIER' => '', 'array' => [], 'false' => false]);
 	}

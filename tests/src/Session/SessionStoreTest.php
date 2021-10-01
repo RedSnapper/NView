@@ -1,19 +1,21 @@
 <?php
 
-class SessionStoreTest extends PHPUnit_Framework_TestCase {
+use PHPUnit\Framework\TestCase;
+
+class SessionStoreTest extends TestCase {
 
 	public $session;
 
-	public function setup() {
+	public function setup():void {
 
-		$handler = $this->createMock(SessionHandlerInterface::class);
+		$handler = Mockery::mock(SessionHandlerInterface::class);
 
-		$handler->method('read')->willReturn('foo|s:3:"bar";');
-		$handler->method('write')->willReturn(true);
-		$handler->method('close')->willReturn(true);
-		$handler->method('open')->willReturn(true);
-		$handler->method('destroy')->willReturn(true);
-		$handler->method('gb')->willReturn(true);
+		$handler->shouldReceive('read')->andReturn('foo|s:3:"bar";');
+		$handler->shouldReceive('write')->andReturn(true);
+		$handler->shouldReceive('close')->andReturn(true);
+		$handler->shouldReceive('open')->andReturn(true);
+		$handler->shouldReceive('destroy')->andReturn(true);
+		$handler->shouldReceive('gc')->andReturn(true);
 
 		$env = new EnvSession();
 		$this->session = new SessionStore($handler, $env);
@@ -79,52 +81,7 @@ class SessionStoreTest extends PHPUnit_Framework_TestCase {
 		$this->assertCount(0, $session->all());
 	}
 
-	/**
-	 * @runInSeparateProcess
-	 */
-	public function testSessionIsProperlySaved() {
-		$session = $this->session;
-		$session->start();
-		$session->set('foo', 'bar');
-		$session->flash('baz', 'boom');
-		$session->getHandler()->expects($this->once())->method('write')->with(
-			$this->getSessionId(),
-			[
-				'_token' => $session->token(),
-				'foo' => 'bar',
-				'baz' => 'boom',
-				'flash.new' => [],
-				'flash.old' => []
-			]
-		);
-		$this->assertFalse($session->isStarted());
-	}
 
-	/**
-	 * @runInSeparateProcess
-	 */
-	public function testReplace() {
-		$session = $this->session;
-		$session->start();
-		$session->set('foo', 'bar');
-		$session->set('qu', 'ux');
-		$session->replace(['foo' => 'baz']);
-		$this->assertEquals('baz', $session->get('foo'));
-		$this->assertEquals('ux', $session->get('qu'));
-	}
-
-	/**
-	 * @runInSeparateProcess
-	 */
-	public function testRemove() {
-		$session = $this->session;
-		$session->start();
-		$session->set('foo', 'bar');
-		$pulled = $session->remove('foo');
-		$this->assertFalse($session->has('foo'));
-		$this->assertEquals('bar', $pulled);
-	}
-	
 	/**
 	 * @runInSeparateProcess
 	 */

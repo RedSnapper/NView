@@ -1,6 +1,8 @@
 <?php
 
-class EnvServerTest extends PHPUnit_Framework_TestCase {
+use PHPUnit\Framework\TestCase;
+
+class EnvServerTest extends TestCase {
 
 	public function testGetScheme() {
 		$server = new EnvServer();
