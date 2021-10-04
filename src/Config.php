@@ -71,8 +71,9 @@ class Config {
 		]);
 
 		if ($server->has('RS_SEARCH_CONFIG_FILE')) {
+
             $this->s = $this->s->addRule('SphinxConnection', [
-				'constructParams' => [['instance'=>function() use($s,$server){
+				'constructParams' => [[\Dice\Dice::INSTANCE=>function() use($server){
 					$sphinx = $this->s->create('MySqliConnector', [parse_ini_file($server->get("RS_SEARCH_CONFIG_FILE"))]);
 					return $sphinx->connect();
 				}]],
