@@ -144,7 +144,7 @@ class SioUtility {
      * @returns bool
      * @populates the errors array.
      */
-    public function pw_validate($password="",&$err_arr)
+    public function pw_validate(string $password,&$err_arr)
     {
     	if ($this->minLength > 0) {
 				if (mb_strlen($password) < $this->minLength) {
