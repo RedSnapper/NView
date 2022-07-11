@@ -83,12 +83,12 @@ class PDOConnectionTest extends TestCase {
 			->getMock();
 		$statement->expects($this->once())->method('bindValue')->with($this->equalTo('foo'), $this->equalTo('bar'), $this->equalTo(PDO::PARAM_STR))->willReturn(true);
 		$statement->expects($this->once())->method('execute')->willReturn(true);
-		$statement->expects($this->once())->method('rowCount')->will($this->returnValue(['boom']));
+		$statement->expects($this->once())->method('rowCount')->willReturn(1);
 		$pdo->expects($this->once())->method('prepare')->with('foo')->will($this->returnValue($statement));
 		$mock = $this->getMockConnection(['prepareBindings'], $pdo);
 		$mock->expects($this->once())->method('prepareBindings')->with($this->equalTo(['foo' => 'bar']))->will($this->returnValue(['foo' => 'bar']));
 		$results = $mock->update('foo', ['foo' => 'bar']);
-		$this->assertEquals(['boom'], $results);
+		$this->assertEquals(1, $results);
 		$log = $mock->getQueryLog();
 		$this->assertEquals('foo', $log[0]['query']);
 		$this->assertEquals(['foo' => 'bar'], $log[0]['bindings']);

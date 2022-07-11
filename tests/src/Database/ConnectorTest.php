@@ -58,7 +58,7 @@ class ConnectorTest extends TestCase {
 			->getMock();
 		$connection = $this->createMock('mysqli');
 		$connector->expects($this->once())->method('setupConnection')->will($this->returnValue($connection));
-		$connection->expects($this->once())->method('set_charset')->with('utf8')->willReturn($this->returnSelf());
+		$connection->expects($this->once())->method('set_charset')->with('utf8')->willReturn(true);
 
 		$result = $connector->connect();
 		$this->assertSame($result, $connection);

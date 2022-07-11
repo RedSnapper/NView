@@ -101,11 +101,11 @@ abstract class AbstractEnvironment implements EnvironmentInterface,\IteratorAggr
 	}
 
 	
-	public function getIterator() {
+	public function getIterator():Traversable {
 		return new \ArrayIterator($this->env);
 	}
 
-	public function count() {
+	public function count():int {
 		return count($this->env);
 	}
 
