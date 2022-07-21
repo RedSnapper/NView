@@ -236,7 +236,7 @@ trait Form
             $this->view = $vp;
         } else {
             $bt = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1);
-            if (strpos($vp, '/') === false) {
+            if (!is_null($vp) && strpos($vp, '/') === false) {
                 $file_ar = pathinfo($bt[0]['file']); //want the file.
                 $file = $file_ar['dirname'] . '/';
                 if (is_null($vp)) { //need this b/c form is a trait.
@@ -1273,7 +1273,7 @@ trait Form
         }
     }
 
-    public function valMinLength($name = '', $min, $error = null)
+    public function valMinLength($name , $min, $error = null)
     {
         if (isset($this->fields[$name][0])) {
             if (mb_strlen($this->fields[$name][0]) < $min) {
@@ -1288,7 +1288,7 @@ trait Form
         }
     }
 
-    public function valMaxLength($name = '', $max, $error = null)
+    public function valMaxLength($name , $max, $error = null)
     {
         if (isset($this->fields[$name][0])) {
             if (mb_strlen($this->fields[$name][0]) > $max) {
@@ -1303,7 +1303,7 @@ trait Form
         }
     }
 
-    public function valExactLength($name = '', $length, $error = null)
+    public function valExactLength($name, $length, $error = null)
     {
         if (isset($this->fields[$name][0])) {
             if (mb_strlen($this->fields[$name][0]) != $length) {
