@@ -39,7 +39,8 @@ class DatabaseSessionHandler implements SessionHandlerInterface {
 	 * </p>
 	 * @since 5.4.0
 	 */
-	public function open($save_path, $session_id) {
+	public function open($save_path, $session_id): bool
+    {
 		return true;
 	}
 
@@ -54,7 +55,8 @@ class DatabaseSessionHandler implements SessionHandlerInterface {
 	 * </p>
 	 * @since 5.4.0
 	 */
-	public function read($sessionId) {
+	public function read($sessionId): string
+    {
 		$session = $this->connection->selectOne("select value from $this->table where id=:id",['id'=>$sessionId]);
 		return $session ? $session->value : "";
 	}
@@ -76,7 +78,8 @@ class DatabaseSessionHandler implements SessionHandlerInterface {
 	 * </p>
 	 * @since 5.4.0
 	 */
-	public function write($session_id, $session_data) {
+	public function write($session_id, $session_data): bool
+    {
 		return $this->connection->statement("replace into {$this->table} (id,value) values (:id,:data)",["id"=>$session_id,"data"=>$session_data]);
 	}
 
@@ -89,7 +92,8 @@ class DatabaseSessionHandler implements SessionHandlerInterface {
 	 * </p>
 	 * @since 5.4.0
 	 */
-	public function close() {
+	public function close(): bool
+    {
 		return true;
 	}
 
@@ -103,7 +107,8 @@ class DatabaseSessionHandler implements SessionHandlerInterface {
 	 * </p>
 	 * @since 5.4.0
 	 */
-	public function destroy($session_id) {
+	public function destroy($session_id): bool
+    {
 		return $this->connection->statement("delete from {$this->table} where id=:id",['id'=>$session_id]);
 	}
 
@@ -120,7 +125,8 @@ class DatabaseSessionHandler implements SessionHandlerInterface {
 	 * </p>
 	 * @since 5.4.0
 	 */
-	public function gc($maxlifetime) {
+	public function gc($maxlifetime): int|false
+    {
 		return $this->connection->statement("delete from {$this->table} where TIMESTAMPADD(SECOND,:lifetime,ts) < CURRENT_TIMESTAMP",["lifetime"=>$maxlifetime]);
 	}
 
