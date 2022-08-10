@@ -236,7 +236,7 @@ trait Form
             $this->view = $vp;
         } else {
             $bt = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1);
-            if (!is_null($vp) && strpos($vp, '/') === false) {
+            if (is_null($vp) || !strpos($vp, '/'))  {
                 $file_ar = pathinfo($bt[0]['file']); //want the file.
                 $file = $file_ar['dirname'] . '/';
                 if (is_null($vp)) { //need this b/c form is a trait.
