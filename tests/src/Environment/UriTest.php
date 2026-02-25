@@ -81,14 +81,14 @@ class UriTest extends TestCase {
 
 	public function testPortMustBeValid() {
 		$this->expectException(InvalidArgumentException::class);
-        $this->expectErrorMessage("Invalid port: 100000. Must be between 1 and 65535");
+        $this->expectExceptionMessage("Invalid port: 100000. Must be between 1 and 65535");
         $this->getUri()->withPort(100000);
 	}
 
 
 	public function testWithPortCannotBeZero() {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectErrorMessage("Invalid port: 0. Must be between 1 and 65535");
+        $this->expectExceptionMessage("Invalid port: 0. Must be between 1 and 65535");
         $this->getUri()->withPort(0);
 	}
 

@@ -7,6 +7,10 @@ class SessionStore implements SessionInterface {
 	 */
 	protected $started = false;
 	/**
+	 * @var bool
+	 */
+	protected $closed = false;
+	/**
 	 * @var SessionHandlerInterface
 	 */
 	private $handler;
