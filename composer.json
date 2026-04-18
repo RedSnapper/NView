@@ -16,7 +16,7 @@
         "tightenco/collect": "^9.16"
     },
     "require-dev": {
-        "phpunit/phpunit": "^9.5",
+        "phpunit/phpunit": "^12.5",
         "mockery/mockery": "^1.4"
     }
 }
