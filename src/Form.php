@@ -322,7 +322,7 @@ trait Form
         if (!is_null($name)) {
             $this->bflds[$name] = $modern;
             $this->setfld($name, $gsql, $csql);
-            $this->dflds[$name] = (boolean)$default;
+            $this->dflds[$name] = (bool) $default;
         }
     }
 
