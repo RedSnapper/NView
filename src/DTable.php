@@ -55,6 +55,12 @@ class DTable
     public $pkey = null;
     private $request;
     private $options;
+    public $envGet;
+    public $envPost;
+    public $groupby;
+    public $bindings;
+    public $filters;
+    public $csvfilters;
 
     public function __construct($fields = null, $tables = null, $restrict = null, $options = array())
     {
