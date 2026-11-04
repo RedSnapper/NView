@@ -476,7 +476,7 @@ class DTable
      * @param string $data
      * @return DTable
      */
-    public static function fromSerialized(string $data,DTableRequest $request = null): self
+    public static function fromSerialized(string $data,?DTableRequest $request = null): self
     {
         //$fields = null, $tables = null, $restrict = null, $options = array()
         [$fields, $tables,$restrict,$options] = unserialize($data);

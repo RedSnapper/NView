@@ -17,7 +17,7 @@ class MySqliConnection implements ConnectionInterface {
 	 *
 	 * @param mysqli|null $sql
 	 */
-	public function __construct(\mysqli $sql = null) {
+	public function __construct(?\mysqli $sql = null) {
 		$this->sql = $sql;
 	}
 

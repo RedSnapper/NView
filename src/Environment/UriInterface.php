@@ -67,7 +67,7 @@ interface UriInterface extends \Psr\Http\Message\UriInterface {
 	 *
 	 * @return void
 	 */
-	public function withoutQueryValue(string $key = null) : UriInterface;
+	public function withoutQueryValue(?string $key = null) : UriInterface;
 
 
 }

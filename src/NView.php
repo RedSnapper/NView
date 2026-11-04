@@ -40,7 +40,7 @@ class NView {
 /**
  * '__construct'
  */
-	public function __construct($value='',LoggerInterface $log = null) {
+	public function __construct($value='',?LoggerInterface $log = null) {
 		$this->log = $log;
 		set_error_handler(array($this, 'doMsg'), E_ALL | E_STRICT);
 		try {

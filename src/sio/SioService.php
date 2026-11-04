@@ -14,7 +14,7 @@ abstract class SioService {
 	private $userCreateClosure;
 	const SERVICE_NAME = null;
 
-	function __construct(League\OAuth2\Client\Provider\AbstractProvider $provider, array $authScope = array(), NView $v = NULL) {
+	function __construct(League\OAuth2\Client\Provider\AbstractProvider $provider, array $authScope = array(), ?NView $v = NULL) {
 		$this->provider = $provider;
 		$this->authScope = $authScope;
 		$this->v = $v ? $v : $this->getNView();
