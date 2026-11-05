@@ -40,9 +40,9 @@ class NView {
 /**
  * '__construct'
  */
-	public function __construct($value='',LoggerInterface $log = null) {
+	public function __construct($value='',?LoggerInterface $log = null) {
 		$this->log = $log;
-		set_error_handler(array($this, 'doMsg'), E_ALL | E_STRICT);
+		set_error_handler(array($this, 'doMsg'), E_ALL);
 		try {
 			switch(gettype($value)) {
 				case 'NULL':
@@ -146,7 +146,7 @@ class NView {
 		$fnode = NULL;
 		$fnode = $this->doc->createDocumentFragment();
 		$this->errs = '';
-		set_error_handler(array($this, 'noMsg'), E_ALL | E_STRICT);
+		set_error_handler(array($this, 'noMsg'), E_ALL);
 		try {
 			// One should always xml-encode ampersands in URLs in XML.
 
@@ -217,7 +217,7 @@ class NView {
 	public function get($xpath, $ref=null) {
 		$retval = null;
 		if (!is_null($this->doc) && !is_null($this->xp)) {
-			set_error_handler(array($this,'doMsg'),E_ALL | E_STRICT);
+			set_error_handler(array($this,'doMsg'),E_ALL);
 			if (is_null($ref)) {
 				$entries = $this->xp->query($xpath);
 			} else {
@@ -276,7 +276,7 @@ class NView {
  */
 	public function set($xpath,$value=null,$ref=null,$show_err_on_missing=true) {
 		//replace node at string xpath with node 'value'.
-		set_error_handler(array($this,'doMsg'), E_ALL | E_STRICT);
+		set_error_handler(array($this,'doMsg'), E_ALL);
 		if (!is_null($this->doc) && !is_null($this->xp)) {
 			$gap = self::GAP_NONE;
 			if (substr($xpath,-6)=="-gap()") {

@@ -55,6 +55,12 @@ class DTable
     public $pkey = null;
     private $request;
     private $options;
+    public $envGet;
+    public $envPost;
+    public $groupby;
+    public $bindings;
+    public $filters;
+    public $csvfilters;
 
     public function __construct($fields = null, $tables = null, $restrict = null, $options = array())
     {
@@ -476,7 +482,7 @@ class DTable
      * @param string $data
      * @return DTable
      */
-    public static function fromSerialized(string $data,DTableRequest $request = null): self
+    public static function fromSerialized(string $data,?DTableRequest $request = null): self
     {
         //$fields = null, $tables = null, $restrict = null, $options = array()
         [$fields, $tables,$restrict,$options] = unserialize($data);

@@ -53,7 +53,7 @@ class PDOConnection implements ConnectionInterface {
 	 * @param  PDO
 	 */
 
-	public function __construct(\PDO $pdo = null) {
+	public function __construct(?\PDO $pdo = null) {
 		// First we will setup the default properties. We keep track of the DB
 		// name we are connected to since it is needed when some reflective
 		// type commands are run such as checking whether a table exists.

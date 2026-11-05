@@ -16,9 +16,9 @@ class Export {
 		}
 		$output = fopen("php://output","w");
 		ob_start();
-		fputcsv($output,$headings,chr(9));
+		fputcsv($output,$headings,chr(9), escape: '\\');
 		foreach ($data as $value) {
-			fputcsv($output, $value,chr(9));	
+			fputcsv($output, $value,chr(9), escape: '\\');	
 		}
 		fclose($output);
 		$csv = ob_get_clean();

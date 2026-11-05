@@ -12,6 +12,7 @@ class SioReg {
 	protected static $v=array();
 	protected static $use_un=true;
     protected static $initialised=false;
+	public $receiver_url;
 
 	function __construct($key=NULL,$receiver_url=NULL) {
 		$this->iniForm($key,@static::$v[static::SIG]);
